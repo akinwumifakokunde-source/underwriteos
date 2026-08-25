@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
-import { Layers, ShieldCheck, Webhook, KeyRound, FileCode2, Boxes, Lock } from "lucide-react";
-import FlowRunner from "@/components/api/FlowRunner.jsx";
-import EndpointReference from "@/components/api/EndpointReference.jsx";
-import JsonBlock from "@/components/api/JsonBlock.jsx";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Layers, ShieldCheck, FileCode2, Boxes, Webhook, KeyRound, ArrowRight, Lock, CheckCircle2 } from "lucide-react";
+import Nav from "@/components/layout/Nav.jsx";
 
 const PILLARS = [
   { icon: Layers, title: "Risk signals", desc: "Credit, cashflow, affordability & fraud signals — structured and traceable." },
@@ -14,66 +12,49 @@ const PILLARS = [
   { icon: KeyRound, title: "API keys & multi-tenancy", desc: "Organization isolation, idempotency keys, audit logging." },
 ];
 
+const ANSWERS = [
+  "What it is",
+  "Who it's for",
+  "What data to send",
+  "What the API returns",
+  "How underwriting works",
+  "Test it now",
+  "How to integrate",
+  "Evidence behind the recommendation",
+];
+
 export default function Home() {
-  const [openapi, setOpenApi] = useState(null);
-
-  useEffect(() => {
-    base44.functions.invoke("apiDocs", { action: "openapi" })
-      .then((res) => setOpenApi(res.data))
-      .catch(() => {});
-  }, []);
-
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      {/* Top bar */}
-      <header className="sticky top-0 z-30 backdrop-blur bg-white/80 border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center">
-              <Layers className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-semibold tracking-tight">UnderwriteOS</span>
-            <span className="text-[10px] font-mono text-slate-400 border border-slate-200 rounded px-1.5 py-0.5">v1</span>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-slate-500">
-            <a href="#flow" className="hover:text-slate-900 hidden sm:block">Console</a>
-            <a href="#api" className="hover:text-slate-900 hidden sm:block">API</a>
-            <a href="#architecture" className="hover:text-slate-900 hidden sm:block">Architecture</a>
-            <span className="inline-flex items-center gap-1.5 text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1">
-              <Lock className="w-3 h-3" /> sandbox
-            </span>
-          </div>
-        </div>
-      </header>
+      <Nav />
 
-      {/* Hero */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-12">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> API-first underwriting infrastructure
           </div>
           <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-slate-900">
-            Underwriting intelligence,<br />
+            Underwriting intelligence,
+            <br />
             <span className="text-slate-400">delivered as an API.</span>
           </h1>
           <p className="mt-5 text-lg text-slate-500 leading-relaxed max-w-2xl">
-            Send borrower data and financial documents. Receive structured risk signals, traceable evidence,
-            policy evaluation, and a defensible underwriting decision — all programmatically. Your client owns
-            the customer experience; UnderwriteOS provides the intelligence.
+            Send borrower data and financial documents. Receive structured risk signals, traceable evidence, policy
+            evaluation, and a defensible underwriting decision — all programmatically. Your client owns the customer
+            experience; UnderwriteOS provides the intelligence.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#flow" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-              Try the live flow
-            </a>
-            <a href="#api" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
+            <Link to="/sandbox" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              Open Sandbox <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link to="/api-reference" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
               <FileCode2 className="w-4 h-4" /> API reference
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Pillars */}
-      <section id="architecture" className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-slate-100 rounded-2xl overflow-hidden border border-slate-100">
           {PILLARS.map((p) => (
             <div key={p.title} className="bg-white p-6">
@@ -87,32 +68,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Interactive flow */}
-      <section id="flow" className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/40 p-5 sm:p-7">
-          <FlowRunner />
-        </div>
-      </section>
-
-      {/* API reference + OpenAPI */}
-      <section id="api" className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900 mb-1">API reference</h2>
-            <p className="text-sm text-slate-500 mb-5">Versioned REST endpoints under <code className="font-mono text-slate-600">/v1</code>.</p>
-            <div className="rounded-2xl border border-slate-200 bg-white p-5">
-              <EndpointReference />
-            </div>
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/40 p-6 sm:p-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Lock className="w-4 h-4 text-emerald-600" />
+            <span className="text-[11px] font-medium uppercase tracking-wider text-slate-500">A developer can answer in 60 seconds</span>
           </div>
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900 mb-1">OpenAPI specification</h2>
-            <p className="text-sm text-slate-500 mb-5">Machine-readable schema for SDK generation.</p>
-            {openapi ? <JsonBlock data={openapi} maxHeight="520px" /> : <div className="h-32 rounded-xl border border-dashed border-slate-200 animate-pulse" />}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {ANSWERS.map((a) => (
+              <div key={a} className="flex items-start gap-2 text-sm text-slate-600">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                {a}
+              </div>
+            ))}
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/sandbox" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800">Try the sandbox</Link>
+            <Link to="/architecture" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-white">View architecture</Link>
+            <Link to="/docs" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-4 py-2 rounded-lg hover:bg-white">Read the quickstart</Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-sm text-slate-400">

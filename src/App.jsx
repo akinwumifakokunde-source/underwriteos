@@ -11,6 +11,10 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 import Home from '@/pages/Home';
+import Sandbox from '@/pages/Sandbox';
+import ApiReference from '@/pages/ApiReference';
+import Architecture from '@/pages/Architecture';
+import Docs from '@/pages/Docs';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -44,6 +48,10 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<Home />} />
+      <Route path="/sandbox" element={<Sandbox />} />
+      <Route path="/api-reference" element={<ApiReference />} />
+      <Route path="/architecture" element={<Architecture />} />
+      <Route path="/docs" element={<Docs />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
