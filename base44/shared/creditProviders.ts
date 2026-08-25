@@ -1,23 +1,30 @@
 // Credit bureau provider abstraction.
 // The underwriting engine consumes a normalized CreditProfile, never provider-specific formats.
-// Providers below are MOCK implementations — no external bureau is connected.
+// All providers below are MOCK/test implementations — no external bureau is connected.
+// Never hard-code provider-specific fields into the underwriting engine.
+
+export type CreditProviderName =
+  | "experian" | "equifax" | "transunion" | "crc"
+  | "credit_registry" | "first_central" | "mock" | "other";
 
 export interface CreditProvider {
-  name: string;
+  name: CreditProviderName;
   // Normalize a provider-specific raw payload into a standard CreditProfile.
+  // Every field is nullable — providers do not all supply every field.
   normalize(raw: any, currency?: string): NormalizedCreditProfile;
 }
 
 export interface NormalizedCreditProfile {
-  credit_score: number;
-  score_band: string;
-  active_accounts: number;
-  delinquent_accounts: number;
-  defaults: number;
-  outstanding_balance: number;
-  credit_utilisation: number; // 0..1
-  credit_enquiries: number;
-  repayment_history_score: number; // 0..100
+  credit_score: number | null;
+  score_band: string | null;
+  active_accounts: number | null;
+  closed_accounts: number | null;
+  delinquent_accounts: number | null;
+  defaults: number | null;
+  outstanding_balance: number | null;
+  credit_utilisation: number | null; // 0..1
+  recent_enquiries: number | null;
+  repayment_history: number | null; // 0..100
   currency: string;
 }
 
@@ -28,15 +35,17 @@ const PROVIDERS: Record<string, CreditProvider> = {
   crc: mockProvider("crc"),
   credit_registry: mockProvider("credit_registry"),
   first_central: mockProvider("first_central"),
-  mock: mockProvider("mock")
+  mock: mockProvider("mock"),
+  other: mockProvider("other")
 };
 
-function mockProvider(name: string): CreditProvider {
+function mockProvider(name: CreditProviderName): CreditProvider {
   return {
     name,
     normalize(raw: any, currency = "GBP"): NormalizedCreditProfile {
-      // If the client passed already-normalized fields, prefer them.
-      if (raw && (raw.credit_score !== undefined || raw.creditScore !== undefined)) {
+      // If the client passed already-normalized fields, prefer them (nullable-aware).
+      if (raw && (raw.credit_score !== undefined || raw.creditScore !== undefined ||
+                  raw.active_accounts !== undefined || raw.recent_enquiries !== undefined)) {
         return coerceProfile(raw, currency);
       }
       // Otherwise derive a deterministic mock profile from raw seed data.
@@ -46,12 +55,13 @@ function mockProvider(name: string): CreditProvider {
         credit_score: 500 + (h % 300), // 500..799
         score_band: "",
         active_accounts: 2 + (h % 6),
+        closed_accounts: h % 4,
         delinquent_accounts: h % 3,
         defaults: h % 2,
         outstanding_balance: 800 + (h % 9000),
         credit_utilisation: ((h % 70) / 100),
-        credit_enquiries: h % 5,
-        repayment_history_score: 60 + (h % 40),
+        recent_enquiries: h % 5,
+        repayment_history: 60 + (h % 40),
         currency
       };
     }
@@ -59,22 +69,24 @@ function mockProvider(name: string): CreditProvider {
 }
 
 function coerceProfile(raw: any, currency: string): NormalizedCreditProfile {
-  const score = raw.credit_score ?? raw.creditScore ?? 650;
+  const score = raw.credit_score ?? raw.creditScore ?? null;
   return {
     credit_score: score,
-    score_band: scoreBand(score),
-    active_accounts: raw.active_accounts ?? raw.activeAccounts ?? 3,
-    delinquent_accounts: raw.delinquent_accounts ?? raw.delinquentAccounts ?? 0,
-    defaults: raw.defaults ?? 0,
-    outstanding_balance: raw.outstanding_balance ?? raw.outstandingBalance ?? 0,
-    credit_utilisation: raw.credit_utilisation ?? raw.creditUtilisation ?? 0.3,
-    credit_enquiries: raw.credit_enquiries ?? raw.creditEnquiries ?? 1,
-    repayment_history_score: raw.repayment_history_score ?? raw.repaymentHistoryScore ?? 90,
+    score_band: score != null ? scoreBand(score) : null,
+    active_accounts: raw.active_accounts ?? raw.activeAccounts ?? null,
+    closed_accounts: raw.closed_accounts ?? raw.closedAccounts ?? null,
+    delinquent_accounts: raw.delinquent_accounts ?? raw.delinquentAccounts ?? null,
+    defaults: raw.defaults ?? null,
+    outstanding_balance: raw.outstanding_balance ?? raw.outstandingBalance ?? null,
+    credit_utilisation: raw.credit_utilisation ?? raw.creditUtilisation ?? null,
+    recent_enquiries: raw.recent_enquiries ?? raw.recentEnquiries ?? raw.credit_enquiries ?? raw.creditEnquiries ?? null,
+    repayment_history: raw.repayment_history ?? raw.repaymentHistory ?? raw.repayment_history_score ?? raw.repaymentHistoryScore ?? null,
     currency: raw.currency ?? currency
   };
 }
 
-export function scoreBand(score: number): string {
+export function scoreBand(score: number | null): string | null {
+  if (score == null) return null;
   if (score >= 750) return "excellent";
   if (score >= 650) return "good";
   if (score >= 550) return "fair";
@@ -82,15 +94,9 @@ export function scoreBand(score: number): string {
 }
 
 export function getProvider(name: string): CreditProvider {
-  return PROVIDERS[name?.toLowerCase()] || PROVIDERS.mock;
+  return PROVIDERS[name?.toLowerCase()] || PROVIDERS.other;
 }
 
 export function listProviders(): string[] {
   return Object.keys(PROVIDERS);
-}
-
-function hash(s: string): number {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
-  return Math.abs(h);
 }

@@ -1,0 +1,84 @@
+{
+  "name": "UnderwritingRecommendation",
+  "type": "object",
+  "description": "AI-generated underwriting recommendation. Separate from the final lender decision. The AI never silently overrides lender policy.",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": [
+        "APPROVE",
+        "REVIEW",
+        "DECLINE"
+      ]
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "probability_of_default": {
+      "type": "number"
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "positive_signals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_signal_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "policy_results": {
+      "type": "object",
+      "description": "Outcome of policy evaluation that informed the recommendation"
+    },
+    "ai_summary": {
+      "type": "string"
+    },
+    "ai_memo": {
+      "type": "string",
+      "description": "Evidence-referenced reasoning narrative"
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "recommendation"
+  ]
+}

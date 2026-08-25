@@ -1,7 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { apiError, apiSuccess, readBody, resolveOrganization } from "../../shared/utils.ts";
 
-// Retrieval endpoints: risk, evidence, decision, audit, job.
+// Retrieval endpoints. All responses use stable, versioned schemas and never
+// expose internal database implementation details beyond the public model.
+// Supported actions: financial-profile, credit-profile, risk, evidence,
+// recommendation, decision, audit, job.
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
@@ -9,22 +12,52 @@ export default async function(req: Request): Promise<Response> {
     const { organization_id } = await resolveOrganization(base44);
     const action = body.action;
 
-    if (action === "risk") {
+    const requireAppId = () => {
       const { application_id } = body;
+      if (!application_id) return null;
+      return application_id;
+    };
+
+    if (action === "financial-profile") {
+      const application_id = requireAppId();
+      if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
+      const profiles = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);
+      if (profiles.length === 0) return apiError("PROFILE_NOT_FOUND", `No financial profile found for application ${application_id}.`, 404);
+      return apiSuccess({ application_id, financial_profile: profiles[0] }, 200);
+    }
+
+    if (action === "credit-profile") {
+      const application_id = requireAppId();
+      if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
+      const profiles = await base44.asServiceRole.entities.CreditProfile.filter({ application_id, organization_id }, "-created_date", 1);
+      if (profiles.length === 0) return apiError("PROFILE_NOT_FOUND", `No credit profile found for application ${application_id}.`, 404);
+      return apiSuccess({ application_id, credit_profile: profiles[0] }, 200);
+    }
+
+    if (action === "risk") {
+      const application_id = requireAppId();
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const signals = await base44.asServiceRole.entities.RiskSignal.filter({ application_id, organization_id }, "-created_date", 200);
       return apiSuccess({ application_id, signals }, 200);
     }
 
     if (action === "evidence") {
-      const { application_id } = body;
+      const application_id = requireAppId();
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const evidence = await base44.asServiceRole.entities.Evidence.filter({ application_id, organization_id }, "-created_date", 200);
       return apiSuccess({ application_id, evidence }, 200);
     }
 
+    if (action === "recommendation") {
+      const application_id = requireAppId();
+      if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
+      const recs = await base44.asServiceRole.entities.UnderwritingRecommendation.filter({ application_id, organization_id }, "-created_date", 1);
+      if (recs.length === 0) return apiError("RECOMMENDATION_NOT_FOUND", `No recommendation found for application ${application_id}.`, 404);
+      return apiSuccess({ application_id, recommendation: recs[0] }, 200);
+    }
+
     if (action === "decision") {
-      const { application_id } = body;
+      const application_id = requireAppId();
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const decisions = await base44.asServiceRole.entities.UnderwritingDecision.filter({ application_id, organization_id }, "-created_date", 1);
       if (decisions.length === 0) return apiError("DECISION_NOT_FOUND", `No decision found for application ${application_id}.`, 404);
@@ -32,7 +65,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     if (action === "audit") {
-      const { application_id } = body;
+      const application_id = requireAppId();
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const events = await base44.asServiceRole.entities.AuditEvent.filter({ application_id, organization_id }, "-created_date", 200);
       return apiSuccess({ application_id, audit_events: events }, 200);
@@ -47,7 +80,7 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ job_id: j.id, status: j.status, type: j.type, result: j.result, error: j.error }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use risk|evidence|decision|audit|job.`, 400);
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use financial-profile|credit-profile|risk|evidence|recommendation|decision|audit|job.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);

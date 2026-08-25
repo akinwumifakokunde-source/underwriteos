@@ -1,6 +1,7 @@
 {
   "name": "Evidence",
   "type": "object",
+  "description": "Evidence graph node. Every risk signal is traceable to its source through this record.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -8,8 +9,13 @@
     "application_id": {
       "type": "string"
     },
+    "signal_id": {
+      "type": "string",
+      "description": "The RiskSignal this evidence supports"
+    },
     "signal": {
-      "type": "string"
+      "type": "string",
+      "description": "Signal name (denormalized for query)"
     },
     "value": {
       "type": [
@@ -29,7 +35,7 @@
     "currency": {
       "type": "string"
     },
-    "source": {
+    "source_type": {
       "type": "string",
       "enum": [
         "credit_report",
@@ -40,8 +46,21 @@
         "ai_analysis"
       ]
     },
-    "source_reference": {
-      "type": "string"
+    "source_id": {
+      "type": "string",
+      "description": "ID of the source record (CreditReport, BankStatement, Document, etc.)"
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Document ID where applicable"
+    },
+    "source_location": {
+      "type": "string",
+      "description": "Location/page within the source where the value was found"
+    },
+    "calculation_method": {
+      "type": "string",
+      "description": "How the value was derived (e.g. 'sum', 'avg', 'ratio', 'direct_extract')"
     },
     "confidence": {
       "type": "number"
@@ -51,6 +70,6 @@
     "organization_id",
     "application_id",
     "signal",
-    "source"
+    "source_type"
   ]
 }

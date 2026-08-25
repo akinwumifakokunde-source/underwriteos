@@ -1,6 +1,7 @@
 {
   "name": "FinancialProfile",
   "type": "object",
+  "description": "Canonical, provider-independent financial profile. Produced by the normalization layer from raw bank-statement and borrower data.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -8,45 +9,173 @@
     "application_id": {
       "type": "string"
     },
-    "monthly_income": {
-      "type": "number"
-    },
-    "monthly_expenses": {
-      "type": "number"
-    },
-    "disposable_income": {
-      "type": "number"
-    },
-    "income_stability": {
-      "type": "number"
-    },
-    "expense_volatility": {
-      "type": "number"
-    },
-    "average_balance": {
-      "type": "number"
-    },
-    "debt_payments": {
-      "type": "number"
-    },
-    "recurring_obligations": {
-      "type": "number"
-    },
-    "debt_to_income": {
-      "type": "number"
-    },
-    "income_to_loan": {
-      "type": "number"
-    },
-    "repayment_capacity": {
-      "type": "number"
-    },
-    "affordability_ratio": {
-      "type": "number"
-    },
     "currency": {
       "type": "string",
       "default": "GBP"
+    },
+    "income": {
+      "type": "object",
+      "properties": {
+        "monthly": {
+          "type": "number"
+        },
+        "annual": {
+          "type": "number"
+        },
+        "stability": {
+          "type": "number",
+          "description": "0..1 coefficient-of-variation based"
+        },
+        "sources": {
+          "type": "number",
+          "description": "Distinct income source count"
+        }
+      }
+    },
+    "expenses": {
+      "type": "object",
+      "properties": {
+        "monthly": {
+          "type": "number"
+        },
+        "volatility": {
+          "type": "number",
+          "description": "0..1"
+        },
+        "recurring": {
+          "type": "number",
+          "description": "Monthly recurring obligations"
+        },
+        "categories": {
+          "type": "object",
+          "description": "Category -> monthly spend"
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "liquid": {
+          "type": "number"
+        }
+      }
+    },
+    "liabilities": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "monthly_servicing": {
+          "type": "number"
+        }
+      }
+    },
+    "debt": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "monthly_payments": {
+          "type": "number"
+        },
+        "to_income": {
+          "type": "number",
+          "description": "Debt-to-income ratio"
+        }
+      }
+    },
+    "cashflow": {
+      "type": "object",
+      "properties": {
+        "monthly_net": {
+          "type": "number"
+        },
+        "average_balance": {
+          "type": "number"
+        },
+        "disposable_income": {
+          "type": "number"
+        }
+      }
+    },
+    "credit": {
+      "type": "object",
+      "properties": {
+        "utilisation": {
+          "type": "number"
+        },
+        "outstanding_balance": {
+          "type": "number"
+        }
+      }
+    },
+    "affordability": {
+      "type": "object",
+      "properties": {
+        "debt_to_income": {
+          "type": "number"
+        },
+        "income_to_loan": {
+          "type": "number"
+        },
+        "repayment_capacity": {
+          "type": "number"
+        },
+        "affordability_ratio": {
+          "type": "number"
+        }
+      }
+    },
+    "employment": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "employed",
+            "self_employed",
+            "unemployed",
+            "retired",
+            "other"
+          ]
+        },
+        "employer": {
+          "type": "string"
+        },
+        "annual_income": {
+          "type": "number"
+        }
+      }
+    },
+    "financial_behaviour": {
+      "type": "object",
+      "properties": {
+        "income_stability": {
+          "type": "number",
+          "description": "0..1"
+        },
+        "expense_volatility": {
+          "type": "number",
+          "description": "0..1"
+        },
+        "savings_pattern": {
+          "type": "string",
+          "enum": [
+            "consistent_saver",
+            "intermittent_saver",
+            "non_saver",
+            "unknown"
+          ]
+        },
+        "recurring_obligations": {
+          "type": "number"
+        }
+      }
     }
   },
   "required": [

@@ -1,5 +1,8 @@
 // AI underwriter. Produces an underwriting memo that references structured
 // evidence only — it is never permitted to invent financial information.
+// The output is an advisory analysis that feeds the UnderwritingRecommendation.
+// The AI must NEVER silently override lender policy.
+
 export interface AIUnderwriterInput {
   borrower: any;
   application: any;
@@ -21,7 +24,7 @@ export interface AIUnderwriterOutput {
 export async function generateUnderwritingMemo(base44: any, input: AIUnderwriterInput): Promise<AIUnderwriterOutput> {
   const evidenceDigest = input.evidence
     .slice(0, 30)
-    .map(e => `- ${e.signal}: ${e.value}${e.currency ? " " + e.currency : ""} (source: ${e.source}${e.source_reference ? ", ref: " + e.source_reference : ""}, confidence: ${e.confidence})`)
+    .map(e => `- ${e.signal}: ${e.value}${e.currency ? " " + e.currency : ""} (source: ${e.source_type}${e.source_id ? ", id: " + e.source_id : ""}${e.calculation_method ? ", method: " + e.calculation_method : ""}, confidence: ${e.confidence})`)
     .join("\n");
 
   const signalDigest = input.signals
@@ -43,7 +46,7 @@ ${JSON.stringify({ loan_amount: input.application.loan_amount, loan_currency: in
 CREDIT PROFILE (normalized):
 ${JSON.stringify(input.credit, null, 2)}
 
-FINANCIAL PROFILE (normalized):
+FINANCIAL PROFILE (canonical):
 ${JSON.stringify(input.financial, null, 2)}
 
 RISK SIGNALS:
@@ -52,7 +55,7 @@ ${signalDigest}
 EVIDENCE (traceable to source):
 ${evidenceDigest}
 
-POLICY OUTCOME:
+POLICY OUTCOME (authoritative — your recommendation must not override this):
 ${JSON.stringify(input.policyOutcome, null, 2)}
 
 Produce a concise underwriting memo with:
@@ -105,9 +108,13 @@ Return ONLY JSON with this exact schema:
 function fallbackMemo(input: AIUnderwriterInput): AIUnderwriterOutput {
   const positives = input.signals.filter(s => s.flag === "positive").map(s => s.signal).slice(0, 5);
   const risks = input.signals.filter(s => s.flag === "negative" || s.flag === "critical").map(s => s.signal).slice(0, 5);
+  const income = input.financial?.income?.monthly ?? 0;
+  const dti = input.financial?.affordability?.debt_to_income ?? 0;
+  const disposable = input.financial?.cashflow?.disposable_income ?? 0;
+  const currency = input.financial?.currency || "GBP";
   return {
-    summary: `Borrower shows a credit score of ${input.credit.credit_score} with ${input.credit.active_accounts} active accounts and monthly income of ${input.financial.monthly_income} ${input.financial.currency}.`,
-    memo: `Based on the available evidence, the borrower's financial position is summarized by the normalized credit and cashflow profiles. Policy evaluation resulted in: ${input.policyOutcome.decision}. Key evidence includes debt-to-income of ${input.financial.debt_to_income} and disposable income of ${input.financial.disposable_income} ${input.financial.currency}.`,
+    summary: `Borrower shows a credit score of ${input.credit.credit_score ?? "unavailable"} with ${input.credit.active_accounts ?? "unknown"} active accounts and monthly income of ${income} ${currency}.`,
+    memo: `Based on the available evidence, the borrower's financial position is summarized by the normalized credit and cashflow profiles. Policy evaluation resulted in: ${input.policyOutcome.decision}. Key evidence includes debt-to-income of ${dti} and disposable income of ${disposable} ${currency}.`,
     positive_signals: positives,
     risk_factors: risks,
     confidence: 0.75

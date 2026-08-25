@@ -56,7 +56,7 @@ function samplePayload(): any {
     },
     credit_report: {
       provider: "experian",
-      raw_data: { credit_score: 672, active_accounts: 4, delinquent_accounts: 0, defaults: 0, outstanding_balance: 3200, credit_utilisation: 0.38, credit_enquiries: 2, repayment_history_score: 94 }
+      raw_data: { credit_score: 672, active_accounts: 4, closed_accounts: 1, delinquent_accounts: 0, defaults: 0, outstanding_balance: 3200, credit_utilisation: 0.38, recent_enquiries: 2, repayment_history: 94 }
     },
     bank_statement: {
       period_start: "2026-05-01",

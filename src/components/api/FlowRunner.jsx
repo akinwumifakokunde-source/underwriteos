@@ -6,7 +6,7 @@ import JsonBlock from "./JsonBlock.jsx";
 const SAMPLE = {
   borrower: { first_name: "Jordan", last_name: "Okafor", email: "jordan.okafor@example.com", employment_status: "employed", employer_name: "Northwind Trading", annual_income: 58000, income_currency: "GBP" },
   application: { loan_amount: 15000, loan_currency: "GBP", loan_purpose: "debt_consolidation", loan_term_months: 36, interest_rate: 0.099, policy_id: "consumer-v1" },
-  credit: { provider: "experian", raw_data: { credit_score: 672, active_accounts: 4, delinquent_accounts: 0, defaults: 0, outstanding_balance: 3200, credit_utilisation: 0.38, credit_enquiries: 2, repayment_history_score: 94 } },
+  credit: { provider: "experian", raw_data: { credit_score: 672, active_accounts: 4, closed_accounts: 1, delinquent_accounts: 0, defaults: 0, outstanding_balance: 3200, credit_utilisation: 0.38, recent_enquiries: 2, repayment_history: 94 } },
   bank: {
     period_start: "2026-05-01", period_end: "2026-07-31", account_number_masked: "****1234",
     transactions: [
@@ -99,7 +99,9 @@ export default function FlowRunner() {
 
   const reset = () => { setState({}); setIds({}); setActiveStep(null); };
 
-  const decision = state.underwrite?.response;
+  const response = state.underwrite?.response;
+  const decision = response?.decision;
+  const recommendation = response?.recommendation;
   const ds = decision ? decisionStyle[decision.decision] : null;
 
   return (
@@ -154,7 +156,7 @@ export default function FlowRunner() {
 
         <div className="lg:col-span-3">
           {decision && ds ? (
-            <DecisionCard decision={decision} ds={ds} />
+            <DecisionCard decision={decision} recommendation={recommendation} ds={ds} />
           ) : (
             <div className="h-full rounded-xl border border-dashed border-slate-200 bg-slate-50/50 flex flex-col items-center justify-center text-center p-10 min-h-[300px]">
               <FileText className="w-8 h-8 text-slate-300 mb-3" />
@@ -167,7 +169,7 @@ export default function FlowRunner() {
   );
 }
 
-function DecisionCard({ decision, ds }) {
+function DecisionCard({ decision, recommendation, ds }) {
   const Icon = ds.icon;
   return (
     <div className="space-y-4">
@@ -176,13 +178,13 @@ function DecisionCard({ decision, ds }) {
           <div className="flex items-center gap-2.5">
             <Icon className={`w-6 h-6 ${ds.text}`} />
             <div>
-              <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Underwriting decision</div>
+              <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Final decision</div>
               <div className={`text-2xl font-bold ${ds.text}`}>{decision.decision}</div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Application</div>
-            <code className="text-sm font-mono text-slate-700">{decision.application_id}</code>
+            <div className="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Decision source</div>
+            <div className="text-sm font-mono text-slate-700">{decision.decision_source}</div>
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -191,19 +193,28 @@ function DecisionCard({ decision, ds }) {
           <Metric label="Confidence" value={decision.confidence?.toFixed(2)} />
           <Metric label="Human review" value={decision.human_review_required ? "Yes" : "No"} />
         </div>
+        {recommendation && (
+          <div className="mt-3 flex items-center gap-2 text-[11px] text-slate-500">
+            <span className="uppercase tracking-wider font-semibold">AI recommendation</span>
+            <span className="font-mono font-semibold text-slate-700">{recommendation.recommendation}</span>
+            <span className="text-slate-300">·</span>
+            <span>policy {decision.policy_id || "consumer-v1"} v{decision.policy_version || "1"}</span>
+            {decision.override_reason && <span className="text-amber-600">· override: {decision.override_reason}</span>}
+          </div>
+        )}
       </div>
 
-      {decision.ai_summary && (
+      {recommendation?.ai_summary && (
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5">AI underwriting memo</div>
-          <p className="text-sm text-slate-700 leading-relaxed">{decision.ai_summary}</p>
-          {decision.ai_memo && <p className="text-sm text-slate-500 leading-relaxed mt-2">{decision.ai_memo}</p>}
+          <p className="text-sm text-slate-700 leading-relaxed">{recommendation.ai_summary}</p>
+          {recommendation.ai_memo && <p className="text-sm text-slate-500 leading-relaxed mt-2">{recommendation.ai_memo}</p>}
         </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <SignalList title="Positive signals" items={decision.positive_signals} tone="emerald" />
-        <SignalList title="Risk factors" items={decision.risk_factors} tone="rose" />
+        <SignalList title="Positive signals" items={recommendation?.positive_signals} tone="emerald" />
+        <SignalList title="Risk factors" items={recommendation?.risk_factors} tone="rose" />
       </div>
 
       {decision.reasons?.length > 0 && (

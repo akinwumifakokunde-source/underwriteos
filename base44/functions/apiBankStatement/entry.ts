@@ -2,6 +2,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, audit } from "../../shared/utils.ts";
 import { normalizeTransactions, buildFinancialProfile } from "../../shared/normalization.ts";
 
+// POST /v1/applications/{id}/bank-statement — ingests raw bank statement data,
+// normalizes transactions, and builds the canonical FinancialProfile.
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
@@ -46,7 +48,11 @@ export default async function(req: Request): Promise<Response> {
       }));
       if (txRecords.length > 0) await base44.asServiceRole.entities.Transaction.bulkCreate(txRecords);
 
-      const financial = buildFinancialProfile(normalizedTx, app.loan_amount, app.loan_currency);
+      // Load borrower for employment context in the canonical profile
+      const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
+      const borrower = borrowers[0] || null;
+
+      const financial = buildFinancialProfile(normalizedTx, app.loan_amount, app.loan_currency, borrower);
 
       // Replace any existing financial profile for this application
       const existing = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);

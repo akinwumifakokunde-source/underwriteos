@@ -1,6 +1,7 @@
 {
   "name": "CreditProfile",
   "type": "object",
+  "description": "Normalized credit profile. All fields are nullable because different providers may not supply every field.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -12,34 +13,48 @@
       "type": "string"
     },
     "provider": {
-      "type": "string"
+      "type": "string",
+      "description": "Bureau provider that produced the source report"
     },
     "credit_score": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable"
     },
     "score_band": {
-      "type": "string"
+      "type": "string",
+      "description": "Nullable"
     },
     "active_accounts": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable"
+    },
+    "closed_accounts": {
+      "type": "number",
+      "description": "Nullable"
     },
     "delinquent_accounts": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable"
     },
     "defaults": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable"
     },
     "outstanding_balance": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable"
     },
     "credit_utilisation": {
-      "type": "number"
+      "type": "number",
+      "description": "Nullable, 0..1"
     },
-    "credit_enquiries": {
-      "type": "number"
+    "recent_enquiries": {
+      "type": "number",
+      "description": "Nullable"
     },
-    "repayment_history_score": {
-      "type": "number"
+    "repayment_history": {
+      "type": "number",
+      "description": "Nullable, 0..100"
     },
     "currency": {
       "type": "string",

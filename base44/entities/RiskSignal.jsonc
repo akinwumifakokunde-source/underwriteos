@@ -1,12 +1,17 @@
 {
   "name": "RiskSignal",
   "type": "object",
+  "description": "Structured risk signal. Linked to Evidence via evidence_id.",
   "properties": {
     "organization_id": {
       "type": "string"
     },
     "application_id": {
       "type": "string"
+    },
+    "evidence_id": {
+      "type": "string",
+      "description": "Supporting Evidence record"
     },
     "category": {
       "type": "string",
