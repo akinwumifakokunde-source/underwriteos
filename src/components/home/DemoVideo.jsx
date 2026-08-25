@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Play } from "lucide-react";
 
 // Direct video file (AI-generated end-to-end flow demo).
-const DEMO_VIDEO_FILE = "https://media.base44.com/videos/public/6a8dd2cf78afd6dabbb1d3c1/04b7ac34d_Underwriting_flow_demo.mp4";
+const DEMO_VIDEO_FILE = "https://media.base44.com/videos/public/6a8dd2cf78afd6dabbb1d3c1/0b913b2cf_Underwriting_launch_demo.mp4";
 
 // Optional external embed (Loom / YouTube). If set, takes precedence over the file above.
 //   Loom:     https://www.loom.com/embed/<id>
