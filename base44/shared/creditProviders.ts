@@ -12,6 +12,9 @@ export interface CreditProvider {
   // Normalize a provider-specific raw payload into a standard CreditProfile.
   // Every field is nullable — providers do not all supply every field.
   normalize(raw: any, currency?: string): NormalizedCreditProfile;
+  // Automated bureau pull: fetch a credit report by reference (no manual upload).
+  // Mock providers generate deterministic synthetic data; real providers call the bureau API.
+  fetch(reference: string, opts?: { currency?: string; borrower?: any }): Promise<any>;
 }
 
 export interface NormalizedCreditProfile {
@@ -39,6 +42,13 @@ const PROVIDERS: Record<string, CreditProvider> = {
   other: mockProvider("other")
 };
 
+function hash(s: string | any): number {
+  const str = String(s ?? "");
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h;
+}
+
 function mockProvider(name: CreditProviderName): CreditProvider {
   return {
     name,
@@ -54,6 +64,23 @@ function mockProvider(name: CreditProviderName): CreditProvider {
       return {
         credit_score: 500 + (h % 300), // 500..799
         score_band: "",
+        active_accounts: 2 + (h % 6),
+        closed_accounts: h % 4,
+        delinquent_accounts: h % 3,
+        defaults: h % 2,
+        outstanding_balance: 800 + (h % 9000),
+        credit_utilisation: ((h % 70) / 100),
+        recent_enquiries: h % 5,
+        repayment_history: 60 + (h % 40),
+        currency
+      };
+    },
+    async fetch(reference: string, opts: any = {}): Promise<any> {
+      const currency = opts.currency || "GBP";
+      const seed = reference || opts.borrower?.borrower_reference || name;
+      const h = hash(seed);
+      return {
+        credit_score: 500 + (h % 300),
         active_accounts: 2 + (h % 6),
         closed_accounts: h % 4,
         delinquent_accounts: h % 3,

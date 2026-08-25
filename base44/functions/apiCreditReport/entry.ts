@@ -14,15 +14,31 @@ export default async function(req: Request): Promise<Response> {
     if (action === "submit") requireScope(ctx, "applications:write");
 
     if (action === "submit") {
-      const { application_id, provider, raw_data } = body;
+      const { application_id, provider, raw_data, mode, search_reference } = body;
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const apps = await base44.asServiceRole.entities.Application.filter({ id: application_id, organization_id }, "-created_date", 1);
       if (apps.length === 0) return apiError("APPLICATION_NOT_FOUND", `Application ${application_id} was not found.`, 404);
       const app = apps[0];
 
-      const providerName = (provider || "other").toLowerCase();
+      // Open banking / automated bureau pull: when no raw_data is supplied (or
+      // mode === "auto"), the report is fetched automatically from the bureau
+      // instead of being manually uploaded by the caller.
+      const autoFetch = mode === "auto" || !raw_data;
+      const providerName = (provider || (autoFetch ? "experian" : "other")).toLowerCase();
       const creditProvider = getProvider(providerName);
-      const normalized = creditProvider.normalize(raw_data || {}, app.loan_currency);
+
+      let reportData = raw_data;
+      let fetchMode = "manual";
+      let fetchReference: string | null = null;
+      if (autoFetch) {
+        const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
+        const borrower = borrowers[0] || null;
+        fetchReference = search_reference || app.id;
+        reportData = await creditProvider.fetch(fetchReference, { currency: app.loan_currency, borrower });
+        fetchMode = "auto";
+      }
+
+      const normalized = creditProvider.normalize(reportData || {}, app.loan_currency);
       if (!normalized.score_band && normalized.credit_score != null) normalized.score_band = scoreBand(normalized.credit_score);
 
       const report = await base44.asServiceRole.entities.CreditReport.create({
@@ -30,7 +46,7 @@ export default async function(req: Request): Promise<Response> {
         application_id,
         provider: providerName,
         report_reference: genId("CRR"),
-        raw_data: raw_data || {},
+        raw_data: reportData || {},
         status: "normalized"
       });
 
@@ -57,9 +73,9 @@ export default async function(req: Request): Promise<Response> {
       });
 
       await base44.asServiceRole.entities.Application.update(app.id, { status: "data_collection" });
-      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", details: { provider: providerName, credit_score: normalized.credit_score } });
+      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", details: { provider: providerName, credit_score: normalized.credit_score, fetch_mode: fetchMode, ...(fetchReference ? { reference: fetchReference } : {}) } });
 
-      return apiSuccess({ credit_report_id: report.id, credit_profile: profile, provider: providerName }, 201);
+      return apiSuccess({ credit_report_id: report.id, credit_profile: profile, provider: providerName, fetch_mode: fetchMode }, 201);
     }
 
     return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported.`, 400);

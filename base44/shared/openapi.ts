@@ -8,7 +8,7 @@ export function buildOpenApiSpec(apiBase: string): any {
     info: {
       title: "UnderwriteOS API",
       version: "1.0.0",
-      description: "API-first B2B underwriting infrastructure. Pipeline: Ingestion -> Normalization -> Intelligence -> Evidence -> Policy -> Underwriting Recommendation -> Decision Workflow. All resources are scoped to an organization. Credit bureau providers are mock/test abstractions — no external bureau is connected.",
+      description: "API-first B2B underwriting infrastructure. Pipeline: Ingestion -> Normalization -> Intelligence -> Evidence -> Policy -> Underwriting Recommendation -> Decision Workflow. All resources are scoped to an organization. Credit reports and bank statements can be pulled automatically via bureau / open-banking providers (no manual upload), or submitted directly. Bureau and open-banking providers are mock/test abstractions — no external bureau or bank is connected.",
       contact: { name: "UnderwriteOS", url: "https://underwriteos.dev" }
     },
     servers: [{ url: `${apiBase}/v1` }],
@@ -35,8 +35,8 @@ export function buildOpenApiSpec(apiBase: string): any {
       "/applications": { post: op("Create application", "Application", "Application", 201) },
       "/applications/{application_id}": { get: opGet("Retrieve application", "Application") },
       "/applications/{application_id}/documents": { post: op("Upload document", null, null, 201) },
-      "/applications/{application_id}/credit-report": { post: op("Submit credit report", null, "CreditProfile", 201) },
-      "/applications/{application_id}/bank-statement": { post: op("Submit bank statement", null, "FinancialProfile", 201) },
+      "/applications/{application_id}/credit-report": { post: op("Pull credit report (automated bureau pull, or submit raw_data)", null, "CreditProfile", 201) },
+      "/applications/{application_id}/bank-statement": { post: op("Pull bank statement (open banking, or submit transactions)", null, "FinancialProfile", 201) },
       "/applications/{application_id}/analyze": { post: op("Start analysis (async)", "Job", "Job", 202) },
       "/applications/{application_id}/underwrite": { post: op("Run underwriting evaluation", null, "UnderwritingRecommendation", 200) },
       "/applications/{application_id}/financial-profile": { get: opGet("Retrieve canonical financial profile", "FinancialProfile") },
