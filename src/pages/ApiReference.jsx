@@ -19,8 +19,8 @@ const ENDPOINTS = [
     { method: "GET", path: "/applications/{id}", desc: "Retrieve an application", req: null, res: { application_id: "app_001", status: "completed", decision: "REVIEW", risk_score: 0.42 } },
   ]},
   { group: "Data ingestion", items: [
-    { method: "POST", path: "/applications/{id}/credit-report", desc: "Submit credit report data", req: { provider: "mock", raw_data: { credit_score: 742, active_accounts: 6, credit_utilisation: 0.28 } }, res: { credit_report_id: "cr_001", status: "normalized" } },
-    { method: "POST", path: "/applications/{id}/bank-statement", desc: "Submit bank statement data", req: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] }, res: { bank_statement_id: "bs_001", transaction_count: 12 } },
+    { method: "POST", path: "/applications/{id}/credit-report", desc: "Auto-pull a credit report from a bureau (Experian) or submit manually", req: { provider: "experian", mode: "auto", search_reference: "<borrower_id_or_reference>" }, res: { credit_report_id: "cr_001", provider: "experian", fetch_mode: "auto", credit_profile: { credit_score: 545, score_band: "poor", provider: "experian", credit_utilisation: 0.05 } } },
+    { method: "POST", path: "/applications/{id}/bank-statement", desc: "Auto-pull transactions via Open Banking (TrueLayer) or submit manually", req: { provider: "truelayer", mode: "auto", consent_reference: "<open_banking_consent_token>" }, res: { bank_statement_id: "bs_001", open_banking_provider: "truelayer", fetch_mode: "auto", transaction_count: 12, financial_profile: { income: { monthly: 4108 }, affordability: { debt_to_income: 0.05 } } } },
   ]},
   { group: "Profiles", items: [
     { method: "GET", path: "/applications/{id}/financial-profile", desc: "Retrieve canonical financial profile", req: null, res: { income: { monthly: 4333 }, affordability: { debt_to_income: 0.16 }, financial_behaviour: { savings_pattern: "consistent_saver" } } },
@@ -37,6 +37,12 @@ const ENDPOINTS = [
   { group: "Decisions", items: [
     { method: "GET", path: "/applications/{id}/recommendation", desc: "Retrieve AI recommendation", req: null, res: { recommendation: "REVIEW", confidence: 0.91, ai_memo: "Applicant demonstrates stable income…" } },
     { method: "GET", path: "/applications/{id}/decision", desc: "Retrieve final decision", req: null, res: { decision: "REVIEW", decision_source: "policy_engine", policy_id: "consumer-v1", policy_version: "1" } },
+  ]},
+  { group: "Results & providers", items: [
+    { method: "GET", path: "/applications/{id}/summary", desc: "Full summary in one call (profiles, signals, evidence, recommendation, decision, audit)", req: null, res: { application_id: "app_001", application: { status: "completed", decision: "DECLINE", risk_score: 0.38 }, financial_profile: { income: { monthly: 4108 } }, credit_profile: { credit_score: 545, provider: "experian" }, risk_signals: [], evidence: [], recommendation: { recommendation: "APPROVE", confidence: 0.9 }, decision: { decision: "DECLINE", decision_source: "policy_engine" } } },
+    { method: "GET", path: "/applications/{id}/policy", desc: "Retrieve the evaluated policy and rule outcomes", req: null, res: { application_id: "app_001", policy: null, policy_outcome: { policy_id: "consumer-v1", policy_version: "1", evaluated_rules: [{ rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, input: 1, result: "FAIL", decision: "DECLINE", reason: "Active defaults on credit file" }] } } },
+    { method: "GET", path: "/providers", desc: "List available credit bureaus and Open Banking providers with setup examples", req: null, res: { credit_bureaus: [{ name: "experian", mode: "auto", requires: "search_reference" }], open_banking: [{ name: "truelayer", mode: "auto", requires: "consent_reference" }], setup: { credit_report: { endpoint: "/v1/applications/{application_id}/credit-report", example: { provider: "experian", mode: "auto", search_reference: "<borrower_id>" } } } } },
+    { method: "GET", path: "/webhooks", desc: "List registered webhooks", req: null, res: { webhooks: [{ id: "wh_001", url: "https://example.com/hooks", events: ["underwriting.completed"], status: "active" }] } },
   ]},
   { group: "Jobs", items: [
     { method: "GET", path: "/jobs/{id}", desc: "Retrieve job status", req: null, res: { job_id: "job_001", status: "completed", type: "analyze" } },
