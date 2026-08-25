@@ -44,8 +44,11 @@ export default function Home() {
             experience; UnderwriteOS provides the intelligence.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/sandbox" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
-              Open Sandbox <ArrowRight className="w-4 h-4" />
+            <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-5 py-2.5 rounded-lg hover:bg-slate-800 transition-colors">
+              Start building <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link to="/register" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
+              Create account
             </Link>
             <Link to="/api-reference" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-5 py-2.5 rounded-lg hover:bg-slate-50 transition-colors">
               <FileCode2 className="w-4 h-4" /> API reference

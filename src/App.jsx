@@ -16,6 +16,8 @@ import ApiReference from '@/pages/ApiReference';
 import Architecture from '@/pages/Architecture';
 import Docs from '@/pages/Docs';
 import Playground from '@/pages/Playground';
+import Onboarding from '@/pages/Onboarding';
+import ApiKeys from '@/pages/ApiKeys';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -54,6 +56,8 @@ const AuthenticatedApp = () => {
       <Route path="/api-reference" element={<ApiReference />} />
       <Route path="/architecture" element={<Architecture />} />
       <Route path="/docs" element={<Docs />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/api-keys" element={<ApiKeys />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

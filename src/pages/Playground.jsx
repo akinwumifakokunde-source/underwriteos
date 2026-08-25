@@ -6,6 +6,8 @@ import Nav from "@/components/layout/Nav.jsx";
 import CodeBlock from "@/components/sandbox/CodeBlock.jsx";
 import JsonView from "@/components/sandbox/JsonView.jsx";
 import { API_BASE_URL, PRODUCTION_DEPLOYED, PRODUCTION_API_BASE_URL } from "@/lib/apiConfig";
+import { withApiKey, hasApiKey } from "@/lib/apiKey";
+import { KeyRound } from "lucide-react";
 
 const ENDPOINTS = [
   { method: "POST", path: "/borrowers", fn: "apiBorrowers", label: "Create borrower", body: { action: "create", first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", employer_name: "Helix Digital Ltd", annual_income: 52000, income_currency: "GBP" } },
@@ -60,7 +62,7 @@ export default function Playground() {
     }
     const start = performance.now();
     try {
-      const res = await base44.functions.invoke(sel.fn, payload);
+      const res = await base44.functions.invoke(sel.fn, withApiKey(payload));
       setResp(res.data);
       setStatus(res.status || 200);
       setDuration(Math.round(performance.now() - start));
@@ -85,6 +87,14 @@ export default function Playground() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-6">
           <h1 className="text-2xl font-semibold tracking-tight">API Playground</h1>
           <p className="text-sm text-slate-500 mt-1">Send real requests to the sandbox backend. Edit the body and execute.</p>
+          {!hasApiKey() && (
+            <div className="mt-3 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              <KeyRound className="w-4 h-4 shrink-0" />
+              <span>No sandbox API key found.</span>
+              <a href="/onboarding" className="font-medium underline">Run onboarding</a>
+              <span className="text-amber-500">to provision one, or requests will fall back to your dashboard session.</span>
+            </div>
+          )}
           <div className="mt-2 flex flex-wrap gap-4 text-xs">
             <span className="flex items-center gap-1.5"><span className="text-slate-400">Sandbox API</span><code className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">{API_BASE_URL}</code></span>
             <span className="flex items-center gap-1.5"><span className="text-slate-400">Production</span>{PRODUCTION_DEPLOYED ? <code className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">{PRODUCTION_API_BASE_URL}</code> : <span className="text-[10px] font-medium text-amber-600 bg-amber-50 border border-amber-100 rounded-full px-2 py-0.5">Coming soon</span>}</span>

@@ -64,6 +64,10 @@
     "income_currency": {
       "type": "string",
       "default": "GBP"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "description": "Client-supplied idempotency key; repeated requests with the same key replay the original result."
     }
   },
   "required": [

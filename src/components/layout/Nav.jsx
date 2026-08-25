@@ -6,6 +6,7 @@ const NAV = [
   { to: "/sandbox", label: "Sandbox" },
   { to: "/playground", label: "Playground" },
   { to: "/api-reference", label: "API Reference" },
+  { to: "/api-keys", label: "API Keys" },
   { to: "/architecture", label: "Architecture" },
   { to: "/docs", label: "Documentation" },
 ];
@@ -35,10 +36,10 @@ export default function Nav() {
           ))}
         </nav>
         <Link
-          to="/sandbox"
+          to="/onboarding"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800 transition-colors"
         >
-          Open Sandbox <ArrowRight className="w-3.5 h-3.5" />
+          Start building <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </header>

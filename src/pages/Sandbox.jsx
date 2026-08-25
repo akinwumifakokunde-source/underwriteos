@@ -9,6 +9,8 @@ import StepPanel from "@/components/sandbox/StepPanel.jsx";
 import ResultTabs from "@/components/sandbox/ResultTabs.jsx";
 import ApiKeyPanel from "@/components/sandbox/ApiKeyPanel.jsx";
 import ErrorTesting from "@/components/sandbox/ErrorTesting.jsx";
+import { withApiKey, hasApiKey } from "@/lib/apiKey";
+import { KeyRound } from "lucide-react";
 
 const STEPS = [
   { id: "borrower", label: "Create borrower", method: "POST", path: "/borrowers", fn: "apiBorrowers", status: 201 },
@@ -92,7 +94,7 @@ export default function Sandbox() {
     const payload = buildPayload(step.id, config, ctx);
     updateStep(step.id, { request: { body: payload, headers: { "Idempotency-Key": `demo-${step.id}-${Date.now()}` } } });
     try {
-      const res = await base44.functions.invoke(step.fn, payload);
+      const res = await base44.functions.invoke(step.fn, withApiKey(payload));
       const dur = Math.round(performance.now() - start);
       const data = res.data;
       const status = res.status || step.status;
@@ -116,7 +118,7 @@ export default function Sandbox() {
   const fetchResults = async (ctx) => {
     const get = async (action) => {
       try {
-        const r = await base44.functions.invoke("apiRetrieve", { action, application_id: ctx.application_id });
+        const r = await base44.functions.invoke("apiRetrieve", withApiKey({ action, application_id: ctx.application_id }));
         return r.data;
       } catch {
         return null;
@@ -238,6 +240,14 @@ export default function Sandbox() {
           <div className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-400">
             <Info className="w-3 h-3" /> Sandbox data is synthetic and does not affect production underwriting.
           </div>
+          {!hasApiKey() && (
+            <div className="mt-2 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+              <KeyRound className="w-4 h-4 shrink-0" />
+              <span>No sandbox API key found.</span>
+              <a href="/onboarding" className="font-medium underline">Run onboarding</a>
+              <span className="text-amber-500">to provision one.</span>
+            </div>
+          )}
         </div>
       </div>
 
