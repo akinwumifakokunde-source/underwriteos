@@ -4,7 +4,7 @@
 export const ENVIRONMENT_CONFIG = {
   API_VERSION: "v1",
   SANDBOX_API_BASE_URL: "https://api.underwriteos.dev/v1",
-  PRODUCTION_API_BASE_URL: null, // null = not deployed yet
+  PRODUCTION_API_BASE_URL: "https://api.underwriteos.com/v1", // production is live
 };
 
 export const API_BASE_URL = ENVIRONMENT_CONFIG.SANDBOX_API_BASE_URL;
