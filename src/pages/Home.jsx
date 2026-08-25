@@ -2,6 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Layers, ShieldCheck, FileCode2, Boxes, Webhook, KeyRound, ArrowRight, Lock, CheckCircle2 } from "lucide-react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
+import AudienceStrip from "@/components/home/AudienceStrip.jsx";
+import HowItWorks from "@/components/home/HowItWorks.jsx";
+import CodePreview from "@/components/home/CodePreview.jsx";
+import Metrics from "@/components/home/Metrics.jsx";
+import FinalCta from "@/components/home/FinalCta.jsx";
 
 const PILLARS = [
   { icon: Layers, title: "Risk signals", desc: "Credit, cashflow, affordability & fraud signals — structured and traceable." },
@@ -99,6 +104,8 @@ export default function Home() {
         </div>
       </section>
 
+      <AudienceStrip />
+
       {/* Feature grid */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#1c2029] rounded-2xl overflow-hidden border border-[#2a2f3a]">
@@ -113,6 +120,11 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <HowItWorks />
+      <CodePreview />
+      <Metrics />
+      <FinalCta />
 
       {/* Footer */}
       <footer className="border-t border-[#1c2029]">
