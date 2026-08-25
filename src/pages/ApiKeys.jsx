@@ -13,6 +13,7 @@ export default function ApiKeys() {
   const [newKey, setNewKey] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [keyName, setKeyName] = useState("");
+  const [env, setEnv] = useState("sandbox");
   const activeStoredKey = getApiKey();
 
   const load = async () => {
@@ -37,11 +38,12 @@ export default function ApiKeys() {
     setError(null);
     setNewKey(null);
     try {
-      const res = await base44.functions.invoke("apiKeys", { action: "create", environment: "sandbox", name: keyName || "Sandbox key" });
+      const res = await base44.functions.invoke("apiKeys", { action: "create", environment: env, name: keyName || (env === "production" ? "Production key" : "Sandbox key") });
       setNewKey(res.data);
       setApiKey(res.data.full_key);
       setKeyName("");
       setShowCreate(false);
+      setEnv("sandbox");
       await load();
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to create key.");
@@ -94,7 +96,7 @@ export default function ApiKeys() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">API Keys</h1>
-            <p className="text-sm text-slate-500 mt-1">Create, rotate, and revoke sandbox API keys for your organization.</p>
+            <p className="text-sm text-slate-500 mt-1">Create, rotate, and revoke sandbox and production API keys for your organization.</p>
           </div>
           <button onClick={() => setShowCreate((s) => !s)} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800">
             <Plus className="w-4 h-4" /> New key
@@ -127,7 +129,14 @@ export default function ApiKeys() {
 
         {showCreate && (
           <div className="mb-4 rounded-xl border border-slate-200 bg-white p-5">
-            <h3 className="text-sm font-semibold text-slate-900 mb-3">Create sandbox key</h3>
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Create {env === "production" ? "production" : "sandbox"} key</h3>
+            <div className="flex gap-2 mb-3">
+              {["sandbox", "production"].map((e) => (
+                <button key={e} onClick={() => setEnv(e)} className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${env === e ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"}`}>
+                  {e === "production" ? "Production" : "Sandbox"}
+                </button>
+              ))}
+            </div>
             <div className="flex gap-2">
               <input
                 value={keyName}
@@ -139,6 +148,9 @@ export default function ApiKeys() {
                 {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />} Create
               </button>
             </div>
+            {env === "production" && (
+              <p className="mt-2 text-[11px] text-amber-700">Production keys operate on live data. Use <code className="font-mono">uw_live_</code> keys only in production integrations.</p>
+            )}
           </div>
         )}
 
@@ -201,7 +213,7 @@ export default function ApiKeys() {
 
         <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-[11px] text-slate-400 leading-relaxed">
           <p>API keys are hashed at rest (SHA-256). The full key is only returned at creation or rotation time — store it securely.</p>
-          <p className="mt-1">Sandbox keys are isolated from production data. Use <code className="font-mono">uw_test_</code> keys for the sandbox environment.</p>
+          <p className="mt-1">Sandbox (<code className="font-mono">uw_test_</code>) and production (<code className="font-mono">uw_live_</code>) keys are isolated by environment. Production keys operate on live data.</p>
         </div>
       </div>
     </div>
