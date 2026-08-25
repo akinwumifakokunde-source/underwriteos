@@ -60,7 +60,9 @@ export default async function(req: Request): Promise<Response> {
         category: s.category, signal: s.signal,
         value: s.value, value_type: s.value_type,
         currency: s.currency || null, confidence: s.confidence,
-        source: s.source, source_reference: s.source_reference || null, flag: s.flag
+        source: s.source, source_reference: s.source_reference || null, flag: s.flag,
+        severity: s.severity, direction: s.direction,
+        threshold: s.threshold ?? null, explanation: s.explanation || null
       })));
       signalCount = createdSignals.length;
 
@@ -72,9 +74,11 @@ export default async function(req: Request): Promise<Response> {
         value: ev.value, value_type: ev.value_type,
         currency: ev.currency || null,
         source_type: ev.source_type,
+        source_provider: ev.source_provider || null,
         source_id: ev.source_id || null,
         document_id: ev.document_id || null,
         source_location: ev.source_location || null,
+        field: ev.field || null,
         calculation_method: ev.calculation_method,
         confidence: ev.confidence
       }));

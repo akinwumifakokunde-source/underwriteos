@@ -17,6 +17,7 @@ import Architecture from '@/pages/Architecture';
 import Docs from '@/pages/Docs';
 import Playground from '@/pages/Playground';
 import Onboarding from '@/pages/Onboarding';
+import Dashboard from '@/pages/Dashboard';
 import ApiKeys from '@/pages/ApiKeys';
 import Providers from '@/pages/Providers';
 import Usage from '@/pages/Usage';
@@ -63,6 +64,7 @@ const AuthenticatedApp = () => {
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/security" element={<Security />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sandbox" element={<Sandbox />} />
         <Route path="/playground" element={<Playground />} />
         <Route path="/api-reference" element={<ApiReference />} />

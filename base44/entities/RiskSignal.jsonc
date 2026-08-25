@@ -1,7 +1,7 @@
 {
   "name": "RiskSignal",
   "type": "object",
-  "description": "Structured risk signal. Linked to Evidence via evidence_id.",
+  "description": "Structured risk signal. Linked to Evidence via evidence_id. Each signal carries a severity, direction, optional policy threshold and a human-readable explanation.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -69,6 +69,39 @@
         "critical"
       ],
       "default": "neutral"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "description": "Impact severity derived from the signal flag.",
+      "default": "MEDIUM"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative"
+      ],
+      "description": "Whether the signal moves risk up (negative) or down (positive).",
+      "default": "neutral"
+    },
+    "threshold": {
+      "type": [
+        "number",
+        "string",
+        "boolean"
+      ],
+      "description": "Policy threshold this signal is evaluated against, when applicable."
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Human-readable explanation of what the signal represents."
     }
   },
   "required": [

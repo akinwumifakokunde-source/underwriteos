@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { withApiKey, setApiKey, getApiKey } from "@/lib/apiKey";
 import Nav from "@/components/layout/Nav.jsx";
 import CopyButton from "@/components/sandbox/CopyButton.jsx";
-import { KeyRound, Building2, CheckCircle2, Loader2, ArrowRight, AlertTriangle, ShieldCheck } from "lucide-react";
+import { KeyRound, Building2, CheckCircle2, Loader2, ArrowRight, AlertTriangle, ShieldCheck, Circle, Rocket } from "lucide-react";
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -13,6 +13,14 @@ export default function Onboarding() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [stored, setStored] = useState(getApiKey() !== "");
+  const [progress, setProgress] = useState(null);
+
+  const loadProgress = async () => {
+    try {
+      const res = await base44.functions.invoke("apiOnboarding", { action: "progress" });
+      setProgress(res.data?.checklist || null);
+    } catch {}
+  };
 
   const provision = async () => {
     setProvisioning(true);
@@ -55,6 +63,11 @@ export default function Onboarding() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (data) loadProgress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
   const key = data?.api_key;
   const org = data?.organization;
   const checklist = data?.checklist;
@@ -96,6 +109,42 @@ export default function Onboarding() {
 
         {data && !error && (
           <div className="space-y-5">
+            {/* YOUR SANDBOX IS READY — developer journey progress */}
+            <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center"><Rocket className="w-4 h-4 text-white" /></div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">Your sandbox is ready</h3>
+                  <p className="text-xs text-slate-500">Reach your first underwriting decision in under 5 minutes.</p>
+                </div>
+              </div>
+              <div className="space-y-2.5">
+                {[
+                  { key: "sandbox", label: "Sandbox created" },
+                  { key: "api_key", label: "API key generated" },
+                  { key: "first_request", label: "First API request" },
+                  { key: "first_underwriting", label: "First underwriting run" },
+                  { key: "first_decision", label: "First decision returned" },
+                ].map((s) => {
+                  const done = progress?.[s.key];
+                  return (
+                    <div key={s.key} className="flex items-center gap-2.5">
+                      {done ? <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" /> : <Circle className="w-4 h-4 text-slate-300 shrink-0" />}
+                      <span className={`text-sm ${done ? "text-slate-900" : "text-slate-400"}`}>{s.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link to="/sandbox" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800">
+                  Run the sandbox <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <Link to="/playground" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                  Open the playground
+                </Link>
+              </div>
+            </div>
+
             {/* Checklist */}
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

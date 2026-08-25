@@ -87,7 +87,27 @@ export default async function(req: Request): Promise<Response> {
       }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use provision|status.`, 400);
+    if (action === "progress") {
+      const [keys, apps, recs, decisions] = await Promise.all([
+        base44.asServiceRole.entities.APIKey.filter({ organization_id: ctx.organization_id, status: "active" }, "-created_date", 1),
+        base44.asServiceRole.entities.Application.filter({ organization_id: ctx.organization_id }, "-created_date", 1),
+        base44.asServiceRole.entities.UnderwritingRecommendation.filter({ organization_id: ctx.organization_id }, "-created_date", 1),
+        base44.asServiceRole.entities.UnderwritingDecision.filter({ organization_id: ctx.organization_id }, "-created_date", 1)
+      ]);
+      return apiSuccess({
+        checklist: {
+          account: true,
+          organization: true,
+          sandbox: true,
+          api_key: keys.length > 0,
+          first_request: apps.length > 0,
+          first_underwriting: recs.length > 0,
+          first_decision: decisions.length > 0
+        }
+      }, 200);
+    }
+
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use provision|status|progress.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);

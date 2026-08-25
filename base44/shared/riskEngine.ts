@@ -1,7 +1,8 @@
 // Risk signal generation. Produces structured RiskSignal + Evidence pairs
 // from a normalized CreditProfile and canonical FinancialProfile.
 // Every signal is paired with traceable evidence (source type, source id,
-// calculation method, confidence).
+// calculation method, confidence, source provider) and carries a severity,
+// direction, optional policy threshold and a human-readable explanation.
 
 export interface SignalInput {
   credit: any;       // NormalizedCreditProfile
@@ -12,6 +13,8 @@ export interface SignalInput {
 }
 
 export type SourceType = "credit_report" | "bank_statement" | "document" | "borrower_declaration" | "derived" | "ai_analysis";
+export type Severity = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+export type Direction = "positive" | "neutral" | "negative";
 
 export interface GeneratedSignal {
   category: string;
@@ -23,6 +26,10 @@ export interface GeneratedSignal {
   source: SourceType;
   source_reference?: string;
   flag: "positive" | "neutral" | "negative" | "critical";
+  severity: Severity;
+  direction: Direction;
+  threshold?: number | string | boolean | null;
+  explanation?: string;
 }
 
 export interface GeneratedEvidence {
@@ -31,9 +38,11 @@ export interface GeneratedEvidence {
   value_type: "number" | "string" | "boolean";
   currency?: string;
   source_type: SourceType;
+  source_provider?: string | null;
   source_id?: string;
   document_id?: string;
   source_location?: string;
+  field?: string;
   calculation_method: string;
   confidence: number;
 }
@@ -41,6 +50,66 @@ export interface GeneratedEvidence {
 export interface SignalEvidencePair {
   signal: GeneratedSignal;
   evidence: GeneratedEvidence;
+}
+
+// Policy thresholds per signal name (where a signal maps to a policy rule).
+const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
+  credit_score: 500,
+  debt_to_income: 0.45,
+  credit_utilisation: 0.4,
+  defaults: 0,
+  repayment_capacity: 0,
+  recent_enquiries: 3,
+  repayment_history: 80,
+  suspicious_transactions: true
+};
+
+// Human-readable explanations per signal name.
+const SIGNAL_EXPLANATIONS: Record<string, string> = {
+  credit_score: "Borrower credit score from the bureau report.",
+  active_accounts: "Number of currently open credit accounts.",
+  closed_accounts: "Number of historically closed credit accounts.",
+  delinquent_accounts: "Accounts currently in delinquency.",
+  defaults: "Recorded defaults on the credit file.",
+  outstanding_balance: "Total outstanding credit balance.",
+  credit_utilisation: "Ratio of used credit to available limits.",
+  recent_enquiries: "Hard credit enquiries in the recent window.",
+  repayment_history: "Repayment history score (0..100).",
+  monthly_income: "Average monthly income from bank statements.",
+  monthly_expenses: "Average monthly expenses from bank statements.",
+  disposable_income: "Income minus expenses, monthly.",
+  income_stability: "Income regularity (1 - coefficient of variation).",
+  expense_volatility: "Variability of monthly expenses.",
+  average_balance: "Average running account balance.",
+  debt_payments: "Monthly debt servicing payments.",
+  recurring_obligations: "Monthly recurring obligations.",
+  debt_to_income: "Debt payments divided by income.",
+  income_to_loan: "Annual income divided by loan amount.",
+  repayment_capacity: "Disposable income available to service the loan.",
+  affordability_ratio: "Disposable income relative to expenses.",
+  suspicious_transactions: "Flag for suspicious cashflow patterns.",
+  document_inconsistencies: "Cross-source document consistency check.",
+  identity_inconsistencies: "Identity verification cross-check.",
+  unusual_financial_behaviour: "Unusual income/expense behaviour flag."
+};
+
+function flagToSeverity(flag: string): Severity {
+  switch (flag) {
+    case "positive": return "LOW";
+    case "neutral": return "MEDIUM";
+    case "negative": return "HIGH";
+    case "critical": return "CRITICAL";
+    default: return "MEDIUM";
+  }
+}
+
+function flagToDirection(flag: string): Direction {
+  switch (flag) {
+    case "positive": return "positive";
+    case "negative":
+    case "critical": return "negative";
+    default: return "neutral";
+  }
 }
 
 // Helper to read nested canonical financial profile fields safely.
@@ -70,87 +139,103 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
 
   const crId = input.credit_report_id;
   const bsId = input.bank_statement_id;
+  const creditProvider = credit?.provider || null;
 
   const push = (
-    s: Omit<GeneratedSignal, "source"> & { source: SourceType },
-    ev: Omit<GeneratedEvidence, "signal" | "source_type" | "calculation_method"> & { source_type?: SourceType; calculation_method?: string }
+    s: Omit<GeneratedSignal, "source" | "severity" | "direction" | "threshold" | "explanation"> & { source: SourceType },
+    ev: Omit<GeneratedEvidence, "signal" | "source_type" | "calculation_method" | "source_provider" | "field"> & { source_type?: SourceType; calculation_method?: string; field?: string }
   ) => {
+    const severity = flagToSeverity(s.flag);
+    const direction = flagToDirection(s.flag);
+    const threshold = s.signal in SIGNAL_THRESHOLDS ? SIGNAL_THRESHOLDS[s.signal] : null;
+    const explanation = SIGNAL_EXPLANATIONS[s.signal] || `${s.signal} signal`;
+    const sourceProvider = (ev.source_type ?? s.source) === "credit_report" ? creditProvider : null;
+
+    const signal: GeneratedSignal = {
+      ...s,
+      severity,
+      direction,
+      threshold,
+      explanation
+    };
     const evidence: GeneratedEvidence = {
       signal: s.signal,
       value: s.value,
       value_type: s.value_type,
       currency: s.currency,
       source_type: ev.source_type ?? s.source,
+      source_provider: sourceProvider,
       source_id: ev.source_id ?? (s.source === "credit_report" ? crId : s.source === "bank_statement" ? bsId : undefined),
       document_id: ev.document_id,
       source_location: ev.source_location,
+      field: ev.field,
       calculation_method: ev.calculation_method ?? "direct_extract",
       confidence: s.confidence
     };
-    items.push({ signal: s as GeneratedSignal, evidence });
+    items.push({ signal, evidence });
   };
 
   // ---- Credit signals (source: credit_report) ----
   push({ category: "credit", signal: "credit_score", value: credit.credit_score, value_type: "number", confidence: 0.95, source: "credit_report", flag: (credit.credit_score ?? 0) >= 650 ? "positive" : (credit.credit_score ?? 0) >= 550 ? "neutral" : "negative" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "credit_score" });
   push({ category: "credit", signal: "active_accounts", value: credit.active_accounts, value_type: "number", confidence: 0.9, source: "credit_report", flag: "neutral" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "active_accounts" });
   push({ category: "credit", signal: "closed_accounts", value: credit.closed_accounts, value_type: "number", confidence: 0.85, source: "credit_report", flag: "neutral" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "closed_accounts" });
   push({ category: "credit", signal: "delinquent_accounts", value: credit.delinquent_accounts, value_type: "number", confidence: 0.9, source: "credit_report", flag: (credit.delinquent_accounts ?? 0) > 0 ? "negative" : "positive" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "delinquent_accounts" });
   push({ category: "credit", signal: "defaults", value: credit.defaults, value_type: "number", confidence: 0.93, source: "credit_report", flag: (credit.defaults ?? 0) > 0 ? "critical" : "positive" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "defaults" });
   push({ category: "credit", signal: "outstanding_balance", value: credit.outstanding_balance, value_type: "number", currency, confidence: 0.88, source: "credit_report", flag: (credit.outstanding_balance ?? 0) > 5000 ? "negative" : "neutral" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "outstanding_balance" });
   push({ category: "credit", signal: "credit_utilisation", value: credit.credit_utilisation, value_type: "number", confidence: 0.9, source: "credit_report", flag: (credit.credit_utilisation ?? 0) > 0.7 ? "negative" : "positive" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "credit_utilisation" });
   push({ category: "credit", signal: "recent_enquiries", value: credit.recent_enquiries, value_type: "number", confidence: 0.85, source: "credit_report", flag: (credit.recent_enquiries ?? 0) > 3 ? "negative" : "neutral" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "recent_enquiries" });
   push({ category: "credit", signal: "repayment_history", value: credit.repayment_history, value_type: "number", confidence: 0.92, source: "credit_report", flag: (credit.repayment_history ?? 0) >= 90 ? "positive" : "negative" },
-    { calculation_method: "direct_extract" });
+    { calculation_method: "direct_extract", field: "repayment_history" });
 
   // ---- Cashflow signals (source: bank_statement / derived) ----
   push({ category: "cashflow", signal: "monthly_income", value: fin.monthlyIncome, value_type: "number", currency, confidence: 0.96, source: "bank_statement", flag: "positive" },
-    { calculation_method: "sum_divided_by_months" });
+    { calculation_method: "sum_divided_by_months", field: "income.monthly" });
   push({ category: "cashflow", signal: "monthly_expenses", value: fin.monthlyExpenses, value_type: "number", currency, confidence: 0.94, source: "bank_statement", flag: "neutral" },
-    { calculation_method: "sum_divided_by_months" });
+    { calculation_method: "sum_divided_by_months", field: "expenses.monthly" });
   push({ category: "cashflow", signal: "disposable_income", value: fin.disposableIncome, value_type: "number", currency, confidence: 0.93, source: "derived", flag: fin.disposableIncome > 0 ? "positive" : "negative" },
-    { calculation_method: "income_minus_expenses" });
+    { calculation_method: "income_minus_expenses", field: "cashflow.disposable_income" });
   push({ category: "cashflow", signal: "income_stability", value: fin.incomeStability, value_type: "number", confidence: 0.82, source: "derived", flag: fin.incomeStability >= 0.7 ? "positive" : "neutral" },
-    { calculation_method: "one_minus_coefficient_of_variation" });
+    { calculation_method: "one_minus_coefficient_of_variation", field: "financial_behaviour.income_stability" });
   push({ category: "cashflow", signal: "expense_volatility", value: fin.expenseVolatility, value_type: "number", confidence: 0.8, source: "derived", flag: fin.expenseVolatility > 0.5 ? "negative" : "positive" },
-    { calculation_method: "coefficient_of_variation" });
+    { calculation_method: "coefficient_of_variation", field: "financial_behaviour.expense_volatility" });
   push({ category: "cashflow", signal: "average_balance", value: fin.averageBalance, value_type: "number", currency, confidence: 0.86, source: "bank_statement", flag: "neutral" },
-    { calculation_method: "running_balance_proxy" });
+    { calculation_method: "running_balance_proxy", field: "cashflow.average_balance" });
   push({ category: "cashflow", signal: "debt_payments", value: fin.debtPayments, value_type: "number", currency, confidence: 0.9, source: "bank_statement", flag: "neutral" },
-    { calculation_method: "category_sum_divided_by_months" });
+    { calculation_method: "category_sum_divided_by_months", field: "debt.monthly_payments" });
   push({ category: "cashflow", signal: "recurring_obligations", value: fin.recurringObligations, value_type: "number", currency, confidence: 0.88, source: "bank_statement", flag: "neutral" },
-    { calculation_method: "recurring_flag_sum_divided_by_months" });
+    { calculation_method: "recurring_flag_sum_divided_by_months", field: "financial_behaviour.recurring_obligations" });
 
   // ---- Affordability signals (source: derived) ----
   push({ category: "affordability", signal: "debt_to_income", value: fin.debtToIncome, value_type: "number", confidence: 0.9, source: "derived", flag: fin.debtToIncome > 0.45 ? "negative" : fin.debtToIncome > 0.36 ? "neutral" : "positive" },
-    { calculation_method: "debt_payments_divided_by_income" });
+    { calculation_method: "debt_payments_divided_by_income", field: "affordability.debt_to_income" });
   push({ category: "affordability", signal: "income_to_loan", value: fin.incomeToLoan, value_type: "number", confidence: 0.85, source: "derived", flag: fin.incomeToLoan >= 1 ? "positive" : "negative" },
-    { calculation_method: "annual_income_divided_by_loan" });
+    { calculation_method: "annual_income_divided_by_loan", field: "affordability.income_to_loan" });
   push({ category: "affordability", signal: "repayment_capacity", value: fin.repaymentCapacity, value_type: "number", currency, confidence: 0.83, source: "derived", flag: fin.repaymentCapacity > 0 ? "positive" : "negative" },
-    { calculation_method: "disposable_income_times_0.6" });
+    { calculation_method: "disposable_income_times_0.6", field: "affordability.repayment_capacity" });
   push({ category: "affordability", signal: "affordability_ratio", value: fin.affordabilityRatio, value_type: "number", confidence: 0.82, source: "derived", flag: fin.affordabilityRatio > 0.2 ? "positive" : "negative" },
-    { calculation_method: "disposable_income_divided_by_expenses" });
+    { calculation_method: "disposable_income_divided_by_expenses", field: "affordability.affordability_ratio" });
 
   // ---- Fraud / anomaly signals (source: derived) ----
   const suspiciousTx = detectSuspicious(input);
   push({ category: "fraud", signal: "suspicious_transactions", value: suspiciousTx, value_type: "boolean", confidence: 0.6, source: "derived", flag: suspiciousTx ? "critical" : "positive" },
-    { calculation_method: "negative_disposable_income_check" });
+    { calculation_method: "negative_disposable_income_check", field: "cashflow.disposable_income" });
   const docInconsistent = (credit.defaults ?? 0) > 0 && fin.disposableIncome > fin.monthlyIncome;
   push({ category: "fraud", signal: "document_inconsistencies", value: docInconsistent, value_type: "boolean", confidence: 0.7, source: "derived", flag: docInconsistent ? "negative" : "positive" },
-    { calculation_method: "cross_source_consistency_check" });
+    { calculation_method: "cross_source_consistency_check", field: "cross_source" });
   const idInconsistent = false;
   push({ category: "fraud", signal: "identity_inconsistencies", value: idInconsistent, value_type: "boolean", confidence: 0.75, source: "derived", flag: idInconsistent ? "critical" : "positive" },
-    { calculation_method: "identity_cross_check" });
+    { calculation_method: "identity_cross_check", field: "identity" });
   const unusual = fin.incomeStability < 0.3 || fin.expenseVolatility > 0.6;
   push({ category: "fraud", signal: "unusual_financial_behaviour", value: unusual, value_type: "boolean", confidence: 0.65, source: "derived", flag: unusual ? "negative" : "positive" },
-    { calculation_method: "behavioural_threshold_check" });
+    { calculation_method: "behavioural_threshold_check", field: "financial_behaviour" });
 
   return { items };
 }

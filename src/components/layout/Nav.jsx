@@ -4,6 +4,7 @@ import { Layers, LogOut } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const NAV = [
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/sandbox", label: "Sandbox" },
   { to: "/playground", label: "Playground" },
   { to: "/api-reference", label: "API Reference" },

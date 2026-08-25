@@ -58,7 +58,7 @@ export default function HomeNav() {
         </nav>
         {authed ? (
           <Link
-            to="/sandbox"
+            to="/dashboard"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-3.5 py-2 rounded-lg hover:bg-[#e8eaee] transition-colors"
           >
             Dashboard <ArrowRight className="w-3.5 h-3.5" />
