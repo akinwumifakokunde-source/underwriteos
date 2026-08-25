@@ -1,25 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Layers, ArrowRight } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
+// public: true  → always visible (no login required)
+// public: false → only visible when the user is logged in
 const NAV = [
-  { to: "/sandbox", label: "Sandbox" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/security", label: "Security" },
-  { to: "/playground", label: "Playground" },
-  { to: "/api-reference", label: "API Reference" },
-  { to: "/api-keys", label: "API Keys" },
-  { to: "/providers", label: "Providers" },
-  { to: "/usage", label: "Usage" },
-  { to: "/billing", label: "Billing" },
-  { to: "/webhooks", label: "Webhooks" },
-  { to: "/members", label: "Members" },
-  { to: "/settings", label: "Settings" },
-  { to: "/architecture", label: "Architecture" },
-  { to: "/docs", label: "Documentation" },
+  { to: "/pricing", label: "Pricing", public: true },
+  { to: "/security", label: "Security", public: true },
+  { to: "/sandbox", label: "Sandbox", public: false },
+  { to: "/playground", label: "Playground", public: false },
+  { to: "/api-reference", label: "API Reference", public: false },
+  { to: "/api-keys", label: "API Keys", public: false },
+  { to: "/providers", label: "Providers", public: false },
+  { to: "/usage", label: "Usage", public: false },
+  { to: "/billing", label: "Billing", public: false },
+  { to: "/webhooks", label: "Webhooks", public: false },
+  { to: "/members", label: "Members", public: false },
+  { to: "/settings", label: "Settings", public: false },
+  { to: "/architecture", label: "Architecture", public: false },
+  { to: "/docs", label: "Documentation", public: false },
 ];
 
 export default function HomeNav() {
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    base44.auth.isAuthenticated().then((ok) => mounted && setAuthed(ok)).catch(() => {});
+    return () => { mounted = false; };
+  }, []);
+
+  const items = NAV.filter((n) => n.public || authed);
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur bg-[#0a0c12]/80 border-b border-[#1c2029]">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
@@ -30,25 +43,34 @@ export default function HomeNav() {
           <span className="font-semibold tracking-tight text-white">UnderwriteOS</span>
           <span className="text-[10px] font-mono text-[#5b6472] border border-[#2a2f3a] rounded px-1.5 py-0.5">v1</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV.map((n) => (
+        <nav className="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar">
+          {items.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `text-sm px-3 py-1.5 rounded-md transition-colors ${isActive ? "text-white bg-[#13161f]" : "text-[#a0a5b0] hover:text-white"}`
+                `shrink-0 text-sm px-3 py-1.5 rounded-md transition-colors ${isActive ? "text-white bg-[#13161f]" : "text-[#a0a5b0] hover:text-white"}`
               }
             >
               {n.label}
             </NavLink>
           ))}
         </nav>
-        <Link
-          to="/onboarding"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-3.5 py-2 rounded-lg hover:bg-[#e8eaee] transition-colors"
-        >
-          Start building <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        {authed ? (
+          <Link
+            to="/sandbox"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-3.5 py-2 rounded-lg hover:bg-[#e8eaee] transition-colors"
+          >
+            Dashboard <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        ) : (
+          <Link
+            to="/onboarding"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-3.5 py-2 rounded-lg hover:bg-[#e8eaee] transition-colors"
+          >
+            Start building <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        )}
       </div>
     </header>
   );
