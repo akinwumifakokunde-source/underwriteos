@@ -1,0 +1,61 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "bank_statement_id": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "description": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "credit",
+        "debit"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "income",
+        "rent",
+        "utilities",
+        "groceries",
+        "transport",
+        "debt_repayment",
+        "subscriptions",
+        "transfers",
+        "fees",
+        "other"
+      ]
+    },
+    "recurring": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "date",
+    "amount"
+  ]
+}

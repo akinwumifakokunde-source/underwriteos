@@ -1,0 +1,56 @@
+{
+  "name": "FinancialProfile",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "monthly_income": {
+      "type": "number"
+    },
+    "monthly_expenses": {
+      "type": "number"
+    },
+    "disposable_income": {
+      "type": "number"
+    },
+    "income_stability": {
+      "type": "number"
+    },
+    "expense_volatility": {
+      "type": "number"
+    },
+    "average_balance": {
+      "type": "number"
+    },
+    "debt_payments": {
+      "type": "number"
+    },
+    "recurring_obligations": {
+      "type": "number"
+    },
+    "debt_to_income": {
+      "type": "number"
+    },
+    "income_to_loan": {
+      "type": "number"
+    },
+    "repayment_capacity": {
+      "type": "number"
+    },
+    "affordability_ratio": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id"
+  ]
+}

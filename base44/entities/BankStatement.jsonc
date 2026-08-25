@@ -1,0 +1,46 @@
+{
+  "name": "BankStatement",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "statement_reference": {
+      "type": "string"
+    },
+    "account_number_masked": {
+      "type": "string"
+    },
+    "period_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "date"
+    },
+    "raw_data": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "normalized",
+        "failed"
+      ],
+      "default": "submitted"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id"
+  ]
+}

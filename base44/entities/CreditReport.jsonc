@@ -1,0 +1,45 @@
+{
+  "name": "CreditReport",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "experian",
+        "equifax",
+        "transunion",
+        "crc",
+        "credit_registry",
+        "first_central",
+        "mock",
+        "unknown"
+      ]
+    },
+    "report_reference": {
+      "type": "string"
+    },
+    "raw_data": {
+      "type": "object"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "normalized",
+        "failed"
+      ],
+      "default": "submitted"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "provider"
+  ]
+}

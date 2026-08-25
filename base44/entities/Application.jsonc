@@ -1,0 +1,84 @@
+{
+  "name": "Application",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_number": {
+      "type": "string"
+    },
+    "borrower_id": {
+      "type": "string"
+    },
+    "loan_amount": {
+      "type": "number"
+    },
+    "loan_currency": {
+      "type": "string",
+      "default": "GBP"
+    },
+    "loan_purpose": {
+      "type": "string"
+    },
+    "loan_term_months": {
+      "type": "number"
+    },
+    "interest_rate": {
+      "type": "number"
+    },
+    "policy_id": {
+      "type": "string",
+      "default": "consumer-v1"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "data_collection",
+        "analyzing",
+        "underwriting",
+        "completed",
+        "failed"
+      ],
+      "default": "draft"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVE",
+        "REVIEW",
+        "DECLINE",
+        "null"
+      ],
+      "default": "null"
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "probability_of_default": {
+      "type": "number"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "idempotency_key": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "borrower_id",
+    "loan_amount"
+  ]
+}

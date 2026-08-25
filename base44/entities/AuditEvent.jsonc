@@ -1,0 +1,40 @@
+{
+  "name": "AuditEvent",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "actor": {
+      "type": "string"
+    },
+    "actor_type": {
+      "type": "string",
+      "enum": [
+        "user",
+        "api_key",
+        "system"
+      ],
+      "default": "system"
+    },
+    "endpoint": {
+      "type": "string"
+    },
+    "details": {
+      "type": "object"
+    },
+    "ip_address": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "event"
+  ]
+}

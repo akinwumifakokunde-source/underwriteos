@@ -1,0 +1,68 @@
+{
+  "name": "Document",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "document_reference": {
+      "type": "string"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "credit_report",
+        "bank_statement",
+        "payslip",
+        "identity",
+        "employment",
+        "tax",
+        "other_financial",
+        "other"
+      ]
+    },
+    "file_url": {
+      "type": "string"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "mime_type": {
+      "type": "string"
+    },
+    "file_format": {
+      "type": "string",
+      "enum": [
+        "pdf",
+        "csv",
+        "json",
+        "image",
+        "other"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "uploaded",
+        "processing",
+        "processed",
+        "failed"
+      ],
+      "default": "uploaded"
+    },
+    "extracted_data": {
+      "type": "object"
+    },
+    "source_reference": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "document_type"
+  ]
+}

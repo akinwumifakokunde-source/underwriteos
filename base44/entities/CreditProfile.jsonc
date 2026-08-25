@@ -1,0 +1,53 @@
+{
+  "name": "CreditProfile",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "credit_report_id": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "credit_score": {
+      "type": "number"
+    },
+    "score_band": {
+      "type": "string"
+    },
+    "active_accounts": {
+      "type": "number"
+    },
+    "delinquent_accounts": {
+      "type": "number"
+    },
+    "defaults": {
+      "type": "number"
+    },
+    "outstanding_balance": {
+      "type": "number"
+    },
+    "credit_utilisation": {
+      "type": "number"
+    },
+    "credit_enquiries": {
+      "type": "number"
+    },
+    "repayment_history_score": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "GBP"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id"
+  ]
+}

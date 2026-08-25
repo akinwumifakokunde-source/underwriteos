@@ -1,0 +1,45 @@
+{
+  "name": "Organization",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox"
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "default_policy_id": {
+          "type": "string"
+        },
+        "default_currency": {
+          "type": "string",
+          "default": "GBP"
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "slug"
+  ]
+}

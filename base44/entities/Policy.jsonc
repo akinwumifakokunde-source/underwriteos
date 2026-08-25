@@ -1,0 +1,74 @@
+{
+  "name": "Policy",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "default": "1"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "<",
+              "<=",
+              ">",
+              ">=",
+              "==",
+              "!=",
+              "between"
+            ]
+          },
+          "threshold": {},
+          "decision": {
+            "type": "string",
+            "enum": [
+              "APPROVE",
+              "REVIEW",
+              "DECLINE"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "draft",
+        "archived"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "organization_id",
+    "policy_id",
+    "name"
+  ]
+}

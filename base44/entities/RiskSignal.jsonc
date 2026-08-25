@@ -1,0 +1,75 @@
+{
+  "name": "RiskSignal",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "credit",
+        "cashflow",
+        "affordability",
+        "fraud"
+      ]
+    },
+    "signal": {
+      "type": "string"
+    },
+    "value": {
+      "type": [
+        "number",
+        "string",
+        "boolean"
+      ]
+    },
+    "value_type": {
+      "type": "string",
+      "enum": [
+        "number",
+        "string",
+        "boolean"
+      ]
+    },
+    "currency": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "credit_report",
+        "bank_statement",
+        "document",
+        "borrower_declaration",
+        "derived",
+        "ai_analysis"
+      ]
+    },
+    "source_reference": {
+      "type": "string"
+    },
+    "flag": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "critical"
+      ],
+      "default": "neutral"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "category",
+    "signal"
+  ]
+}

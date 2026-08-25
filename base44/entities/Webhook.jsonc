@@ -1,0 +1,38 @@
+{
+  "name": "Webhook",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "secret": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "disabled"
+      ],
+      "default": "active"
+    },
+    "last_delivery_status": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "url",
+    "events"
+  ]
+}

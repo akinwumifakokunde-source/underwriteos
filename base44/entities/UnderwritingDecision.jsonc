@@ -1,0 +1,71 @@
+{
+  "name": "UnderwritingDecision",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "policy_version": {
+      "type": "string"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVE",
+        "REVIEW",
+        "DECLINE"
+      ]
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "probability_of_default": {
+      "type": "number"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "human_review_required": {
+      "type": "boolean",
+      "default": false
+    },
+    "policy_outcome": {
+      "type": "object"
+    },
+    "ai_summary": {
+      "type": "string"
+    },
+    "ai_memo": {
+      "type": "string"
+    },
+    "positive_signals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risk_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "decision"
+  ]
+}

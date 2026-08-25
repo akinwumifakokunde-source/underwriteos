@@ -1,0 +1,74 @@
+{
+  "name": "Borrower",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "borrower_reference": {
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date"
+    },
+    "national_id_hash": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "line1": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postal_code": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        }
+      }
+    },
+    "employment_status": {
+      "type": "string",
+      "enum": [
+        "employed",
+        "self_employed",
+        "unemployed",
+        "retired",
+        "other"
+      ]
+    },
+    "employer_name": {
+      "type": "string"
+    },
+    "annual_income": {
+      "type": "number"
+    },
+    "income_currency": {
+      "type": "string",
+      "default": "GBP"
+    }
+  },
+  "required": [
+    "organization_id",
+    "first_name",
+    "last_name"
+  ]
+}

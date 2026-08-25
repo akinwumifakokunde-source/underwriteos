@@ -1,0 +1,43 @@
+{
+  "name": "Job",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "job_reference": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "analyze",
+        "underwrite",
+        "document_process",
+        "credit_normalize"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "completed",
+        "failed"
+      ],
+      "default": "processing"
+    },
+    "result": {
+      "type": "object"
+    },
+    "error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "type"
+  ]
+}
