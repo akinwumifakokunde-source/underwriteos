@@ -15,6 +15,7 @@ import Sandbox from '@/pages/Sandbox';
 import ApiReference from '@/pages/ApiReference';
 import Architecture from '@/pages/Architecture';
 import Docs from '@/pages/Docs';
+import Playground from '@/pages/Playground';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<Home />} />
       <Route path="/sandbox" element={<Sandbox />} />
+      <Route path="/playground" element={<Playground />} />
       <Route path="/api-reference" element={<ApiReference />} />
       <Route path="/architecture" element={<Architecture />} />
       <Route path="/docs" element={<Docs />} />

@@ -1,46 +1,48 @@
 import React, { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import Nav from "@/components/layout/Nav.jsx";
-import { Search, ChevronDown, ChevronRight } from "lucide-react";
+import { Search, ChevronDown, ChevronRight, Play } from "lucide-react";
 import CodeBlock from "@/components/sandbox/CodeBlock.jsx";
 import JsonView from "@/components/sandbox/JsonView.jsx";
+import { API_BASE_URL, PRODUCTION_DEPLOYED, PRODUCTION_API_BASE_URL } from "@/lib/apiConfig";
 
 const ENDPOINTS = [
   { group: "Authentication", items: [
-    { method: "POST", path: "/v1/api-keys", desc: "Create a sandbox API key", req: { name: "Production deploy key", scopes: ["applications:write", "decisions:read"] }, res: { key_id: "key_001", prefix: "uw_test_", status: "active" } },
+    { method: "POST", path: "/api-keys", desc: "Create a sandbox API key", req: { name: "Production deploy key", scopes: ["applications:write", "decisions:read"] }, res: { key_id: "key_001", prefix: "uw_test_", status: "active" } },
   ]},
   { group: "Borrowers", items: [
-    { method: "POST", path: "/v1/borrowers", desc: "Create a borrower", req: { first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", annual_income: 52000, income_currency: "GBP" }, res: { borrower_id: "brw_001", created_date: "2026-08-25T18:00:00Z" } },
-    { method: "GET", path: "/v1/borrowers/{id}", desc: "Retrieve a borrower", req: null, res: { borrower_id: "brw_001", first_name: "Alex", last_name: "Morgan", employment_status: "employed" } },
+    { method: "POST", path: "/borrowers", desc: "Create a borrower", req: { first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", annual_income: 52000, income_currency: "GBP" }, res: { borrower_id: "brw_001", created_date: "2026-08-25T18:00:00Z" } },
+    { method: "GET", path: "/borrowers/{id}", desc: "Retrieve a borrower", req: null, res: { borrower_id: "brw_001", first_name: "Alex", last_name: "Morgan", employment_status: "employed" } },
   ]},
   { group: "Applications", items: [
-    { method: "POST", path: "/v1/applications", desc: "Create a loan application", req: { borrower_id: "brw_001", loan_amount: 12000, loan_currency: "GBP", loan_term_months: 24, policy_id: "consumer-v1" }, res: { application_id: "app_001", application_number: "APP-001", status: "draft" } },
-    { method: "GET", path: "/v1/applications/{id}", desc: "Retrieve an application", req: null, res: { application_id: "app_001", status: "completed", decision: "REVIEW", risk_score: 0.42 } },
+    { method: "POST", path: "/applications", desc: "Create a loan application", req: { borrower_id: "brw_001", loan_amount: 12000, loan_currency: "GBP", loan_term_months: 24, product_type: "personal_loan", policy_id: "consumer-v1" }, res: { application_id: "app_001", application_number: "APP-001", status: "draft", environment: "sandbox" } },
+    { method: "GET", path: "/applications/{id}", desc: "Retrieve an application", req: null, res: { application_id: "app_001", status: "completed", decision: "REVIEW", risk_score: 0.42 } },
   ]},
   { group: "Data ingestion", items: [
-    { method: "POST", path: "/v1/applications/{id}/credit-report", desc: "Submit credit report data", req: { provider: "mock", raw_data: { credit_score: 742, active_accounts: 6, credit_utilisation: 0.28 } }, res: { credit_report_id: "cr_001", status: "normalized" } },
-    { method: "POST", path: "/v1/applications/{id}/bank-statement", desc: "Submit bank statement data", req: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] }, res: { bank_statement_id: "bs_001", transaction_count: 12 } },
+    { method: "POST", path: "/applications/{id}/credit-report", desc: "Submit credit report data", req: { provider: "mock", raw_data: { credit_score: 742, active_accounts: 6, credit_utilisation: 0.28 } }, res: { credit_report_id: "cr_001", status: "normalized" } },
+    { method: "POST", path: "/applications/{id}/bank-statement", desc: "Submit bank statement data", req: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] }, res: { bank_statement_id: "bs_001", transaction_count: 12 } },
   ]},
   { group: "Profiles", items: [
-    { method: "GET", path: "/v1/applications/{id}/financial-profile", desc: "Retrieve canonical financial profile", req: null, res: { income: { monthly: 4333 }, affordability: { debt_to_income: 0.16 }, financial_behaviour: { savings_pattern: "consistent_saver" } } },
-    { method: "GET", path: "/v1/applications/{id}/credit-profile", desc: "Retrieve normalized credit profile", req: null, res: { credit_score: 742, score_band: "excellent", provider: "mock", credit_utilisation: 0.28 } },
+    { method: "GET", path: "/applications/{id}/financial-profile", desc: "Retrieve canonical financial profile", req: null, res: { income: { monthly: 4333 }, affordability: { debt_to_income: 0.16 }, financial_behaviour: { savings_pattern: "consistent_saver" } } },
+    { method: "GET", path: "/applications/{id}/credit-profile", desc: "Retrieve normalized credit profile", req: null, res: { credit_score: 742, score_band: "excellent", provider: "mock", credit_utilisation: 0.28 } },
   ]},
   { group: "Risk intelligence", items: [
-    { method: "GET", path: "/v1/applications/{id}/risk", desc: "Retrieve risk signals", req: null, res: { signals: [{ signal: "credit_score", value: 742, flag: "positive", confidence: 0.95 }] } },
-    { method: "GET", path: "/v1/applications/{id}/evidence", desc: "Retrieve evidence graph", req: null, res: { evidence: [{ signal: "credit_score", source_type: "credit_report", calculation_method: "direct_extract", confidence: 0.95 }] } },
+    { method: "GET", path: "/applications/{id}/risk", desc: "Retrieve risk signals", req: null, res: { signals: [{ signal: "credit_score", value: 742, flag: "positive", confidence: 0.95 }] } },
+    { method: "GET", path: "/applications/{id}/evidence", desc: "Retrieve evidence graph", req: null, res: { evidence: [{ signal: "credit_score", source_type: "credit_report", calculation_method: "direct_extract", confidence: 0.95 }] } },
   ]},
   { group: "Underwriting", items: [
-    { method: "POST", path: "/v1/applications/{id}/analyze", desc: "Start risk analysis (async job)", req: null, res: { job_id: "job_001", status: "processing" } },
-    { method: "POST", path: "/v1/applications/{id}/underwrite", desc: "Run underwriting evaluation", req: { policy_id: "consumer-v1" }, res: { recommendation: "REVIEW", decision: "REVIEW", risk_score: 0.42, decision_source: "policy_engine" } },
+    { method: "POST", path: "/applications/{id}/analyze", desc: "Start risk analysis (async job)", req: null, res: { job_id: "job_001", status: "processing" } },
+    { method: "POST", path: "/applications/{id}/underwrite", desc: "Run underwriting evaluation", req: { policy_id: "consumer-v1" }, res: { recommendation: "REVIEW", decision: "REVIEW", risk_score: 0.42, decision_source: "policy_engine" } },
   ]},
   { group: "Decisions", items: [
-    { method: "GET", path: "/v1/applications/{id}/recommendation", desc: "Retrieve AI recommendation", req: null, res: { recommendation: "REVIEW", confidence: 0.91, ai_memo: "Applicant demonstrates stable income…" } },
-    { method: "GET", path: "/v1/applications/{id}/decision", desc: "Retrieve final decision", req: null, res: { decision: "REVIEW", decision_source: "policy_engine", policy_id: "consumer-v1", policy_version: "1" } },
+    { method: "GET", path: "/applications/{id}/recommendation", desc: "Retrieve AI recommendation", req: null, res: { recommendation: "REVIEW", confidence: 0.91, ai_memo: "Applicant demonstrates stable income…" } },
+    { method: "GET", path: "/applications/{id}/decision", desc: "Retrieve final decision", req: null, res: { decision: "REVIEW", decision_source: "policy_engine", policy_id: "consumer-v1", policy_version: "1" } },
   ]},
   { group: "Jobs", items: [
-    { method: "GET", path: "/v1/jobs/{id}", desc: "Retrieve job status", req: null, res: { job_id: "job_001", status: "completed", type: "analyze" } },
+    { method: "GET", path: "/jobs/{id}", desc: "Retrieve job status", req: null, res: { job_id: "job_001", status: "completed", type: "analyze" } },
   ]},
   { group: "Webhooks", items: [
-    { method: "POST", path: "/v1/webhooks", desc: "Register a webhook endpoint", req: { url: "https://example.com/hooks", events: ["underwriting.completed", "decision.created"] }, res: { webhook_id: "wh_001", status: "active" } },
+    { method: "POST", path: "/webhooks", desc: "Register a webhook endpoint", req: { url: "https://example.com/hooks", events: ["underwriting.completed", "decision.created"] }, res: { webhook_id: "wh_001", status: "active" } },
   ]},
 ];
 
@@ -67,12 +69,21 @@ export default function ApiReference() {
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">API Reference</h1>
-              <p className="text-sm text-slate-500 mt-1">Versioned REST endpoints under <code className="font-mono text-slate-600">/v1</code>.</p>
+              <p className="text-sm text-slate-500 mt-1">Versioned REST endpoints. Paths are relative to the base URL.</p>
             </div>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-400">Base URL</span>
-              <code className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">https://api.underwriteos.dev/v1</code>
-              <span className="text-[10px] font-medium text-amber-600 bg-amber-50 border border-amber-100 rounded-full px-2 py-0.5">Coming soon</span>
+            <div className="flex flex-col gap-1 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Sandbox API</span>
+                <code className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">{API_BASE_URL}</code>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Production API</span>
+                {PRODUCTION_DEPLOYED ? (
+                  <code className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">{PRODUCTION_API_BASE_URL}</code>
+                ) : (
+                  <span className="text-[10px] font-medium text-amber-600 bg-amber-50 border border-amber-100 rounded-full px-2 py-0.5">Coming soon</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -138,6 +149,14 @@ export default function ApiReference() {
                       {isOpen && (
                         <div className="px-4 pb-4 space-y-4">
                           <p className="text-sm text-slate-600">{e.desc}</p>
+                          <div className="flex justify-end">
+                            <Link
+                              to={`/playground?endpoint=${encodeURIComponent(e.path)}&method=${e.method}`}
+                              className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800"
+                            >
+                              <Play className="w-3 h-3" /> Try it
+                            </Link>
+                          </div>
                           <div>
                             <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Example request</div>
                             <CodeBlock request={{ method: e.method, path: e.path, body: e.req, headers: { "Idempotency-Key": "demo-request-001" } }} />
@@ -155,7 +174,7 @@ export default function ApiReference() {
             </div>
           ))}
           <div className="rounded-xl border border-slate-200 bg-white p-4 text-[11px] text-slate-400">
-            All endpoints require <code className="font-mono text-slate-500">Authorization: Bearer &lt;api_key&gt;</code>. Use an <code className="font-mono text-slate-500">Idempotency-Key</code> header on POST requests to safely retry without creating duplicates.
+            All endpoints require <code className="font-mono text-slate-500">Authorization: Bearer &lt;api_key&gt;</code>. Use an <code className="font-mono text-slate-500">Idempotency-Key</code> header on POST requests to safely retry without creating duplicates. Every response includes a <code className="font-mono text-slate-500">request_id</code>.
           </div>
         </div>
       </div>

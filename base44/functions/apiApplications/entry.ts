@@ -22,6 +22,7 @@ export default async function(req: Request): Promise<Response> {
 
       const application = await base44.asServiceRole.entities.Application.create({
         organization_id,
+        environment: "sandbox",
         application_number: genId("APP"),
         borrower_id,
         loan_amount: Number(loan_amount),

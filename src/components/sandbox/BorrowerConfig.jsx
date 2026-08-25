@@ -13,6 +13,8 @@ const FIELDS = [
   { key: "active_accounts", label: "Active accounts", type: "number" },
   { key: "credit_utilisation", label: "Credit utilisation (0–1)", type: "number", step: 0.01 },
   { key: "recent_enquiries", label: "Recent enquiries", type: "number" },
+  { key: "defaults", label: "Defaults", type: "number" },
+  { key: "delinquent_accounts", label: "Delinquencies", type: "number" },
   { key: "repayment_history", label: "Repayment history (0–100)", type: "number" },
 ];
 

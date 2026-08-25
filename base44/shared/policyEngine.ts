@@ -13,7 +13,7 @@ export interface PolicyRule {
 export interface PolicyOutcome {
   policy_id: string;
   policy_version: string;
-  evaluated_rules: number;
+  evaluated_rules: any[];
   triggered_rules: any[];
   decision: "APPROVE" | "REVIEW" | "DECLINE";
   reasons: string[];
@@ -30,7 +30,10 @@ export const DEFAULT_POLICY = {
     { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.45, decision: "REVIEW", reason: "Existing debt exceeds policy threshold" },
     { rule_id: "FR-FLAG", field: "suspicious_transactions", operator: "==", threshold: true, decision: "REVIEW", reason: "Potential fraud signal detected" },
     { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
-    { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" }
+    { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
+    { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.4, decision: "REVIEW", reason: "Credit utilisation above review threshold (40%)" },
+    { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
+    { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below review threshold (80)" }
   ]
 };
 
@@ -44,15 +47,26 @@ export function evaluatePolicy(policy: any, signals: any[]): PolicyOutcome {
   for (const s of signals) signalMap[s.signal] = s.value;
 
   const triggered: any[] = [];
+  const evaluated: any[] = [];
   const reasons: string[] = [];
   let decision: "APPROVE" | "REVIEW" | "DECLINE" = "APPROVE";
   const rank = { APPROVE: 0, REVIEW: 1, DECLINE: 2 };
 
   for (const rule of policy.rules || []) {
     const actual = signalMap[rule.field];
-    if (actual === undefined) continue;
-    if (matches(actual, rule.operator, rule.threshold)) {
-      triggered.push({ rule_id: rule.rule_id, field: rule.field, actual, threshold: rule.threshold, decision: rule.decision });
+    const isTriggered = actual !== undefined && matches(actual, rule.operator, rule.threshold);
+    evaluated.push({
+      rule_id: rule.rule_id,
+      field: rule.field,
+      operator: rule.operator,
+      threshold: rule.threshold,
+      input: actual ?? null,
+      result: isTriggered ? "FAIL" : "PASS",
+      decision: rule.decision,
+      reason: rule.reason
+    });
+    if (isTriggered) {
+      triggered.push({ rule_id: rule.rule_id, field: rule.field, operator: rule.operator, actual, threshold: rule.threshold, decision: rule.decision, reason: rule.reason });
       reasons.push(rule.reason);
       if (rank[rule.decision] > rank[decision]) decision = rule.decision;
     }
@@ -61,7 +75,7 @@ export function evaluatePolicy(policy: any, signals: any[]): PolicyOutcome {
   return {
     policy_id: policy.policy_id,
     policy_version: policy.version,
-    evaluated_rules: (policy.rules || []).length,
+    evaluated_rules: evaluated,
     triggered_rules: triggered,
     decision,
     reasons

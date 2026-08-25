@@ -25,7 +25,7 @@ export default function WebhookSimulator({ event }) {
             <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
               <Check className="w-4 h-4" /> Delivered
             </span>
-            <code className="font-mono text-slate-700">{event.type}</code>
+            <code className="font-mono text-slate-700">{event.event_type || event.type}</code>
           </div>
           <div className="rounded-lg border border-slate-800 bg-slate-900 p-3 flex items-start justify-between gap-2">
             <pre className="text-[12px] font-mono text-slate-200 overflow-x-auto flex-1">

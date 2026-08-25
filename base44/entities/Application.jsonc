@@ -5,11 +5,25 @@
     "organization_id": {
       "type": "string"
     },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox",
+      "description": "Isolation environment. Sandbox records never mix with production."
+    },
     "application_number": {
       "type": "string"
     },
     "borrower_id": {
       "type": "string"
+    },
+    "product_type": {
+      "type": "string",
+      "default": "personal_loan",
+      "description": "Loan product type (e.g. personal_loan, auto_loan, business_loan)"
     },
     "loan_amount": {
       "type": "number"
@@ -30,6 +44,9 @@
     "policy_id": {
       "type": "string",
       "default": "consumer-v1"
+    },
+    "policy_version": {
+      "type": "string"
     },
     "status": {
       "type": "string",

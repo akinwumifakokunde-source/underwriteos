@@ -3,46 +3,20 @@ import { base44 } from "@/api/base44Client";
 import { Play, RotateCcw, Loader2, Code2, Info, ShieldCheck } from "lucide-react";
 import Nav from "@/components/layout/Nav.jsx";
 import BorrowerConfig from "@/components/sandbox/BorrowerConfig.jsx";
+import ScenarioSelector, { SCENARIOS } from "@/components/sandbox/ScenarioSelector.jsx";
 import SandboxFlow from "@/components/sandbox/SandboxFlow.jsx";
 import StepPanel from "@/components/sandbox/StepPanel.jsx";
-import ResultSummary from "@/components/sandbox/ResultSummary.jsx";
-import FinancialProfileCard from "@/components/sandbox/FinancialProfileCard.jsx";
-import CreditProfileCard from "@/components/sandbox/CreditProfileCard.jsx";
-import PolicyEngineCard from "@/components/sandbox/PolicyEngineCard.jsx";
-import RecommendationDecision from "@/components/sandbox/RecommendationDecision.jsx";
-import EvidenceExplorer from "@/components/sandbox/EvidenceExplorer.jsx";
+import ResultTabs from "@/components/sandbox/ResultTabs.jsx";
 import ApiKeyPanel from "@/components/sandbox/ApiKeyPanel.jsx";
-import WebhookSimulator from "@/components/sandbox/WebhookSimulator.jsx";
-import JobAsync from "@/components/sandbox/JobAsync.jsx";
 import ErrorTesting from "@/components/sandbox/ErrorTesting.jsx";
 
-const DEFAULT_CONFIG = {
-  first_name: "Alex",
-  last_name: "Morgan",
-  email: "alex.morgan@example.com",
-  employment_status: "employed",
-  employer_name: "Helix Digital Ltd",
-  annual_income: 52000,
-  monthly_expenses: 2150,
-  existing_debt: 8400,
-  loan_amount: 12000,
-  loan_term_months: 24,
-  credit_score: 742,
-  active_accounts: 6,
-  delinquent_accounts: 0,
-  defaults: 0,
-  credit_utilisation: 0.28,
-  recent_enquiries: 2,
-  repayment_history: 96,
-};
-
 const STEPS = [
-  { id: "borrower", label: "Create borrower", method: "POST", path: "/v1/borrowers", fn: "apiBorrowers", status: 201 },
-  { id: "application", label: "Create application", method: "POST", path: "/v1/applications", fn: "apiApplications", status: 201 },
-  { id: "credit", label: "Submit credit data", method: "POST", path: "/v1/applications/{id}/credit-report", fn: "apiCreditReport", status: 201 },
-  { id: "bank", label: "Submit financial data", method: "POST", path: "/v1/applications/{id}/bank-statement", fn: "apiBankStatement", status: 201 },
-  { id: "analyze", label: "Analyze", method: "POST", path: "/v1/applications/{id}/analyze", fn: "apiAnalyze", status: 202 },
-  { id: "underwrite", label: "Underwrite", method: "POST", path: "/v1/applications/{id}/underwrite", fn: "apiUnderwrite", status: 200 },
+  { id: "borrower", label: "Create borrower", method: "POST", path: "/borrowers", fn: "apiBorrowers", status: 201 },
+  { id: "application", label: "Create application", method: "POST", path: "/applications", fn: "apiApplications", status: 201 },
+  { id: "credit", label: "Submit credit data", method: "POST", path: "/applications/{id}/credit-report", fn: "apiCreditReport", status: 201 },
+  { id: "bank", label: "Submit financial data", method: "POST", path: "/applications/{id}/bank-statement", fn: "apiBankStatement", status: 201 },
+  { id: "analyze", label: "Analyze", method: "POST", path: "/applications/{id}/analyze", fn: "apiAnalyze", status: 202 },
+  { id: "underwrite", label: "Underwrite", method: "POST", path: "/applications/{id}/underwrite", fn: "apiUnderwrite", status: 200 },
 ];
 
 function buildTransactions(cfg) {
@@ -88,9 +62,11 @@ function buildPayload(stepId, cfg, ctx) {
 }
 
 const freshSteps = () => STEPS.map((s) => ({ ...s, state: { status: "not_started" } }));
+const genReqId = () => "req_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
 export default function Sandbox() {
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
+  const [scenario, setScenario] = useState("borderline");
+  const [config, setConfig] = useState(SCENARIOS.borderline.config);
   const [steps, setSteps] = useState(freshSteps);
   const [selected, setSelected] = useState("borrower");
   const [running, setRunning] = useState(false);
@@ -98,6 +74,13 @@ export default function Sandbox() {
   const [results, setResults] = useState(null);
   const [webhook, setWebhook] = useState(null);
   const [ids, setIds] = useState({});
+  const [requestId, setRequestId] = useState(null);
+  const [totalMs, setTotalMs] = useState(null);
+
+  const selectScenario = (id) => {
+    setScenario(id);
+    setConfig(SCENARIOS[id].config);
+  };
 
   const updateStep = (id, patch) =>
     setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, state: { ...s.state, ...patch } } : s)));
@@ -139,13 +122,9 @@ export default function Sandbox() {
         return null;
       }
     };
-    const [fp, cp, rec, dec, ev, risk] = await Promise.all([
-      get("financial-profile"),
-      get("credit-profile"),
-      get("recommendation"),
-      get("decision"),
-      get("evidence"),
-      get("risk"),
+    const [fp, cp, rec, dec, ev, risk, aud] = await Promise.all([
+      get("financial-profile"), get("credit-profile"), get("recommendation"),
+      get("decision"), get("evidence"), get("risk"), get("audit"),
     ]);
     const data = {
       financialProfile: fp?.financial_profile,
@@ -154,6 +133,7 @@ export default function Sandbox() {
       decision: dec?.decision,
       evidence: ev?.evidence || [],
       riskSignals: risk?.signals || [],
+      audit: aud?.audit_events || [],
     };
     setResults(data);
     return data;
@@ -166,6 +146,11 @@ export default function Sandbox() {
     setProgress([]);
     setSteps(freshSteps());
     setIds({});
+    setRequestId(null);
+    setTotalMs(null);
+    const reqId = genReqId();
+    setRequestId(reqId);
+    const startTotal = performance.now();
     const ctx = {};
     try {
       for (const step of STEPS) {
@@ -177,16 +162,22 @@ export default function Sandbox() {
       const data = await fetchResults(ctx);
       addProgress("✓ Underwriting complete");
       setWebhook({
-        type: "underwriting.completed",
+        event_id: "evt_" + Date.now().toString(36),
+        event_type: "underwriting.completed",
         application_id: ctx.application_id,
-        decision: data?.decision?.decision,
-        recommendation: data?.recommendation?.recommendation,
-        risk_score: data?.decision?.risk_score,
+        environment: "sandbox",
         timestamp: new Date().toISOString(),
+        delivery_status: "delivered",
+        payload: {
+          decision: data?.decision?.decision,
+          recommendation: data?.recommendation?.recommendation,
+          risk_score: data?.decision?.risk_score,
+        },
       });
     } catch {
       addProgress("✗ Flow stopped");
     }
+    setTotalMs(Math.round(performance.now() - startTotal));
     setRunning(false);
   };
 
@@ -196,12 +187,23 @@ export default function Sandbox() {
     setWebhook(null);
     setProgress([]);
     setIds({});
+    setRequestId(null);
+    setTotalMs(null);
     setSelected("borrower");
   };
 
+  const completed = steps.every((s) => s.state.status === "completed");
   const selectedStep = steps.find((s) => s.id === selected);
   const analyzeStep = steps.find((s) => s.id === "analyze");
-  const completed = steps.every((s) => s.state.status === "completed");
+  const jobId = analyzeStep?.state?.response?.job_id;
+  const diagnostics = {
+    requestId,
+    applicationId: ids.application_id,
+    jobId,
+    totalMs,
+    apiCalls: STEPS.length,
+    status: completed ? "Completed" : running ? "Running" : "—",
+  };
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
@@ -241,6 +243,7 @@ export default function Sandbox() {
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
         <div className="lg:col-span-5 space-y-4">
+          <ScenarioSelector selected={scenario} onSelect={selectScenario} />
           <BorrowerConfig config={config} onChange={setConfig} disabled={running} />
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -288,23 +291,23 @@ export default function Sandbox() {
               <button onClick={runAll} className="mt-4 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800">Run sandbox</button>
             </div>
           )}
-
-          {completed && results && (
-            <>
-              <ResultSummary decision={results.decision} />
-              <RecommendationDecision recommendation={results.recommendation} decision={results.decision} />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FinancialProfileCard profile={results.financialProfile} />
-                <CreditProfileCard profile={results.creditProfile} />
-              </div>
-              <PolicyEngineCard decision={results.decision} />
-              <EvidenceExplorer signals={results.riskSignals} evidence={results.evidence} />
-              <JobAsync analyzeStep={analyzeStep} />
-              <WebhookSimulator event={webhook} />
-            </>
-          )}
         </div>
       </div>
+
+      {completed && results && (
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 pb-6">
+          <ResultTabs
+            results={results}
+            steps={steps}
+            selectedStep={selectedStep}
+            selected={selected}
+            onSelectStep={setSelected}
+            ctxId={ids.application_id}
+            diagnostics={diagnostics}
+            webhook={webhook}
+          />
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 pb-10 space-y-6">
         <ErrorTesting />

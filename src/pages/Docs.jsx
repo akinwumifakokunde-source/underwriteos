@@ -9,37 +9,37 @@ const STEPS = [
     n: 1,
     title: "Create a sandbox API key",
     body: "Authenticate every request with a sandbox key. Sandbox keys only access synthetic test data.",
-    req: { method: "POST", path: "/v1/api-keys", body: { name: "sandbox", scopes: ["applications:write", "decisions:read"] } },
+    req: { method: "POST", path: "/api-keys", body: { name: "sandbox", scopes: ["applications:write", "decisions:read"] } },
   },
   {
     n: 2,
     title: "Create a borrower",
     body: "Create the borrower record that the application will be attached to.",
-    req: { method: "POST", path: "/v1/borrowers", body: { first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", annual_income: 52000, income_currency: "GBP" } },
+    req: { method: "POST", path: "/borrowers", body: { first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", annual_income: 52000, income_currency: "GBP" } },
   },
   {
     n: 3,
     title: "Create an application",
     body: "Create a loan application linked to the borrower. Use an idempotency key to safely retry.",
-    req: { method: "POST", path: "/v1/applications", body: { borrower_id: "brw_001", loan_amount: 12000, loan_currency: "GBP", loan_term_months: 24, policy_id: "consumer-v1" }, headers: { "Idempotency-Key": "demo-request-001" } },
+    req: { method: "POST", path: "/applications", body: { borrower_id: "brw_001", loan_amount: 12000, loan_currency: "GBP", loan_term_months: 24, policy_id: "consumer-v1" }, headers: { "Idempotency-Key": "demo-request-001" } },
   },
   {
     n: 4,
     title: "Submit financial data",
     body: "Submit a credit report and bank statement. UnderwriteOS normalizes them into canonical profiles.",
-    req: { method: "POST", path: "/v1/applications/{id}/bank-statement", body: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] } },
+    req: { method: "POST", path: "/applications/{id}/bank-statement", body: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] } },
   },
   {
     n: 5,
     title: "Run underwriting",
     body: "Analyze risk signals, evaluate policy, and generate the decision in one call.",
-    req: { method: "POST", path: "/v1/applications/{id}/underwrite", body: { policy_id: "consumer-v1" } },
+    req: { method: "POST", path: "/applications/{id}/underwrite", body: { policy_id: "consumer-v1" } },
   },
   {
     n: 6,
     title: "Retrieve the recommendation & decision",
     body: "Fetch the AI recommendation, final decision, risk signals, and evidence graph.",
-    req: { method: "GET", path: "/v1/applications/{id}/decision", body: null },
+    req: { method: "GET", path: "/applications/{id}/decision", body: null },
   },
 ];
 

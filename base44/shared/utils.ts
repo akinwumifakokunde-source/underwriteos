@@ -9,12 +9,16 @@ export function genId(prefix: string, len = 8): string {
   return `${prefix}-${s}`;
 }
 
+export function genRequestId(): string {
+  return "req_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
 export function apiError(code: string, message: string, status = 400, details?: any): Response {
-  return Response.json({ error: { code, message, ...(details ? { details } : {}) } }, { status });
+  return Response.json({ error: { code, message, ...(details ? { details } : {}) }, request_id: genRequestId() }, { status });
 }
 
 export function apiSuccess(data: any, status = 200): Response {
-  return Response.json(data, { status });
+  return Response.json({ ...data, request_id: genRequestId() }, { status });
 }
 
 export async function readBody(req: Request): Promise<any> {
