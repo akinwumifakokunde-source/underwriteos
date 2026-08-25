@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { withApiKey, setApiKey, getApiKey } from "@/lib/apiKey";
 import Nav from "@/components/layout/Nav.jsx";
@@ -7,6 +7,7 @@ import CopyButton from "@/components/sandbox/CopyButton.jsx";
 import { KeyRound, Building2, CheckCircle2, Loader2, ArrowRight, AlertTriangle, ShieldCheck } from "lucide-react";
 
 export default function Onboarding() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [provisioning, setProvisioning] = useState(false);
   const [data, setData] = useState(null);
@@ -24,6 +25,12 @@ export default function Onboarding() {
         setStored(true);
       }
     } catch (e) {
+      const code = e?.response?.data?.error?.code;
+      const status = e?.response?.status || e?.status;
+      if (code === "MISSING_API_KEY" || status === 401) {
+        navigate("/register", { replace: true });
+        return;
+      }
       setError(e?.response?.data?.error?.message || e.message || "Onboarding failed.");
     } finally {
       setProvisioning(false);
@@ -32,7 +39,19 @@ export default function Onboarding() {
   };
 
   useEffect(() => {
-    provision();
+    (async () => {
+      try {
+        const authed = await base44.auth.isAuthenticated();
+        if (!authed) {
+          navigate("/register", { replace: true });
+          return;
+        }
+      } catch {
+        navigate("/register", { replace: true });
+        return;
+      }
+      provision();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
