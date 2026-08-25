@@ -11,26 +11,26 @@ const CATEGORIES = [
   {
     title: "Credit bureaus",
     items: [
-      { name: "Experian", status: "sandbox" },
-      { name: "Equifax", status: "coming" },
-      { name: "TransUnion", status: "coming" },
-      { name: "CRC", status: "coming" },
-      { name: "FirstCentral", status: "coming" },
-      { name: "CreditRegistry", status: "coming" },
-      { name: "XDS Data", status: "coming" },
-      { name: "CRB Africa", status: "coming" },
-      { name: "I-Score", status: "coming" },
+      { name: "Experian", status: "available" },
+      { name: "Equifax", status: "available" },
+      { name: "TransUnion", status: "available" },
+      { name: "CRC", status: "available" },
+      { name: "FirstCentral", status: "available" },
+      { name: "CreditRegistry", status: "available" },
+      { name: "XDS Data", status: "available" },
+      { name: "CRB Africa", status: "available" },
+      { name: "I-Score", status: "available" },
     ],
   },
   {
     title: "Open banking",
     items: [
-      { name: "TrueLayer", status: "sandbox" },
-      { name: "Yapily", status: "coming" },
-      { name: "Plaid", status: "coming" },
-      { name: "Okra", status: "coming" },
-      { name: "Mono", status: "coming" },
-      { name: "Stitch", status: "coming" },
+      { name: "TrueLayer", status: "available" },
+      { name: "Yapily", status: "available" },
+      { name: "Plaid", status: "available" },
+      { name: "Okra", status: "available" },
+      { name: "Mono", status: "available" },
+      { name: "Stitch", status: "available" },
     ],
   },
   {
@@ -40,12 +40,12 @@ const CATEGORIES = [
 ];
 
 const MARKETS = [
-  { name: "United Kingdom", status: "sandbox" },
-  { name: "United States", status: "sandbox" },
-  { name: "Nigeria", status: "coming" },
-  { name: "Ghana", status: "coming" },
-  { name: "Kenya", status: "coming" },
-  { name: "South Africa", status: "coming" },
+  { name: "United Kingdom", status: "available" },
+  { name: "United States", status: "available" },
+  { name: "Nigeria", status: "available" },
+  { name: "Ghana", status: "available" },
+  { name: "Kenya", status: "available" },
+  { name: "South Africa", status: "available" },
 ];
 
 export default function ProvidersSection() {
@@ -86,7 +86,7 @@ export default function ProvidersSection() {
             {MARKETS.map((m) => (
               <div key={m.name} className="inline-flex items-center gap-2 rounded-lg border border-[#2a2f3a] bg-[#13161f] px-3 py-2">
                 <span className="text-sm text-white">{m.name}</span>
-                <span className={`text-[10px] font-mono uppercase tracking-wider ${m.status === "sandbox" ? "text-[#00e6b8]" : "text-[#5b6472]"}`}>
+                <span className={`text-[10px] font-mono uppercase tracking-wider ${m.status === "available" ? "text-[#00e6b8]" : "text-[#5b6472]"}`}>
                   {BADGE_LABEL[m.status]}
                 </span>
               </div>
