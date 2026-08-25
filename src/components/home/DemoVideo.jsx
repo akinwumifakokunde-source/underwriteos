@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Play, MonitorPlay } from "lucide-react";
+import { Play } from "lucide-react";
 
-// Paste your demo video embed URL here to make it live.
+// Direct video file (AI-generated end-to-end flow demo).
+const DEMO_VIDEO_FILE = "https://media.base44.com/videos/public/6a8dd2cf78afd6dabbb1d3c1/04b7ac34d_Underwriting_flow_demo.mp4";
+
+// Optional external embed (Loom / YouTube). If set, takes precedence over the file above.
 //   Loom:     https://www.loom.com/embed/<id>
 //   YouTube:  https://www.youtube.com/embed/<id>
-// Leave empty to show a "coming soon" placeholder.
-const DEMO_VIDEO_URL = "";
+const DEMO_EMBED_URL = "";
 
 const HIGHLIGHTS = [
   "Create borrower & application",
@@ -17,7 +19,7 @@ const HIGHLIGHTS = [
 
 export default function DemoVideo() {
   const [playing, setPlaying] = useState(false);
-  const hasVideo = Boolean(DEMO_VIDEO_URL);
+  const useEmbed = Boolean(DEMO_EMBED_URL);
 
   return (
     <section className="max-w-7xl mx-auto px-5 sm:px-8 py-20" id="demo">
@@ -35,16 +37,16 @@ export default function DemoVideo() {
 
       <div className="rounded-2xl border border-[#2a2f3a] bg-[#13161f] overflow-hidden">
         <div className="relative w-full aspect-video bg-[#0a0c12]">
-          {hasVideo && playing ? (
+          {useEmbed && playing ? (
             <iframe
-              src={DEMO_VIDEO_URL}
+              src={DEMO_EMBED_URL}
               className="absolute inset-0 w-full h-full"
               title="UnderwriteOS demo"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
-          ) : hasVideo ? (
+          ) : useEmbed ? (
             <button
               onClick={() => setPlaying(true)}
               className="group absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-4"
@@ -55,12 +57,13 @@ export default function DemoVideo() {
               <span className="text-sm text-[#a0a5b0]">Play 60-second demo</span>
             </button>
           ) : (
-            <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-[#1c2029] border border-[#2a2f3a] flex items-center justify-center">
-                <MonitorPlay className="w-7 h-7 text-[#5b6472]" />
-              </div>
-              <span className="text-sm text-[#5b6472]">Demo video coming soon</span>
-            </div>
+            <video
+              src={DEMO_VIDEO_FILE}
+              className="absolute inset-0 w-full h-full"
+              controls
+              preload="metadata"
+              poster=""
+            />
           )}
         </div>
         <div className="p-5 border-t border-[#1c2029]">
