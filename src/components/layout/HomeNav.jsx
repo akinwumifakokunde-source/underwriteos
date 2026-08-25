@@ -4,6 +4,8 @@ import { Layers, ArrowRight } from "lucide-react";
 
 const NAV = [
   { to: "/sandbox", label: "Sandbox" },
+  { to: "/pricing", label: "Pricing" },
+  { to: "/security", label: "Security" },
   { to: "/playground", label: "Playground" },
   { to: "/api-reference", label: "API Reference" },
   { to: "/api-keys", label: "API Keys" },

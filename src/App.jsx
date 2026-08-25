@@ -25,6 +25,8 @@ import SettingsPage from '@/pages/Settings';
 import Webhooks from '@/pages/Webhooks';
 import Billing from '@/pages/Billing';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import Pricing from '@/pages/Pricing';
+import Security from '@/pages/Security';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -58,6 +60,8 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<Home />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/security" element={<Security />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/sandbox" element={<Sandbox />} />
         <Route path="/playground" element={<Playground />} />

@@ -8,6 +8,7 @@ import HowItWorks from "@/components/home/HowItWorks.jsx";
 import CodePreview from "@/components/home/CodePreview.jsx";
 import Metrics from "@/components/home/Metrics.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
+import WhyNow from "@/components/home/WhyNow.jsx";
 
 const PILLARS = [
   { icon: Layers, title: "Risk signals", desc: "Credit, cashflow, affordability & fraud signals — structured and traceable." },
@@ -126,6 +127,7 @@ export default function Home() {
       <HowItWorks />
       <CodePreview />
       <Metrics />
+      <WhyNow />
       <FinalCta />
 
       {/* Footer */}
