@@ -7,7 +7,8 @@
 import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS } from "./providerCredentials.ts";
 
 export type OpenBankingProviderName =
-  | "truelayer" | "yapily" | "plaid" | "tink" | "mock" | "other";
+  | "truelayer" | "yapily" | "plaid" | "tink" | "okra" | "mono" | "stitch"
+  | "mock" | "other";
 
 export interface OpenBankingAccount {
   account_number_masked: string;
@@ -33,6 +34,9 @@ const PROVIDERS: Record<string, OpenBankingProvider> = {
   yapily: mockProvider("yapily"),
   plaid: mockProvider("plaid"),
   tink: mockProvider("tink"),
+  okra: mockProvider("okra"),
+  mono: mockProvider("mono"),
+  stitch: mockProvider("stitch"),
   mock: mockProvider("mock"),
   other: mockProvider("other")
 };

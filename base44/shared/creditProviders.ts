@@ -7,7 +7,8 @@ import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS } from "./providerCrede
 
 export type CreditProviderName =
   | "experian" | "equifax" | "transunion" | "crc"
-  | "credit_registry" | "first_central" | "mock" | "other";
+  | "credit_registry" | "first_central" | "xds" | "crb_africa" | "iscore"
+  | "mock" | "other";
 
 export interface CreditProvider {
   name: CreditProviderName;
@@ -40,6 +41,9 @@ const PROVIDERS: Record<string, CreditProvider> = {
   crc: mockProvider("crc"),
   credit_registry: mockProvider("credit_registry"),
   first_central: mockProvider("first_central"),
+  xds: mockProvider("xds"),
+  crb_africa: mockProvider("crb_africa"),
+  iscore: mockProvider("iscore"),
   mock: mockProvider("mock"),
   other: mockProvider("other")
 };

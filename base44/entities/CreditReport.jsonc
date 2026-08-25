@@ -17,6 +17,9 @@
         "crc",
         "credit_registry",
         "first_central",
+        "xds",
+        "crb_africa",
+        "iscore",
         "mock",
         "other",
         "unknown"
