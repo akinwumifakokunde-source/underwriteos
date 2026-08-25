@@ -3,34 +3,36 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { withApiKey } from "@/lib/apiKey";
 import Nav from "@/components/layout/Nav.jsx";
-import { KeyRound, Building2, Loader2, CheckCircle2, AlertTriangle, Trash2, FlaskConical, ShieldCheck, ArrowRight } from "lucide-react";
+import ProviderCard from "@/components/providers/ProviderCard.jsx";
+import { Loader2, AlertTriangle, ArrowRight } from "lucide-react";
 
-const PROVIDER_DEFS = [
-  {
-    provider: "experian",
-    provider_type: "credit_bureau",
-    label: "Experian",
-    kind: "Credit bureau",
-    defaultBaseUrl: "https://api-sandbox.experian.com",
-    help: "Enter your Experian sandbox API credentials. Used to auto-pull credit reports.",
-  },
-  {
-    provider: "truelayer",
-    provider_type: "open_banking",
-    label: "TrueLayer",
-    kind: "Open banking",
-    defaultBaseUrl: "https://api.truelayer-sandbox.com",
-    help: "Enter your TrueLayer sandbox client credentials. Used to auto-pull bank transactions.",
-  },
+const PROVIDER_DEFS = {
+  crc: { provider: "crc", provider_type: "credit_bureau", label: "CRC", kind: "Credit bureau", defaultBaseUrl: "https://api-sandbox.crccreditbureau.com", help: "Enter your CRC sandbox API credentials. Used to auto-pull credit reports (Nigeria)." },
+  first_central: { provider: "first_central", provider_type: "credit_bureau", label: "FirstCentral", kind: "Credit bureau", defaultBaseUrl: "https://api-sandbox.firstcentralcreditbureau.com", help: "Enter your FirstCentral sandbox API credentials. Used to auto-pull credit reports (Nigeria)." },
+  okra: { provider: "okra", provider_type: "open_banking", label: "Nigerian open banking", kind: "Open banking", defaultBaseUrl: "https://api.okra.ng", help: "Enter your Okra sandbox client credentials. Used to auto-pull bank transactions (Nigeria)." },
+  experian: { provider: "experian", provider_type: "credit_bureau", label: "Experian", kind: "Credit bureau", defaultBaseUrl: "https://api-sandbox.experian.com", help: "Enter your Experian sandbox API credentials. Used to auto-pull credit reports." },
+  equifax: { provider: "equifax", provider_type: "credit_bureau", label: "Equifax", kind: "Credit bureau", defaultBaseUrl: "https://api-sandbox.equifax.com", help: "Enter your Equifax sandbox API credentials. Used to auto-pull credit reports." },
+  transunion: { provider: "transunion", provider_type: "credit_bureau", label: "TransUnion", kind: "Credit bureau", defaultBaseUrl: "https://api-sandbox.transunion.com", help: "Enter your TransUnion sandbox API credentials. Used to auto-pull credit reports." },
+  truelayer: { provider: "truelayer", provider_type: "open_banking", label: "Open Banking", kind: "Open banking", defaultBaseUrl: "https://api.truelayer-sandbox.com", help: "Enter your TrueLayer sandbox client credentials. Used to auto-pull bank transactions (UK)." },
+  yapily: { provider: "yapily", provider_type: "open_banking", label: "Open Finance", kind: "Open finance", defaultBaseUrl: "https://api.yapily.com", help: "Enter your Yapily sandbox client credentials. Used to auto-pull open finance data (UK)." },
+  plaid: { provider: "plaid", provider_type: "open_banking", label: "Plaid", kind: "Open banking", defaultBaseUrl: "https://sandbox.plaid.com", help: "Enter your Plaid sandbox API credentials. Used to auto-pull bank transactions (US)." },
+};
+
+const REGIONS = [
+  { name: "Nigeria", providers: ["crc", "first_central", "okra"] },
+  { name: "UK", providers: ["experian", "equifax", "transunion", "truelayer", "yapily"] },
+  { name: "US", providers: ["experian", "equifax", "transunion", "plaid"] },
 ];
 
 export default function Providers() {
   const [loading, setLoading] = useState(true);
   const [creds, setCreds] = useState([]);
   const [error, setError] = useState(null);
-  const [saving, setSaving] = useState(null); // provider being saved
-  const [testing, setTesting] = useState(null); // provider being tested
-  const [forms, setForms] = useState(() => Object.fromEntries(PROVIDER_DEFS.map((p) => [p.provider, { client_id: "", client_secret: "", base_url: p.defaultBaseUrl }])));
+  const [saving, setSaving] = useState(null);
+  const [testing, setTesting] = useState(null);
+  const [forms, setForms] = useState(() =>
+    Object.fromEntries(Object.keys(PROVIDER_DEFS).map((k) => [k, { client_id: "", client_secret: "", base_url: PROVIDER_DEFS[k].defaultBaseUrl }]))
+  );
   const [testResult, setTestResult] = useState({});
 
   const load = async () => {
@@ -39,7 +41,6 @@ export default function Providers() {
     try {
       const res = await base44.functions.invoke("apiProviders", withApiKey({ action: "list" }));
       setCreds(res.data?.credentials || []);
-      // Pre-fill forms with existing client_id / base_url where present.
       const next = { ...forms };
       for (const c of res.data?.credentials || []) {
         if (next[c.provider]) next[c.provider] = { ...next[c.provider], client_id: c.client_id || "", base_url: c.base_url || next[c.provider].base_url };
@@ -106,15 +107,16 @@ export default function Providers() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-8">
           <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Provider setup
           </div>
           <h1 className="text-3xl font-semibold tracking-tight">Connect your data providers</h1>
           <p className="mt-2 text-slate-500">
-            Bring your own Experian and TrueLayer credentials. They are stored to your organization and used for live
-            data pulls. Until you add them, the sandbox uses deterministic mock data so you can explore the full flow.
+            Bring your own credit bureau and open banking credentials for Nigeria, the UK, and the US. They are stored to
+            your organization and used for live data pulls. Until you add them, the sandbox uses deterministic mock data so
+            you can explore the full flow.
           </p>
         </div>
 
@@ -131,99 +133,29 @@ export default function Providers() {
             <span className="text-sm text-slate-500">Loading provider settings…</span>
           </div>
         ) : (
-          <div className="space-y-5">
-            {PROVIDER_DEFS.map((def) => {
-              const ex = existingFor(def.provider);
-              const form = forms[def.provider];
-              const result = testResult[def.provider];
-              return (
-                <div key={def.provider} className="rounded-xl border border-slate-200 bg-white p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                        <KeyRound className="w-4 h-4 text-slate-600" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900">{def.label}</h3>
-                        <div className="text-[11px] text-slate-400">{def.kind}</div>
-                      </div>
-                    </div>
-                    {ex ? (
-                      <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-full px-2.5 py-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Connected · {ex.environment}
-                      </span>
-                    ) : (
-                      <span className="text-[11px] font-medium text-slate-400 bg-slate-50 border border-slate-100 rounded-full px-2.5 py-1">Not connected</span>
-                    )}
-                  </div>
-
-                  <p className="text-xs text-slate-500 mb-4">{def.help}</p>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Client ID</label>
-                      <input
-                        value={form.client_id}
-                        onChange={(e) => setField(def.provider, "client_id", e.target.value)}
-                        placeholder="your-client-id"
-                        className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Client secret</label>
-                      <input
-                        type="password"
-                        value={form.client_secret}
-                        onChange={(e) => setField(def.provider, "client_secret", e.target.value)}
-                        placeholder={ex ? `••••${ex.client_secret_masked?.slice(-4) || ""}` : "your-client-secret"}
-                        className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400"
-                      />
-                    </div>
-                    <div className="sm:col-span-2">
-                      <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Base URL</label>
-                      <input
-                        value={form.base_url}
-                        onChange={(e) => setField(def.provider, "base_url", e.target.value)}
-                        placeholder={def.defaultBaseUrl}
-                        className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  {ex?.last_test_status && ex.last_test_status !== "untested" && (
-                    <div className={`mt-3 text-xs flex items-center gap-1.5 ${ex.last_test_status === "ok" ? "text-emerald-700" : "text-rose-700"}`}>
-                      {ex.last_test_status === "ok" ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-                      Last test: {ex.last_test_status === "ok" ? "connected" : `failed${ex.last_test_error ? ` — ${ex.last_test_error}` : ""}`}
-                    </div>
-                  )}
-                  {result && (
-                    <div className={`mt-3 text-xs flex items-center gap-1.5 ${result.status === "ok" ? "text-emerald-700" : "text-rose-700"}`}>
-                      {result.status === "ok" ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
-                      {result.status === "ok" ? "Connection successful." : `Failed — ${result.error || "unknown error"}`}
-                    </div>
-                  )}
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <button onClick={() => save(def)} disabled={saving === def.provider || !form.client_id || !form.client_secret}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800 disabled:opacity-50">
-                      {saving === def.provider ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />} Save credentials
-                    </button>
-                    {ex && (
-                      <>
-                        <button onClick={() => test(def)} disabled={testing === def.provider}
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50 disabled:opacity-50">
-                          {testing === def.provider ? <Loader2 className="w-4 h-4 animate-spin" /> : <FlaskConical className="w-4 h-4" />} Test connection
-                        </button>
-                        <button onClick={() => remove(ex.id)}
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-rose-600 bg-white border border-rose-100 px-3.5 py-2 rounded-lg hover:bg-rose-50">
-                          <Trash2 className="w-4 h-4" /> Remove
-                        </button>
-                      </>
-                    )}
-                  </div>
+          <div className="space-y-8">
+            {REGIONS.map((region) => (
+              <section key={region.name}>
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">{region.name}</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  {region.providers.map((key) => (
+                    <ProviderCard
+                      key={key}
+                      def={PROVIDER_DEFS[key]}
+                      form={forms[key]}
+                      existing={existingFor(key)}
+                      result={testResult[key]}
+                      saving={saving}
+                      testing={testing}
+                      onField={setField}
+                      onSave={save}
+                      onTest={test}
+                      onRemove={remove}
+                    />
+                  ))}
                 </div>
-              );
-            })}
+              </section>
+            ))}
 
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-sm font-semibold text-slate-900 mb-3">Next steps</h3>
