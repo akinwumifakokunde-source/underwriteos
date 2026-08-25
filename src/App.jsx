@@ -19,6 +19,10 @@ import Playground from '@/pages/Playground';
 import Onboarding from '@/pages/Onboarding';
 import ApiKeys from '@/pages/ApiKeys';
 import Providers from '@/pages/Providers';
+import Usage from '@/pages/Usage';
+import Members from '@/pages/Members';
+import SettingsPage from '@/pages/Settings';
+import Webhooks from '@/pages/Webhooks';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -60,6 +64,10 @@ const AuthenticatedApp = () => {
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/api-keys" element={<ApiKeys />} />
       <Route path="/providers" element={<Providers />} />
+      <Route path="/usage" element={<Usage />} />
+      <Route path="/members" element={<Members />} />
+      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/webhooks" element={<Webhooks />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

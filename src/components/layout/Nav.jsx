@@ -8,6 +8,10 @@ const NAV = [
   { to: "/api-reference", label: "API Reference" },
   { to: "/api-keys", label: "API Keys" },
   { to: "/providers", label: "Providers" },
+  { to: "/usage", label: "Usage" },
+  { to: "/webhooks", label: "Webhooks" },
+  { to: "/members", label: "Members" },
+  { to: "/settings", label: "Settings" },
   { to: "/architecture", label: "Architecture" },
   { to: "/docs", label: "Documentation" },
 ];
