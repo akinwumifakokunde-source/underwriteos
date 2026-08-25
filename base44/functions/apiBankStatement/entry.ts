@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
 import { normalizeTransactions, buildFinancialProfile } from "../../shared/normalization.ts";
-import { getOpenBankingProvider } from "../../shared/openBanking.ts";
+import { getOpenBankingProvider, isRealOpenBankingProvider } from "../../shared/openBanking.ts";
 import { getCredentials } from "../../shared/providerCredentials.ts";
 
 // POST /v1/applications/{id}/bank-statement — ingests raw bank statement data,
@@ -52,7 +52,7 @@ export default async function(req: Request): Promise<Response> {
         pStart = pStart || result.account.period_start;
         pEnd = pEnd || result.account.period_end;
         fetchMode = "auto";
-        dataSource = credentials ? "live" : "mock";
+        dataSource = (credentials && isRealOpenBankingProvider(obProviderNameRaw)) ? "live" : "mock";
       }
 
       const normalizedTx = normalizeTransactions(source, app.loan_currency);

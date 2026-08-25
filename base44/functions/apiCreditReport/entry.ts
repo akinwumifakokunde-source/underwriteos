@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
-import { getProvider, scoreBand } from "../../shared/creditProviders.ts";
+import { getProvider, scoreBand, isRealCreditProvider } from "../../shared/creditProviders.ts";
 import { getCredentials } from "../../shared/providerCredentials.ts";
 
 // POST /v1/applications/{id}/credit-report — ingests raw credit bureau data,
@@ -39,7 +39,7 @@ export default async function(req: Request): Promise<Response> {
         const credentials = await getCredentials(base44, organization_id, providerName, ctx.environment);
         reportData = await creditProvider.fetch(fetchReference, { currency: app.loan_currency, borrower, credentials });
         fetchMode = "auto";
-        dataSource = credentials ? "live" : "mock";
+        dataSource = (credentials && isRealCreditProvider(providerName)) ? "live" : "mock";
       }
 
       const normalized = creditProvider.normalize(reportData || {}, app.loan_currency);

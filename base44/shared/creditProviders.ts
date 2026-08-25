@@ -3,7 +3,7 @@
 // Providers fall back to deterministic MOCK data when no org credentials are configured,
 // and make a REAL bureau call when credentials are passed in opts.credentials.
 // Never hard-code provider-specific fields into the underwriting engine.
-import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS } from "./providerCredentials.ts";
+import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS, PROVIDER_REPORT_PATHS, realCreditFetch } from "./providerCredentials.ts";
 
 export type CreditProviderName =
   | "experian" | "equifax" | "transunion" | "crc"
@@ -17,7 +17,7 @@ export interface CreditProvider {
   normalize(raw: any, currency?: string): NormalizedCreditProfile;
   // Automated bureau pull: fetch a credit report by reference (no manual upload).
   // Mock providers generate deterministic synthetic data; real providers call the bureau API.
-  fetch(reference: string, opts?: { currency?: string; borrower?: any }): Promise<any>;
+  fetch(reference: string, opts?: { currency?: string; borrower?: any; credentials?: any }): Promise<any>;
 }
 
 export interface NormalizedCreditProfile {
@@ -35,15 +35,15 @@ export interface NormalizedCreditProfile {
 }
 
 const PROVIDERS: Record<string, CreditProvider> = {
-  experian: experianProvider(),
-  equifax: mockProvider("equifax"),
-  transunion: mockProvider("transunion"),
-  crc: mockProvider("crc"),
-  credit_registry: mockProvider("credit_registry"),
-  first_central: mockProvider("first_central"),
-  xds: mockProvider("xds"),
-  crb_africa: mockProvider("crb_africa"),
-  iscore: mockProvider("iscore"),
+  experian: genericCreditProvider("experian"),
+  equifax: genericCreditProvider("equifax"),
+  transunion: genericCreditProvider("transunion"),
+  crc: genericCreditProvider("crc"),
+  credit_registry: genericCreditProvider("credit_registry"),
+  first_central: genericCreditProvider("first_central"),
+  xds: genericCreditProvider("xds"),
+  crb_africa: genericCreditProvider("crb_africa"),
+  iscore: genericCreditProvider("iscore"),
   mock: mockProvider("mock"),
   other: mockProvider("other")
 };
@@ -101,6 +101,22 @@ function mockProvider(name: CreditProviderName): CreditProvider {
   };
 }
 
+// Generic provider: real bureau pull when credentials are present and a report
+// endpoint is configured for this provider; deterministic mock otherwise.
+function genericCreditProvider(name: CreditProviderName): CreditProvider {
+  const mock = mockProvider(name);
+  return {
+    name,
+    normalize: mock.normalize,
+    async fetch(reference: string, opts: any = {}) {
+      if (opts.credentials && PROVIDER_REPORT_PATHS[name]) {
+        return realCreditFetch(name, reference, opts);
+      }
+      return mock.fetch(reference, opts);
+    }
+  };
+}
+
 function coerceProfile(raw: any, currency: string): NormalizedCreditProfile {
   const score = raw.credit_score ?? raw.creditScore ?? null;
   return {
@@ -126,59 +142,9 @@ export function scoreBand(score: number | null): string | null {
   return "poor";
 }
 
-// Real Experian pull. Requires org credentials (client_id, client_secret, base_url).
-// Throws a structured PROVIDER_* error on failure — never silently falls back to mock.
-async function realExperianFetch(reference: string, opts: any = {}): Promise<any> {
-  const { credentials, borrower, currency = "GBP" } = opts;
-  const base = (credentials.base_url || "https://api-sandbox.experian.com").replace(/\/$/, "");
-  const token = await exchangeClientCredentials(base, PROVIDER_TOKEN_PATHS.experian, credentials.client_id, credentials.client_secret);
-  const res = await fetch(`${base}/credit-report/v1/report`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      reference,
-      borrower: {
-        first_name: borrower?.first_name,
-        last_name: borrower?.last_name,
-        date_of_birth: borrower?.date_of_birth,
-        address: borrower?.address
-      }
-    })
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw { status: 502, code: "PROVIDER_FETCH_FAILED", message: `Experian report request failed (${res.status}). ${detail.slice(0, 200)}` };
-  }
-  const report: any = await res.json();
-  return mapExperianReport(report, currency);
-}
-
-function mapExperianReport(report: any, currency: string): any {
-  const score = report?.credit_score ?? report?.score ?? report?.creditScore ?? null;
-  return {
-    credit_score: score,
-    active_accounts: report?.active_accounts ?? report?.activeAccounts ?? null,
-    closed_accounts: report?.closed_accounts ?? report?.closedAccounts ?? null,
-    delinquent_accounts: report?.delinquent_accounts ?? report?.delinquentAccounts ?? null,
-    defaults: report?.defaults ?? null,
-    outstanding_balance: report?.outstanding_balance ?? report?.outstandingBalance ?? null,
-    credit_utilisation: report?.credit_utilisation ?? report?.creditUtilisation ?? null,
-    recent_enquiries: report?.recent_enquiries ?? report?.recentEnquiries ?? null,
-    repayment_history: report?.repayment_history ?? report?.repaymentHistory ?? null,
-    currency
-  };
-}
-
-function experianProvider(): CreditProvider {
-  const mock = mockProvider("experian");
-  return {
-    name: "experian",
-    normalize: mock.normalize,
-    async fetch(reference: string, opts: any = {}) {
-      if (opts.credentials) return realExperianFetch(reference, opts);
-      return mock.fetch(reference, opts);
-    }
-  };
+// Whether a real (live) bureau pull is supported for this provider when credentials exist.
+export function isRealCreditProvider(name: string): boolean {
+  return !!PROVIDER_REPORT_PATHS[name?.toLowerCase()];
 }
 
 export function getProvider(name: string): CreditProvider {
@@ -188,3 +154,6 @@ export function getProvider(name: string): CreditProvider {
 export function listProviders(): string[] {
   return Object.keys(PROVIDERS);
 }
+
+// Re-exported for callers that need the token/report path maps.
+export { exchangeClientCredentials, PROVIDER_TOKEN_PATHS, PROVIDER_REPORT_PATHS };
