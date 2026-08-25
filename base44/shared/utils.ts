@@ -1,4 +1,16 @@
 // Shared utilities for UnderwriteOS API functions.
+// Two authentication mechanisms, never mixed:
+//   A. API key  — Authorization: Bearer uw_test_... / uw_live_...  (validated via hash, no Base44 session needed)
+//   B. Dashboard — Base44 user session (base44.functions.invoke from the UI)
+
+export interface AuthContext {
+  organization_id: string;
+  actor: string;
+  actor_type: "user" | "api_key" | "system";
+  environment: "sandbox" | "production";
+  scopes: string[];
+  api_key_id?: string;
+}
 
 export function genId(prefix: string, len = 8): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -31,31 +43,75 @@ export async function readBody(req: Request): Promise<any> {
   }
 }
 
-// Resolve the calling organization. Strategy:
-//  1. If an API key is provided (Authorization: Bearer), look it up.
-//  2. Otherwise use the authenticated user; auto-provision an org if missing.
-export async function resolveOrganization(base44: any): Promise<{ organization_id: string; actor: string; actor_type: string }> {
-  // Try API key first
+// Generate a new UnderwriteOS API key. The full key is returned to the caller
+// only at creation/rotation time; only the hash is persisted.
+export function generateApiKey(environment: "sandbox" | "production"): { fullKey: string; prefix: string } {
+  const prefix = environment === "production" ? "uw_live_" : "uw_test_";
+  const buf = new Uint8Array(24);
+  crypto.getRandomValues(buf);
+  const secret = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+  return { fullKey: prefix + secret, prefix };
+}
+
+// Resolve the calling organization + environment + scopes.
+// API keys (uw_test_/uw_live_) are validated by hash and NEVER fall back to a
+// Base44 session. Dashboard requests use the Base44 user session.
+//
+// The key is read from body._api_key (SDK invocations) or the Authorization
+// header (external HTTP callers), in that order.
+export async function resolveOrganization(base44: any, body: any = {}): Promise<AuthContext> {
+  const bodyKey = (body._api_key || body.api_key || "").trim();
   const authHeader = base44._req?.headers?.get?.("authorization") || "";
-  if (authHeader.startsWith("Bearer ")) {
-    const token = authHeader.slice(7);
-    const keyHash = await sha256(token);
-    const keys = await base44.asServiceRole.entities.APIKey.filter({ key_hash: keyHash, status: "active" }, "-created_date", 1);
-    if (keys.length > 0) {
-      return { organization_id: keys[0].organization_id, actor: keys[0].id, actor_type: "api_key" };
-    }
+  const headerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+
+  // An explicit empty string means "I am an API client with no key" -> 401 MISSING_API_KEY
+  if (bodyKey === "" && body._api_key !== undefined) {
+    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
   }
 
-  // Fall back to authenticated user
-  const user = await base44.auth.me();
-  if (!user) throw { status: 401, code: "UNAUTHORIZED", message: "Valid API key or authenticated session required." };
+  const token = bodyKey || headerToken;
+  if (token && (token.startsWith("uw_test_") || token.startsWith("uw_live_"))) {
+    const envFromToken: "sandbox" | "production" = token.startsWith("uw_live_") ? "production" : "sandbox";
+    const keyHash = await sha256(token);
+    const keys = await base44.asServiceRole.entities.APIKey.filter({ key_hash: keyHash, status: "active" }, "-created_date", 1);
+    if (keys.length === 0) {
+      throw { status: 401, code: "INVALID_API_KEY", message: "The provided UnderwriteOS API key is invalid or inactive." };
+    }
+    const key = keys[0];
+    const keyEnv = (key.environment as "sandbox" | "production") || envFromToken;
+    if (keyEnv !== envFromToken) {
+      throw { status: 401, code: "INVALID_API_KEY", message: "The provided API key is not valid for this environment." };
+    }
+    try { await base44.asServiceRole.entities.APIKey.update(key.id, { last_used: new Date().toISOString() }); } catch {}
+    return {
+      organization_id: key.organization_id,
+      actor: key.id,
+      actor_type: "api_key",
+      environment: keyEnv,
+      scopes: key.scopes || [],
+      api_key_id: key.id
+    };
+  }
 
-  let organizationId = (user as any).organization_id;
+  // Non-uw_ token present but not recognized
+  if (token && !token.startsWith("uw_test_") && !token.startsWith("uw_live_")) {
+    throw { status: 401, code: "INVALID_API_KEY", message: "The provided UnderwriteOS API key is invalid or inactive." };
+  }
+
+  // Dashboard: authenticated Base44 user
+  let user: any;
+  try {
+    user = await base44.auth.me();
+  } catch {
+    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
+  }
+  if (!user) throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
+
+  let organizationId = user.organization_id;
   if (!organizationId) {
-    // Auto-provision a sandbox organization for this user
     const slug = `org-${user.id.slice(-6)}`;
     const org = await base44.asServiceRole.entities.Organization.create({
-      name: `${user.full_name || user.email || "My"} Organization`,
+      name: user.organization_name || `${user.full_name || user.email || "My"} Organization`,
       slug,
       status: "active",
       plan: "sandbox",
@@ -64,7 +120,20 @@ export async function resolveOrganization(base44: any): Promise<{ organization_i
     organizationId = org.id;
     await base44.auth.updateMe({ organization_id: organizationId });
   }
-  return { organization_id: organizationId, actor: user.id, actor_type: "user" };
+  return {
+    organization_id: organizationId,
+    actor: user.id,
+    actor_type: "user",
+    environment: "sandbox",
+    scopes: ["*"]
+  };
+}
+
+// Scope enforcement. Dashboard (actor_type === "user") bypasses scope checks.
+export function requireScope(ctx: AuthContext, scope: string): void {
+  if (ctx.actor_type === "user") return;
+  if (ctx.scopes.includes("*") || ctx.scopes.includes(scope)) return;
+  throw { status: 403, code: "INSUFFICIENT_SCOPE", message: "This API key does not have permission to perform this operation." };
 }
 
 export async function sha256(input: string): Promise<string> {
@@ -95,3 +164,11 @@ export async function findIdempotent(base44: any, entity: string, organization_i
   const existing = await base44.asServiceRole.entities[entity].filter({ organization_id, idempotency_key }, "-created_date", 1);
   return existing.length > 0 ? existing[0] : null;
 }
+
+// Default sandbox scopes granted to a new API key.
+export const DEFAULT_SANDBOX_SCOPES = [
+  "applications:read", "applications:write",
+  "borrowers:read", "borrowers:write",
+  "profiles:read", "risk:read", "decisions:read",
+  "webhooks:write", "audit:read"
+];

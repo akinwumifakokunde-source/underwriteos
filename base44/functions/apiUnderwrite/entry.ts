@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody, resolveOrganization, audit, findIdempotent } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent } from "../../shared/utils.ts";
 import { getPolicy, evaluatePolicy } from "../../shared/policyEngine.ts";
 import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
@@ -11,7 +11,9 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const { organization_id, actor, actor_type } = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44);
+    const { organization_id, actor, actor_type } = ctx;
+    requireScope(ctx, "applications:write");
     const { application_id, policy_id, decision_source, override_reason } = body;
 
     if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);

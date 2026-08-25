@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { genId, apiError, apiSuccess, readBody, resolveOrganization, audit } from "../../shared/utils.ts";
+import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
 import { generateRiskSignals } from "../../shared/riskEngine.ts";
 
 // POST /v1/applications/{id}/analyze — runs the normalization -> risk signal ->
@@ -10,7 +10,9 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const { organization_id, actor, actor_type } = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44);
+    const { organization_id, actor, actor_type } = ctx;
+    requireScope(ctx, "applications:write");
     const { application_id } = body;
 
     if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);

@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody, resolveOrganization } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, requireScope } from "../../shared/utils.ts";
 
 // Retrieval endpoints. All responses use stable, versioned schemas and never
 // expose internal database implementation details beyond the public model.
@@ -9,8 +9,17 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const { organization_id } = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44);
+    const { organization_id } = ctx;
     const action = body.action;
+    const scopeFor = (a: string) => {
+      if (a === "financial-profile" || a === "credit-profile") return "profiles:read";
+      if (a === "risk" || a === "evidence") return "risk:read";
+      if (a === "recommendation" || a === "decision") return "decisions:read";
+      if (a === "audit") return "audit:read";
+      return "applications:read";
+    };
+    requireScope(ctx, scopeFor(action));
 
     const requireAppId = () => {
       const { application_id } = body;

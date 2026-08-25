@@ -1,12 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { genId, apiError, apiSuccess, readBody, resolveOrganization, audit, findIdempotent } from "../../shared/utils.ts";
+import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent } from "../../shared/utils.ts";
 
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const { organization_id, actor, actor_type } = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44);
+    const { organization_id, actor, actor_type } = ctx;
     const action = body.action || "create";
+    if (action === "create") requireScope(ctx, "applications:write");
+    if (action === "get" || action === "list") requireScope(ctx, "applications:read");
 
     if (action === "create") {
       const idempotencyKey = req.headers.get("idempotency-key") || body.idempotency_key;

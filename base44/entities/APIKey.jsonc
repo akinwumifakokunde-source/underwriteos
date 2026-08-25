@@ -9,10 +9,20 @@
       "type": "string"
     },
     "prefix": {
-      "type": "string"
+      "type": "string",
+      "description": "uw_test_ or uw_live_"
     },
     "key_hash": {
-      "type": "string"
+      "type": "string",
+      "description": "SHA-256 hash of the full API key. The full key is never stored."
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "sandbox",
+        "production"
+      ],
+      "default": "sandbox"
     },
     "scopes": {
       "type": "array",
@@ -33,6 +43,10 @@
       "format": "date-time"
     },
     "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rotated_at": {
       "type": "string",
       "format": "date-time"
     }
