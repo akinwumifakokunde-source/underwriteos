@@ -22,7 +22,11 @@ const ENDPOINTS = [
   { method: "GET", path: "/applications/{id}/evidence", fn: "apiRetrieve", label: "Evidence", body: { action: "evidence", application_id: "<application_id>" } },
   { method: "GET", path: "/applications/{id}/recommendation", fn: "apiRetrieve", label: "Recommendation", body: { action: "recommendation", application_id: "<application_id>" } },
   { method: "GET", path: "/applications/{id}/decision", fn: "apiRetrieve", label: "Decision", body: { action: "decision", application_id: "<application_id>" } },
+  { method: "GET", path: "/applications/{id}/policy", fn: "apiRetrieve", label: "Policy & outcome", body: { action: "policy", application_id: "<application_id>" } },
+  { method: "GET", path: "/applications/{id}/summary", fn: "apiRetrieve", label: "Full summary (one call)", body: { action: "summary", application_id: "<application_id>" } },
   { method: "GET", path: "/applications/{id}/audit", fn: "apiRetrieve", label: "Audit trail", body: { action: "audit", application_id: "<application_id>" } },
+  { method: "GET", path: "/webhooks", fn: "apiRetrieve", label: "List webhooks", body: { action: "webhooks" } },
+  { method: "GET", path: "/providers", fn: "apiRetrieve", label: "Providers & setup", body: { action: "providers" } },
   { method: "GET", path: "/jobs/{id}", fn: "apiRetrieve", label: "Job status", body: { action: "job", job_id: "<job_id>" } },
 ];
 

@@ -8,7 +8,7 @@ export function buildOpenApiSpec(apiBase: string): any {
     info: {
       title: "UnderwriteOS API",
       version: "1.0.0",
-      description: "API-first B2B underwriting infrastructure. Pipeline: Ingestion -> Normalization -> Intelligence -> Evidence -> Policy -> Underwriting Recommendation -> Decision Workflow. All resources are scoped to an organization. Credit reports and bank statements can be pulled automatically via bureau / open-banking providers (no manual upload), or submitted directly. Bureau and open-banking providers are mock/test abstractions — no external bureau or bank is connected.",
+      description: "API-first B2B underwriting infrastructure. Pipeline: Ingestion -> Normalization -> Intelligence -> Evidence -> Policy -> Underwriting Recommendation -> Decision Workflow. All resources are scoped to an organization. Credit reports and bank statements can be pulled automatically via bureau / open-banking providers (Experian, TrueLayer, and more — no manual upload), or submitted directly. Use GET /applications/{id}/summary to retrieve the full result set in one call, and GET /providers to discover available integrations and their setup parameters.",
       contact: { name: "UnderwriteOS", url: "https://underwriteos.dev" }
     },
     servers: [{ url: `${apiBase}/v1` }],
@@ -46,6 +46,10 @@ export function buildOpenApiSpec(apiBase: string): any {
       "/applications/{application_id}/recommendation": { get: opGet("Retrieve underwriting recommendation", "UnderwritingRecommendation") },
       "/applications/{application_id}/decision": { get: opGet("Retrieve final decision", "FinalDecision") },
       "/applications/{application_id}/audit": { get: opGet("Retrieve audit trail", null) },
+      "/applications/{application_id}/summary": { get: opGet("Retrieve full result set (profiles, signals, evidence, recommendation, decision, audit) in one call", null) },
+      "/applications/{application_id}/policy": { get: opGet("Retrieve policy definition and policy outcome", null) },
+      "/webhooks": { get: opGet("List configured webhooks", null) },
+      "/providers": { get: opGet("List available bureau / open-banking integrations and setup parameters", null) },
       "/jobs/{job_id}": { get: opGet("Retrieve job status", "Job") }
     }
   };

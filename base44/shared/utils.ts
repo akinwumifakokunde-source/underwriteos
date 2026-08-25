@@ -170,5 +170,5 @@ export const DEFAULT_SANDBOX_SCOPES = [
   "applications:read", "applications:write",
   "borrowers:read", "borrowers:write",
   "profiles:read", "risk:read", "decisions:read",
-  "webhooks:write", "audit:read"
+  "webhooks:read", "webhooks:write", "audit:read"
 ];
