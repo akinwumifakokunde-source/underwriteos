@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Layers, ShieldCheck, FileCode2, Boxes, Webhook, KeyRound, ArrowRight, Lock, CheckCircle2 } from "lucide-react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
 import AudienceStrip from "@/components/home/AudienceStrip.jsx";
+import ProviderStrip from "@/components/home/ProviderStrip.jsx";
 import HowItWorks from "@/components/home/HowItWorks.jsx";
 import CodePreview from "@/components/home/CodePreview.jsx";
 import Metrics from "@/components/home/Metrics.jsx";
@@ -12,7 +13,7 @@ const PILLARS = [
   { icon: Layers, title: "Risk signals", desc: "Credit, cashflow, affordability & fraud signals — structured and traceable." },
   { icon: ShieldCheck, title: "Policy engine", desc: "Versioned lender policy. The AI never overrides the final decision." },
   { icon: FileCode2, title: "Evidence model", desc: "Every signal is traceable to its source document and confidence score." },
-  { icon: Boxes, title: "Provider abstraction", desc: "Normalized CreditProfile across Experian, Equifax, TransUnion & more." },
+  { icon: Boxes, title: "Automated data collection", desc: "Auto-pull credit reports from Experian and bank statements via TrueLayer open banking — or upload your own." },
   { icon: Webhook, title: "Webhooks & async jobs", desc: "application.analyzed, underwriting.completed, decision.created." },
   { icon: KeyRound, title: "API keys & multi-tenancy", desc: "Organization isolation, idempotency keys, audit logging." },
 ];
@@ -105,6 +106,7 @@ export default function Home() {
       </section>
 
       <AudienceStrip />
+      <ProviderStrip />
 
       {/* Feature grid */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">

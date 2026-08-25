@@ -46,6 +46,7 @@ export default function CodePreview() {
           </p>
           <ul className="mt-6 space-y-2.5">
             {[
+              "Automated Experian & TrueLayer pulls",
               "Idempotency keys on every mutation",
               "Sandbox and production isolation",
               "Webhooks for async analysis & decisions",
