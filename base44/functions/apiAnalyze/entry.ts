@@ -10,7 +10,7 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const ctx = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44, body);
     const { organization_id, actor, actor_type } = ctx;
     requireScope(ctx, "applications:write");
     const { application_id } = body;

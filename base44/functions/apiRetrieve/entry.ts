@@ -9,7 +9,7 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const ctx = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44, body);
     const { organization_id } = ctx;
     const action = body.action;
     const scopeFor = (a: string) => {

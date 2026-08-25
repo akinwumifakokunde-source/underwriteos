@@ -8,7 +8,7 @@ export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
-    const ctx = await resolveOrganization(base44);
+    const ctx = await resolveOrganization(base44, body);
     const action = body.action || "list";
 
     if (action === "create") {
