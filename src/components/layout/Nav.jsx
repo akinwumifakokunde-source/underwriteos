@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Layers, ArrowRight } from "lucide-react";
+import { Layers, LogOut } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 const NAV = [
   { to: "/sandbox", label: "Sandbox" },
@@ -18,35 +19,44 @@ const NAV = [
 ];
 
 export default function Nav() {
+  const logout = async () => {
+    try {
+      await base44.auth.logout("/login");
+    } catch {
+      window.location.href = "/login";
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/80 border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-white" />
+    <header className="sticky top-0 z-40 bg-[#111111] border-b border-white/5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-2.5 shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
+            <Layers className="w-4 h-4 text-[#111111]" />
           </div>
-          <span className="font-semibold tracking-tight text-slate-900">UnderwriteOS</span>
-          <span className="text-[10px] font-mono text-slate-400 border border-slate-200 rounded px-1.5 py-0.5">v1</span>
+          <span className="font-semibold tracking-tight text-white hidden sm:inline">UnderwriteOS</span>
+          <span className="text-[10px] font-mono text-[#6b6f76] border border-white/10 rounded px-1.5 py-0.5 hidden sm:inline">v1</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="flex-1 flex items-center gap-0.5 overflow-x-auto no-scrollbar">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `text-sm px-3 py-1.5 rounded-md transition-colors ${isActive ? "text-slate-900 bg-slate-100" : "text-slate-500 hover:text-slate-900"}`
+                `shrink-0 text-[13px] px-2.5 py-1.5 rounded-md transition-colors ${isActive ? "text-white bg-white/10" : "text-[#a0a4ab] hover:text-white hover:bg-white/5"}`
               }
             >
               {n.label}
             </NavLink>
           ))}
         </nav>
-        <Link
-          to="/onboarding"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+        <button
+          onClick={logout}
+          className="shrink-0 inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white px-2.5 py-1.5 rounded-md hover:bg-white/5 transition-colors"
         >
-          Start building <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Log out</span>
+        </button>
       </div>
     </header>
   );

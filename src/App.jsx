@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -24,6 +24,7 @@ import Members from '@/pages/Members';
 import SettingsPage from '@/pages/Settings';
 import Webhooks from '@/pages/Webhooks';
 import Billing from '@/pages/Billing';
+import ProtectedRoute from '@/components/ProtectedRoute';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -57,19 +58,21 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/" element={<Home />} />
-      <Route path="/sandbox" element={<Sandbox />} />
-      <Route path="/playground" element={<Playground />} />
-      <Route path="/api-reference" element={<ApiReference />} />
-      <Route path="/architecture" element={<Architecture />} />
-      <Route path="/docs" element={<Docs />} />
-      <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/api-keys" element={<ApiKeys />} />
-      <Route path="/providers" element={<Providers />} />
-      <Route path="/usage" element={<Usage />} />
-      <Route path="/members" element={<Members />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/webhooks" element={<Webhooks />} />
-      <Route path="/billing" element={<Billing />} />
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/sandbox" element={<Sandbox />} />
+        <Route path="/playground" element={<Playground />} />
+        <Route path="/api-reference" element={<ApiReference />} />
+        <Route path="/api-keys" element={<ApiKeys />} />
+        <Route path="/providers" element={<Providers />} />
+        <Route path="/usage" element={<Usage />} />
+        <Route path="/billing" element={<Billing />} />
+        <Route path="/webhooks" element={<Webhooks />} />
+        <Route path="/members" element={<Members />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/architecture" element={<Architecture />} />
+        <Route path="/docs" element={<Docs />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
