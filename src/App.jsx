@@ -23,6 +23,7 @@ import Usage from '@/pages/Usage';
 import Members from '@/pages/Members';
 import SettingsPage from '@/pages/Settings';
 import Webhooks from '@/pages/Webhooks';
+import Billing from '@/pages/Billing';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -68,6 +69,7 @@ const AuthenticatedApp = () => {
       <Route path="/members" element={<Members />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route path="/webhooks" element={<Webhooks />} />
+      <Route path="/billing" element={<Billing />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

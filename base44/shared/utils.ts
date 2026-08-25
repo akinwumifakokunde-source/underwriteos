@@ -142,6 +142,13 @@ export async function sha256(input: string): Promise<string> {
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
+export async function hmacSha256(key: string, message: string): Promise<string> {
+  const enc = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey("raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sig = await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(message));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
 export async function audit(base44: any, organization_id: string, event: string, opts: { application_id?: string; actor?: string; actor_type?: string; endpoint?: string; details?: any } = {}): Promise<void> {
   try {
     await base44.asServiceRole.entities.AuditEvent.create({
@@ -155,6 +162,19 @@ export async function audit(base44: any, organization_id: string, event: string,
     });
   } catch {
     // audit must never break the request
+  }
+  // Billable usage: decrement the org's credit balance for API-key calls.
+  if (opts.actor_type === "api_key") {
+    try {
+      const credits = await base44.asServiceRole.entities.Credit.filter({ organization_id }, "-created_date", 1);
+      if (credits.length > 0) {
+        const c = credits[0];
+        const newBalance = Math.max(0, (c.balance || 0) - 1);
+        if (newBalance !== c.balance) await base44.asServiceRole.entities.Credit.update(c.id, { balance: newBalance });
+      }
+    } catch {
+      // billing decrement must never break the request
+    }
   }
 }
 

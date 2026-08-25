@@ -1,0 +1,57 @@
+{
+  "name": "CreditTransaction",
+  "type": "object",
+  "description": "Ledger of credit purchases, top-ups, and usage. One record per billing event.",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "purchase",
+        "topup",
+        "usage",
+        "refund"
+      ]
+    },
+    "credits": {
+      "type": "number",
+      "description": "Credits added (positive) or consumed (negative)"
+    },
+    "amount_cents": {
+      "type": "number",
+      "description": "Money charged in cents (for purchase/topup)"
+    },
+    "currency": {
+      "type": "string",
+      "default": "usd"
+    },
+    "stripe_id": {
+      "type": "string",
+      "description": "Stripe session or payment intent id"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "type",
+    "credits"
+  ],
+  "rls": {
+    "read": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "create": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    }
+  }
+}
