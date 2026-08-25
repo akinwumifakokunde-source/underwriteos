@@ -6,6 +6,7 @@ import AudienceStrip from "@/components/home/AudienceStrip.jsx";
 import ProviderStrip from "@/components/home/ProviderStrip.jsx";
 import HowItWorks from "@/components/home/HowItWorks.jsx";
 import CodePreview from "@/components/home/CodePreview.jsx";
+import DemoVideo from "@/components/home/DemoVideo.jsx";
 import Metrics from "@/components/home/Metrics.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
 import WhyNow from "@/components/home/WhyNow.jsx";
@@ -125,6 +126,7 @@ export default function Home() {
       </section>
 
       <HowItWorks />
+      <DemoVideo />
       <CodePreview />
       <Metrics />
       <WhyNow />
