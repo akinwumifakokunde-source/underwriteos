@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
 import { normalizeTransactions, buildFinancialProfile } from "../../shared/normalization.ts";
 import { getOpenBankingProvider } from "../../shared/openBanking.ts";
+import { getCredentials } from "../../shared/providerCredentials.ts";
 
 // POST /v1/applications/{id}/bank-statement — ingests raw bank statement data,
 // normalizes transactions, and builds the canonical FinancialProfile.
@@ -35,19 +36,23 @@ export default async function(req: Request): Promise<Response> {
       let pStart = period_start;
       let pEnd = period_end;
       let fetchMode = "manual";
+      let dataSource = "manual";
       let obProviderName: string | null = null;
       let fetchReference: string | null = null;
 
       if (autoFetch) {
-        const obProvider = getOpenBankingProvider((provider || "truelayer").toLowerCase());
+        const obProviderNameRaw = (provider || "truelayer").toLowerCase();
+        const obProvider = getOpenBankingProvider(obProviderNameRaw);
         obProviderName = obProvider.name;
         fetchReference = consent_reference || app.id;
-        const result = await obProvider.fetch(fetchReference, { currency: app.loan_currency, borrower });
+        const credentials = await getCredentials(base44, organization_id, obProviderNameRaw, ctx.environment);
+        const result = await obProvider.fetch(fetchReference, { currency: app.loan_currency, borrower, credentials });
         source = result.transactions;
         accountMasked = accountMasked || result.account.account_number_masked;
         pStart = pStart || result.account.period_start;
         pEnd = pEnd || result.account.period_end;
         fetchMode = "auto";
+        dataSource = credentials ? "live" : "mock";
       }
 
       const normalizedTx = normalizeTransactions(source, app.loan_currency);
@@ -94,9 +99,9 @@ export default async function(req: Request): Promise<Response> {
       });
 
       await base44.asServiceRole.entities.Application.update(app.id, { status: "data_collection" });
-      await audit(base44, organization_id, "bank_statement.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/bank-statement", details: { transaction_count: txRecords.length, fetch_mode: fetchMode, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) } });
+      await audit(base44, organization_id, "bank_statement.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/bank-statement", details: { transaction_count: txRecords.length, fetch_mode: fetchMode, data_source: dataSource, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) } });
 
-      return apiSuccess({ bank_statement_id: statement.id, financial_profile: profile, transaction_count: txRecords.length, fetch_mode: fetchMode, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) }, 201);
+      return apiSuccess({ bank_statement_id: statement.id, financial_profile: profile, transaction_count: txRecords.length, fetch_mode: fetchMode, data_source: dataSource, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) }, 201);
     }
 
     return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported.`, 400);

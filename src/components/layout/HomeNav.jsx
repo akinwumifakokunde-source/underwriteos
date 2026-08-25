@@ -7,6 +7,7 @@ const NAV = [
   { to: "/playground", label: "Playground" },
   { to: "/api-reference", label: "API Reference" },
   { to: "/api-keys", label: "API Keys" },
+  { to: "/providers", label: "Providers" },
   { to: "/architecture", label: "Architecture" },
   { to: "/docs", label: "Documentation" },
 ];

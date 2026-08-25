@@ -1,8 +1,10 @@
 // Open banking provider abstraction.
 // Turns a consent reference into normalized transactions without manual upload.
-// All providers below are MOCK/test implementations — no live bank connection.
-// Real providers (TrueLayer, Yapily, Plaid, Tink) can be plugged in behind the
-// same interface by replacing fetch() with a live API call keyed on a secret.
+// Providers fall back to deterministic MOCK data when no org credentials are
+// configured, and make a REAL Open Banking call when credentials are passed in
+// opts.credentials. Real providers (TrueLayer, Yapily, Plaid, Tink) plug in
+// behind the same interface.
+import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS } from "./providerCredentials.ts";
 
 export type OpenBankingProviderName =
   | "truelayer" | "yapily" | "plaid" | "tink" | "mock" | "other";
@@ -27,7 +29,7 @@ export interface OpenBankingProvider {
 }
 
 const PROVIDERS: Record<string, OpenBankingProvider> = {
-  truelayer: mockProvider("truelayer"),
+  truelayer: truelayerProvider(),
   yapily: mockProvider("yapily"),
   plaid: mockProvider("plaid"),
   tink: mockProvider("tink"),
@@ -79,6 +81,64 @@ function hash(s: string): number {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return h;
+}
+
+// Real TrueLayer pull. Requires org credentials (client_id, client_secret, base_url).
+// consentReference is used as the user access token when it looks like one; otherwise
+// a client_credentials token is exchanged. Throws a structured error on failure.
+async function realTruelayerFetch(consentReference: string, opts: any = {}): Promise<OpenBankingResult> {
+  const { credentials, currency = "GBP" } = opts;
+  const base = (credentials.base_url || "https://api.truelayer-sandbox.com").replace(/\/$/, "");
+  let accessToken = consentReference;
+  if (!accessToken || accessToken.length < 40) {
+    accessToken = await exchangeClientCredentials(base, PROVIDER_TOKEN_PATHS.truelayer, credentials.client_id, credentials.client_secret);
+  }
+  const accountsRes = await fetch(`${base}/data/v1/accounts`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (!accountsRes.ok) {
+    const detail = await accountsRes.text().catch(() => "");
+    throw { status: 502, code: "PROVIDER_FETCH_FAILED", message: `TrueLayer accounts request failed (${accountsRes.status}). ${detail.slice(0, 200)}` };
+  }
+  const accountsJson: any = await accountsRes.json();
+  const account = accountsJson?.results?.[0];
+  if (!account) throw { status: 404, code: "NO_ACCOUNTS", message: "No bank accounts found for this consent." };
+  const txRes = await fetch(`${base}/data/v1/accounts/${account.account_id}/transactions`, { headers: { Authorization: `Bearer ${accessToken}` } });
+  if (!txRes.ok) {
+    const detail = await txRes.text().catch(() => "");
+    throw { status: 502, code: "PROVIDER_FETCH_FAILED", message: `TrueLayer transactions request failed (${txRes.status}). ${detail.slice(0, 200)}` };
+  }
+  const txJson: any = await txRes.json();
+  return mapTruelayerResult(account, txJson?.results || [], currency);
+}
+
+function mapTruelayerResult(account: any, transactions: any[], currency: string): OpenBankingResult {
+  const mapped = (transactions || []).map((t: any) => ({
+    date: (t.transaction_timestamp || t.timestamp || t.date || "").slice(0, 10),
+    description: t.description || t.merchant_name || t.name || "Transaction",
+    amount: t.amount != null ? Number(t.amount) : 0,
+    direction: (t.amount != null && Number(t.amount) >= 0) ? "credit" : "debit",
+    recurring: false
+  }));
+  const dates = mapped.map((t: any) => t.date).filter(Boolean).sort();
+  return {
+    account: {
+      account_number_masked: account.account_number?.mask?.number || account.account_number?.last_digits || "****",
+      currency: account.currency || currency,
+      period_start: dates[0] || "",
+      period_end: dates[dates.length - 1] || ""
+    },
+    transactions: mapped
+  };
+}
+
+function truelayerProvider(): OpenBankingProvider {
+  const mock = mockProvider("truelayer");
+  return {
+    name: "truelayer",
+    async fetch(consentReference: string, opts: any = {}) {
+      if (opts.credentials) return realTruelayerFetch(consentReference, opts);
+      return mock.fetch(consentReference, opts);
+    }
+  };
 }
 
 export function getOpenBankingProvider(name: string): OpenBankingProvider {

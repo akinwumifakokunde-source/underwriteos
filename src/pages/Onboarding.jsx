@@ -201,6 +201,10 @@ export default function Onboarding() {
                   <span className="text-sm font-medium text-slate-900">Manage API keys</span>
                   <ArrowRight className="w-4 h-4 text-slate-400" />
                 </Link>
+                <Link to="/providers" className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50">
+                  <span className="text-sm font-medium text-slate-900">Connect data providers (Experian / TrueLayer)</span>
+                  <ArrowRight className="w-4 h-4 text-slate-400" />
+                </Link>
               </div>
             </div>
           </div>

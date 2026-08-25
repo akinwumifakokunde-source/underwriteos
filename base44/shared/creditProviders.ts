@@ -1,7 +1,9 @@
 // Credit bureau provider abstraction.
 // The underwriting engine consumes a normalized CreditProfile, never provider-specific formats.
-// All providers below are MOCK/test implementations — no external bureau is connected.
+// Providers fall back to deterministic MOCK data when no org credentials are configured,
+// and make a REAL bureau call when credentials are passed in opts.credentials.
 // Never hard-code provider-specific fields into the underwriting engine.
+import { exchangeClientCredentials, PROVIDER_TOKEN_PATHS } from "./providerCredentials.ts";
 
 export type CreditProviderName =
   | "experian" | "equifax" | "transunion" | "crc"
@@ -32,7 +34,7 @@ export interface NormalizedCreditProfile {
 }
 
 const PROVIDERS: Record<string, CreditProvider> = {
-  experian: mockProvider("experian"),
+  experian: experianProvider(),
   equifax: mockProvider("equifax"),
   transunion: mockProvider("transunion"),
   crc: mockProvider("crc"),
@@ -118,6 +120,61 @@ export function scoreBand(score: number | null): string | null {
   if (score >= 650) return "good";
   if (score >= 550) return "fair";
   return "poor";
+}
+
+// Real Experian pull. Requires org credentials (client_id, client_secret, base_url).
+// Throws a structured PROVIDER_* error on failure — never silently falls back to mock.
+async function realExperianFetch(reference: string, opts: any = {}): Promise<any> {
+  const { credentials, borrower, currency = "GBP" } = opts;
+  const base = (credentials.base_url || "https://api-sandbox.experian.com").replace(/\/$/, "");
+  const token = await exchangeClientCredentials(base, PROVIDER_TOKEN_PATHS.experian, credentials.client_id, credentials.client_secret);
+  const res = await fetch(`${base}/credit-report/v1/report`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      reference,
+      borrower: {
+        first_name: borrower?.first_name,
+        last_name: borrower?.last_name,
+        date_of_birth: borrower?.date_of_birth,
+        address: borrower?.address
+      }
+    })
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw { status: 502, code: "PROVIDER_FETCH_FAILED", message: `Experian report request failed (${res.status}). ${detail.slice(0, 200)}` };
+  }
+  const report: any = await res.json();
+  return mapExperianReport(report, currency);
+}
+
+function mapExperianReport(report: any, currency: string): any {
+  const score = report?.credit_score ?? report?.score ?? report?.creditScore ?? null;
+  return {
+    credit_score: score,
+    active_accounts: report?.active_accounts ?? report?.activeAccounts ?? null,
+    closed_accounts: report?.closed_accounts ?? report?.closedAccounts ?? null,
+    delinquent_accounts: report?.delinquent_accounts ?? report?.delinquentAccounts ?? null,
+    defaults: report?.defaults ?? null,
+    outstanding_balance: report?.outstanding_balance ?? report?.outstandingBalance ?? null,
+    credit_utilisation: report?.credit_utilisation ?? report?.creditUtilisation ?? null,
+    recent_enquiries: report?.recent_enquiries ?? report?.recentEnquiries ?? null,
+    repayment_history: report?.repayment_history ?? report?.repaymentHistory ?? null,
+    currency
+  };
+}
+
+function experianProvider(): CreditProvider {
+  const mock = mockProvider("experian");
+  return {
+    name: "experian",
+    normalize: mock.normalize,
+    async fetch(reference: string, opts: any = {}) {
+      if (opts.credentials) return realExperianFetch(reference, opts);
+      return mock.fetch(reference, opts);
+    }
+  };
 }
 
 export function getProvider(name: string): CreditProvider {

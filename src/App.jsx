@@ -18,6 +18,7 @@ import Docs from '@/pages/Docs';
 import Playground from '@/pages/Playground';
 import Onboarding from '@/pages/Onboarding';
 import ApiKeys from '@/pages/ApiKeys';
+import Providers from '@/pages/Providers';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
       <Route path="/docs" element={<Docs />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/api-keys" element={<ApiKeys />} />
+      <Route path="/providers" element={<Providers />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

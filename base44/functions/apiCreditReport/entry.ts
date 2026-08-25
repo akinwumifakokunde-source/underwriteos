@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
 import { getProvider, scoreBand } from "../../shared/creditProviders.ts";
+import { getCredentials } from "../../shared/providerCredentials.ts";
 
 // POST /v1/applications/{id}/credit-report — ingests raw credit bureau data,
 // normalizes it through the provider abstraction into a CreditProfile.
@@ -29,13 +30,16 @@ export default async function(req: Request): Promise<Response> {
 
       let reportData = raw_data;
       let fetchMode = "manual";
+      let dataSource = "manual";
       let fetchReference: string | null = null;
       if (autoFetch) {
         const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
         const borrower = borrowers[0] || null;
         fetchReference = search_reference || app.id;
-        reportData = await creditProvider.fetch(fetchReference, { currency: app.loan_currency, borrower });
+        const credentials = await getCredentials(base44, organization_id, providerName, ctx.environment);
+        reportData = await creditProvider.fetch(fetchReference, { currency: app.loan_currency, borrower, credentials });
         fetchMode = "auto";
+        dataSource = credentials ? "live" : "mock";
       }
 
       const normalized = creditProvider.normalize(reportData || {}, app.loan_currency);
@@ -73,9 +77,9 @@ export default async function(req: Request): Promise<Response> {
       });
 
       await base44.asServiceRole.entities.Application.update(app.id, { status: "data_collection" });
-      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", details: { provider: providerName, credit_score: normalized.credit_score, fetch_mode: fetchMode, ...(fetchReference ? { reference: fetchReference } : {}) } });
+      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", details: { provider: providerName, credit_score: normalized.credit_score, fetch_mode: fetchMode, data_source: dataSource, ...(fetchReference ? { reference: fetchReference } : {}) } });
 
-      return apiSuccess({ credit_report_id: report.id, credit_profile: profile, provider: providerName, fetch_mode: fetchMode }, 201);
+      return apiSuccess({ credit_report_id: report.id, credit_profile: profile, provider: providerName, fetch_mode: fetchMode, data_source: dataSource }, 201);
     }
 
     return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported.`, 400);
