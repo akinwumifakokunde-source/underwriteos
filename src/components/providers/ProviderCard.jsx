@@ -1,13 +1,14 @@
 import React from "react";
-import { KeyRound, Loader2, CheckCircle2, AlertTriangle, Trash2, FlaskConical, ShieldCheck } from "lucide-react";
+import { KeyRound, Link2, Loader2, CheckCircle2, AlertTriangle, Trash2, FlaskConical, ShieldCheck } from "lucide-react";
 
 export default function ProviderCard({ def, form, existing, result, saving, testing, onField, onSave, onTest, onRemove }) {
+  const Icon = def.provider_type === "open_banking" ? Link2 : KeyRound;
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-            <KeyRound className="w-4 h-4 text-slate-600" />
+            <Icon className="w-4 h-4 text-slate-600" />
           </div>
           <div>
             <h3 className="text-sm font-semibold text-slate-900">{def.label}</h3>

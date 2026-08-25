@@ -21,11 +21,16 @@ export const PROVIDER_TOKEN_PATHS: Record<string, string> = {
   crc: "/oauth/token",
   credit_registry: "/oauth/token",
   first_central: "/oauth/token",
+  xds: "/oauth/token",
+  crb_africa: "/oauth/token",
+  iscore: "/oauth/token",
   truelayer: "/auth/connect/token",
   yapily: "/oauth2/token",
   plaid: "/link/token/create",
   tink: "/oauth/token",
-  okra: "/auth/token"
+  okra: "/auth/token",
+  mono: "/auth/login",
+  stitch: "/auth/token"
 };
 
 // Load the active credential for a provider in the given environment.
