@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Play, RotateCcw, Loader2, Code2, Info, ShieldCheck } from "lucide-react";
 import Nav from "@/components/layout/Nav.jsx";
@@ -67,12 +68,26 @@ const freshSteps = () => STEPS.map((s) => ({ ...s, state: { status: "not_started
 const genReqId = () => "req_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 
 export default function Sandbox() {
+  const navigate = useNavigate();
+  const [authed, setAuthed] = useState(null);
   const [scenario, setScenario] = useState("borderline");
   const [config, setConfig] = useState(SCENARIOS.borderline.config);
   const [steps, setSteps] = useState(freshSteps);
   const [selected, setSelected] = useState("borrower");
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const ok = await base44.auth.isAuthenticated();
+        if (!ok) navigate("/register", { replace: true });
+        else setAuthed(true);
+      } catch {
+        navigate("/register", { replace: true });
+      }
+    })();
+  }, [navigate]);
   const [results, setResults] = useState(null);
   const [webhook, setWebhook] = useState(null);
   const [ids, setIds] = useState({});
@@ -206,6 +221,14 @@ export default function Sandbox() {
     apiCalls: STEPS.length,
     status: completed ? "Completed" : running ? "Running" : "—",
   };
+
+  if (authed === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50/50">
+        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
