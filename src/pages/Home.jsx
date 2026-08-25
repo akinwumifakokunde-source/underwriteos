@@ -14,7 +14,7 @@ const PILLARS = [
   { icon: Layers, title: "Risk signals", desc: "Credit, cashflow, affordability & fraud signals — structured and traceable." },
   { icon: ShieldCheck, title: "Policy engine", desc: "Versioned lender policy. The AI never overrides the final decision." },
   { icon: FileCode2, title: "Evidence model", desc: "Every signal is traceable to its source document and confidence score." },
-  { icon: Boxes, title: "Automated data collection", desc: "Auto-pull credit reports from Experian and bank statements via TrueLayer open banking — or upload your own." },
+  { icon: Boxes, title: "Automated data collection", desc: "Auto-pull credit reports and bank statements from bureaus and open-banking providers across 7 markets — or upload your own." },
   { icon: Webhook, title: "Webhooks & async jobs", desc: "application.analyzed, underwriting.completed, decision.created." },
   { icon: KeyRound, title: "API keys & multi-tenancy", desc: "Organization isolation, idempotency keys, audit logging." },
 ];

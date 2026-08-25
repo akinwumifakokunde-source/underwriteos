@@ -2,9 +2,9 @@ import React from "react";
 
 const METRICS = [
   { value: "<200ms", label: "p95 decision latency" },
-  { value: "6", label: "risk signal categories" },
+  { value: "15+", label: "bureau & open-banking providers" },
+  { value: "7", label: "markets supported" },
   { value: "100%", label: "evidence-traceable signals" },
-  { value: "12+", label: "bureau & data providers" },
 ];
 
 export default function Metrics() {

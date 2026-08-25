@@ -6,7 +6,7 @@ const STEPS = [
     icon: Upload,
     step: "01",
     title: "Ingest",
-    desc: "Submit borrower data, or auto-pull credit reports from Experian and bank statements via TrueLayer. Provider differences disappear at the edge.",
+    desc: "Submit borrower data, or auto-pull credit reports and bank statements from bureaus and open-banking providers across 7 markets. Provider differences disappear at the edge.",
     tag: "POST /v1/applications",
   },
   {
