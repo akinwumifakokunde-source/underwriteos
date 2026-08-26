@@ -45,10 +45,14 @@ function DecisionCard() {
           </div>
         </div>
         <div className="px-5 py-3 border-t border-[#eceef1] bg-[#fafbfc]">
+          <p className="text-[11px] font-mono text-[#8a909c] mb-1.5">
+            Policy: consumer-v1 · 3 rules passed · Evidence available
+          </p>
           <Link to="/evidence" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
             View evidence <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
+        <p className="mt-2 text-[10px] text-[#b0b5be]">Synthetic borrower data. No real borrower information.</p>
       </div>
     </div>
   );
@@ -63,7 +67,7 @@ export default function Hero() {
             <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-5">
               API infrastructure for lenders & fintechs
             </p>
-            <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12] leading-[1.05]">
+            <h1 className="text-[2rem] sm:text-[2.75rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.06]">
               Underwriting infrastructure,<br className="hidden sm:block" /> delivered as an API.
             </h1>
             <p className="mt-6 text-lg text-[#525965] leading-relaxed">
