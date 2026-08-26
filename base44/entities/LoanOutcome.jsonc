@@ -1,0 +1,81 @@
+{
+  "name": "LoanOutcome",
+  "type": "object",
+  "description": "Observed outcome of an underwritten loan, recorded after the fact by the lender. Paired with the predicted probability of default snapshot at decision time to close the model-monitoring feedback loop (predicted vs actual default).",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "borrower_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "repaid",
+        "late",
+        "defaulted"
+      ]
+    },
+    "bad": {
+      "type": "boolean",
+      "description": "True when the outcome counts as a default (status defaulted, or late with days_past_due >= 30)."
+    },
+    "days_past_due": {
+      "type": "number",
+      "default": 0
+    },
+    "predicted_pd": {
+      "type": "number",
+      "description": "Probability of default snapshot from the decision, captured at record time."
+    },
+    "predicted_risk_score": {
+      "type": "number"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "APPROVE",
+        "REVIEW",
+        "DECLINE"
+      ]
+    },
+    "loan_amount": {
+      "type": "number"
+    },
+    "loan_currency": {
+      "type": "string",
+      "default": "GBP"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "status"
+  ],
+  "rls": {
+    "read": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "create": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    }
+  }
+}

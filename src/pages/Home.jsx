@@ -7,6 +7,7 @@ import Capabilities from "@/components/home/Capabilities.jsx";
 import TwoWays from "@/components/home/TwoWays.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import EvidenceGraphSection from "@/components/home/EvidenceGraphSection.jsx";
+import FeedbackLoop from "@/components/home/FeedbackLoop.jsx";
 import AiPolicy from "@/components/home/AiPolicy.jsx";
 import ApiCalls from "@/components/home/ApiCalls.jsx";
 import ProvidersSection from "@/components/home/ProvidersSection.jsx";
@@ -28,6 +29,7 @@ export default function Home() {
       <TwoWays />
       <Evidence />
       <EvidenceGraphSection />
+      <FeedbackLoop />
       <AiPolicy />
       <ApiCalls />
       <ProvidersSection />
