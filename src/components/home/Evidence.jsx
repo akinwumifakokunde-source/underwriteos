@@ -1,51 +1,66 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
-const TRACE = [
-  { label: "Decision", value: "REVIEW" },
-  { label: "Risk signal", value: "High debt-to-income" },
-  { label: "Metric", value: "DTI: 48.2%" },
-  { label: "Source", value: "Bank statement" },
-  { label: "Evidence", value: "Transactions · May 1 – Jul 31" },
-];
+const LINEAGE = ["Decision", "Policy evaluation", "Risk signal", "Evidence", "Source field"];
 
 export default function Evidence() {
   return (
-    <section className="border-t border-[#eceef1]">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
-        <div className="max-w-2xl mb-10">
-          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Explainable by design
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12]">
-            Every decision comes with evidence.
-          </h2>
-          <p className="mt-4 text-lg text-[#525965] leading-relaxed">
-            UnderwriteOS links risk signals to the data that produced them. Your team can see which policy rules fired,
-            why the recommendation was made and where the underlying evidence came from.
-          </p>
-        </div>
+    <section className="border-b border-[#eceef1] bg-[#fafbfc]">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+          Every decision comes with evidence.
+        </h2>
+        <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
+          UnderwriteOS connects each risk signal to the data that produced it. Teams can inspect the
+          evidence, see which policy rules fired and understand why a recommendation was generated.
+        </p>
 
-        <div className="rounded-2xl border border-[#e5e7eb] bg-[#f7f8fa] p-6 sm:p-8">
-          <div className="border-l border-[#eceef1] pl-5 space-y-0">
-            {TRACE.map((t, i) => (
-              <div key={t.label} className="relative">
-                <span className="absolute -left-[27px] top-1.5 w-2 h-2 rounded-full bg-[#c7ccd6]" />
-                <div className="font-mono text-[10px] uppercase tracking-wider text-[#8a909c]">{t.label}</div>
-                <div className={`mt-1 text-lg ${i === 0 ? "text-[#0a0c12] font-medium" : "text-[#3a3f4a]"}`}>{t.value}</div>
-                {i < TRACE.length - 1 && <div className="py-4 text-[#eceef1]">│</div>}
+        <div className="mt-10 grid md:grid-cols-2 gap-6">
+          <div className="rounded-lg border border-[#eceef1] bg-white p-6">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-4">Decision lineage</p>
+            <div className="space-y-2">
+              {LINEAGE.map((l, i) => (
+                <React.Fragment key={l}>
+                  <div className="text-sm font-medium text-[#0a0c12] px-3 py-2 rounded-md bg-[#f7f8fa] border border-[#eceef1]">{l}</div>
+                  {i < LINEAGE.length - 1 && <div className="text-[#8a909c] text-xs pl-3">↓</div>}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-[#eceef1] bg-white p-6">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-4">Example</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#525965]">Decision</span>
+                <span className="text-sm font-mono font-semibold text-[#b45309] bg-amber-50 border border-amber-200 rounded px-2 py-0.5">REVIEW</span>
               </div>
-            ))}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#525965]">Risk signal</span>
+                <span className="text-sm text-[#0a0c12]">High debt-to-income</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#525965]">Metric</span>
+                <span className="text-sm font-mono text-[#0a0c12]">DTI 48.2%</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#525965]">Source</span>
+                <span className="text-sm text-[#0a0c12]">Bank statement</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-[#525965]">Evidence</span>
+                <span className="text-sm font-mono text-[#0a0c12]">Transactions · May 1 – Jul 31</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs text-[#8a909c]">
-          <span>Evidence</span>
-          <span>·</span>
-          <span>Risk signals</span>
-          <span>·</span>
-          <span>Policy evaluation</span>
-          <span>·</span>
-          <span>Audit trail</span>
+        <div className="mt-8">
+          <Link to="/evidence" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
+            View evidence explorer <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
     </section>

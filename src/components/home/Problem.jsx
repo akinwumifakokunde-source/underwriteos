@@ -1,50 +1,45 @@
 import React from "react";
 
-const SOURCES = ["Credit bureau", "Bank data", "Financial documents"];
-const STEPS = ["Different formats", "Custom integrations", "Custom risk logic", "Custom decisioning"];
-
-function Pill({ children }) {
-  return (
-    <span className="inline-flex items-center rounded-lg border border-[#e5e7eb] bg-white px-3.5 py-2 font-mono text-xs text-[#0a0c12]">
-      {children}
-    </span>
-  );
-}
+const SOURCES = ["Credit bureaus", "Bank data", "Financial documents"];
+const PIPELINE = ["Normalization", "Risk analysis", "Policy", "Decision"];
 
 export default function Problem() {
   return (
-    <section className="border-t border-[#eceef1]">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
-        <div className="max-w-2xl mb-10">
-          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> The problem
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12]">Lending data is fragmented.</h2>
-          <p className="mt-4 text-lg text-[#525965] leading-relaxed">
-            Credit bureaus, bank transactions and financial documents all arrive in different formats. Lenders end up
-            rebuilding the same normalization, risk and decisioning infrastructure for every product.
-          </p>
-        </div>
+    <section className="border-b border-[#eceef1]">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">The problem</p>
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+          Lenders keep rebuilding the same underwriting stack.
+        </h2>
+        <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
+          Credit reports, bank transactions and financial documents arrive in different formats.
+          Teams spend months integrating providers, normalizing data, writing risk logic and
+          maintaining decisioning infrastructure.
+        </p>
 
-        <div className="rounded-2xl border border-[#e5e7eb] bg-[#f7f8fa] p-6 sm:p-8">
-          <div className="flex flex-wrap gap-2">
-            {SOURCES.map((s) => (
-              <Pill key={s}>{s}</Pill>
+        <div className="mt-10 rounded-lg border border-[#eceef1] bg-[#fafbfc] p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            {SOURCES.map((s, i) => (
+              <React.Fragment key={s}>
+                <span className="text-sm font-medium text-[#0a0c12] px-3 py-2 rounded-md border border-[#eceef1] bg-white">{s}</span>
+                {i < SOURCES.length - 1 && <span className="text-[#8a909c] text-center">+</span>}
+              </React.Fragment>
             ))}
           </div>
-          <div className="mt-5 space-y-0">
-            {STEPS.map((s) => (
-              <div key={s}>
-                <div className="py-3 text-[#8a909c] font-mono text-sm">↓</div>
-                <span className="inline-flex items-center rounded-lg border border-[#eceef1] bg-white px-3.5 py-2 font-mono text-xs text-[#525965]">
-                  {s}
-                </span>
-              </div>
+          <div className="my-5 text-center text-[#8a909c] text-sm">↓</div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            {PIPELINE.map((p, i) => (
+              <React.Fragment key={p}>
+                <span className="text-sm font-mono text-[#525965] px-3 py-2 rounded-md bg-[#f1f3f5]">{p}</span>
+                {i < PIPELINE.length - 1 && <span className="text-[#8a909c] text-center text-sm">↓</span>}
+              </React.Fragment>
             ))}
           </div>
         </div>
 
-        <p className="mt-8 text-lg text-[#0a0c12]">UnderwriteOS provides the layer in between.</p>
+        <p className="mt-8 text-lg font-medium text-[#0a0c12]">
+          UnderwriteOS provides the layer in between.
+        </p>
       </div>
     </section>
   );

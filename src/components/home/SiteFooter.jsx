@@ -1,45 +1,57 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Layers } from "lucide-react";
 
 const COLS = [
   {
     title: "Product",
     links: [
-      { label: "Sandbox", to: "/sandbox" },
-      { label: "API Reference", to: "/api-reference" },
-      { label: "Documentation", to: "/docs" },
-      { label: "Pricing", to: "/pricing" },
+      { to: "/sandbox", label: "Sandbox" },
+      { to: "/api-reference", label: "API Reference" },
+      { to: "/docs", label: "Documentation" },
+      { to: "/pricing", label: "Pricing" },
     ],
   },
   {
     title: "Company",
-    links: [{ label: "Security", to: "/security" }, { label: "Contact", to: "/contact" }],
+    links: [
+      { to: "/security", label: "Security" },
+      { to: "/contact", label: "Contact" },
+    ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacy", to: "/privacy" },
-      { label: "Terms", to: "/terms" },
+      { to: "/privacy", label: "Privacy" },
+      { to: "/terms", label: "Terms" },
     ],
-  },
-  {
-    title: "Environment",
-    links: [{ label: "Sandbox", to: "/sandbox" }],
   },
 ];
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-[#eceef1] bg-white">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+    <footer className="bg-white">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="col-span-2 md:col-span-1">
+            <Link to="/" className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-md bg-[#0a0c12] flex items-center justify-center">
+                <Layers className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span className="font-semibold tracking-tight text-[#0a0c12]">UnderwriteOS</span>
+            </Link>
+            <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
+              Underwriting infrastructure for lenders and fintechs.
+            </p>
+          </div>
+
           {COLS.map((c) => (
             <div key={c.title}>
-              <div className="text-[11px] uppercase tracking-wider text-[#94A3B8] mb-4">{c.title}</div>
-              <ul className="space-y-2.5">
+              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-3">{c.title}</h4>
+              <ul className="space-y-2">
                 {c.links.map((l) => (
-                  <li key={l.label}>
-                    <Link to={l.to} className="text-sm text-[#475569] hover:text-[#0a0c12] transition-colors">
+                  <li key={l.to}>
+                    <Link to={l.to} className="text-sm text-[#525965] hover:text-[#0a0c12] transition-colors">
                       {l.label}
                     </Link>
                   </li>
@@ -47,6 +59,11 @@ export default function SiteFooter() {
               </ul>
             </div>
           ))}
+        </div>
+
+        <div className="mt-10 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} UnderwriteOS</p>
+          <p className="text-xs text-[#8a909c]">Underwriting infrastructure, delivered as an API.</p>
         </div>
       </div>
     </footer>
