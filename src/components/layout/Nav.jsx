@@ -6,6 +6,7 @@ import { base44 } from "@/api/base44Client";
 const NAV = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/sandbox", label: "Sandbox" },
+  { to: "/underwrite", label: "Underwrite" },
   { to: "/playground", label: "Playground" },
   { to: "/api-reference", label: "API Reference" },
   { to: "/api-keys", label: "API Keys" },

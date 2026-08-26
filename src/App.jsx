@@ -17,6 +17,7 @@ import Architecture from '@/pages/Architecture';
 import Docs from '@/pages/Docs';
 import Playground from '@/pages/Playground';
 import Onboarding from '@/pages/Onboarding';
+import Underwrite from '@/pages/Underwrite';
 import Dashboard from '@/pages/Dashboard';
 import ApiKeys from '@/pages/ApiKeys';
 import Providers from '@/pages/Providers';
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sandbox" element={<Sandbox />} />
+        <Route path="/underwrite" element={<Underwrite />} />
         <Route path="/playground" element={<Playground />} />
         <Route path="/api-reference" element={<ApiReference />} />
         <Route path="/api-keys" element={<ApiKeys />} />
