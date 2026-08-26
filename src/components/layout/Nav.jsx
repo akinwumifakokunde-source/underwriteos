@@ -38,7 +38,7 @@ export default function Nav() {
           <span className="font-semibold tracking-tight text-white hidden sm:inline">UnderwriteOS</span>
           <span className="text-[10px] font-mono text-[#6b6f76] border border-white/10 rounded px-1.5 py-0.5 hidden sm:inline">v1</span>
         </Link>
-        <nav className="flex-1 flex items-center gap-0.5 overflow-x-auto no-scrollbar">
+        <nav className="flex-1 flex items-center gap-0.5 flex-wrap">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
