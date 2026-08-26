@@ -1,6 +1,7 @@
-import React from "react";
-import { Check, X, AlertTriangle, ShieldAlert, RotateCcw, TrendingUp, TrendingDown } from "lucide-react";
+import React, { useState } from "react";
+import { Check, X, AlertTriangle, ShieldAlert, RotateCcw, TrendingUp, TrendingDown, FileDown, Loader2 } from "lucide-react";
 import ExportControls from "@/components/underwrite/ExportControls.jsx";
+import { buildDecisionSummary, downloadDecisionPdf } from "@/lib/decisionExport";
 
 const DECISION = {
   APPROVE: { icon: Check, cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "APPROVE" },
@@ -33,6 +34,11 @@ export default function UnderwriteResults({ results, ids, onReset }) {
   const { decision, recommendation, riskSignals, evidence, financialProfile, creditProfile } = results;
   const d = DECISION[decision?.decision] || DECISION.REVIEW;
   const DIcon = d.icon;
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const handlePdf = () => {
+    setPdfBusy(true);
+    try { downloadDecisionPdf(buildDecisionSummary(results, ids)); } finally { setPdfBusy(false); }
+  };
 
   return (
     <div className="space-y-5">
@@ -46,9 +52,18 @@ export default function UnderwriteResults({ results, ids, onReset }) {
           <div className="text-xl font-semibold">{d.label}</div>
           {decision?.decision_source && <div className="text-[12px] opacity-70 mt-0.5">Decided by {decision.decision_source.replace("_", " ")}</div>}
         </div>
-        <div className="text-right">
-          <div className="text-[11px] uppercase tracking-wider opacity-70">Risk score</div>
-          <div className="text-xl font-semibold">{num(decision?.risk_score ?? recommendation?.risk_score, 2)}</div>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <div className="text-right">
+            <div className="text-[11px] uppercase tracking-wider opacity-70">Risk score</div>
+            <div className="text-xl font-semibold">{num(decision?.risk_score ?? recommendation?.risk_score, 2)}</div>
+          </div>
+          <button
+            onClick={handlePdf}
+            disabled={pdfBusy}
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-900 bg-white/80 px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-white disabled:opacity-60 transition-colors"
+          >
+            {pdfBusy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />} Download PDF
+          </button>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FileSpreadsheet, FileText, FileType, Loader2 } from "lucide-react";
-import { buildDecisionSummary, downloadDecisionCsv, downloadDecisionPdf, downloadDecisionWord } from "@/lib/decisionExport";
+import { FileSpreadsheet, FileType, Loader2 } from "lucide-react";
+import { buildDecisionSummary, downloadDecisionCsv, downloadDecisionWord } from "@/lib/decisionExport";
 
 export default function ExportControls({ results, ids }) {
   const [busy, setBusy] = useState(null);
@@ -26,13 +26,6 @@ export default function ExportControls({ results, ids }) {
           {busy === "csv" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSpreadsheet className="w-4 h-4" />} CSV (sheet)
         </button>
         <button
-          onClick={() => run("pdf", downloadDecisionPdf)}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 text-sm text-slate-700 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
-        >
-          {busy === "pdf" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />} PDF
-        </button>
-        <button
           onClick={() => run("doc", downloadDecisionWord)}
           disabled={busy}
           className="inline-flex items-center gap-1.5 text-sm text-slate-700 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
@@ -41,7 +34,7 @@ export default function ExportControls({ results, ids }) {
         </button>
       </div>
       <p className="text-[11px] text-slate-400 mt-2">
-        CSV is a flat row you can paste into Excel or Google Sheets. PDF and Word produce a formatted summary document.
+        CSV is a flat row you can paste into Excel or Google Sheets; Word produces a formatted summary document. Use "Download PDF" above for a polished report.
       </p>
     </div>
   );

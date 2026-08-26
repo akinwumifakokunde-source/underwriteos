@@ -93,86 +93,137 @@ ${signals ? `<p style="font-size:12px;font-weight:700;margin:12px 0 4px">Risk si
   triggerDownload(new Blob(["\ufeff", html], { type: "application/msword" }), `underwriting-${s.application_id}.doc`);
 }
 
-// PDF — formatted summary via jsPDF
+// PDF — professional formatted summary via jsPDF
 export function downloadDecisionPdf(s) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const left = 40;
-  const right = pageW - 40;
-  let y = 50;
+  const left = 48;
+  const right = pageW - 48;
+  const contentW = right - left;
+  let y = 0;
 
+  const ink = [17, 24, 39];
+  const muted = [107, 114, 128];
+  const line = [229, 231, 235];
+  const decisionColors = {
+    APPROVE: [5, 150, 105],
+    REVIEW: [217, 119, 6],
+    DECLINE: [220, 38, 38],
+  };
+  const dc = decisionColors[s.decision] || muted;
+
+  const addFooter = () => {
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...muted);
+    doc.text("UnderwriteOS  —  Underwriting Decision Summary", left, pageH - 28);
+    doc.text(`Generated ${new Date(s.timestamp).toLocaleString()}`, right, pageH - 28, { align: "right" });
+  };
   const ensure = (h) => {
-    if (y + h > pageH - 40) { doc.addPage(); y = 50; }
+    if (y + h > pageH - 56) { addFooter(); doc.addPage(); y = 56; }
   };
-  const heading = (text) => { ensure(26); doc.setFont("helvetica", "bold"); doc.setFontSize(12); doc.setTextColor(17, 24, 39); doc.text(text, left, y); y += 16; };
-  const kv = (label, val) => {
-    ensure(16);
+
+  // branded header band
+  doc.setFillColor(17, 24, 39); doc.rect(0, 0, pageW, 40, "F");
+  doc.setFillColor(13, 148, 136); doc.rect(0, 40, pageW, 3, "F");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255);
+  doc.text("UnderwriteOS", left, 25);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(180, 185, 192);
+  doc.text("Underwriting Decision Summary", right, 25, { align: "right" });
+
+  y = 70;
+  doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(...ink);
+  doc.text("Underwriting Decision Summary", left, y); y += 16;
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(...muted);
+  doc.text(`Application ${s.application_id}     ${new Date(s.timestamp).toLocaleString()}`, left, y); y += 22;
+
+  // decision badge + key metrics
+  ensure(54);
+  doc.setFillColor(dc[0], dc[1], dc[2]);
+  doc.roundedRect(left, y, 128, 30, 4, 4, "F");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255);
+  doc.text(s.decision, left + 64, y + 19, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(...muted);
+  doc.text(`Decided by ${s.decision_source.replace(/_/g, " ")}`, left + 144, y + 12);
+  doc.text(`Risk score ${fmt(s.risk_score, 2)}   ·   PD ${fmt(s.probability_of_default, 2)}   ·   Confidence ${pct(s.confidence)}`, left + 144, y + 24);
+  y += 46;
+
+  const section = (title) => {
+    ensure(30);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...muted);
+    doc.text(title.toUpperCase(), left, y); y += 6;
+    doc.setDrawColor(...line); doc.setLineWidth(1); doc.line(left, y, right, y); y += 12;
+  };
+  const kvRow = (label, val, alt = false) => {
+    ensure(18);
+    if (alt) { doc.setFillColor(249, 250, 251); doc.rect(left, y - 11, contentW, 16, "F"); }
     doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-    doc.setTextColor(107, 114, 128); doc.text(label, left, y);
-    doc.setTextColor(17, 24, 39); doc.text(String(val ?? "—"), left + 170, y);
-    y += 14;
+    doc.setTextColor(...muted); doc.text(label, left + 4, y);
+    doc.setTextColor(...ink); doc.text(String(val ?? "—"), left + 210, y);
+    y += 16;
   };
 
-  doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(17, 24, 39);
-  doc.text("Underwriting Decision Summary", left, y); y += 22;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(107, 114, 128);
-  doc.text(`Application ${s.application_id}   ${new Date(s.timestamp).toLocaleString()}`, left, y); y += 24;
-
-  heading("Decision");
-  kv("Decision", s.decision);
-  kv("Recommendation", s.recommendation);
-  kv("Risk score", fmt(s.risk_score, 2));
-  kv("Probability of default", fmt(s.probability_of_default, 2));
-  kv("Confidence", pct(s.confidence));
-  kv("Decided by", s.decision_source.replace(/_/g, " "));
-  kv("Human review", s.human_review_required);
-  y += 6;
+  section("Decision");
+  kvRow("Recommendation", s.recommendation, true);
+  kvRow("Risk score", fmt(s.risk_score, 2));
+  kvRow("Probability of default", fmt(s.probability_of_default, 2), true);
+  kvRow("Confidence", pct(s.confidence));
+  kvRow("Decided by", s.decision_source.replace(/_/g, " "), true);
+  kvRow("Human review required", s.human_review_required);
+  y += 8;
 
   if (s.reasons && s.reasons.length) {
-    heading("Reasons");
+    section("Reasons");
     doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(55, 65, 81);
     s.reasons.forEach((r) => {
-      doc.splitTextToSize(`- ${r}`, right - left).forEach((ln) => { ensure(14); doc.text(ln, left, y); y += 13; });
+      doc.splitTextToSize(`-  ${r}`, contentW - 8).forEach((ln) => { ensure(15); doc.text(ln, left + 4, y); y += 13; });
     });
-    y += 6;
+    y += 8;
   }
 
   if (s.risk_signals && s.risk_signals.length) {
-    heading("Risk signals");
-    s.risk_signals.forEach((sig) => {
+    section("Risk signals");
+    ensure(20);
+    doc.setFillColor(243, 244, 246); doc.rect(left, y - 11, contentW, 16, "F");
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(...muted);
+    doc.text("Signal", left + 4, y);
+    doc.text("Value", left + 300, y);
+    doc.text("Flag", right - 4, y, { align: "right" });
+    y += 16;
+    s.risk_signals.forEach((sig, i) => {
       ensure(16);
-      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(17, 24, 39);
-      doc.text(String(sig.signal), left, y);
-      doc.setTextColor(107, 114, 128);
-      doc.text(String(sig.value ?? "—"), left + 270, y);
-      doc.text((sig.flag || "neutral").toUpperCase(), right, y, { align: "right" });
-      y += 14;
+      if (i % 2 === 1) { doc.setFillColor(249, 250, 251); doc.rect(left, y - 11, contentW, 15, "F"); }
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...ink);
+      const sigLines = doc.splitTextToSize(String(sig.signal), 280);
+      doc.text(sigLines[0], left + 4, y);
+      doc.setTextColor(...muted); doc.text(String(sig.value ?? "—"), left + 300, y);
+      doc.setTextColor(...ink); doc.text((sig.flag || "neutral").toUpperCase(), right - 4, y, { align: "right" });
+      y += 15;
     });
-    y += 6;
+    y += 8;
   }
 
   const cp = s.credit_profile || {};
-  heading("Credit profile");
-  kv("Score", fmt(cp.credit_score));
-  kv("Band", cp.score_band);
-  kv("Utilisation", cp.credit_utilisation != null ? pct(cp.credit_utilisation) : "—");
-  kv("Defaults", fmt(cp.defaults));
-  kv("Active accounts", fmt(cp.active_accounts));
-  kv("Provider", cp.provider);
-  y += 6;
+  section("Credit profile");
+  kvRow("Credit score", fmt(cp.credit_score), true);
+  kvRow("Score band", cp.score_band);
+  kvRow("Credit utilisation", cp.credit_utilisation != null ? pct(cp.credit_utilisation) : "—", true);
+  kvRow("Defaults", fmt(cp.defaults));
+  kvRow("Active accounts", fmt(cp.active_accounts), true);
+  kvRow("Provider", cp.provider);
+  y += 8;
 
   const fp = s.financial_profile || {};
-  heading("Financial profile");
-  kv("Monthly income", fp.income?.monthly != null ? "GBP " + fmt(fp.income.monthly) : "—");
-  kv("Monthly net", fp.cashflow?.monthly_net != null ? "GBP " + fmt(fp.cashflow.monthly_net) : "—");
-  kv("Debt-to-income", fp.affordability?.debt_to_income != null ? fmt(fp.affordability.debt_to_income, 2) : "—");
-  kv("Disposable income", fp.cashflow?.disposable_income != null ? "GBP " + fmt(fp.cashflow.disposable_income) : "—");
+  section("Financial profile");
+  kvRow("Monthly income", fp.income?.monthly != null ? "GBP " + fmt(fp.income.monthly) : "—", true);
+  kvRow("Monthly net cashflow", fp.cashflow?.monthly_net != null ? "GBP " + fmt(fp.cashflow.monthly_net) : "—");
+  kvRow("Debt-to-income", fp.affordability?.debt_to_income != null ? fmt(fp.affordability.debt_to_income, 2) : "—", true);
+  kvRow("Disposable income", fp.cashflow?.disposable_income != null ? "GBP " + fmt(fp.cashflow.disposable_income) : "—");
+  y += 8;
 
   ensure(24);
-  y += 10;
-  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(156, 163, 175);
-  doc.text(`Generated by UnderwriteOS  -  ${s.evidence_count} evidence records`, left, y);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...muted);
+  doc.text(`${s.evidence_count} evidence records attached to this decision.`, left, y);
 
+  addFooter();
   doc.save(`underwriting-${s.application_id}.pdf`);
 }
