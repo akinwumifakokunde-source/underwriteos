@@ -25,6 +25,17 @@ export default function Capabilities() {
   return (
     <section className="border-t border-[#eceef1]">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
+        <div className="max-w-2xl mb-10">
+          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> How it works
+          </div>
+          <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12]">
+            Normalize, analyze, decide.
+          </h2>
+          <p className="mt-4 text-lg text-[#525965] leading-relaxed">
+            Three steps turn raw borrower data into an explainable decision.
+          </p>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#eceef1] rounded-2xl overflow-hidden border border-[#e5e7eb]">
           {CAPS.map((c) => (
             <div key={c.n} className="bg-white p-6 sm:p-8 flex flex-col">
