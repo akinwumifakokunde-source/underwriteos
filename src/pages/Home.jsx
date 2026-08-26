@@ -4,6 +4,7 @@ import Hero from "@/components/home/Hero.jsx";
 import Problem from "@/components/home/Problem.jsx";
 import Solution from "@/components/home/Solution.jsx";
 import Capabilities from "@/components/home/Capabilities.jsx";
+import TwoWays from "@/components/home/TwoWays.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import AiPolicy from "@/components/home/AiPolicy.jsx";
 import ApiCalls from "@/components/home/ApiCalls.jsx";
@@ -22,6 +23,7 @@ export default function Home() {
       <Problem />
       <Solution />
       <Capabilities />
+      <TwoWays />
       <Evidence />
       <AiPolicy />
       <ApiCalls />

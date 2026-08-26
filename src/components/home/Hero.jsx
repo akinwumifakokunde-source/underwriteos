@@ -47,8 +47,8 @@ export default function Hero() {
           data, applies your policy and returns an explainable decision.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link to="/onboarding" className={btnPrimary}>
-            Start building <ArrowRight className="w-4 h-4" />
+          <Link to="/underwrite" className={btnPrimary}>
+            Underwrite without code <ArrowRight className="w-4 h-4" />
           </Link>
           <Link to="/api-reference" className={btnOutline}>
             View API <ArrowRight className="w-4 h-4" />
