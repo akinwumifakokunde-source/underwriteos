@@ -10,10 +10,11 @@ import { withApiKey, hasApiKey } from "@/lib/apiKey";
 import { KeyRound } from "lucide-react";
 
 const ENDPOINTS = [
+  { method: "POST", path: "/api-keys", fn: "apiKeys", label: "Create API key (sandbox/production)", body: { action: "create", name: "Production deploy key", environment: "production", scopes: ["applications:write", "decisions:read"] } },
   { method: "POST", path: "/borrowers", fn: "apiBorrowers", label: "Create borrower", body: { action: "create", first_name: "Alex", last_name: "Morgan", email: "alex.morgan@example.com", employment_status: "employed", employer_name: "Helix Digital Ltd", annual_income: 52000, income_currency: "GBP" } },
   { method: "POST", path: "/applications", fn: "apiApplications", label: "Create application", body: { action: "create", borrower_id: "<borrower_id>", loan_amount: 12000, loan_currency: "GBP", loan_purpose: "debt_consolidation", loan_term_months: 24, interest_rate: 0.099, policy_id: "consumer-v1" } },
-  { method: "POST", path: "/applications/{id}/credit-report", fn: "apiCreditReport", label: "Pull credit report", body: { action: "submit", application_id: "<application_id>", provider: "experian", mode: "auto", search_reference: "<borrower_id>" } },
-  { method: "POST", path: "/applications/{id}/bank-statement", fn: "apiBankStatement", label: "Pull bank statement (open banking)", body: { action: "submit", application_id: "<application_id>", provider: "truelayer", mode: "auto", consent_reference: "<borrower_id>" } },
+  { method: "POST", path: "/applications/{id}/credit-report", fn: "apiCreditReport", label: "Pull credit report (live if credentials set, else mock)", body: { action: "submit", application_id: "<application_id>", provider: "experian", mode: "auto", search_reference: "<borrower_id>" } },
+  { method: "POST", path: "/applications/{id}/bank-statement", fn: "apiBankStatement", label: "Pull bank statement (live if credentials set, else mock)", body: { action: "submit", application_id: "<application_id>", provider: "truelayer", mode: "auto", consent_reference: "<borrower_id>" } },
   { method: "POST", path: "/applications/{id}/analyze", fn: "apiAnalyze", label: "Analyze", body: { application_id: "<application_id>" } },
   { method: "POST", path: "/applications/{id}/underwrite", fn: "apiUnderwrite", label: "Underwrite", body: { application_id: "<application_id>", policy_id: "consumer-v1" } },
   { method: "GET", path: "/applications/{id}/financial-profile", fn: "apiRetrieve", label: "Financial profile", body: { action: "financial-profile", application_id: "<application_id>" } },
@@ -26,7 +27,7 @@ const ENDPOINTS = [
   { method: "GET", path: "/applications/{id}/summary", fn: "apiRetrieve", label: "Full summary (one call)", body: { action: "summary", application_id: "<application_id>" } },
   { method: "GET", path: "/applications/{id}/audit", fn: "apiRetrieve", label: "Audit trail", body: { action: "audit", application_id: "<application_id>" } },
   { method: "GET", path: "/webhooks", fn: "apiRetrieve", label: "List webhooks", body: { action: "webhooks" } },
-  { method: "GET", path: "/providers", fn: "apiRetrieve", label: "Providers & setup", body: { action: "providers" } },
+  { method: "POST", path: "/providers", fn: "apiProviders", label: "Manage provider credentials (save/test/list/delete)", body: { action: "save", provider: "experian", provider_type: "credit_bureau", env: "production", client_id: "your_client_id", client_secret: "your_client_secret", base_url: "https://api.experian.com" } },
   { method: "GET", path: "/jobs/{id}", fn: "apiRetrieve", label: "Job status", body: { action: "job", job_id: "<job_id>" } },
 ];
 
