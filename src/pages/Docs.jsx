@@ -8,8 +8,8 @@ const STEPS = [
   {
     n: 1,
     title: "Create a sandbox API key",
-    body: "Authenticate every request with a sandbox key. Sandbox keys only access synthetic test data.",
-    req: { method: "POST", path: "/api-keys", body: { name: "sandbox", scopes: ["applications:write", "decisions:read"] } },
+    body: "Authenticate every request with a sandbox key (uw_test_…). Sandbox keys only access synthetic test data and sandbox credentials — they never touch production.",
+    req: { method: "POST", path: "/api-keys", body: { name: "sandbox", environment: "sandbox", scopes: ["applications:write", "decisions:read"] } },
   },
   {
     n: 2,
@@ -26,8 +26,8 @@ const STEPS = [
   {
     n: 4,
     title: "Submit financial data",
-    body: "Submit a credit report and bank statement. UnderwriteOS normalizes them into canonical profiles.",
-    req: { method: "POST", path: "/applications/{id}/bank-statement", body: { period_start: "2026-05-01", period_end: "2026-07-31", transactions: [{ date: "2026-05-25", description: "Salary", amount: 4333, direction: "credit" }] } },
+    body: "Submit a credit report and bank statement, or let UnderwriteOS fetch them automatically from a connected provider (mode: \"auto\"). All sources normalize into canonical profiles.",
+    req: { method: "POST", path: "/applications/{id}/bank-statement", body: { mode: "auto", provider: "truelayer", consent_reference: "consent_001" } },
   },
   {
     n: 5,
@@ -69,6 +69,39 @@ export default function Docs() {
             </div>
           </div>
         ))}
+
+        <div className="rounded-xl border border-slate-200 bg-white p-6">
+          <h2 className="text-base font-semibold text-slate-900">Environments & live data</h2>
+          <p className="text-sm text-slate-500 mt-1 leading-relaxed">
+            UnderwriteOS isolates <span className="font-medium text-slate-700">sandbox</span> and <span className="font-medium text-slate-700">production</span> completely. A sandbox key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_test_…</code>) only reads synthetic data and sandbox credentials; a production key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_live_…</code>) only uses production credentials. Credentials never cross environments.
+          </p>
+          <div className="mt-5 space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">
+              <div className="sm:col-span-5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center justify-center">A</span>
+                  <h3 className="text-base font-semibold text-slate-900">Connect a provider credential</h3>
+                </div>
+                <p className="text-sm text-slate-500 leading-relaxed">Store your own bureau or open-banking keys per environment. When credentials exist, ingestion makes a real OAuth2 + REST call; without them it falls back to deterministic mock data.</p>
+              </div>
+              <div className="sm:col-span-7">
+                <CodeBlock request={{ method: "POST", path: "/providers", body: { action: "save", provider: "experian", provider_type: "credit_bureau", env: "production", client_id: "your_client_id", client_secret: "your_client_secret", base_url: "https://api.experian.com" } }} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">
+              <div className="sm:col-span-5">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-semibold flex items-center justify-center">B</span>
+                  <h3 className="text-base font-semibold text-slate-900">Test the credential</h3>
+                </div>
+                <p className="text-sm text-slate-500 leading-relaxed">Validate connectivity with a token-exchange test against the saved environment before going live.</p>
+              </div>
+              <div className="sm:col-span-7">
+                <CodeBlock request={{ method: "POST", path: "/providers", body: { action: "test", provider: "experian", env: "production" } }} />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div className="rounded-xl border border-slate-900 bg-slate-900 text-white p-6 flex items-center justify-between gap-4">
           <div>
