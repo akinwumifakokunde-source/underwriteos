@@ -1,5 +1,6 @@
 import React from "react";
 import { Check, X, AlertTriangle, ShieldAlert, RotateCcw, TrendingUp, TrendingDown } from "lucide-react";
+import ExportControls from "@/components/underwrite/ExportControls.jsx";
 
 const DECISION = {
   APPROVE: { icon: Check, cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "APPROVE" },
@@ -141,6 +142,8 @@ export default function UnderwriteResults({ results, ids, onReset }) {
           </div>
         </div>
       )}
+
+      <ExportControls results={results} ids={ids} />
 
       <div className="flex items-center justify-between pt-2">
         <div className="text-[11px] text-slate-400 font-mono">
