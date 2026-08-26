@@ -12,11 +12,19 @@ import Diagnostics from "./Diagnostics.jsx";
 import SandboxFlow from "./SandboxFlow.jsx";
 import StepPanel from "./StepPanel.jsx";
 import JsonView from "./JsonView.jsx";
+import { FileDown, Loader2 } from "lucide-react";
+import ExportControls from "@/components/underwrite/ExportControls.jsx";
+import { buildDecisionSummary, downloadDecisionPdf } from "@/lib/decisionExport";
 
 const TABS = ["Overview", "Financial Profile", "Credit Profile", "Risk Signals", "Evidence", "Policy", "Recommendation", "Decision", "API", "Audit", "Webhooks"];
 
 export default function ResultTabs({ results, steps, selectedStep, selected, onSelectStep, ctxId, diagnostics, webhook }) {
   const [tab, setTab] = useState("Overview");
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const handlePdf = () => {
+    setPdfBusy(true);
+    try { downloadDecisionPdf(buildDecisionSummary(results, { application_id: ctxId })); } finally { setPdfBusy(false); }
+  };
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex flex-wrap gap-1.5 mb-5 border-b border-slate-100 pb-3">
@@ -29,9 +37,23 @@ export default function ResultTabs({ results, steps, selectedStep, selected, onS
       <div className="space-y-4">
         {tab === "Overview" && (
           <>
+            <div className="rounded-xl border border-slate-200 bg-white p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">Export decision summary</h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">Download a professional PDF, a CSV sheet row, or a Word document of this decision.</p>
+              </div>
+              <button
+                onClick={handlePdf}
+                disabled={pdfBusy}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800 disabled:opacity-60 shrink-0"
+              >
+                {pdfBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />} Download PDF
+              </button>
+            </div>
             <ResultSummary decision={results.decision} />
             <Diagnostics {...diagnostics} />
             <RecommendationDecision recommendation={results.recommendation} decision={results.decision} />
+            <ExportControls results={results} ids={{ application_id: ctxId }} />
           </>
         )}
         {tab === "Financial Profile" && <FinancialProfileCard profile={results.financialProfile} />}
