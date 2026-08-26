@@ -6,7 +6,7 @@ const PIPELINE = ["Normalization", "Risk analysis", "Policy", "Decision"];
 export default function Problem() {
   return (
     <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">The problem</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
           Lenders keep rebuilding the same underwriting stack.

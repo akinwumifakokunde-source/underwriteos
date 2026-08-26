@@ -28,7 +28,7 @@ function CodeBlock({ label, children }) {
 export default function ApiDemo() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
           One API. From borrower data to decision.
         </h2>

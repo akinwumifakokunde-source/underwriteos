@@ -23,7 +23,7 @@ const STEPS = [
 export default function Onboarding() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Get started</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
           Run your first underwriting decision in minutes.

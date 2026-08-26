@@ -7,17 +7,17 @@ const LINEAGE = ["Decision", "Policy evaluation", "Risk signal", "Evidence", "So
 export default function Evidence() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
-          Every underwriting decision comes with evidence.
+          Don't just get a decision. Know why.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          UnderwriteOS connects risk signals to the data that produced them. Teams can inspect the
-          evidence, see which policy rules fired and understand why a decision was recommended.
+          Every underwriting decision is linked to the policy, risk signals, evidence and source data
+          behind it.
         </p>
 
-        <div className="mt-10 grid md:grid-cols-2 gap-6">
+        <div className="mt-8 grid md:grid-cols-2 gap-6">
           <div className="rounded-lg border border-[#eceef1] bg-white p-6">
             <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-4">Decision lineage</p>
             <div className="space-y-2">

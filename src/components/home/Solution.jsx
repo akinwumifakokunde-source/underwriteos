@@ -5,7 +5,7 @@ const FLOW = ["Borrower data", "Normalize", "Risk signals", "Policy", "Decision"
 const PROPS = [
   {
     title: "Bring your own data",
-    body: "Use your existing credit bureau, open-banking and financial-data providers.",
+    body: "Use the credit bureau, banking and financial-data providers you already work with.",
   },
   {
     title: "Your policy decides",
@@ -14,13 +14,14 @@ const PROPS = [
   {
     title: "Every decision is traceable",
     body: "Every decision can be linked back to the policy, risk signal, evidence and source data behind it.",
+    prominent: true,
   },
 ];
 
 export default function Solution() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">The solution</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
           One API for the underwriting layer.
@@ -41,8 +42,11 @@ export default function Solution() {
 
         <div className="mt-10 grid md:grid-cols-3 gap-5">
           {PROPS.map((p) => (
-            <div key={p.title} className="rounded-lg border border-[#eceef1] bg-white p-6">
-              <h3 className="text-base font-semibold text-[#0a0c12]">{p.title}</h3>
+            <div
+              key={p.title}
+              className={`rounded-lg border p-6 ${p.prominent ? "border-[#0d9488]/30 bg-[#f0fbf8]" : "border-[#eceef1] bg-white"}`}
+            >
+              <h3 className="text-base font-semibold text-[#0a0c12] uppercase tracking-wide">{p.title}</h3>
               <p className="mt-2 text-sm text-[#525965] leading-relaxed">{p.body}</p>
             </div>
           ))}

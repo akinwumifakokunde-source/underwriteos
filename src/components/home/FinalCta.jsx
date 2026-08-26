@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 export default function FinalCta() {
   return (
     <section className="border-b border-[#eceef1] bg-[#0a0c12]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24 text-center">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20 text-center">
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
           Run your first underwriting decision.
         </h2>
