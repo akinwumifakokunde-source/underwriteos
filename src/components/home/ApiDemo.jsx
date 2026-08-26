@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 const REQUEST = `{
-  "policy_id": "consumer-v1"
+  "policy": "consumer-v1",
+  "borrower": {
+    "annual_income": 72000,
+    "monthly_debt": 2900,
+    "employment_status": "employed"
+  }
 }`;
 
 const RESPONSE = `{

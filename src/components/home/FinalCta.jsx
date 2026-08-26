@@ -15,10 +15,10 @@ export default function FinalCta() {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            to="/onboarding"
+            to="/sandbox"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-4 py-2.5 rounded-md hover:bg-[#e8eaee] transition-colors"
           >
-            Start building <ArrowRight className="w-4 h-4" />
+            Try the sandbox <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/api-reference"

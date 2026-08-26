@@ -10,7 +10,7 @@ export default function Evidence() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
-          Don't just get a decision. Know why.
+          Every decision has a traceable reason.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
           Every underwriting decision is linked to the policy, risk signals, evidence and source data

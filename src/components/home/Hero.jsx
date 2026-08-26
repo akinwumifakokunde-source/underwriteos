@@ -77,7 +77,7 @@ export default function Hero() {
             </p>
 
             <div className="mt-5 inline-flex items-center gap-2 rounded-md border border-[#eceef1] bg-[#fafbfc] px-3 py-2">
-              <span className="text-sm font-medium text-[#0a0c12]">Connect data. Apply policy. Get a decision — with evidence.</span>
+              <span className="text-sm font-medium text-[#0a0c12]">Connect data. Apply policy. Make faster, explainable decisions.</span>
             </div>
 
             <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">

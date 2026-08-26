@@ -41,16 +41,16 @@ export default function Onboarding() {
 
         <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <Link
-            to="/onboarding"
+            to="/sandbox"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-md hover:bg-[#1c1f26] transition-colors"
           >
-            Start building <ArrowRight className="w-4 h-4" />
+            Try the sandbox <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/sandbox"
+            to="/onboarding"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-4 py-2.5 rounded-md hover:bg-[#f7f8fa] transition-colors"
           >
-            Try the sandbox <ArrowRight className="w-4 h-4" />
+            Start building <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
