@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
-import { Mail, MessageSquare, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Mail, MessageSquare, ArrowRight, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
 
 const CHANNELS = [
   { icon: Mail, title: "Email", value: "akinfaks@yahoo.com", href: "mailto:akinfaks@yahoo.com", desc: "For sales, security reviews, and data requests. We reply within one business day." },
@@ -12,10 +13,21 @@ const CHANNELS = [
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(null);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setSent(true);
+    setSending(true);
+    setError(null);
+    try {
+      await base44.functions.invoke("apiContact", form);
+      setSent(true);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message || err.message || "Failed to send message.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -61,8 +73,8 @@ export default function Contact() {
             <div className="rounded-xl border border-[#e6f7f3] bg-[#e6f7f3] p-5 flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-[#0d9488] shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-[#0a0c12]">Thanks — your message has been noted.</p>
-                <p className="text-sm text-[#525965] mt-0.5">For a faster reply, email us directly at akinfaks@yahoo.com.</p>
+                <p className="text-sm font-medium text-[#0a0c12]">Thanks — your message has been sent.</p>
+                <p className="text-sm text-[#525965] mt-0.5">We'll reply to {form.email || "your email"} shortly. You can also reach us directly at akinfaks@yahoo.com.</p>
               </div>
             </div>
           ) : (
@@ -98,12 +110,19 @@ export default function Contact() {
                   className="mt-1 w-full rounded-lg border border-[#eceef1] px-3 py-2 text-sm outline-none focus:border-[#0d9488] resize-y"
                 />
               </div>
+              {error && (
+                <div className="flex items-start gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between">
                 <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm text-[#525965] hover:text-[#0a0c12]">
                   Or start building <ArrowRight className="w-4 h-4" />
                 </Link>
-                <button type="submit" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors">
-                  Send message
+                <button type="submit" disabled={sending} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors disabled:opacity-60">
+                  {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {sending ? "Sending…" : "Send message"}
                 </button>
               </div>
             </form>
