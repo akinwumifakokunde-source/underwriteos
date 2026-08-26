@@ -56,7 +56,7 @@ export default function Nav() {
   return (
     <header className="sticky top-0 z-40 bg-[#111111] border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-        <Link to="/" className="flex items-center gap-2.5 shrink-0">
+        <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
             <Layers className="w-4 h-4 text-[#111111]" />
           </div>
