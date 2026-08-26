@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Layers } from "lucide-react";
 
 const COLS = [
   {
@@ -14,7 +13,7 @@ const COLS = [
   },
   {
     title: "Company",
-    links: [{ label: "Security", to: "/security" }, { label: "Contact", to: "mailto:hello@underwriteos.com" }],
+    links: [{ label: "Security", to: "/security" }, { label: "Contact", to: "mailto:akinfaks@yahoo.com" }],
   },
   {
     title: "Legal",
@@ -31,25 +30,16 @@ const COLS = [
 
 export default function SiteFooter() {
   return (
-    <footer className="border-t border-[#eceef1]">
+    <footer className="border-t border-[#eceef1] bg-white">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-12">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-          <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-[#0a0c12] flex items-center justify-center">
-                <Layers className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold tracking-tight text-[#0a0c12]">UnderwriteOS</span>
-            </Link>
-            <p className="mt-3 text-sm text-[#8a909c] max-w-xs">Underwriting infrastructure for lenders and fintechs.</p>
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
           {COLS.map((c) => (
             <div key={c.title}>
-              <div className="font-mono text-[10px] uppercase tracking-wider text-[#8a909c] mb-3">{c.title}</div>
-              <ul className="space-y-2">
+              <div className="text-[11px] uppercase tracking-wider text-[#94A3B8] mb-4">{c.title}</div>
+              <ul className="space-y-2.5">
                 {c.links.map((l) => (
                   <li key={l.label}>
-                    <Link to={l.to} className="text-sm text-[#525965] hover:text-[#0a0c12] transition-colors">
+                    <Link to={l.to} className="text-sm text-[#475569] hover:text-[#0a0c12] transition-colors">
                       {l.label}
                     </Link>
                   </li>
