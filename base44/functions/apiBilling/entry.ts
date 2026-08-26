@@ -1,18 +1,19 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { apiError, apiSuccess, readBody, resolveOrganization, audit } from "../../shared/utils.ts";
 
-// Credits billing via Wix Payments (Base44 Payments).
-// Checkout happens on a Wix-managed payment link per pack. Credits are applied on
-// the billing success page using the logged-in user's session — the platform's
-// Wix Payments pattern (the Wix checkout is not org-aware, so the session maps
-// the purchase to the organization). Manual top-ups only — no auto top-up.
+// Credits billing via Stripe Checkout (one-time payments).
+// `checkout` creates a Stripe Checkout Session for the selected pack and returns
+// its URL. After payment, the user is redirected back to /billing with the session
+// id, and `record_purchase` verifies the session with Stripe before crediting.
 // Actions: balance | checkout | record_purchase
 
 const PACKS = [
-  { id: "pack_starter", name: "Starter — 10,000 credits", credits: 10000, amount: 2000, wix_url: "" },
-  { id: "pack_growth", name: "Growth — 50,000 credits", credits: 50000, amount: 7500, wix_url: "" },
-  { id: "pack_scale", name: "Scale — 100,000 credits", credits: 100000, amount: 12000, wix_url: "" }
+  { id: "pack_starter", name: "Starter — 10,000 credits", credits: 10000, amount: 2000 },
+  { id: "pack_growth", name: "Growth — 50,000 credits", credits: 50000, amount: 7500 },
+  { id: "pack_scale", name: "Scale — 100,000 credits", credits: 100000, amount: 12000 }
 ];
+
+const APP_ORIGIN = "https://oldme.base44.app";
 
 async function getCredit(base44: any, organization_id: string) {
   const rows = await base44.asServiceRole.entities.Credit.filter({ organization_id }, "-created_date", 1);
@@ -25,7 +26,6 @@ async function ensureCredit(base44: any, organization_id: string, currency = "us
   return await base44.asServiceRole.entities.Credit.create({ organization_id, balance: 0, currency });
 }
 
-// `stripe_id` column is repurposed as the provider transaction reference (Wix order id).
 async function applyCredit(base44: any, organization_id: string, credits: number, type: string, amountCents: number, currency: string, ref: string, description: string) {
   const credit = await ensureCredit(base44, organization_id, currency);
   const newBalance = (credit.balance || 0) + credits;
@@ -33,6 +33,20 @@ async function applyCredit(base44: any, organization_id: string, credits: number
   await base44.asServiceRole.entities.CreditTransaction.create({
     organization_id, type, credits, amount_cents: amountCents || 0, currency, stripe_id: ref, description
   });
+}
+
+async function stripeRequest(path: string, init: RequestInit = {}): Promise<any> {
+  const res = await fetch(`https://api.stripe.com/v1${path}`, {
+    ...init,
+    headers: {
+      "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+      "Stripe-Version": "2025-10-29.clover",
+      ...(init.headers || {})
+    }
+  });
+  const json = await res.json();
+  if (!res.ok) throw { status: 502, code: "STRIPE_ERROR", message: json?.error?.message || "Stripe request failed" };
+  return json;
 }
 
 export default async function(req: Request): Promise<Response> {
@@ -57,28 +71,48 @@ export default async function(req: Request): Promise<Response> {
     if (action === "checkout") {
       const pack = PACKS.find((p) => p.id === body.pack_id);
       if (!pack) return apiError("UNKNOWN_PACK", "Unknown credit pack.", 400);
-      if (!pack.wix_url) {
-        return apiError("WIX_LINK_NOT_CONFIGURED", "No Wix payment link configured for this pack. Create a payment link in your Wix dashboard and add its URL to PACKS in the apiBilling function.", 500);
-      }
-      await audit(base44, organization_id, "billing.checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits } });
-      return apiSuccess({ url: pack.wix_url, pack_id: pack.id }, 200);
+      const origin = req.headers.get("origin") || APP_ORIGIN;
+      const params = new URLSearchParams();
+      params.append("mode", "payment");
+      params.append("success_url", `${origin}/billing?status=success&pack=${pack.id}&tx={CHECKOUT_SESSION_ID}`);
+      params.append("cancel_url", `${origin}/billing?status=cancelled`);
+      params.append("line_items[0][quantity]", "1");
+      params.append("line_items[0][price_data][currency]", "usd");
+      params.append("line_items[0][price_data][unit_amount]", String(pack.amount));
+      params.append("line_items[0][price_data][product_data][name]", pack.name);
+      params.append("metadata[base44_app_id]", Deno.env.get("BASE44_APP_ID") || "");
+      params.append("metadata[pack_id]", pack.id);
+      params.append("metadata[organization_id]", organization_id);
+      const session = await stripeRequest("/checkout/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded", "Idempotency-Key": `billing_${pack.id}_${organization_id}_${Date.now()}` },
+        body: params.toString()
+      });
+      await audit(base44, organization_id, "billing.checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, session: session.id } });
+      return apiSuccess({ url: session.url, pack_id: pack.id }, 200);
     }
 
     if (action === "record_purchase") {
       const pack = PACKS.find((p) => p.id === body.pack_id);
       if (!pack) return apiError("UNKNOWN_PACK", "Unknown credit pack.", 400);
-      const ref = (body.transaction_ref || "").trim();
-      // Dedup by provider transaction reference when available.
-      if (ref) {
-        const existing = await base44.asServiceRole.entities.CreditTransaction.filter({ organization_id, stripe_id: ref }, "-created_date", 1);
-        if (existing.length > 0) {
-          const credit = await getCredit(base44, organization_id);
-          return apiSuccess({ credited: false, reason: "duplicate", balance: credit?.balance || 0 }, 200);
-        }
+      const sessionId = (body.transaction_ref || "").trim();
+      if (!sessionId) return apiError("MISSING_REF", "No checkout session reference provided.", 400);
+
+      // Dedup by Stripe session id.
+      const existing = await base44.asServiceRole.entities.CreditTransaction.filter({ organization_id, stripe_id: sessionId }, "-created_date", 1);
+      if (existing.length > 0) {
+        const credit = await getCredit(base44, organization_id);
+        return apiSuccess({ credited: false, reason: "duplicate", balance: credit?.balance || 0 }, 200);
       }
-      const txRef = ref || `wix_${pack.id}_${Date.now()}`;
-      await applyCredit(base44, organization_id, pack.credits, "purchase", pack.amount, "usd", txRef, `Credit purchase — ${pack.name}`);
-      await audit(base44, organization_id, "billing.purchase_credited", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, ref: txRef } });
+
+      // Verify with Stripe that the session was paid.
+      const session = await stripeRequest(`/checkout/sessions/${encodeURIComponent(sessionId)}`);
+      if (session.payment_status !== "paid") {
+        return apiError("PAYMENT_NOT_COMPLETED", "Checkout session is not marked as paid.", 402);
+      }
+
+      await applyCredit(base44, organization_id, pack.credits, "purchase", pack.amount, "usd", sessionId, `Credit purchase — ${pack.name}`);
+      await audit(base44, organization_id, "billing.purchase_credited", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, ref: sessionId } });
       const credit = await getCredit(base44, organization_id);
       return apiSuccess({ credited: true, credits: pack.credits, balance: credit?.balance || 0 }, 200);
     }

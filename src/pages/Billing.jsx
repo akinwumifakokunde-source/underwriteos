@@ -89,7 +89,7 @@ export default function Billing() {
       <div className="max-w-4xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
-          <p className="text-sm text-slate-500 mt-1">Buy API credits. Payments are processed by Wix Payments.</p>
+          <p className="text-sm text-slate-500 mt-1">Buy API credits. Payments are processed by Stripe.</p>
         </div>
 
         {checkoutBlocked && (
@@ -136,7 +136,7 @@ export default function Billing() {
 
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-sm font-semibold text-slate-900 mb-1 flex items-center gap-1.5"><Zap className="w-4 h-4" /> Buy credits</h3>
-              <p className="text-xs text-slate-500 mb-4">Each pack checks out through a Wix payment link. Credits are added to your account when you return after payment.</p>
+              <p className="text-xs text-slate-500 mb-4">Each pack checks out through Stripe. Credits are added to your account automatically when you return after payment.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {(data?.packs || []).map((p) => (
                   <div key={p.id} className="rounded-lg border border-slate-200 p-4 flex flex-col">
