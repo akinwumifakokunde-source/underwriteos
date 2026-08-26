@@ -17,7 +17,7 @@ import SiteFooter from "@/components/home/SiteFooter.jsx";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0a0c12] text-white">
+    <div className="min-h-screen bg-white text-[#0a0c12]">
       <HomeNav />
       <Hero />
       <Problem />

@@ -10,21 +10,21 @@ const STEPS = [
 
 export default function DeveloperFlow() {
   return (
-    <section className="border-t border-[#1c2029]">
+    <section className="border-t border-[#eceef1]">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {STEPS.map((s) => (
             <div key={s.n}>
-              <span className="font-mono text-xs text-[#5b6472]">{s.n}</span>
-              <h3 className="mt-3 text-lg font-semibold text-white">{s.title}</h3>
-              <p className="mt-1.5 text-[15px] text-[#a0a5b0] leading-relaxed">{s.desc}</p>
+              <span className="font-mono text-xs text-[#8a909c]">{s.n}</span>
+              <h3 className="mt-3 text-lg font-semibold text-[#0a0c12]">{s.title}</h3>
+              <p className="mt-1.5 text-[15px] text-[#525965] leading-relaxed">{s.desc}</p>
             </div>
           ))}
         </div>
         <div className="mt-10">
           <Link
             to="/onboarding"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-5 py-2.5 rounded-lg hover:bg-[#e8eaee] transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
           >
             Start building <ArrowRight className="w-4 h-4" />
           </Link>

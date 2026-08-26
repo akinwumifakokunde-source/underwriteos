@@ -23,15 +23,15 @@ const CAPS = [
 
 export default function Capabilities() {
   return (
-    <section className="border-t border-[#1c2029]">
+    <section className="border-t border-[#eceef1]">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1c2029] rounded-2xl overflow-hidden border border-[#2a2f3a]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#eceef1] rounded-2xl overflow-hidden border border-[#e5e7eb]">
           {CAPS.map((c) => (
-            <div key={c.n} className="bg-[#0a0c12] p-6 sm:p-8 flex flex-col">
-              <span className="font-mono text-xs text-[#5b6472]">{c.n}</span>
-              <h3 className="mt-3 text-xl font-semibold text-white">{c.title}</h3>
-              <p className="mt-2 text-[15px] text-[#a0a5b0] leading-relaxed flex-1">{c.desc}</p>
-              <code className="mt-5 text-[12px] font-mono text-[#00e6b8] bg-[#0c1715] border border-[#1f3a36] rounded px-2.5 py-1.5 inline-block w-fit">
+            <div key={c.n} className="bg-white p-6 sm:p-8 flex flex-col">
+              <span className="font-mono text-xs text-[#8a909c]">{c.n}</span>
+              <h3 className="mt-3 text-xl font-semibold text-[#0a0c12]">{c.title}</h3>
+              <p className="mt-2 text-[15px] text-[#525965] leading-relaxed flex-1">{c.desc}</p>
+              <code className="mt-5 text-[12px] font-mono text-[#0d9488] bg-[#e6f7f3] border border-[#99e6d8] rounded px-2.5 py-1.5 inline-block w-fit">
                 {c.ref}
               </code>
             </div>
