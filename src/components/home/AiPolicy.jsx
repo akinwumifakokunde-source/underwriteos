@@ -5,18 +5,17 @@ const FLOW = ["Borrower data", "Risk analysis", "AI recommendation", "Policy eng
 export default function AiPolicy() {
   return (
     <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">AI with guardrails</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
           AI assists. Your policy decides.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
           UnderwriteOS can generate an AI underwriting recommendation with risk factors, positive
-          signals and reasoning. The lender's versioned policy remains authoritative, and human
-          overrides are recorded.
+          signals and reasoning. Your versioned policy remains authoritative.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-2 sm:gap-3">
           {FLOW.map((f, i) => (
             <React.Fragment key={f}>
               <span
@@ -35,9 +34,9 @@ export default function AiPolicy() {
           ))}
         </div>
 
-        <p className="mt-8 text-sm text-[#8a909c] max-w-2xl">
-          The AI recommendation is advisory. The authoritative underwriting decision is produced by
-          your versioned policy engine. Human overrides are recorded with a reason.
+        <p className="mt-6 text-sm text-[#8a909c] max-w-2xl">
+          The AI recommendation is advisory. The authoritative decision is produced by the configured
+          underwriting policy.
         </p>
       </div>
     </section>

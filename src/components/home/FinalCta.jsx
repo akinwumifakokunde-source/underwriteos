@@ -5,12 +5,12 @@ import { ArrowRight } from "lucide-react";
 export default function FinalCta() {
   return (
     <section className="border-b border-[#eceef1] bg-[#0a0c12]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-20 sm:py-28 text-center">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24 text-center">
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
-          Build underwriting into your product.
+          Run your first underwriting decision.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#a0a5b0] leading-relaxed max-w-xl mx-auto">
-          Start with synthetic data. Connect your own providers when you're ready.
+          Start with synthetic borrower data. Connect your own providers when you're ready.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">

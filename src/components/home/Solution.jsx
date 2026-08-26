@@ -13,14 +13,14 @@ const PROPS = [
   },
   {
     title: "Every decision is traceable",
-    body: "Risk signals link back to the evidence that produced them.",
+    body: "Every decision can be linked back to the policy, risk signal, evidence and source data behind it.",
   },
 ];
 
 export default function Solution() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">The solution</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
           One API for the underwriting layer.
@@ -30,7 +30,7 @@ export default function Solution() {
           structured risk signals, evaluates your policy and returns an explainable underwriting result.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-2 sm:gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-2 sm:gap-3">
           {FLOW.map((f, i) => (
             <React.Fragment key={f}>
               <span className="text-sm font-medium text-[#0a0c12] px-3 py-2 rounded-md border border-[#eceef1] bg-white">{f}</span>
@@ -39,7 +39,7 @@ export default function Solution() {
           ))}
         </div>
 
-        <div className="mt-12 grid md:grid-cols-3 gap-5">
+        <div className="mt-10 grid md:grid-cols-3 gap-5">
           {PROPS.map((p) => (
             <div key={p.title} className="rounded-lg border border-[#eceef1] bg-white p-6">
               <h3 className="text-base font-semibold text-[#0a0c12]">{p.title}</h3>

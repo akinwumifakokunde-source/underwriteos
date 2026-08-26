@@ -5,35 +5,35 @@ import { ArrowRight } from "lucide-react";
 const STEPS = [
   {
     n: "01",
-    title: "Create an account",
-    body: "Your workspace and sandbox are created automatically.",
+    title: "Create",
+    body: "Create an account and get a sandbox automatically.",
   },
   {
     n: "02",
-    title: "Get an API key",
-    body: "Generate a sandbox key and make your first request.",
+    title: "Connect",
+    body: "Generate an API key and send synthetic borrower data.",
   },
   {
     n: "03",
-    title: "Run underwriting",
-    body: "Use synthetic borrower data and receive a complete underwriting response.",
+    title: "Decide",
+    body: "Receive a decision with risk signals, policy evaluation and evidence.",
   },
 ];
 
 export default function Onboarding() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Get started</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
-          From zero to your first decision in minutes.
+          Run your first underwriting decision in minutes.
         </h2>
 
-        <div className="mt-10 grid md:grid-cols-3 gap-5">
+        <div className="mt-8 grid md:grid-cols-3 gap-5">
           {STEPS.map((s) => (
             <div key={s.n} className="rounded-lg border border-[#eceef1] bg-white p-6">
               <span className="text-xs font-mono text-[#8a909c]">{s.n}</span>
-              <h3 className="mt-2 text-base font-semibold text-[#0a0c12]">{s.title}</h3>
+              <h3 className="mt-2 text-base font-semibold text-[#0a0c12] uppercase tracking-wide">{s.title}</h3>
               <p className="mt-2 text-sm text-[#525965] leading-relaxed">{s.body}</p>
             </div>
           ))}

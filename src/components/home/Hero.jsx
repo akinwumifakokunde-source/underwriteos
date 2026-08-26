@@ -5,9 +5,9 @@ import { ArrowRight } from "lucide-react";
 export default function Hero() {
   return (
     <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-20 sm:py-28">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-5">
-          API infrastructure for underwriting
+          API infrastructure for lenders & fintechs
         </p>
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12] leading-[1.05] max-w-3xl">
           Underwriting infrastructure,<br className="hidden sm:block" /> delivered as an API.

@@ -5,14 +5,14 @@ import { ArrowRight } from "lucide-react";
 export default function SandboxCta() {
   return (
     <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Try the sandbox</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
           See a decision before you write an integration.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          Run a complete underwriting flow with synthetic borrower data. Inspect the request, response,
-          risk signals, policy evaluation and evidence.
+          Run the complete underwriting flow with synthetic borrower data. Inspect the request,
+          response, risk signals, policy evaluation and evidence.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">

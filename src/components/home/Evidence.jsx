@@ -9,12 +9,12 @@ export default function Evidence() {
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
-          Every decision comes with evidence.
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+          Every underwriting decision comes with evidence.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          UnderwriteOS connects each risk signal to the data that produced it. Teams can inspect the
-          evidence, see which policy rules fired and understand why a recommendation was generated.
+          UnderwriteOS connects risk signals to the data that produced them. Teams can inspect the
+          evidence, see which policy rules fired and understand why a decision was recommended.
         </p>
 
         <div className="mt-10 grid md:grid-cols-2 gap-6">
@@ -59,7 +59,7 @@ export default function Evidence() {
 
         <div className="mt-8">
           <Link to="/evidence" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
-            View evidence explorer <ArrowRight className="w-3.5 h-3.5" />
+            Open evidence explorer <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>

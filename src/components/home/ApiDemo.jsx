@@ -28,22 +28,24 @@ function CodeBlock({ label, children }) {
 export default function ApiDemo() {
   return (
     <section className="border-b border-[#eceef1] bg-[#fafbfc]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
           One API. From borrower data to decision.
         </h2>
 
-        <div className="mt-6 inline-flex items-center gap-2 rounded-md border border-[#eceef1] bg-white px-3 py-1.5">
+        <p className="mt-6 text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">Synthetic example</p>
+        <div className="mt-3 inline-flex items-center gap-2 rounded-md border border-[#eceef1] bg-white px-3 py-1.5">
           <span className="text-[11px] font-mono font-semibold text-[#0d9488] bg-[#e6f7f3] rounded px-1.5 py-0.5">POST</span>
           <span className="text-[13px] font-mono text-[#0a0c12]">/v1/applications/{"{id}"}/underwrite</span>
         </div>
 
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
+        <div className="mt-5 grid md:grid-cols-2 gap-4">
           <CodeBlock label="Request">{REQUEST}</CodeBlock>
           <CodeBlock label="Response">{RESPONSE}</CodeBlock>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+        <p className="mt-4 text-xs text-[#8a909c]">Example response using synthetic borrower data.</p>
+        <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
           <Link to="/api-reference" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
             View API reference <ArrowRight className="w-3.5 h-3.5" />
           </Link>

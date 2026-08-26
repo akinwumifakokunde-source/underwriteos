@@ -31,7 +31,7 @@ const COLS = [
 export default function SiteFooter() {
   return (
     <footer className="bg-white">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
