@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
+import SiteFooter from "@/components/home/SiteFooter.jsx";
 
 const PILLARS = [
   { icon: Boxes, title: "Tenant isolation", desc: "Every record is scoped to an organization. Row-Level Security enforces isolation at the data layer — one tenant can never read or mutate another's data." },
@@ -24,18 +25,18 @@ const ROADMAP = [
 
 export default function Security() {
   return (
-    <div className="min-h-screen bg-[#0a0c12] text-white">
+    <div className="min-h-screen bg-white text-[#0a0c12]">
       <HomeNav />
 
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-12">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#a0a5b0] mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00e6b8]" /> Security & trust
+          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Security & trust
           </div>
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05]">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
             Built for regulated lending.
           </h1>
-          <p className="mt-6 text-lg text-[#a0a5b0] leading-relaxed">
+          <p className="mt-6 text-lg text-[#525965] leading-relaxed">
             UnderwriteOS handles sensitive financial data. Security, isolation, and auditability are designed in from
             the data layer up — not bolted on.
           </p>
@@ -43,14 +44,14 @@ export default function Security() {
       </section>
 
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#1c2029] rounded-2xl overflow-hidden border border-[#2a2f3a]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#eceef1] rounded-2xl overflow-hidden border border-[#e5e7eb]">
           {PILLARS.map((p) => (
-            <div key={p.title} className="bg-[#13161f] p-6">
-              <div className="w-9 h-9 rounded-lg bg-[#0a0c12] border border-[#2a2f3a] flex items-center justify-center mb-3.5">
-                <p.icon className="w-4 h-4 text-[#00e6b8]" />
+            <div key={p.title} className="bg-white p-6">
+              <div className="w-9 h-9 rounded-lg bg-[#f7f8fa] border border-[#e5e7eb] flex items-center justify-center mb-3.5">
+                <p.icon className="w-4 h-4 text-[#0d9488]" />
               </div>
-              <h3 className="font-medium text-white mb-1">{p.title}</h3>
-              <p className="text-sm text-[#a0a5b0] leading-relaxed">{p.desc}</p>
+              <h3 className="font-medium text-[#0a0c12] mb-1">{p.title}</h3>
+              <p className="text-sm text-[#525965] leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
@@ -58,17 +59,17 @@ export default function Security() {
 
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="rounded-2xl border border-[#2a2f3a] bg-[#13161f] p-6">
+          <div className="rounded-2xl border border-[#eceef1] bg-white p-6">
             <div className="flex items-center gap-2 mb-4">
-              <ClipboardCheck className="w-4 h-4 text-[#00e6b8]" />
-              <h2 className="text-sm font-medium uppercase tracking-wider text-[#a0a5b0]">Compliance roadmap</h2>
+              <ClipboardCheck className="w-4 h-4 text-[#0d9488]" />
+              <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Compliance roadmap</h2>
             </div>
-            <div className="divide-y divide-[#1c2029]">
+            <div className="divide-y divide-[#eceef1]">
               {ROADMAP.map((r) => (
                 <div key={r.label} className="flex items-center justify-between py-2.5">
-                  <span className="text-sm text-[#c7ccd6]">{r.label}</span>
+                  <span className="text-sm text-[#3a3f4a]">{r.label}</span>
                   <span
-                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${r.status === "Shipped" ? "text-[#00e6b8] bg-[#00e6b8]/10" : r.status === "In progress" ? "text-amber-300 bg-amber-300/10" : "text-[#a0a5b0] bg-white/5"}`}
+                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${r.status === "Shipped" ? "text-[#0d9488] bg-[#e6f7f3]" : r.status === "In progress" ? "text-amber-700 bg-amber-50" : "text-[#8a909c] bg-[#f2f3f5]"}`}
                   >
                     {r.status}
                   </span>
@@ -76,17 +77,17 @@ export default function Security() {
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-[#2a2f3a] bg-[#13161f] p-6 flex flex-col">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-[#a0a5b0] mb-4">Need a security review?</h2>
-            <p className="text-sm text-[#a0a5b0] leading-relaxed">
+          <div className="rounded-2xl border border-[#eceef1] bg-white p-6 flex flex-col">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965] mb-4">Need a security review?</h2>
+            <p className="text-sm text-[#525965] leading-relaxed">
               We work with lenders and fintechs on data processing agreements, penetration testing, and onboarding
               reviews. Start building in the sandbox, then request a security package when you're ready for production.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-[#00e6b8] px-4 py-2.5 rounded-lg hover:bg-[#00c9a0] transition-colors">
+              <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors">
                 Start building <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link to="/architecture" className="inline-flex items-center gap-1.5 text-sm font-medium text-white border border-[#2a2f3a] px-4 py-2.5 rounded-lg hover:bg-[#1c2029] transition-colors">
+              <Link to="/architecture" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] border border-[#e5e7eb] px-4 py-2.5 rounded-lg hover:bg-[#f2f3f5] transition-colors">
                 View architecture
               </Link>
             </div>
@@ -94,11 +95,7 @@ export default function Security() {
         </div>
       </section>
 
-      <footer className="border-t border-[#1c2029]">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 text-sm text-[#5b6472]">
-          UnderwriteOS — security by design.
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -31,6 +31,9 @@ import Billing from '@/pages/Billing';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Pricing from '@/pages/Pricing';
 import Security from '@/pages/Security';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
+import Contact from '@/pages/Contact';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -66,6 +69,9 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Home />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/security" element={<Security />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/contact" element={<Contact />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/sandbox" element={<Sandbox />} />

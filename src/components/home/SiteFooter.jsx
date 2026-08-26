@@ -13,13 +13,13 @@ const COLS = [
   },
   {
     title: "Company",
-    links: [{ label: "Security", to: "/security" }, { label: "Contact", to: "mailto:akinfaks@yahoo.com" }],
+    links: [{ label: "Security", to: "/security" }, { label: "Contact", to: "/contact" }],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacy", to: "#" },
-      { label: "Terms", to: "#" },
+      { label: "Privacy", to: "/privacy" },
+      { label: "Terms", to: "/terms" },
     ],
   },
   {
