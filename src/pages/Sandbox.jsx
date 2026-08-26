@@ -10,7 +10,7 @@ import StepPanel from "@/components/sandbox/StepPanel.jsx";
 import ResultTabs from "@/components/sandbox/ResultTabs.jsx";
 import ApiKeyPanel from "@/components/sandbox/ApiKeyPanel.jsx";
 import ErrorTesting from "@/components/sandbox/ErrorTesting.jsx";
-import { withApiKey, hasApiKey } from "@/lib/apiKey";
+import { withApiKey, hasApiKey, getApiKey } from "@/lib/apiKey";
 import { KeyRound } from "lucide-react";
 
 const STEPS = [
@@ -248,7 +248,7 @@ export default function Sandbox() {
                 <span className="text-slate-400 ml-1">API</span>
                 <span className="font-mono font-medium text-slate-700 bg-slate-100 rounded px-2 py-1">v1</span>
                 <span className="text-slate-400 ml-1">Key</span>
-                <span className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">uw_test_••••••••</span>
+                <span className="font-mono text-slate-700 bg-slate-100 rounded px-2 py-1">{getApiKey() ? `${getApiKey().slice(0, 8)}••••••••` : "uw_test_••••••••"}</span>
               </div>
               <div className="flex gap-2 ml-auto">
                 <button onClick={reset} disabled={running} className="inline-flex items-center gap-1.5 text-sm text-slate-600 px-3 py-2 rounded-lg border border-slate-200 hover:bg-white disabled:opacity-40">
