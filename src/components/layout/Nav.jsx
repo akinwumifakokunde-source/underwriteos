@@ -18,6 +18,7 @@ const GROUPS = [
     items: [
       { to: "/dashboard", label: "Dashboard" },
       { to: "/underwrite", label: "Underwrite" },
+      { to: "/evidence", label: "Evidence Graph" },
       { to: "/sandbox", label: "Sandbox" },
       { to: "/members", label: "Members" },
       { to: "/settings", label: "Settings" },
