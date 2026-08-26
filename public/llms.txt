@@ -1,0 +1,41 @@
+# UnderwriteOS
+
+> API-first underwriting infrastructure for lenders and fintechs.
+
+UnderwriteOS normalizes credit bureau, open banking and financial document data into a canonical model, generates structured risk signals with full evidence lineage, evaluates your versioned policy, and returns an explainable underwriting decision (APPROVE / REVIEW / DECLINE) over a versioned REST API.
+
+## What it does
+
+- **Normalize** — Turn credit, bank and document data into a consistent financial and credit profile.
+- **Analyze** — Generate structured risk signals across credit, cashflow and affordability.
+- **Decide** — Apply your policy and return an explainable decision with evidence.
+
+## Two ways to use it
+
+- **No code** — A guided wizard to underwrite a borrower without integration.
+- **API integration** — A versioned REST API with environment-scoped keys, webhooks, providers and usage billing.
+
+## Key capabilities
+
+- Evidence graph: every decision is traceable to the source field it came from.
+- AI assists, your policy decides — the lender's versioned policy is authoritative.
+- Cross-border credit profile portability with attested provenance.
+- Model-monitoring feedback loop: predicted vs actual default calibration.
+- Sandbox / production isolation, organization-scoped access, audit logs, idempotency.
+
+## API (v1)
+
+- POST /v1/applications — create an application
+- POST /v1/applications/{id}/credit-report — ingest credit bureau data
+- POST /v1/applications/{id}/bank-statement — ingest bank data
+- POST /v1/applications/{id}/analyze — generate risk signals
+- POST /v1/applications/{id}/underwrite — return a decision
+- GET /v1/applications/{id}/evidence-graph — decision lineage
+
+## Links
+
+- Website: https://oldme.base44.app/
+- API reference: https://oldme.base44.app/api-reference
+- Documentation: https://oldme.base44.app/docs
+- Pricing: https://oldme.base44.app/pricing
+- Security: https://oldme.base44.app/security
