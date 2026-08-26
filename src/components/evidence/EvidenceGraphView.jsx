@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {
   ShieldCheck, AlertTriangle, Brain, Scale, Activity, FileSearch,
-  Link2, ChevronRight, X, CircleDot,
+  Link2, ChevronRight, X, CircleDot, Globe2,
 } from "lucide-react";
 
 const SOURCE_LABEL = {
@@ -41,7 +41,7 @@ function fmt(v, type) {
 }
 
 export default function EvidenceGraphView({ data }) {
-  const { application, decision, recommendation, policy, risk_signals = [], evidence = [] } = data;
+  const { application, decision, recommendation, policy, risk_signals = [], evidence = [], credit_reports = [] } = data;
   const [selectedSignal, setSelectedSignal] = useState(null);
 
   const evidenceBySignal = useMemo(() => {
@@ -49,6 +49,22 @@ export default function EvidenceGraphView({ data }) {
     for (const e of evidence) (m[e.signal_id] ||= []).push(e);
     return m;
   }, [evidence]);
+
+  // Portable CreditReports: id -> attestation provenance, so evidence that
+  // traces to a ported credit report can be badged as cross-border.
+  const portableByReport = useMemo(() => {
+    const m = {};
+    for (const r of credit_reports) {
+      if (r.raw_data?.portable) {
+        m[r.id] = {
+          origin_application_id: r.raw_data.origin_application_id,
+          origin_provider: r.raw_data.origin_provider,
+          attestation_hash: r.raw_data.attestation_hash,
+        };
+      }
+    }
+    return m;
+  }, [credit_reports]);
 
   const signalsByCategory = useMemo(() => {
     const m = {};
@@ -156,7 +172,9 @@ export default function EvidenceGraphView({ data }) {
               {selectedEvidence.length === 0 ? (
                 <div className="text-xs text-slate-400 italic">No evidence records linked to this signal.</div>
               ) : (
-                selectedEvidence.map((e, i) => <EvidenceCard key={i} ev={e} />)
+                selectedEvidence.map((e, i) => (
+                  <EvidenceCard key={i} ev={e} portable={portableByReport[e.source_id]} />
+                ))
               )}
             </div>
           )}
@@ -300,14 +318,25 @@ function SignalChip({ signal, active, onClick }) {
   );
 }
 
-function EvidenceCard({ ev }) {
+function EvidenceCard({ ev, portable }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <div className="flex items-center gap-2 mb-2">
+    <div className={`rounded-lg border bg-white p-3 ${portable ? "border-teal-300 ring-1 ring-teal-100" : "border-slate-200"}`}>
+      <div className="flex items-center gap-2 mb-2 flex-wrap">
         <Link2 className="w-3.5 h-3.5 text-teal-600" />
         <span className="text-xs font-semibold text-slate-800">{SOURCE_LABEL[ev.source_type] || ev.source_type}</span>
         {ev.source_provider && <span className="text-[10px] font-mono text-slate-400">{ev.source_provider}</span>}
+        {portable && (
+          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-teal-700 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded">
+            <Globe2 className="w-3 h-3" /> Portable · attested
+          </span>
+        )}
       </div>
+      {portable && (
+        <div className="mb-2 text-[11px] text-teal-700 bg-teal-50/60 border border-teal-100 rounded px-2 py-1.5">
+          Ported from <span className="font-mono">{String(portable.origin_application_id).slice(-8)}</span> · provider {portable.origin_provider}
+          <div className="font-mono text-[10px] text-teal-600 mt-0.5 break-all">attestation {portable.attestation_hash?.slice(0, 16)}…</div>
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-2 text-[11px]">
         <Stat label="Field" value={ev.field || "—"} />
         <Stat label="Calculation" value={ev.calculation_method || "—"} />

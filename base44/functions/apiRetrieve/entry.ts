@@ -95,7 +95,7 @@ export default async function(req: Request): Promise<Response> {
     if (action === "summary") {
       const application_id = requireAppId();
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
-      const [fp, cp, signals, evidence, recs, decisions, events, app] = await Promise.all([
+      const [fp, cp, signals, evidence, recs, decisions, events, app, reports, statements] = await Promise.all([
         base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1),
         base44.asServiceRole.entities.CreditProfile.filter({ application_id, organization_id }, "-created_date", 1),
         base44.asServiceRole.entities.RiskSignal.filter({ application_id, organization_id }, "-created_date", 200),
@@ -104,6 +104,8 @@ export default async function(req: Request): Promise<Response> {
         base44.asServiceRole.entities.UnderwritingDecision.filter({ application_id, organization_id }, "-created_date", 1),
         base44.asServiceRole.entities.AuditEvent.filter({ application_id, organization_id }, "-created_date", 200),
         base44.asServiceRole.entities.Application.filter({ id: application_id, organization_id }, "-created_date", 1),
+        base44.asServiceRole.entities.CreditReport.filter({ application_id, organization_id }, "-created_date", 10),
+        base44.asServiceRole.entities.BankStatement.filter({ application_id, organization_id }, "-created_date", 10),
       ]);
       return apiSuccess({
         application_id,
@@ -115,6 +117,8 @@ export default async function(req: Request): Promise<Response> {
         recommendation: recs[0] || null,
         decision: decisions[0] || null,
         audit_events: events,
+        credit_reports: reports,
+        bank_statements: statements,
       }, 200);
     }
 
