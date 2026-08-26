@@ -149,8 +149,8 @@ export default function ApiReference() {
                       <button onClick={() => setOpen((o) => ({ ...o, [key]: !o[key] }))} className="w-full flex items-center gap-3 px-4 py-3 text-left">
                         {isOpen ? <ChevronDown className="w-4 h-4 text-slate-400" /> : <ChevronRight className="w-4 h-4 text-slate-400" />}
                         <span className={`text-[10px] font-bold w-12 text-center rounded border py-0.5 ${methodColor[e.method]}`}>{e.method}</span>
-                        <code className="text-sm font-mono text-slate-700 flex-1 break-all">{e.path}</code>
-                        <span className="text-xs text-slate-400 hidden sm:block">{e.desc}</span>
+                        <code className="text-sm font-mono text-slate-700 whitespace-nowrap shrink-0">{e.path}</code>
+                        <span className="text-xs text-slate-400 hidden sm:block flex-1 min-w-0 truncate text-right">{e.desc}</span>
                       </button>
                       {isOpen && (
                         <div className="px-4 pb-4 space-y-4">
