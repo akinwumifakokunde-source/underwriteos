@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import QuickLinks from "@/components/dashboard/QuickLinks.jsx";
 import { Loader2, AlertTriangle, Activity, KeyRound, CheckCircle2, XCircle, ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
@@ -40,6 +41,10 @@ export default function Dashboard() {
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-slate-500 mt-1">Your underwriting API at a glance.</p>
+        </div>
+
+        <div className="mb-4">
+          <QuickLinks />
         </div>
 
         {error && (
