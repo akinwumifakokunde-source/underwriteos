@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Loader2, AlertTriangle, ArrowLeft, FileText } from "lucide-react";
 import StatusIndicator from "@/components/application/StatusIndicator";
 import OverviewTab from "@/components/application/OverviewTab";
 import DocumentsSection from "@/components/application/DocumentsSection";
@@ -353,6 +353,21 @@ export default function ApplicationDetail() {
 
           {tab === "Documents" && (
             <>
+              <div className="rounded-xl border border-slate-200 bg-white p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4 text-teal-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-slate-900">Add documents</h3>
+                    <p className="text-[12px] text-slate-500 mt-0.5">
+                      There are two ways to fulfil the requirements below —{" "}
+                      <span className="font-medium text-slate-700">connect a data source</span> to pull live credit and bank data automatically, or{" "}
+                      <span className="font-medium text-slate-700">upload files manually</span>. You can use either or both.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <DataSourcePuller
                 market={app?.market || "GB"}
                 onPullCredit={pullCreditReport}
