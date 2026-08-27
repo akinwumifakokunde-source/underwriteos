@@ -16,15 +16,6 @@ const TYPE_LABELS = {
   other: "Document",
 };
 
-const TYPE_REQUIREMENTS = {
-  bank_statement: "Last 3 months",
-  payslip: "Latest 3 payslips",
-  credit_report: "Current credit report",
-  tax: "Latest 2 years",
-  financial_statement: "Latest annual statement",
-  proof_of_address: "Utility bill or bank letter",
-};
-
 const STATUS_CONFIG = {
   uploaded: { label: "Uploaded", cls: "text-slate-500 bg-slate-50 border-slate-200", icon: FileText },
   processing: { label: "Processing", cls: "text-indigo-600 bg-indigo-50 border-indigo-200", icon: Loader2, spin: true },
@@ -125,7 +116,7 @@ function RequiredDocRow({ req, doc, docCount }) {
       )}
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium text-slate-800">{req.label}{!req.required && <span className="text-slate-400 font-normal"> (optional)</span>}</div>
-        <div className="text-[11px] text-slate-400">{TYPE_REQUIREMENTS[req.type] || "Required document"}</div>
+        <div className="text-[11px] text-slate-400">{req.detail || "Required document"}</div>
       </div>
       <div className="shrink-0 text-right">
         {doc ? (
