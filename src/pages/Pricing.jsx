@@ -84,8 +84,8 @@ const STEPS = [
 
 const FAQ = [
   { q: "Is there a platform fee?", a: "Pay-as-you-go has no platform fee — you only buy and consume credits. Growth is $499/month and includes 500 decisions; Scale is custom-priced for high volume." },
-  { q: "What counts as a billable transaction?", a: "Data pulls, document processing, AI analysis, underwriting decisions, and exports. Retrieving (reading) applications and decisions is always free." },
-  { q: "How is a full application priced?", a: "A complete decision — credit pull, bank pull, document processing, analysis, and the underwriting decision — is roughly 160 credits. On Growth that's about $0.32 per decision, well below the cost of pulling the raw data separately." },
+  { q: "What counts as a billable transaction?", a: "Credit report pull (50 credits), bank statement pull (40), document processing (15 per document), AI analysis (30), underwriting decision (20), and report exports (5 per PDF, CSV, or Word). Retrieving (reading) applications, profiles, and decisions is always free." },
+  { q: "How is a full application priced?", a: "A complete decision — credit pull (50), bank pull (40), document processing (15), analysis (30), the underwriting decision (20), and a report export (5) — is 160 credits. On Growth that's about $0.32 per decision in UnderwriteOS credits, well below the cost of pulling the raw data separately." },
   { q: "Do credits expire?", a: "No. Your credit balance carries over until consumed." },
   { q: "Are data source costs included?", a: "No. Credits cover UnderwriteOS orchestration — fetching, normalizing, and reconciling the data. The underlying bureau and open-banking provider fees are billed directly to your own API credentials, which you enter during setup. You can also upload documents manually at a lower credit cost." },
   { q: "Can I switch plans?", a: "Anytime. Move between pay-as-you-go and Growth from your workspace, or talk to us about Scale when you reach production volume." },
