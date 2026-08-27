@@ -41,5 +41,18 @@
   "required": [
     "name",
     "slug"
-  ]
+  ],
+  "rls": {
+    "read": {
+      "id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
 }
