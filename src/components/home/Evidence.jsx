@@ -14,7 +14,7 @@ export default function Evidence() {
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
           Every underwriting decision is linked to the policy, risk signals, evidence and source data
-          behind it.
+          behind it — and cross-document reconciliation flags inconsistencies automatically.
         </p>
 
         <div className="mt-8 grid md:grid-cols-2 gap-6">

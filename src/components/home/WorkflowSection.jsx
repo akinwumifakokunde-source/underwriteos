@@ -2,11 +2,11 @@ import React from "react";
 import { ArrowRight, Database, FileSearch, Brain, Shield, GitBranch, CheckCircle2 } from "lucide-react";
 
 const STEPS = [
-  { icon: Database, label: "Borrower data", desc: "Upload documents or connect a data source" },
-  { icon: FileSearch, label: "Normalization", desc: "Financial data extracted and structured" },
-  { icon: Brain, label: "Risk signals", desc: "AI identifies risk factors and positive signals" },
-  { icon: Shield, label: "Policy evaluation", desc: "Your rules produce a deterministic decision" },
-  { icon: GitBranch, label: "Decision", desc: "APPROVE, REVIEW, or DECLINE with full evidence" },
+  { icon: Database, label: "Data sources", desc: "Connect live credit & bank data, or upload documents" },
+  { icon: FileSearch, label: "Normalization", desc: "Canonical financial profile per market" },
+  { icon: Brain, label: "5 risk dimensions", desc: "Credit · Affordability · Fraud · Data quality · Policy" },
+  { icon: Shield, label: "Policy evaluation", desc: "Your rules produce the authoritative decision" },
+  { icon: GitBranch, label: "Decision + export", desc: "APPROVE / REVIEW / DECLINE — export as PDF, CSV, Word" },
 ];
 
 export default function WorkflowSection() {
@@ -14,9 +14,9 @@ export default function WorkflowSection() {
     <section className="border-b border-[#eceef1]">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16">
         <div className="text-center mb-10">
-          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The underwriting loop</p>
+          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The continuous underwriting loop</p>
           <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">
-            From borrower data to decision — in one workspace
+            From live data to decision — in one continuous workspace
           </h2>
         </div>
 

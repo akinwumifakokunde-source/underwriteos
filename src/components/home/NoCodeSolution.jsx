@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MousePointerClick, Shield, GitBranch, FileSearch } from "lucide-react";
+import { ArrowRight, MousePointerClick, Shield, GitBranch, FileSearch, Plug, MessageSquare, FileDown } from "lucide-react";
 
 const PROBLEM_POINTS = [
   "Building underwriting logic from scratch takes months",
@@ -10,10 +10,10 @@ const PROBLEM_POINTS = [
 ];
 
 const SOLUTION_POINTS = [
-  { icon: MousePointerClick, title: "No-code policy builder", desc: "Create lending rules visually — no programming required." },
-  { icon: FileSearch, title: "Document intelligence", desc: "Upload bank statements and credit reports. Data is extracted automatically." },
-  { icon: Shield, title: "AI-assisted analysis", desc: "AI identifies risk factors and recommends a decision. Your policy decides." },
-  { icon: GitBranch, title: "Full traceability", desc: "Every decision traces back to the source data through evidence." },
+  { icon: Plug, title: "Live data sources", desc: "Connect credit bureaus and open banking per market — or upload documents. Either way works." },
+  { icon: Shield, title: "Continuous assessment", desc: "Five risk dimensions — credit, affordability, fraud, data quality, policy — assessed as data arrives, not in batches." },
+  { icon: MessageSquare, title: "AI underwriter + chat", desc: "Advisory AI recommendations and an in-context assistant. Your policy stays authoritative." },
+  { icon: FileDown, title: "Exports & audit trail", desc: "Download decisions as PDF, CSV, or Word. Every step is traceable to its source evidence." },
 ];
 
 export default function NoCodeSolution() {

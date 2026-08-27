@@ -3,20 +3,20 @@ import React from "react";
 const STEPS = [
   {
     n: "01",
-    title: "Ingest",
-    body: "Create an application and provide borrower, credit, bank or document data.",
+    title: "Connect",
+    body: "Create an application for any of six markets. Connect a live credit bureau or open banking source, or upload documents — whichever you have.",
     endpoint: "POST /v1/applications",
   },
   {
     n: "02",
     title: "Analyze",
-    body: "Normalize financial data and generate structured risk signals.",
+    body: "Data is normalized into a canonical financial profile. Five risk dimensions and cross-document reconciliation run continuously as data arrives.",
     endpoint: "POST /v1/applications/{id}/analyze",
   },
   {
     n: "03",
     title: "Decide",
-    body: "Apply your versioned policy and return an explainable underwriting decision.",
+    body: "Your versioned policy produces an authoritative decision. The AI underwriter adds an advisory recommendation. Export the full report as PDF, CSV, or Word.",
     endpoint: "POST /v1/applications/{id}/underwrite",
   },
 ];
@@ -27,7 +27,7 @@ export default function HowItWorks() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">How it works</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
-          From borrower data to a decision.
+          From live data to a decision — continuously.
         </h2>
 
         <div className="mt-8 grid md:grid-cols-3 gap-5">
