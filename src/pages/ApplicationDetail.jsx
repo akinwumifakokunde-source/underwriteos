@@ -52,6 +52,23 @@ export default function ApplicationDetail() {
   const [analyzing, setAnalyzing] = useState(false);
   const [overriding, setOverriding] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
+  const [showFormErrors, setShowFormErrors] = useState(false);
+
+  const validateForm = (f) => {
+    const errors = {};
+    if (!f?.first_name?.trim()) errors.first_name = "First name is required";
+    if (!f?.last_name?.trim()) errors.last_name = "Last name is required";
+    if (!f?.email?.trim()) errors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = "Enter a valid email";
+    if (!f?.annual_income || Number(f.annual_income) <= 0) errors.annual_income = "Annual income is required";
+    if (!f?.loan_amount || Number(f.loan_amount) <= 0) errors.loan_amount = "Requested amount is required";
+    if (!f?.loan_term_months || Number(f.loan_term_months) <= 0) errors.loan_term_months = "Term is required";
+    return errors;
+  };
+
+  const formErrors = form ? validateForm(form) : {};
+  const formValid = Object.keys(formErrors).length === 0;
+  const displayErrors = showFormErrors ? formErrors : {};
 
   const load = useCallback(async () => {
     try {
@@ -124,11 +141,11 @@ export default function ApplicationDetail() {
 
   // Auto-run the pipeline once on load if documents exist but no decision yet
   useEffect(() => {
-    if (!loading && !autoRan && documents.length > 0 && !results?.decision) {
+    if (!loading && !autoRan && documents.length > 0 && !results?.decision && formValid) {
       setAutoRan(true);
       runPipeline();
     }
-  }, [loading, autoRan, documents, results?.decision, runPipeline]);
+  }, [loading, autoRan, documents, results?.decision, formValid, runPipeline]);
 
   const uploadDocument = async (file) => {
     setUploading(true);
@@ -143,7 +160,7 @@ export default function ApplicationDetail() {
       setProcessingDocId(doc.id);
       await base44.functions.invoke("apiDocuments", { action: "process", document_id: doc.id });
       await load();
-      await runPipeline();
+      if (formValid) await runPipeline();
       setTab("Documents");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
@@ -178,6 +195,12 @@ export default function ApplicationDetail() {
   };
 
   const saveForm = async () => {
+    const errors = validateForm(form);
+    if (Object.keys(errors).length > 0) {
+      setShowFormErrors(true);
+      return;
+    }
+    setShowFormErrors(false);
     setSaving(true);
     try {
       await base44.functions.invoke("apiBorrowers", {
@@ -312,6 +335,7 @@ export default function ApplicationDetail() {
               form={form} setForm={setForm}
               allExtracted={allExtracted} onSave={saveForm} saving={saving}
               onNavigate={setTab}
+              formErrors={displayErrors} formValid={formValid}
             />
           )}
 
