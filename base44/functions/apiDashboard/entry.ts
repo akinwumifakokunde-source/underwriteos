@@ -53,6 +53,8 @@ export default async function(req: Request): Promise<Response> {
       const dec = d.decision as keyof typeof decisionCounts;
       if (dec in decisionCounts) decisionCounts[dec]++;
     }
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const decided_today = decisions.filter((d: any) => (d.decision_timestamp || d.created_date || "").slice(0, 10) === todayStr).length;
 
     const active_keys = keys.map((k: any) => ({
       id: k.id, name: k.name, prefix: k.prefix, environment: k.environment,
@@ -78,7 +80,7 @@ export default async function(req: Request): Promise<Response> {
       active_keys,
       requests: { total: events.length, last_30_days: last30, daily },
       applications: { total: apps.length, ...appStatus, recent: recent_applications },
-      decisions: { total: decisions.length, ...decisionCounts, recent: recent_decisions }
+      decisions: { total: decisions.length, ...decisionCounts, decided_today, recent: recent_decisions }
     }, 200);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
