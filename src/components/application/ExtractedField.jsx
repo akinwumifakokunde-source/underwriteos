@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, Pencil, Check, X } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function ExtractedField({ field, onEdit, editedBy }) {
   return (

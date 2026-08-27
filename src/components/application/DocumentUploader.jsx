@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Upload, Loader2, FileText, X, CheckCircle2, AlertCircle } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 
 export default function DocumentUploader({ onUpload, uploading, compact }) {
   const [dragOver, setDragOver] = useState(false);

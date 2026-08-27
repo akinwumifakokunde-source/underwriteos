@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import {
   Loader2, AlertTriangle, ArrowLeft, RotateCcw, Check, X, AlertTriangle as Alert,
-  Brain, ShieldCheck, GitBranch, Activity, FileText, Eye, Trash2, Sparkles
+  Activity
 } from "lucide-react";
 import DocumentsSection from "@/components/application/DocumentsSection";
 import AnalysisSection from "@/components/application/AnalysisSection";
