@@ -1,6 +1,7 @@
 {
   "name": "Document",
   "type": "object",
+  "description": "Uploaded document for an application. Documents are auto-classified, processed via AI extraction, and linked to evidence records for full provenance.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -20,6 +21,8 @@
         "identity",
         "employment",
         "tax",
+        "financial_statement",
+        "proof_of_address",
         "other_financial",
         "other"
       ]
@@ -49,12 +52,30 @@
         "uploaded",
         "processing",
         "processed",
+        "verified",
+        "needs_review",
         "failed"
       ],
       "default": "uploaded"
     },
     "extracted_data": {
-      "type": "object"
+      "type": "object",
+      "description": "Structured extraction result: fields array with name, value, confidence, source; processing_steps; overall_confidence."
+    },
+    "confidence": {
+      "type": "number",
+      "description": "Overall extraction confidence (0..1)."
+    },
+    "extracted_fields_count": {
+      "type": "number",
+      "default": 0
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Detected inconsistencies or quality issues."
     },
     "source_reference": {
       "type": "string"

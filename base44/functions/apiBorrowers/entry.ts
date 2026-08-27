@@ -48,7 +48,30 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ borrower: borrowers[0] }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported.`, 400);
+    if (action === "update") {
+      requireScope(ctx, "borrowers:write");
+      const { borrower_id, first_name, last_name, email, phone, date_of_birth, address, employment_status, employer_name, annual_income, income_currency } = body;
+      if (!borrower_id) return apiError("VALIDATION_ERROR", "borrower_id is required.", 400);
+      const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: borrower_id, organization_id }, "-created_date", 1);
+      if (borrowers.length === 0) return apiError("BORROWER_NOT_FOUND", `Borrower ${borrower_id} was not found.`, 404);
+      const updates: any = {};
+      if (first_name !== undefined) updates.first_name = first_name;
+      if (last_name !== undefined) updates.last_name = last_name;
+      if (email !== undefined) updates.email = email;
+      if (phone !== undefined) updates.phone = phone;
+      if (date_of_birth !== undefined) updates.date_of_birth = date_of_birth;
+      if (address !== undefined) updates.address = address;
+      if (employment_status !== undefined) updates.employment_status = employment_status;
+      if (employer_name !== undefined) updates.employer_name = employer_name;
+      if (annual_income !== undefined) updates.annual_income = annual_income ? Number(annual_income) : null;
+      if (income_currency !== undefined) updates.income_currency = income_currency;
+      if (Object.keys(updates).length === 0) return apiError("VALIDATION_ERROR", "No fields to update.", 400);
+      const updated = await base44.asServiceRole.entities.Borrower.update(borrower_id, updates);
+      await audit(base44, organization_id, "borrower.updated", { actor, actor_type, endpoint: "PATCH /v1/borrowers/{id}", details: { borrower_id, fields: Object.keys(updates) } });
+      return apiSuccess({ borrower: updated }, 200);
+    }
+
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use create|get|update.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
