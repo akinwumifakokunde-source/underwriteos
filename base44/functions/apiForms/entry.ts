@@ -39,7 +39,11 @@ export default async function(req: Request): Promise<Response> {
       const market = form.market || "GB";
       const currency = currencyFor(market);
       const kyc = kycFor(market);
-      if (!v.id_number || !String(v.id_number).trim()) return apiError("VALIDATION_ERROR", `${kyc.idLabel} is required.`, 400);
+      for (const f of kyc) {
+        if (!v[f.key] || !String(v[f.key]).trim()) return apiError("VALIDATION_ERROR", `${f.label} is required.`, 400);
+      }
+      const kycValues = kyc.map((f) => String(v[f.key] || "")).filter(Boolean).join("|");
+      const national_id_hash = kycValues ? await hashId(`${v.first_name}${v.last_name}${kycValues}`) : (v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null);
 
       const borrower = await base44.asServiceRole.entities.Borrower.create({
         organization_id,
@@ -49,7 +53,7 @@ export default async function(req: Request): Promise<Response> {
         email: v.email || null,
         phone: v.phone || null,
         date_of_birth: v.date_of_birth || null,
-        national_id_hash: v.id_number ? await hashId(`${v.first_name}${v.last_name}${v.id_number}`) : (v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null),
+        national_id_hash,
         address: {
           line1: v.address_line1 || null,
           city: v.address_city || null,
@@ -207,14 +211,20 @@ function publicForm(f: any) {
   };
 }
 
-function kycFor(market: string): any {
+function kycFor(market: string): any[] {
   const map: any = {
-    GB: { idLabel: "ID document number", idPlaceholder: "Passport or driving licence number", idHint: "Passport or photocard driving licence (KYC/AML)" },
-    US: { idLabel: "ID document number", idPlaceholder: "Driver's licence or passport number", idHint: "Driver's licence or passport (KYC / Patriot Act)" },
-    NG: { idLabel: "BVN / National ID (NIN)", idPlaceholder: "BVN or NIN", idHint: "Bank Verification Number + NIN, Voter's Card or Driver's Licence" },
-    ZA: { idLabel: "SA ID number", idPlaceholder: "ID number", idHint: "ID book or smart ID card (FICA)" },
-    KE: { idLabel: "National ID number", idPlaceholder: "National ID", idHint: "National ID card + KRA PIN certificate" },
-    GH: { idLabel: "Ghana Card number", idPlaceholder: "GHA-000000000", idHint: "Ghana Card (national ID)" },
+    GB: [{ key: "national_insurance_number", label: "National Insurance Number (NI)", placeholder: "e.g. QQ 12 34 56 C", hint: "Used to verify identity and pull your UK credit report (Experian, Equifax, TransUnion)" }],
+    US: [{ key: "ssn", label: "Social Security Number (SSN)", placeholder: "123-45-6789", hint: "Used to verify identity and pull your US credit report (KYC / Patriot Act)" }],
+    NG: [
+      { key: "bvn", label: "Bank Verification Number (BVN)", placeholder: "11-digit BVN", hint: "Required by Nigerian credit bureaus (CRC, Credit Registry, FirstCentral)" },
+      { key: "nin", label: "National Identification Number (NIN)", placeholder: "11-digit NIN", hint: "National ID for KYC verification" },
+    ],
+    ZA: [{ key: "sa_id_number", label: "SA ID Number", placeholder: "ID number", hint: "Used to verify identity and pull your South African credit report (FICA)" }],
+    KE: [
+      { key: "national_id", label: "National ID Number", placeholder: "National ID", hint: "Used for KYC and credit pull (CRB Africa, TransUnion)" },
+      { key: "kra_pin", label: "KRA PIN", placeholder: "e.g. A000000000X", hint: "Kenya Revenue Authority PIN" },
+    ],
+    GH: [{ key: "ghana_card_number", label: "Ghana Card Number", placeholder: "GHA-000000000", hint: "Used to verify identity and pull your Ghana credit report (XDS Ghana)" }],
   };
   return map[market] || map.GB;
 }

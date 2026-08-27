@@ -103,24 +103,26 @@ export default function Apply() {
         )}
 
         <form onSubmit={submit} className="space-y-6">
-          {form.kyc && (
+          {form.kyc && form.kyc.length > 0 && (
             <div>
               <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Identity verification</h2>
-              <div className="rounded-xl border border-slate-200 bg-white">
-                <div className="px-4 py-3">
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    {form.kyc.idLabel}<span className="text-rose-500 ml-0.5">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={values.id_number || ""}
-                    onChange={(e) => set("id_number", e.target.value)}
-                    required
-                    placeholder={form.kyc.idPlaceholder}
-                    className="w-full text-sm rounded-md border border-slate-200 px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400"
-                  />
-                  <p className="mt-1.5 text-[11px] text-slate-400 leading-relaxed">{form.kyc.idHint}</p>
-                </div>
+              <div className="rounded-xl border border-slate-200 bg-white divide-y divide-slate-100">
+                {form.kyc.map((f) => (
+                  <div key={f.key} className="px-4 py-3">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      {f.label}<span className="text-rose-500 ml-0.5">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={values[f.key] || ""}
+                      onChange={(e) => set(f.key, e.target.value)}
+                      required
+                      placeholder={f.placeholder}
+                      className="w-full text-sm rounded-md border border-slate-200 px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-400"
+                    />
+                    <p className="mt-1.5 text-[11px] text-slate-400 leading-relaxed">{f.hint}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

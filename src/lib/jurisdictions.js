@@ -62,17 +62,31 @@ export const JURISDICTIONS = {
   },
 };
 
-const KYC = {
-  GB: { idLabel: "ID document number", idPlaceholder: "Passport or driving licence number", idHint: "Passport or photocard driving licence (KYC/AML)" },
-  US: { idLabel: "ID document number", idPlaceholder: "Driver's licence or passport number", idHint: "Driver's licence or passport (KYC / Patriot Act)" },
-  NG: { idLabel: "BVN / National ID (NIN)", idPlaceholder: "BVN or NIN", idHint: "Bank Verification Number + NIN, Voter's Card or Driver's Licence" },
-  ZA: { idLabel: "SA ID number", idPlaceholder: "ID number", idHint: "ID book or smart ID card (FICA)" },
-  KE: { idLabel: "National ID number", idPlaceholder: "National ID", idHint: "National ID card + KRA PIN certificate" },
-  GH: { idLabel: "Ghana Card number", idPlaceholder: "GHA-000000000", idHint: "Ghana Card (national ID)" },
+const KYC_FIELDS = {
+  GB: [
+    { key: "national_insurance_number", label: "National Insurance Number (NI)", placeholder: "e.g. QQ 12 34 56 C", hint: "Used to verify identity and pull your UK credit report (Experian, Equifax, TransUnion)" },
+  ],
+  US: [
+    { key: "ssn", label: "Social Security Number (SSN)", placeholder: "123-45-6789", hint: "Used to verify identity and pull your US credit report (KYC / Patriot Act)" },
+  ],
+  NG: [
+    { key: "bvn", label: "Bank Verification Number (BVN)", placeholder: "11-digit BVN", hint: "Required by Nigerian credit bureaus (CRC, Credit Registry, FirstCentral)" },
+    { key: "nin", label: "National Identification Number (NIN)", placeholder: "11-digit NIN", hint: "National ID for KYC verification" },
+  ],
+  ZA: [
+    { key: "sa_id_number", label: "SA ID Number", placeholder: "ID number", hint: "Used to verify identity and pull your South African credit report (FICA)" },
+  ],
+  KE: [
+    { key: "national_id", label: "National ID Number", placeholder: "National ID", hint: "Used for KYC and credit pull (CRB Africa, TransUnion)" },
+    { key: "kra_pin", label: "KRA PIN", placeholder: "e.g. A000000000X", hint: "Kenya Revenue Authority PIN" },
+  ],
+  GH: [
+    { key: "ghana_card_number", label: "Ghana Card Number", placeholder: "GHA-000000000", hint: "Used to verify identity and pull your Ghana credit report (XDS Ghana)" },
+  ],
 };
 
 export function getKycConfig(market) {
-  return KYC[market] || KYC.GB;
+  return KYC_FIELDS[market] || KYC_FIELDS.GB;
 }
 
 export function getJurisdiction(code) {

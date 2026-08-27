@@ -220,13 +220,17 @@ export default function FormEditor() {
           </Section>
 
           <Section title="KYC / Identity verification">
-            <p className="text-xs text-slate-500">A government-issued ID is required for KYC/AML in every market. The ID type adapts to the selected market and is always collected from the borrower.</p>
-            <div className="rounded-lg border border-slate-200 px-3 py-2.5 flex items-center justify-between">
-              <div>
-                <div className="text-sm text-slate-700">{getKycConfig(form.market).idLabel}</div>
-                <div className="text-[11px] text-slate-400 mt-0.5">{getKycConfig(form.market).idHint}</div>
-              </div>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-white bg-slate-700 rounded px-2 py-0.5">Required</span>
+            <p className="text-xs text-slate-500">National identifiers required to verify identity and pull credit reports in this market. All fields below are always collected from the borrower.</p>
+            <div className="space-y-2">
+              {getKycConfig(form.market).map((f) => (
+                <div key={f.key} className="rounded-lg border border-slate-200 px-3 py-2.5 flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-slate-700">{f.label}</div>
+                    <div className="text-[11px] text-slate-400 mt-0.5">{f.hint}</div>
+                  </div>
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-white bg-slate-700 rounded px-2 py-0.5">Required</span>
+                </div>
+              ))}
             </div>
           </Section>
 
