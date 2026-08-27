@@ -17,6 +17,7 @@ import ApplicationHeader from "@/components/application/ApplicationHeader";
 import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
+import DataSourcePuller from "@/components/application/DataSourcePuller";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 import { computeRiskDimensions } from "@/lib/riskDimensions";
 
@@ -58,6 +59,7 @@ export default function ApplicationDetail() {
   const [analyzing, setAnalyzing] = useState(false);
   const [overriding, setOverriding] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
+  const [pulling, setPulling] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -159,6 +161,34 @@ export default function ApplicationDetail() {
     } finally {
       setProcessingDocId(null);
       setUploading(false);
+    }
+  };
+
+  const pullCreditReport = async (provider) => {
+    setPulling("credit");
+    try {
+      await base44.functions.invoke("apiCreditReport", { application_id: applicationId, mode: "auto", provider });
+      await load();
+      await runPipeline();
+      setTab("Overview");
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Credit report pull failed.");
+    } finally {
+      setPulling(null);
+    }
+  };
+
+  const pullBankStatement = async (provider) => {
+    setPulling("bank");
+    try {
+      await base44.functions.invoke("apiBankStatement", { application_id: applicationId, mode: "auto", provider });
+      await load();
+      await runPipeline();
+      setTab("Overview");
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Bank statement pull failed.");
+    } finally {
+      setPulling(null);
     }
   };
 
@@ -322,14 +352,22 @@ export default function ApplicationDetail() {
           )}
 
           {tab === "Documents" && (
-            <DocumentsSection
-              documents={documents} policyId={app?.policy_id || "consumer-v1"}
-              onUpload={uploadDocument} uploading={uploading}
-              onReprocess={reprocessDoc} onDelete={deleteDoc}
-              onView={(doc) => window.open(doc.file_url, "_blank")}
-              processingDocId={processingDocId}
-              market={app?.market} borrowerType={app?.borrower_type}
-            />
+            <>
+              <DataSourcePuller
+                market={app?.market || "GB"}
+                onPullCredit={pullCreditReport}
+                onPullBank={pullBankStatement}
+                pulling={pulling}
+              />
+              <DocumentsSection
+                documents={documents} policyId={app?.policy_id || "consumer-v1"}
+                onUpload={uploadDocument} uploading={uploading}
+                onReprocess={reprocessDoc} onDelete={deleteDoc}
+                onView={(doc) => window.open(doc.file_url, "_blank")}
+                processingDocId={processingDocId}
+                market={app?.market} borrowerType={app?.borrower_type}
+              />
+            </>
           )}
 
           {tab === "Financial Profile" && (
