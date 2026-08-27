@@ -3,6 +3,8 @@ import { ChevronDown, ChevronRight, Brain, ArrowRight } from "lucide-react";
 import NeedsAttentionPanel from "./NeedsAttentionPanel";
 import UnderwritingReadiness from "./UnderwritingReadiness";
 import UnderwritingSnapshot from "./UnderwritingSnapshot";
+import PipelineProgress from "./PipelineProgress";
+import RequestInformationPanel from "./RequestInformationPanel";
 import ApplicationFormSection from "./ApplicationFormSection";
 
 export default function OverviewTab({ borrower, app, fp, cp, decision, recommendation, riskSignals, documents, fmtMoney, form, setForm, allExtracted, onSave, saving, onNavigate }) {
@@ -12,9 +14,15 @@ export default function OverviewTab({ borrower, app, fp, cp, decision, recommend
 
   return (
     <div className="space-y-5">
+      {((documents?.length || 0) > 0 || decision) && (
+        <PipelineProgress documents={documents} fp={fp} cp={cp} riskSignals={riskSignals} decision={decision} />
+      )}
+
       <UnderwritingReadiness documents={documents} app={app} fp={fp} cp={cp} decision={decision} onNavigate={onNavigate} />
 
       <NeedsAttentionPanel documents={documents} app={app} decision={decision} onNavigate={onNavigate} />
+
+      <RequestInformationPanel applicationId={app?.id} />
 
       <UnderwritingSnapshot borrower={borrower} app={app} fp={fp} cp={cp} decision={decision} recommendation={recommendation} documents={documents} fmtMoney={fmtMoney} />
 
