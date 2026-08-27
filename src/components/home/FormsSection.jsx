@@ -16,9 +16,12 @@ const BENEFITS = [
 
 export default function FormsSection() {
   return (
-    <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-10">
+    <section className="max-w-3xl mx-auto px-5 sm:px-8 pt-8 pb-10 border-t border-slate-200">
       <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Collect applications
+          </div>
           <h2 className="text-2xl font-semibold tracking-tight">Forms</h2>
           <p className="text-sm text-slate-500 mt-1">White-label borrower application forms. Share a link, collect standardised data, and start underwriting automatically.</p>
         </div>

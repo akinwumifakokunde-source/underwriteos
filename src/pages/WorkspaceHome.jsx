@@ -43,6 +43,9 @@ export default function WorkspaceHome() {
         {/* Policies section */}
         <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
+            <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 mb-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Set your rules
+            </div>
             <h2 className="text-2xl font-semibold tracking-tight">Policies</h2>
             <p className="text-sm text-slate-500 mt-1">Create and manage underwriting policies without code.</p>
           </div>

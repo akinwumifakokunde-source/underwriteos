@@ -6,8 +6,11 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
   const jur = getJurisdiction(market || "GB");
 
   return (
-    <div className="max-w-2xl mx-auto px-5 sm:px-8 py-12">
+    <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-12">
       <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> New application
+        </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Start with the borrower file</h1>
         <p className="mt-2 text-sm text-slate-500 max-w-lg mx-auto">
           Upload financial documents and UnderwriteOS will extract the information, build the credit profile and identify what needs your attention.
