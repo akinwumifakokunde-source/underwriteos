@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
+import FormsSection from "@/components/home/FormsSection";
 import { Loader2, AlertTriangle, Shield, Plus, ArrowRight } from "lucide-react";
 
 export default function WorkspaceHome() {
@@ -33,6 +34,8 @@ export default function WorkspaceHome() {
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
       <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />
+
+      <FormsSection />
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8 pb-12">
         <div className="border-t border-slate-200 mb-8" />
