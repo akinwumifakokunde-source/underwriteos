@@ -20,6 +20,37 @@
     "borrower_id": {
       "type": "string"
     },
+    "market": {
+      "type": "string",
+      "enum": [
+        "GB",
+        "US",
+        "NG",
+        "ZA",
+        "KE",
+        "GH"
+      ],
+      "default": "GB",
+      "description": "Country / market for this application. Determines currency, regulatory profile, and available policies."
+    },
+    "regulatory_profile": {
+      "type": "string",
+      "description": "Regulatory profile label (e.g. UK Consumer Credit, US Consumer Lending)."
+    },
+    "state": {
+      "type": "string",
+      "description": "US state or region, where applicable."
+    },
+    "borrower_type": {
+      "type": "string",
+      "enum": [
+        "salaried",
+        "self_employed",
+        "business"
+      ],
+      "default": "salaried",
+      "description": "Borrower type. Affects document requirements and assessment approach."
+    },
     "product_type": {
       "type": "string",
       "default": "personal_loan",
