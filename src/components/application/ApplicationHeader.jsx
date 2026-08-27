@@ -1,5 +1,6 @@
 import React from "react";
 import { getJurisdiction, getPolicyLabel } from "@/lib/jurisdictions";
+import { AppStatusBadge } from "./StatusBadge";
 
 const STAGES = ["COLLECT", "VERIFY", "ASSESS", "DECIDE"];
 
@@ -9,24 +10,6 @@ function getStageIndex(app, documents, decision) {
   if (documents?.length > 0) return 1;
   return 0;
 }
-
-const STATUS_STYLES = {
-  draft: "bg-slate-50 text-slate-600 border-slate-200",
-  data_collection: "bg-sky-50 text-sky-700 border-sky-200",
-  analyzing: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  underwriting: "bg-violet-50 text-violet-700 border-violet-200",
-  completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  failed: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_LABELS = {
-  draft: "Needs information",
-  data_collection: "Collecting data",
-  analyzing: "Analyzing",
-  underwriting: "Under review",
-  completed: "Completed",
-  failed: "Failed",
-};
 
 export default function ApplicationHeader({ app, borrower, documents, decision, fmtMoney, onRequestInfo, onReassess }) {
   const jur = getJurisdiction(app?.market);
@@ -46,9 +29,7 @@ export default function ApplicationHeader({ app, borrower, documents, decision, 
     <div className="mb-5">
       <div className="flex items-center gap-2 mb-1 flex-wrap">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{app?.application_number || "—"}</h1>
-        <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${STATUS_STYLES[app?.status] || STATUS_STYLES.draft}`}>
-          {STATUS_LABELS[app?.status] || app?.status}
-        </span>
+        <AppStatusBadge status={app?.status} />
         <div className="ml-auto flex items-center gap-2">
           <button onClick={onRequestInfo} className="text-[12px] font-medium text-slate-700 bg-white border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50 transition-colors">
             Request information

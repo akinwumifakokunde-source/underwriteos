@@ -3,30 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, ArrowRight, CheckCircle2, Clock, Activity, ClipboardCheck, FileText } from "lucide-react";
-
-const DECISION_STYLES = {
-  APPROVE: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  REVIEW: "bg-amber-50 text-amber-700 border-amber-200",
-  DECLINE: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_STYLES = {
-  draft: "bg-slate-50 text-slate-600 border-slate-200",
-  data_collection: "bg-sky-50 text-sky-700 border-sky-200",
-  analyzing: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  underwriting: "bg-violet-50 text-violet-700 border-violet-200",
-  completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  failed: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_LABELS = {
-  draft: "Needs information",
-  data_collection: "Waiting for information",
-  analyzing: "In analysis",
-  underwriting: "Ready for review",
-  completed: "Completed",
-  failed: "Failed",
-};
+import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
 
 const PRIORITY = { underwriting: 0, data_collection: 1, analyzing: 2, draft: 3, failed: 4, completed: 5 };
 
@@ -134,10 +111,8 @@ export default function Dashboard() {
                         <div className="text-[11px] text-slate-400">{fmtMoney(app.loan_amount, app.loan_currency)} · {app.created_at ? new Date(app.created_at).toLocaleDateString() : ""}</div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${STATUS_STYLES[app.status] || STATUS_STYLES.draft}`}>{STATUS_LABELS[app.status] || app.status}</span>
-                        {app.decision && app.decision !== "null" && (
-                          <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${DECISION_STYLES[app.decision] || ""}`}>{app.decision}</span>
-                        )}
+                        <AppStatusBadge status={app.status} />
+                        <DecisionBadge decision={app.decision} />
                       </div>
                     </Link>
                   ))}
@@ -160,7 +135,7 @@ export default function Dashboard() {
                   {(data?.decisions?.recent || []).slice(0, 6).map((d) => (
                     <Link key={d.id} to={`/applications/${d.application_id}`} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${DECISION_STYLES[d.decision] || ""}`}>{d.decision}</span>
+                        <DecisionBadge decision={d.decision} />
                         <span className="text-[11px] text-slate-400">{d.policy_id} v{d.policy_version}</span>
                       </div>
                       <span className="text-[11px] text-slate-400">{d.decision_timestamp ? new Date(d.decision_timestamp).toLocaleDateString() : ""}</span>

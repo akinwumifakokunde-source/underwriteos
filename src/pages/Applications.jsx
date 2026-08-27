@@ -3,30 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, Search, Filter } from "lucide-react";
-
-const DECISION_STYLES = {
-  APPROVE: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  REVIEW: "bg-amber-50 text-amber-700 border-amber-200",
-  DECLINE: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_STYLES = {
-  draft: "bg-slate-50 text-slate-600 border-slate-200",
-  data_collection: "bg-sky-50 text-sky-700 border-sky-200",
-  analyzing: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  underwriting: "bg-violet-50 text-violet-700 border-violet-200",
-  completed: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  failed: "bg-rose-50 text-rose-700 border-rose-200",
-};
-
-const STATUS_LABELS = {
-  draft: "NEW",
-  data_collection: "PENDING INFO",
-  analyzing: "ANALYZING",
-  underwriting: "UNDER REVIEW",
-  completed: "COMPLETED",
-  failed: "FAILED",
-};
+import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -186,10 +163,8 @@ export default function Applications() {
                       <td className="px-5 py-3 text-[11px] font-mono text-slate-500">{a.policy_id || "—"}</td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-1.5">
-                          <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${STATUS_STYLES[a.status] || STATUS_STYLES.draft}`}>{STATUS_LABELS[a.status] || a.status}</span>
-                          {a.decision && a.decision !== "null" && (
-                            <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${DECISION_STYLES[a.decision] || ""}`}>{a.decision}</span>
-                          )}
+                          <AppStatusBadge status={a.status} />
+                          <DecisionBadge decision={a.decision} />
                         </div>
                       </td>
                       <td className="px-5 py-3 text-[11px] text-slate-400">{a.updated_date ? new Date(a.updated_date).toLocaleDateString() : a.created_date ? new Date(a.created_date).toLocaleDateString() : ""}</td>
