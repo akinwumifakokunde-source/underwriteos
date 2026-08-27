@@ -66,14 +66,14 @@ export default function SiteFooter() {
           <p className="text-xs text-[#8a909c]">No-code policy engine · White-label forms · 5 risk dimensions · Evidence lineage · PDF / CSV / Word exports</p>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2 text-[11px] text-[#8a909c]">
+        <div className="mt-6 flex flex-col items-center justify-center gap-1.5 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
           <span className="inline-flex items-center gap-1.5">
             <span className="text-base leading-none">🌍</span>
             Built across the United States, the United Kingdom &amp; Africa
           </span>
-          <span className="text-[#d4d7dd]">·</span>
+          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
           <span className="font-medium text-[#525965]">UnderwriteOS</span>
-          <span className="text-[#d4d7dd]">·</span>
+          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
           <span>Your underwriting operating system.</span>
         </div>
       </div>
