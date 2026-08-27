@@ -16,6 +16,7 @@ import ActivityTab from "@/components/application/ActivityTab";
 import ApplicationHeader from "@/components/application/ApplicationHeader";
 import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
+import ChatAssistant from "@/components/application/ChatAssistant";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 import { computeRiskDimensions } from "@/lib/riskDimensions";
 
@@ -152,7 +153,7 @@ export default function ApplicationDetail() {
       await base44.functions.invoke("apiDocuments", { action: "process", document_id: doc.id });
       await load();
       await runPipeline();
-      setTab("Documents");
+      setTab("Overview");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
     } finally {
@@ -379,6 +380,7 @@ export default function ApplicationDetail() {
           )}
         </div>
       </div>
+      <ChatAssistant applicationId={applicationId} />
     </div>
   );
 }
