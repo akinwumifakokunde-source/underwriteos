@@ -38,6 +38,8 @@ export default async function(req: Request): Promise<Response> {
       const organization_id = form.organization_id;
       const market = form.market || "GB";
       const currency = currencyFor(market);
+      const kyc = kycFor(market);
+      if (!v.id_number || !String(v.id_number).trim()) return apiError("VALIDATION_ERROR", `${kyc.idLabel} is required.`, 400);
 
       const borrower = await base44.asServiceRole.entities.Borrower.create({
         organization_id,
@@ -47,7 +49,7 @@ export default async function(req: Request): Promise<Response> {
         email: v.email || null,
         phone: v.phone || null,
         date_of_birth: v.date_of_birth || null,
-        national_id_hash: v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null,
+        national_id_hash: v.id_number ? await hashId(`${v.first_name}${v.last_name}${v.id_number}`) : (v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null),
         address: {
           line1: v.address_line1 || null,
           city: v.address_city || null,
@@ -199,9 +201,22 @@ function publicForm(f: any) {
     market: f.market,
     borrower_type: f.borrower_type,
     product_type: f.product_type,
+    kyc: kycFor(f.market),
     fields: (f.fields || []).filter((x: any) => x.enabled),
     thank_you_message: f.thank_you_message,
   };
+}
+
+function kycFor(market: string): any {
+  const map: any = {
+    GB: { idLabel: "ID document number", idPlaceholder: "Passport or driving licence number", idHint: "Passport or photocard driving licence (KYC/AML)" },
+    US: { idLabel: "ID document number", idPlaceholder: "Driver's licence or passport number", idHint: "Driver's licence or passport (KYC / Patriot Act)" },
+    NG: { idLabel: "BVN / National ID (NIN)", idPlaceholder: "BVN or NIN", idHint: "Bank Verification Number + NIN, Voter's Card or Driver's Licence" },
+    ZA: { idLabel: "SA ID number", idPlaceholder: "ID number", idHint: "ID book or smart ID card (FICA)" },
+    KE: { idLabel: "National ID number", idPlaceholder: "National ID", idHint: "National ID card + KRA PIN certificate" },
+    GH: { idLabel: "Ghana Card number", idPlaceholder: "GHA-000000000", idHint: "Ghana Card (national ID)" },
+  };
+  return map[market] || map.GB;
 }
 
 function defaultFields() {

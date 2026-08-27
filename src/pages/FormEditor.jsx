@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, ArrowLeft, Save, Copy, Check, ExternalLink } from "lucide-react";
-import { JURISDICTIONS, getJurisdiction, getPolicies, getProducts } from "@/lib/jurisdictions";
+import { JURISDICTIONS, getJurisdiction, getPolicies, getProducts, getKycConfig } from "@/lib/jurisdictions";
 import { FIELD_SECTIONS, DEFAULT_FIELDS } from "@/lib/formFields";
 
 export default function FormEditor() {
@@ -216,6 +216,17 @@ export default function FormEditor() {
                   {getPolicies(form.market).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
                 </select>
               </Field>
+            </div>
+          </Section>
+
+          <Section title="KYC / Identity verification">
+            <p className="text-xs text-slate-500">A government-issued ID is required for KYC/AML in every market. The ID type adapts to the selected market and is always collected from the borrower.</p>
+            <div className="rounded-lg border border-slate-200 px-3 py-2.5 flex items-center justify-between">
+              <div>
+                <div className="text-sm text-slate-700">{getKycConfig(form.market).idLabel}</div>
+                <div className="text-[11px] text-slate-400 mt-0.5">{getKycConfig(form.market).idHint}</div>
+              </div>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-white bg-slate-700 rounded px-2 py-0.5">Required</span>
             </div>
           </Section>
 

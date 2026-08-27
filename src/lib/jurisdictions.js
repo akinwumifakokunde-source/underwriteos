@@ -62,6 +62,19 @@ export const JURISDICTIONS = {
   },
 };
 
+const KYC = {
+  GB: { idLabel: "ID document number", idPlaceholder: "Passport or driving licence number", idHint: "Passport or photocard driving licence (KYC/AML)" },
+  US: { idLabel: "ID document number", idPlaceholder: "Driver's licence or passport number", idHint: "Driver's licence or passport (KYC / Patriot Act)" },
+  NG: { idLabel: "BVN / National ID (NIN)", idPlaceholder: "BVN or NIN", idHint: "Bank Verification Number + NIN, Voter's Card or Driver's Licence" },
+  ZA: { idLabel: "SA ID number", idPlaceholder: "ID number", idHint: "ID book or smart ID card (FICA)" },
+  KE: { idLabel: "National ID number", idPlaceholder: "National ID", idHint: "National ID card + KRA PIN certificate" },
+  GH: { idLabel: "Ghana Card number", idPlaceholder: "GHA-000000000", idHint: "Ghana Card (national ID)" },
+};
+
+export function getKycConfig(market) {
+  return KYC[market] || KYC.GB;
+}
+
 export function getJurisdiction(code) {
   return JURISDICTIONS[code] || JURISDICTIONS.GB;
 }
