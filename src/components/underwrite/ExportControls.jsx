@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FileDown, FileSpreadsheet, FileType, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import { buildDecisionSummary, downloadDecisionPdf, downloadDecisionCsv, downloadDecisionWord } from "@/lib/decisionExport";
 
 export default function ExportControls({ results, ids }) {
@@ -8,7 +9,11 @@ export default function ExportControls({ results, ids }) {
 
   const run = (key, fn) => {
     setBusy(key);
-    try { fn(summary); } finally { setBusy(null); }
+    try {
+      fn(summary);
+      base44.functions.invoke("apiBilling", { action: "charge_export", application_id: ids?.application_id, format: key })
+        .catch(() => {});
+    } finally { setBusy(null); }
   };
 
   return (

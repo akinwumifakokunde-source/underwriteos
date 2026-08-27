@@ -117,7 +117,21 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ credited: true, credits: pack.credits, balance: credit?.balance || 0 }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use balance|checkout|record_purchase.`, 400);
+    if (action === "charge_export") {
+      const { application_id, format } = body;
+      const cost = 5;
+      const credit = await ensureCredit(base44, organization_id, "usd");
+      const newBalance = Math.max(0, (credit.balance || 0) - cost);
+      if (newBalance !== credit.balance) await base44.asServiceRole.entities.Credit.update(credit.id, { balance: newBalance });
+      await base44.asServiceRole.entities.CreditTransaction.create({
+        organization_id, type: "usage", credits: -cost, amount_cents: 0, currency: credit.currency || "usd",
+        description: `Report export (${format || "pdf"})${application_id ? ` — application ${application_id}` : ""}`
+      });
+      await audit(base44, organization_id, "report.exported", { application_id, actor, actor_type, endpoint: "POST /v1/billing", credits: cost, details: { format, cost } });
+      return apiSuccess({ charged: cost, balance: newBalance }, 200);
+    }
+
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use balance|checkout|record_purchase|charge_export.`, 400);
   } catch (e: any) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
