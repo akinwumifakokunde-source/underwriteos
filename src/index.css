@@ -94,4 +94,7 @@
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .ui-input {
+    @apply w-full text-sm rounded-md border border-slate-200 px-3 py-2 text-slate-900 placeholder-slate-400 bg-white focus:outline-none focus:border-slate-400;
+  }
 }

@@ -42,6 +42,9 @@ import Decisions from '@/pages/Decisions';
 import RiskSignals from '@/pages/RiskSignals';
 import Reports from '@/pages/Reports';
 import WorkspaceHome from '@/pages/WorkspaceHome';
+import Forms from '@/pages/Forms';
+import FormEditor from '@/pages/FormEditor';
+import Apply from '@/pages/Apply';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -80,12 +83,16 @@ const AuthenticatedApp = () => {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/apply/:slug" element={<Apply />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/workspace" element={<WorkspaceHome />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/applications/new" element={<ApplicationCreate />} />
         <Route path="/applications/:applicationId" element={<ApplicationDetail />} />
+        <Route path="/forms" element={<Forms />} />
+        <Route path="/forms/new" element={<FormEditor />} />
+        <Route path="/forms/:formId/edit" element={<FormEditor />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/data-sources" element={<Providers />} />
         <Route path="/risk-signals" element={<RiskSignals />} />

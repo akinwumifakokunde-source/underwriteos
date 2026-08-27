@@ -14,6 +14,7 @@ import {
 const NAV_ITEMS = [
   { to: "/workspace", label: "Home" },
   { to: "/applications", label: "Applications" },
+  { to: "/forms", label: "Forms" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
   { to: "/risk-signals", label: "Risk Signals" },

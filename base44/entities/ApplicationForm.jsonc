@@ -1,0 +1,118 @@
+{
+  "name": "ApplicationForm",
+  "type": "object",
+  "description": "White-label borrower application form. A public share link (/apply/:slug) lets borrowers submit their details, which create a Borrower + Application in data_collection status for the lender's organization.",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Internal name for this form"
+    },
+    "slug": {
+      "type": "string",
+      "description": "Unique public slug used in the share link"
+    },
+    "title": {
+      "type": "string",
+      "description": "White-label title shown to the borrower"
+    },
+    "intro": {
+      "type": "string",
+      "description": "Intro text shown above the form"
+    },
+    "accent_color": {
+      "type": "string",
+      "default": "#0d9488"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string",
+      "enum": [
+        "GB",
+        "US",
+        "NG",
+        "ZA",
+        "KE",
+        "GH"
+      ],
+      "default": "GB"
+    },
+    "borrower_type": {
+      "type": "string",
+      "enum": [
+        "salaried",
+        "self_employed",
+        "business"
+      ],
+      "default": "salaried"
+    },
+    "product_type": {
+      "type": "string",
+      "default": "personal_loan"
+    },
+    "policy_id": {
+      "type": "string",
+      "default": "consumer-v1"
+    },
+    "fields": {
+      "type": "array",
+      "description": "Borrower fields to collect. Each item: { key, label, enabled, required }.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "thank_you_message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "paused",
+        "archived"
+      ],
+      "default": "active"
+    },
+    "submissions_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "organization_id",
+    "name",
+    "slug"
+  ],
+  "rls": {
+    "read": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "create": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    }
+  }
+}
