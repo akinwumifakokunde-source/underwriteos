@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 
 const ITEMS = [
-  "Sandbox / production isolation",
+  "Multi-jurisdiction policies (GB, US, NG, ZA, KE, GH)",
   "Organization-scoped access",
-  "API key management",
-  "Audit logging",
+  "Live data source connections",
+  "Immutable audit logging",
   "Versioned policies",
-  "Idempotent requests",
+  "Cross-document reconciliation",
   "Provider credential isolation",
-  "Human decision overrides",
+  "Human-in-the-loop overrides",
 ];
 
 export default function Security() {
