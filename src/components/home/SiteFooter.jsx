@@ -41,7 +41,7 @@ export default function SiteFooter() {
               <span className="font-semibold tracking-tight text-[#0a0c12]">UnderwriteOS</span>
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
-              Continuous, AI-native underwriting for lenders and fintechs — across six markets.
+              No-code, AI-native underwriting for lenders and fintechs — build policies, collect applications, and decide across six markets.
             </p>
           </div>
 
@@ -63,7 +63,7 @@ export default function SiteFooter() {
 
         <div className="mt-10 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} UnderwriteOS</p>
-          <p className="text-xs text-[#8a909c]">Live data sources · 5 risk dimensions · Evidence lineage · PDF / CSV / Word exports</p>
+          <p className="text-xs text-[#8a909c]">No-code policy engine · White-label forms · 5 risk dimensions · Evidence lineage · PDF / CSV / Word exports</p>
         </div>
       </div>
     </footer>
