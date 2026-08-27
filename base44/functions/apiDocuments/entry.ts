@@ -205,7 +205,7 @@ export default async function(req: Request): Promise<Response> {
         issues
       });
 
-      await audit(base44, organization_id, "document.processed", { application_id: doc.application_id, actor, actor_type, endpoint: "POST /v1/documents/process", details: { document_id: doc.id, fields_extracted: fields.length, evidence_created: evidenceCount, status } });
+      await audit(base44, organization_id, "document.processed", { application_id: doc.application_id, actor, actor_type, endpoint: "POST /v1/documents/process", credits: 15, details: { document_id: doc.id, fields_extracted: fields.length, evidence_created: evidenceCount, status } });
 
       return apiSuccess({
         document_id: doc.id,

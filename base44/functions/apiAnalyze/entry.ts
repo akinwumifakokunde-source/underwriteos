@@ -98,7 +98,7 @@ export default async function(req: Request): Promise<Response> {
       result: { signal_count: signalCount, evidence_count: evidenceCount }
     });
 
-    await audit(base44, organization_id, "application.analyzed", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/analyze", details: { job_id: job.id, signal_count: signalCount, evidence_count: evidenceCount } });
+    await audit(base44, organization_id, "application.analyzed", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/analyze", credits: 30, details: { job_id: job.id, signal_count: signalCount, evidence_count: evidenceCount } });
 
     return apiSuccess({ job_id: job.id, status: "completed", signal_count: signalCount, evidence_count: evidenceCount }, 202);
   } catch (e) {

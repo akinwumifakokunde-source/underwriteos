@@ -77,7 +77,7 @@ export default async function(req: Request): Promise<Response> {
       });
 
       await base44.asServiceRole.entities.Application.update(app.id, { status: "data_collection" });
-      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", details: { provider: providerName, credit_score: normalized.credit_score, fetch_mode: fetchMode, data_source: dataSource, ...(fetchReference ? { reference: fetchReference } : {}) } });
+      await audit(base44, organization_id, "credit_report.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/credit-report", credits: 50, details: { provider: providerName, credit_score: normalized.credit_score, fetch_mode: fetchMode, data_source: dataSource, ...(fetchReference ? { reference: fetchReference } : {}) } });
 
       return apiSuccess({ credit_report_id: report.id, credit_profile: profile, provider: providerName, fetch_mode: fetchMode, data_source: dataSource }, 201);
     }

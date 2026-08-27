@@ -99,7 +99,7 @@ export default async function(req: Request): Promise<Response> {
       });
 
       await base44.asServiceRole.entities.Application.update(app.id, { status: "data_collection" });
-      await audit(base44, organization_id, "bank_statement.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/bank-statement", details: { transaction_count: txRecords.length, fetch_mode: fetchMode, data_source: dataSource, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) } });
+      await audit(base44, organization_id, "bank_statement.ingested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/bank-statement", credits: 40, details: { transaction_count: txRecords.length, fetch_mode: fetchMode, data_source: dataSource, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) } });
 
       return apiSuccess({ bank_statement_id: statement.id, financial_profile: profile, transaction_count: txRecords.length, fetch_mode: fetchMode, data_source: dataSource, ...(obProviderName ? { open_banking_provider: obProviderName } : {}) }, 201);
     }

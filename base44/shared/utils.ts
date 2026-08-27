@@ -149,7 +149,7 @@ export async function hmacSha256(key: string, message: string): Promise<string> 
   return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function audit(base44: any, organization_id: string, event: string, opts: { application_id?: string; actor?: string; actor_type?: string; endpoint?: string; details?: any } = {}): Promise<void> {
+export async function audit(base44: any, organization_id: string, event: string, opts: { application_id?: string; actor?: string; actor_type?: string; endpoint?: string; details?: any; credits?: number } = {}): Promise<void> {
   try {
     await base44.asServiceRole.entities.AuditEvent.create({
       organization_id,
@@ -164,13 +164,20 @@ export async function audit(base44: any, organization_id: string, event: string,
     // audit must never break the request
   }
   // Billable usage: decrement the org's credit balance for API-key calls.
-  if (opts.actor_type === "api_key") {
+  // `credits` in opts selects the per-transaction cost from the pricing model
+  // (default 0 — reads and non-billable events are free).
+  if (opts.actor_type === "api_key" && opts.credits && opts.credits > 0) {
     try {
       const credits = await base44.asServiceRole.entities.Credit.filter({ organization_id }, "-created_date", 1);
       if (credits.length > 0) {
         const c = credits[0];
-        const newBalance = Math.max(0, (c.balance || 0) - 1);
+        const cost = opts.credits;
+        const newBalance = Math.max(0, (c.balance || 0) - cost);
         if (newBalance !== c.balance) await base44.asServiceRole.entities.Credit.update(c.id, { balance: newBalance });
+        await base44.asServiceRole.entities.CreditTransaction.create({
+          organization_id, type: "usage", credits: -cost, amount_cents: 0,
+          currency: c.currency || "usd", description: `${event} — ${opts.endpoint || "api"}`
+        });
       }
     } catch {
       // billing decrement must never break the request

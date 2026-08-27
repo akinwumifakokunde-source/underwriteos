@@ -124,7 +124,7 @@ export default async function(req: Request): Promise<Response> {
       reasons: decision.reasons
     });
 
-    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score } });
+    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score } });
 
     return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord }, 200);
   } catch (e) {
