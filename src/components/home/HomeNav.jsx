@@ -4,9 +4,9 @@ import { Layers, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const NAV = [
-  { to: "/docs", label: "Docs" },
   { to: "/pricing", label: "Pricing" },
   { to: "/security", label: "Security" },
+  { to: "/contact", label: "Contact" },
 ];
 
 export default function HomeNav() {

@@ -8,11 +8,11 @@ export default function SandboxCta() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Try the sandbox</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
-          See a decision before you write an integration.
+          See how the policy decides — before you go live.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          Run the complete underwriting flow with synthetic borrower data. Inspect the request,
-          response, risk signals, policy evaluation and evidence.
+          Run the complete underwriting flow with synthetic borrower data. Modify the inputs,
+          re-run the policy, and see exactly how each rule changes the outcome.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -23,10 +23,10 @@ export default function SandboxCta() {
             Try the sandbox <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/docs"
+            to="/policies"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-4 py-2.5 rounded-md hover:bg-[#f7f8fa] transition-colors"
           >
-            Read the quickstart <ArrowRight className="w-4 h-4" />
+            Explore the policy builder <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

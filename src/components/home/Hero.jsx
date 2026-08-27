@@ -1,58 +1,99 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, ShieldCheck, FileText, Brain, GitBranch } from "lucide-react";
 
-function DecisionCard() {
+function ProductPreview() {
   return (
-    <div className="w-full max-w-[400px]">
-      <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Synthetic example</p>
-      <div className="rounded-lg border border-[#eceef1] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04)]">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-[#eceef1] bg-[#fafbfc]">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">Underwriting decision</span>
-          <span className="text-[11px] font-mono text-[#8a909c]">consumer-v1</span>
+    <div className="w-full max-w-[480px]">
+      <div className="rounded-xl border border-[#eceef1] bg-white overflow-hidden shadow-[0_2px_8px_rgba(10,12,18,0.06)]">
+        {/* Window chrome */}
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#eceef1] bg-[#fafbfc]">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+          </div>
+          <span className="text-[11px] font-mono text-[#8a909c] ml-2">Application #APP-10482</span>
+          <span className="ml-auto text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-0.5">UNDER REVIEW</span>
         </div>
-        <div className="px-5 py-5">
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-semibold tracking-tight text-[#0a0c12]">APPROVE</span>
-            <span className="text-xs font-mono text-[#0d9488] bg-[#e6f7f3] rounded px-1.5 py-0.5">decision</span>
+
+        {/* Tabs */}
+        <div className="flex items-center gap-1 px-4 pt-3 border-b border-[#eceef1]">
+          {["Overview", "Risk", "Policy", "Decision", "Evidence"].map((t, i) => (
+            <button key={t} className={`text-[11px] px-2.5 py-1.5 rounded-t-md ${i === 1 ? "text-[#0a0c12] font-medium border-b-2 border-[#0d9488]" : "text-[#8a909c]"}`}>
+              {t}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="p-4 space-y-3">
+          {/* Borrower row */}
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[#525965]">Borrower</span>
+            <span className="font-medium text-[#0a0c12]">John Smith</span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[#525965]">Loan</span>
+            <span className="font-medium text-[#0a0c12]">Personal Loan · £25,000</span>
           </div>
 
-          <div className="mt-5 space-y-2.5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#525965]">Risk score</span>
-              <span className="font-mono text-[#0a0c12]">34</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#525965]">Probability of default</span>
-              <span className="font-mono text-[#0a0c12]">6.1%</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#525965]">Confidence</span>
-              <span className="font-mono text-[#0a0c12]">88%</span>
-            </div>
-          </div>
-
-          <div className="mt-5 pt-4 border-t border-[#eceef1]">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Risk signals</p>
-            <ul className="space-y-1.5">
-              {["Income verified", "DTI within policy", "No recent delinquency"].map((s) => (
-                <li key={s} className="flex items-center gap-2 text-sm text-[#0a0c12]">
-                  <Check className="w-3.5 h-3.5 text-[#0d9488] shrink-0" />
-                  {s}
-                </li>
+          {/* Risk signals */}
+          <div className="pt-2 border-t border-[#eceef1]">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Risk signals</p>
+            <div className="space-y-1.5">
+              {[
+                { label: "Income verified", flag: "pass", value: "£72,000/yr" },
+                { label: "Debt-to-income", flag: "fail", value: "48.2%" },
+                { label: "Credit score", flag: "pass", value: "712" },
+                { label: "Recent delinquency", flag: "pass", value: "0" },
+              ].map((s) => (
+                <div key={s.label} className="flex items-center justify-between text-[12px]">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-4 h-4 rounded-full flex items-center justify-center ${s.flag === "pass" ? "bg-emerald-50" : "bg-rose-50"}`}>
+                      {s.flag === "pass" ? <Check className="w-2.5 h-2.5 text-emerald-600" /> : <span className="text-rose-600 text-[10px] font-bold">!</span>}
+                    </span>
+                    <span className="text-[#0a0c12]">{s.label}</span>
+                  </div>
+                  <span className="font-mono text-[#525965]">{s.value}</span>
+                </div>
               ))}
-            </ul>
+            </div>
+          </div>
+
+          {/* Policy evaluation */}
+          <div className="pt-2 border-t border-[#eceef1]">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Policy: Consumer Lending v1</p>
+            <div className="space-y-1">
+              {[
+                { rule: "Annual income ≥ £40,000", result: "PASS" },
+                { rule: "DTI ≤ 45%", result: "FAIL" },
+                { rule: "Credit score ≥ 650", result: "PASS" },
+              ].map((r) => (
+                <div key={r.rule} className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#525965]">{r.rule}</span>
+                  <span className={`font-mono font-medium ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Decision */}
+          <div className="flex items-center justify-between pt-3 border-t border-[#eceef1]">
+            <div>
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">AI recommendation</div>
+              <div className="text-sm font-medium text-emerald-700">APPROVE</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Policy decision</div>
+              <div className="text-sm font-medium text-amber-700">REVIEW</div>
+            </div>
+            <div className="text-right">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
+              <div className="text-sm font-bold text-amber-700">REVIEW</div>
+            </div>
           </div>
         </div>
-        <div className="px-5 py-3 border-t border-[#eceef1] bg-[#fafbfc]">
-          <p className="text-[11px] font-mono text-[#8a909c] mb-1.5">
-            Policy: consumer-v1 · 3 rules passed · Evidence available
-          </p>
-          <Link to="/evidence" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
-            View evidence <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-        <p className="mt-2 text-[10px] text-[#b0b5be]">Synthetic borrower data. No real borrower information.</p>
       </div>
     </div>
   );
@@ -65,19 +106,18 @@ export default function Hero() {
         <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-5">
-              API infrastructure for lenders & fintechs
+              No-code underwriting platform
             </p>
             <h1 className="text-[2rem] sm:text-[2.75rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.06]">
-              Underwriting infrastructure,<br className="hidden sm:block" /> delivered as an API.
+              Build your underwriting<br className="hidden sm:block" /> workflow without code.
             </h1>
             <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-              Connect financial data from credit bureaus, bank accounts and financial documents.
-              UnderwriteOS normalizes the data, analyzes risk, applies your policy and returns an
-              explainable decision.
+              Connect borrower data, configure your lending policy, and make explainable
+              credit decisions — without building an underwriting system from scratch.
             </p>
 
             <div className="mt-5 inline-flex items-center gap-2 rounded-md border border-[#eceef1] bg-[#fafbfc] px-3 py-2">
-              <span className="text-sm font-medium text-[#0a0c12]">Connect data. Apply policy. Make faster, explainable decisions.</span>
+              <span className="text-sm font-medium text-[#0a0c12]">Your data. Your policy. Your decision.</span>
             </div>
 
             <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -96,12 +136,12 @@ export default function Hero() {
             </div>
 
             <p className="mt-4 text-sm text-[#8a909c]">
-              Create an account. Get a sandbox key. Run your first underwriting decision.
+              Create an account. Configure your policy. Run your first decision.
             </p>
           </div>
 
           <div className="flex md:justify-end">
-            <DecisionCard />
+            <ProductPreview />
           </div>
         </div>
       </div>

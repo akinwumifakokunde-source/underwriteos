@@ -21,10 +21,10 @@ export default function FinalCta() {
             Try the sandbox <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/api-reference"
+            to="/onboarding"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-white border border-white/20 px-4 py-2.5 rounded-md hover:bg-white/5 transition-colors"
           >
-            View API reference <ArrowRight className="w-4 h-4" />
+            Start building <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>

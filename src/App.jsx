@@ -34,6 +34,13 @@ import Security from '@/pages/Security';
 import Privacy from '@/pages/Privacy';
 import Terms from '@/pages/Terms';
 import Contact from '@/pages/Contact';
+import Applications from '@/pages/Applications';
+import ApplicationDetail from '@/pages/ApplicationDetail';
+import ApplicationCreate from '@/pages/ApplicationCreate';
+import Policies from '@/pages/Policies';
+import Decisions from '@/pages/Decisions';
+import RiskSignals from '@/pages/RiskSignals';
+import Reports from '@/pages/Reports';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -74,10 +81,18 @@ const AuthenticatedApp = () => {
       <Route path="/contact" element={<Contact />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/sandbox" element={<Sandbox />} />
-        <Route path="/underwrite" element={<Underwrite />} />
+        <Route path="/applications" element={<Applications />} />
+        <Route path="/applications/new" element={<ApplicationCreate />} />
+        <Route path="/applications/:applicationId" element={<ApplicationDetail />} />
+        <Route path="/policies" element={<Policies />} />
+        <Route path="/data-sources" element={<Providers />} />
+        <Route path="/risk-signals" element={<RiskSignals />} />
+        <Route path="/decisions" element={<Decisions />} />
         <Route path="/evidence" element={<EvidenceGraph />} />
         <Route path="/evidence/:applicationId" element={<EvidenceGraph />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/sandbox" element={<Sandbox />} />
+        <Route path="/underwrite" element={<Underwrite />} />
         <Route path="/monitoring" element={<Monitoring />} />
         <Route path="/playground" element={<Playground />} />
         <Route path="/api-reference" element={<ApiReference />} />
