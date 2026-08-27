@@ -96,31 +96,6 @@ export default function Nav() {
               })}
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="shrink-0 inline-flex items-center gap-1 text-[13px] px-3 py-1.5 rounded-md text-[#a0a4ab] hover:text-white hover:bg-white/5 transition-colors">
-                <Terminal className="w-3.5 h-3.5 opacity-60" />
-                Developer
-                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48 bg-[#1a1c21] border-white/10 text-white">
-              <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-[#6b6f76]">Developer Platform</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10" />
-              {DEVELOPER_ITEMS.map((i) => {
-                const active = location.pathname === i.to;
-                return (
-                  <DropdownMenuItem key={i.to} asChild className="focus:bg-white/10 data-[highlighted]:bg-white/10">
-                    <NavLink to={i.to} className={`flex items-center justify-between rounded px-2 py-1.5 text-[13px] ${active ? "text-white" : "text-[#a0a4ab]"}`}>
-                      <span>{i.label}</span>
-                      {active && <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />}
-                    </NavLink>
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </nav>
 
         <button
