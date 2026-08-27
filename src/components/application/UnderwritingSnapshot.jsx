@@ -8,34 +8,35 @@ function computePayment(principal, termMonths, annualRatePct) {
   return (principal * r * Math.pow(1 + r, termMonths)) / (Math.pow(1 + r, termMonths) - 1);
 }
 
-export default function UnderwritingSnapshot({ borrower, app, fp, cp, decision, recommendation, fmtMoney }) {
-  const dims = computeRiskDimensions({ fp, cp, documents: [], decision });
+export default function UnderwritingSnapshot({ borrower, app, fp, cp, decision, recommendation, documents, fmtMoney }) {
+  const dims = computeRiskDimensions({ fp, cp, documents: documents || [], decision });
   const currency = app?.loan_currency || "GBP";
   const payment = computePayment(app?.loan_amount, app?.loan_term_months, app?.interest_rate);
   const disposableAfter = (fp?.cashflow?.disposable_income || 0) - payment;
   const dti = fp?.affordability?.debt_to_income;
 
   const metrics = [
-    { label: "Borrower", value: borrower ? `${borrower.first_name} ${borrower.last_name}` : "—" },
-    { label: "Loan", value: fmtMoney(app?.loan_amount, currency) },
-    { label: "Verified income", value: fp?.income?.monthly ? fmtMoney(fp.income.monthly, currency) : "—", hint: !fp?.income?.monthly ? "Upload bank statement" : null },
-    { label: "Proposed payment", value: payment > 0 ? fmtMoney(payment, currency) : "—" },
-    { label: "Disposable income", value: fp?.cashflow?.disposable_income != null ? fmtMoney(disposableAfter, currency) : "—", hint: fp?.cashflow?.disposable_income == null ? "Upload bank statement" : null },
-    { label: "DTI", value: dti != null ? `${(dti * 100).toFixed(1)}%` : "—", hint: dti == null ? "Upload bank statement" : null },
-    { label: "Credit score", value: cp?.credit_score ?? "—", hint: cp?.credit_score == null ? "Upload credit report" : null },
+    { label: "Borrower", value: borrower ? `${borrower.first_name} ${borrower.last_name}` : null, empty: "Not provided" },
+    { label: "Loan", value: app?.loan_amount ? fmtMoney(app.loan_amount, currency) : null, empty: "Not specified" },
+    { label: "Verified income", value: fp?.income?.monthly ? fmtMoney(fp.income.monthly, currency) : null, empty: "Awaiting bank data" },
+    { label: "Proposed payment", value: payment > 0 ? fmtMoney(payment, currency) : null, empty: "Awaiting terms" },
+    { label: "Disposable income", value: fp?.cashflow?.disposable_income != null ? fmtMoney(disposableAfter, currency) : null, empty: "Awaiting bank data" },
+    { label: "DTI", value: dti != null ? `${(dti * 100).toFixed(1)}%` : null, empty: "Awaiting bank data" },
+    { label: "Credit score", value: cp?.credit_score != null ? cp.credit_score : null, empty: "Awaiting credit report" },
   ];
 
   const dimensions = [
-    { label: "Affordability", ...dims.affordability },
     { label: "Credit risk", ...dims.creditRisk },
-    { label: "Fraud risk", ...dims.fraudRisk },
+    { label: "Affordability", ...dims.affordability },
+    { label: "Fraud / identity", ...dims.fraudRisk },
     { label: "Data quality", ...dims.dataQuality },
+    { label: "Policy", ...dims.policyEligibility },
   ];
 
   const outcomes = [
     { label: "AI recommendation", value: recommendation?.recommendation || "Pending" },
     { label: "Policy outcome", value: decision?.decision && decision.decision !== "null" ? decision.decision : "Pending" },
-    { label: "Decision", value: decision?.decision && decision.decision !== "null" ? decision.decision : "Pending" },
+    { label: "Final decision", value: decision?.decision && decision.decision !== "null" ? decision.decision : "Pending" },
   ];
 
   return (
@@ -46,13 +47,16 @@ export default function UnderwritingSnapshot({ borrower, app, fp, cp, decision, 
         {metrics.map((m, i) => (
           <div key={i} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
             <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">{m.label}</div>
-            <div className={`text-sm font-semibold mt-0.5 ${m.value === "—" ? "text-slate-300" : "text-slate-900"}`}>{m.value}</div>
-            {m.hint && <div className="text-[10px] text-slate-400 mt-0.5">{m.hint}</div>}
+            {m.value != null ? (
+              <div className="text-sm font-semibold mt-0.5 text-slate-900">{m.value}</div>
+            ) : (
+              <div className="text-[11px] mt-0.5 text-slate-400 italic">{m.empty}</div>
+            )}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
         {dimensions.map((d, i) => {
           const style = DIMENSION_STYLES[d.level] || DIMENSION_STYLES.Pending;
           return (

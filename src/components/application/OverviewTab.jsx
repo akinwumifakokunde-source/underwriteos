@@ -16,7 +16,7 @@ export default function OverviewTab({ borrower, app, fp, cp, decision, recommend
 
       <NeedsAttentionPanel documents={documents} app={app} decision={decision} onNavigate={onNavigate} />
 
-      <UnderwritingSnapshot borrower={borrower} app={app} fp={fp} cp={cp} decision={decision} recommendation={recommendation} fmtMoney={fmtMoney} />
+      <UnderwritingSnapshot borrower={borrower} app={app} fp={fp} cp={cp} decision={decision} recommendation={recommendation} documents={documents} fmtMoney={fmtMoney} />
 
       {/* Key risk signals summary */}
       {topSignals.length > 0 && (

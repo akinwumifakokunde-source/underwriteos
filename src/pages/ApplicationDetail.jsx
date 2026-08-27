@@ -318,7 +318,7 @@ export default function ApplicationDetail() {
 
         <div className="flex items-start justify-between mb-5 gap-4">
           <div className="flex-1">
-            <ApplicationHeader app={app} borrower={borrower} documents={documents} decision={decision} fmtMoney={fmtMoney} />
+            <ApplicationHeader app={app} borrower={borrower} documents={documents} decision={decision} fmtMoney={fmtMoney} onRequestInfo={() => setTab("Documents")} onReassess={() => runPipeline()} />
           </div>
           <StatusIndicator status={status} lastUpdated={lastUpdated} onRerun={() => runPipeline()} />
         </div>

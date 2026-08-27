@@ -2,6 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, ShieldCheck, FileText, Brain, GitBranch } from "lucide-react";
 
+const PILLARS = [
+  "Document intelligence", "Policy engine", "AI underwriter", "Affordability",
+  "Risk signals", "Decision lineage", "Multi-market", "Post-decision monitoring",
+];
+
 function ProductPreview() {
   return (
     <div className="w-full max-w-[480px]">
@@ -115,16 +120,16 @@ export default function Hero() {
               No-code underwriting platform
             </p>
             <h1 className="text-[2rem] sm:text-[2.75rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.06]">
-              Continuous, AI-native<br className="hidden sm:block" /> underwriting — without code.
+              AI-powered underwriting.<br className="hidden sm:block" /> Governed by your policy.
             </h1>
             <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-              Connect live credit and bank data across six markets, configure your lending policy,
-              and make explainable decisions in one continuous workspace — no engineering team required.
+              Turn borrower documents and financial data into explainable, audit-ready lending
+              decisions — without writing code.
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              {["GB", "US", "NG", "ZA", "KE", "GH"].map((m) => (
-                <span key={m} className="text-[11px] font-mono font-medium text-[#525965] bg-[#fafbfc] border border-[#eceef1] rounded px-2 py-1">{m}</span>
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {PILLARS.map((p) => (
+                <span key={p} className="text-[11px] font-medium text-[#525965] bg-[#fafbfc] border border-[#eceef1] rounded px-2 py-1">{p}</span>
               ))}
             </div>
 
@@ -133,7 +138,7 @@ export default function Hero() {
                 to="/onboarding"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-md hover:bg-[#1c1f26] transition-colors"
               >
-                Start building <ArrowRight className="w-4 h-4" />
+                Start underwriting <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 to="/pricing"

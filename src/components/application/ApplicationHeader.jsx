@@ -28,7 +28,7 @@ const STATUS_LABELS = {
   failed: "Failed",
 };
 
-export default function ApplicationHeader({ app, borrower, documents, decision, fmtMoney }) {
+export default function ApplicationHeader({ app, borrower, documents, decision, fmtMoney, onRequestInfo, onReassess }) {
   const jur = getJurisdiction(app?.market);
   const stageIndex = getStageIndex(app, documents, decision);
   const currency = app?.loan_currency || jur.currency;
@@ -44,11 +44,19 @@ export default function ApplicationHeader({ app, borrower, documents, decision, 
 
   return (
     <div className="mb-5">
-      <div className="flex items-center gap-2 mb-1">
+      <div className="flex items-center gap-2 mb-1 flex-wrap">
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">{app?.application_number || "—"}</h1>
         <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${STATUS_STYLES[app?.status] || STATUS_STYLES.draft}`}>
           {STATUS_LABELS[app?.status] || app?.status}
         </span>
+        <div className="ml-auto flex items-center gap-2">
+          <button onClick={onRequestInfo} className="text-[12px] font-medium text-slate-700 bg-white border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50 transition-colors">
+            Request information
+          </button>
+          <button onClick={onReassess} className="text-[12px] font-medium text-slate-700 bg-white border border-slate-200 rounded-lg px-2.5 py-1 hover:bg-slate-50 transition-colors">
+            Reassess
+          </button>
+        </div>
       </div>
 
       <div className="flex items-center gap-x-4 gap-y-1 flex-wrap text-[13px] mb-4">
