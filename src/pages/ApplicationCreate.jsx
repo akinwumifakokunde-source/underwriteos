@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
@@ -37,6 +37,14 @@ export default function ApplicationCreate() {
       setCreating(false);
     }
   };
+
+  // Auto-start when navigated with ?choice= (from the workspace home cards)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const choice = urlParams.get("choice");
+    if (choice) handleChoose(choice);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NAV_ITEMS = [
-  { to: "/dashboard", label: "Dashboard" },
+  { to: "/workspace", label: "Home" },
   { to: "/applications", label: "Applications" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
@@ -23,6 +23,7 @@ const NAV_ITEMS = [
 ];
 
 const SECONDARY_ITEMS = [
+  { to: "/dashboard", label: "Dashboard" },
   { to: "/sandbox", label: "Sandbox" },
   { to: "/monitoring", label: "Monitoring" },
   { to: "/members", label: "Members" },
@@ -43,7 +44,7 @@ export default function Nav() {
   return (
     <header className="sticky top-0 z-40 bg-[#0a0c12] border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-        <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
+        <Link to="/workspace" className="flex items-center gap-2.5 shrink-0">
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
             <Layers className="w-4 h-4 text-[#0a0c12]" />
           </div>

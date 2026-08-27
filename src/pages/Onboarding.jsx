@@ -194,10 +194,10 @@ export default function Onboarding() {
               </div>
             </div>
 
-            {/* Go to applications */}
+            {/* Go to workspace */}
             <div className="flex items-center justify-center">
-              <Link to="/applications" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-2.5 rounded-lg hover:bg-[#1c1f26]">
-                Go to applications <ArrowRight className="w-4 h-4" />
+              <Link to="/workspace" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-2.5 rounded-lg hover:bg-[#1c1f26]">
+                Go to workspace <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>

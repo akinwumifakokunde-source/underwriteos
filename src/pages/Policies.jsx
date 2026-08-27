@@ -78,6 +78,14 @@ export default function Policies() {
 
   useEffect(() => { load(); }, [load]);
 
+  // Auto-open the editor when navigated with ?template= (from the workspace home)
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const template = urlParams.get("template");
+    if (template) startNewPolicy(template);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const startNewPolicy = (templateKey) => {
     const tpl = TEMPLATES[templateKey] || TEMPLATES["consumer-v1"];
     setEditing({

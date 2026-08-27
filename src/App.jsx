@@ -41,6 +41,7 @@ import Policies from '@/pages/Policies';
 import Decisions from '@/pages/Decisions';
 import RiskSignals from '@/pages/RiskSignals';
 import Reports from '@/pages/Reports';
+import WorkspaceHome from '@/pages/WorkspaceHome';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<Contact />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/workspace" element={<WorkspaceHome />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/applications/new" element={<ApplicationCreate />} />
