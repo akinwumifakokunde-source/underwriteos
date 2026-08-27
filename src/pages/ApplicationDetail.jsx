@@ -18,6 +18,7 @@ import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
+import ExportControls from "@/components/underwrite/ExportControls";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 import { computeRiskDimensions } from "@/lib/riskDimensions";
 
@@ -402,14 +403,20 @@ export default function ApplicationDetail() {
           )}
 
           {tab === "AI Underwriter" && (
-            <AnalysisSection
-              recommendation={recommendation}
-              running={analyzing}
-              lastUpdated={recommendation?.generated_at ? timeAgo(new Date(recommendation.generated_at)) : null}
-              onRerun={() => runPipeline()}
-              borrower={borrower} app={app} fp={fp} cp={cp}
-              evidence={evidence} fmtMoney={fmtMoney}
-            />
+            <>
+              <ExportControls
+                results={{ decision, recommendation, riskSignals, evidence, financialProfile: fp, creditProfile: cp }}
+                ids={{ application_id: applicationId }}
+              />
+              <AnalysisSection
+                recommendation={recommendation}
+                running={analyzing}
+                lastUpdated={recommendation?.generated_at ? timeAgo(new Date(recommendation.generated_at)) : null}
+                onRerun={() => runPipeline()}
+                borrower={borrower} app={app} fp={fp} cp={cp}
+                evidence={evidence} fmtMoney={fmtMoney}
+              />
+            </>
           )}
 
           {tab === "Policy" && (
@@ -417,11 +424,17 @@ export default function ApplicationDetail() {
           )}
 
           {tab === "Decision" && (
-            <DecisionSection
-              decision={decision} recommendation={recommendation}
-              evidence={evidence} onOverride={overrideDecision} overriding={overriding}
-              dimensions={dimensions}
-            />
+            <>
+              <ExportControls
+                results={{ decision, recommendation, riskSignals, evidence, financialProfile: fp, creditProfile: cp }}
+                ids={{ application_id: applicationId }}
+              />
+              <DecisionSection
+                decision={decision} recommendation={recommendation}
+                evidence={evidence} onOverride={overrideDecision} overriding={overriding}
+                dimensions={dimensions}
+              />
+            </>
           )}
 
           {tab === "Evidence" && (
