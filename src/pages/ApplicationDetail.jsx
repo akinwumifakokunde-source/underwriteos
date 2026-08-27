@@ -44,7 +44,7 @@ export default function ApplicationDetail() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [tab, setTab] = useState(urlParams.get("tab") || "Overview");
+  const [tab, setTab] = useState(TABS.includes(urlParams.get("tab")) ? urlParams.get("tab") : "Overview");
   const [form, setForm] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [processingDocId, setProcessingDocId] = useState(null);

@@ -110,7 +110,7 @@ async function createDraftApplication(choice, navigate, addProgress) {
   addProgress("✓ Application created");
 
   addProgress("Opening workspace…");
-  setTimeout(() => navigate(`/applications/${appId}${isUpload ? "?tab=documents" : ""}`), 400);
+  setTimeout(() => navigate(`/applications/${appId}${isUpload ? "?tab=Documents" : ""}`), 400);
 }
 
 async function createSampleApplication(navigate, addProgress) {
