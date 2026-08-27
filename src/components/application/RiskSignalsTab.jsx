@@ -7,8 +7,8 @@ export default function RiskSignalsTab({ signals, evidence, onViewEvidence }) {
   if (!signals || signals.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
-        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
-        <p className="text-[12px] text-slate-400 mt-1">Risk signals generate automatically once documents are processed.</p>
+        <p className="text-sm text-slate-500 font-medium">Risk analysis will begin automatically when borrower information becomes available.</p>
+        <p className="text-[12px] text-slate-400 mt-1">Upload documents or enter borrower details. UnderwriteOS will generate risk signals and evaluate them against your policy.</p>
       </div>
     );
   }
@@ -16,44 +16,59 @@ export default function RiskSignalsTab({ signals, evidence, onViewEvidence }) {
   const evBySignalId = {};
   (evidence || []).forEach((e) => { if (e.signal_id) evBySignalId[e.signal_id] = e; });
 
+  const positive = signals.filter((s) => s.flag === "positive");
+  const attention = signals.filter((s) => s.flag === "negative" || s.flag === "critical");
+  const neutral = signals.filter((s) => s.flag === "neutral" || !s.flag);
+
+  const groups = [
+    { label: "Positive", icon: "✓", items: positive, cls: "text-emerald-600" },
+    { label: "Attention", icon: "⚠", items: attention, cls: "text-amber-600" },
+    { label: "Neutral", icon: "•", items: neutral, cls: "text-slate-400" },
+  ].filter((g) => g.items.length > 0);
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <h3 className="text-sm font-semibold text-slate-900 mb-3">Risk signals ({signals.length})</h3>
-      <div className="space-y-1">
-        {signals.map((s, i) => {
-          const isOpen = expanded === i;
-          const ev = evBySignalId[s.id] || (evidence || []).find((e) => e.signal === s.signal);
-          return (
-            <div key={i} className="border-b border-slate-50 last:border-0">
-              <button onClick={() => setExpanded(isOpen ? null : i)} className="w-full flex items-center gap-3 py-2.5 text-left">
-                <SignalIcon flag={s.flag} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-slate-800">{s.signal.replace(/_/g, " ")}</div>
-                  {s.explanation && !isOpen && <div className="text-[11px] text-slate-400 truncate">{s.explanation}</div>}
-                </div>
-                <div className="text-sm font-mono text-slate-700 shrink-0">{formatSignalValue(s)}</div>
-                {isOpen ? <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />}
-              </button>
-              {isOpen && (
-                <div className="pl-9 pb-3 space-y-1.5 text-[12px]">
-                  {s.threshold != null && (
-                    <div className="flex gap-2"><span className="text-slate-400 w-28">Policy threshold:</span><span className="font-mono text-slate-700">{String(s.threshold)}</span></div>
+    <div className="space-y-4">
+      {groups.map((g) => (
+        <div key={g.label} className="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 className="text-sm font-semibold text-slate-900 mb-3">{g.label} <span className="text-slate-400 font-normal">({g.items.length})</span></h3>
+          <div className="space-y-1">
+            {g.items.map((s) => {
+              const idx = signals.indexOf(s);
+              const isOpen = expanded === idx;
+              const ev = evBySignalId[s.id] || (evidence || []).find((e) => e.signal === s.signal);
+              return (
+                <div key={s.id} className="border-b border-slate-50 last:border-0">
+                  <button onClick={() => setExpanded(isOpen ? null : idx)} className="w-full flex items-center gap-3 py-2.5 text-left">
+                    <SignalIcon flag={s.flag} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-slate-800">{s.signal.replace(/_/g, " ")}</div>
+                      {s.explanation && !isOpen && <div className="text-[11px] text-slate-400 truncate">{s.explanation}</div>}
+                    </div>
+                    <div className="text-sm font-mono text-slate-700 shrink-0">{formatSignalValue(s)}</div>
+                    {isOpen ? <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" /> : <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />}
+                  </button>
+                  {isOpen && (
+                    <div className="pl-9 pb-3 space-y-1.5 text-[12px]">
+                      {s.threshold != null && (
+                        <div className="flex gap-2"><span className="text-slate-400 w-28">Policy threshold:</span><span className="font-mono text-slate-700">{String(s.threshold)}</span></div>
+                      )}
+                      {s.category && <div className="flex gap-2"><span className="text-slate-400 w-28">Category:</span><span className="text-slate-700 capitalize">{s.category}</span></div>}
+                      {ev && (
+                        <>
+                          <div className="flex gap-2"><span className="text-slate-400 w-28">Source:</span><span className="text-slate-700">{ev.source_type?.replace(/_/g, " ")}{ev.source_location ? ` · ${ev.source_location}` : ""}</span></div>
+                          {ev.confidence != null && <div className="flex gap-2"><span className="text-slate-400 w-28">Confidence:</span><span className="text-teal-600">{Math.round(ev.confidence * 100)}%</span></div>}
+                          <button onClick={() => onViewEvidence(ev)} className="text-teal-600 hover:text-teal-700 font-medium">View evidence</button>
+                        </>
+                      )}
+                      {s.explanation && <div className="text-slate-500 pt-1">{s.explanation}</div>}
+                    </div>
                   )}
-                  {s.category && <div className="flex gap-2"><span className="text-slate-400 w-28">Category:</span><span className="text-slate-700 capitalize">{s.category}</span></div>}
-                  {ev && (
-                    <>
-                      <div className="flex gap-2"><span className="text-slate-400 w-28">Source:</span><span className="text-slate-700">{ev.source_type?.replace(/_/g, " ")}{ev.source_location ? ` · ${ev.source_location}` : ""}</span></div>
-                      {ev.confidence != null && <div className="flex gap-2"><span className="text-slate-400 w-28">Confidence:</span><span className="text-teal-600">{Math.round(ev.confidence * 100)}%</span></div>}
-                      <button onClick={() => onViewEvidence(ev)} className="text-teal-600 hover:text-teal-700 font-medium">View evidence</button>
-                    </>
-                  )}
-                  {s.explanation && <div className="text-slate-500 pt-1">{s.explanation}</div>}
                 </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

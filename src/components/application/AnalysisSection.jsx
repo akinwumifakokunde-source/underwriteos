@@ -1,7 +1,8 @@
 import React from "react";
 import { Brain, TrendingUp, TrendingDown, Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import CreditMemo from "./CreditMemo";
 
-export default function AnalysisSection({ recommendation, running, lastUpdated, onRerun }) {
+export default function AnalysisSection({ recommendation, running, lastUpdated, onRerun, borrower, app, fp, cp, evidence, fmtMoney }) {
   if (running) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
@@ -16,8 +17,8 @@ export default function AnalysisSection({ recommendation, running, lastUpdated, 
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <Brain className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
-        <p className="text-[12px] text-slate-400 mt-1">The AI underwriter generates a recommendation automatically once documents are processed.</p>
+        <p className="text-sm text-slate-500 font-medium">AI recommendation not available yet</p>
+        <p className="text-[12px] text-slate-400 mt-1">The AI underwriter generates a recommendation automatically once documents are processed. Upload documents to begin.</p>
       </div>
     );
   }
@@ -91,9 +92,11 @@ export default function AnalysisSection({ recommendation, running, lastUpdated, 
         )}
         <div className="mt-3 flex items-center gap-1.5 text-[11px] text-violet-700 bg-violet-100/60 rounded-lg px-3 py-2">
           <Sparkles className="w-3 h-3" />
-          AI recommendation is advisory. Your policy remains authoritative.
+          AI recommendation is advisory. Your configured underwriting policy remains authoritative.
         </div>
       </div>
+
+      <CreditMemo recommendation={recommendation} borrower={borrower} app={app} fp={fp} cp={cp} evidence={evidence} fmtMoney={fmtMoney} />
     </div>
   );
 }

@@ -6,8 +6,8 @@ export default function EvidenceTab({ evidence }) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <FileSearch className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
-        <p className="text-[12px] text-slate-400 mt-1">Evidence records are created automatically as documents are processed.</p>
+        <p className="text-sm text-slate-500 font-medium">No evidence records yet</p>
+        <p className="text-[12px] text-slate-400 mt-1">Evidence is created automatically as documents are processed and risk signals are generated. Upload documents to begin.</p>
       </div>
     );
   }

@@ -16,8 +16,8 @@ export default function DecisionSection({ decision, recommendation, evidence, on
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <GitBranch className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
-        <p className="text-[12px] text-slate-400 mt-1">A decision is generated automatically once the policy evaluates.</p>
+        <p className="text-sm text-slate-500 font-medium">No decision yet</p>
+        <p className="text-[12px] text-slate-400 mt-1">A decision is generated automatically once documents are processed and the policy evaluates. Upload documents to begin.</p>
       </div>
     );
   }

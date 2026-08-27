@@ -2,7 +2,7 @@ import React from "react";
 import NeedsAttentionPanel from "./NeedsAttentionPanel";
 import ApplicationFormSection from "./ApplicationFormSection";
 
-export default function OverviewTab({ borrower, app, fp, cp, decision, recommendation, riskSignals, documents, fmtMoney, form, setForm, allExtracted, onSave, saving }) {
+export default function OverviewTab({ borrower, app, fp, cp, decision, recommendation, riskSignals, documents, fmtMoney, form, setForm, allExtracted, onSave, saving, onNavigate }) {
   const dti = fp?.affordability?.debt_to_income;
   const riskLevel = decision?.risk_score != null ? (decision.risk_score < 0.3 ? "LOW" : decision.risk_score < 0.6 ? "MEDIUM" : "HIGH") : "—";
 
@@ -12,17 +12,21 @@ export default function OverviewTab({ borrower, app, fp, cp, decision, recommend
         documents={documents}
         policyId={app?.policy_id || "consumer-v1"}
         decision={decision}
+        onNavigate={onNavigate}
       />
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Borrower" value={borrower ? `${borrower.first_name} ${borrower.last_name}` : "—"} />
-        <StatCard label="Loan" value={fmtMoney(app?.loan_amount, app?.loan_currency)} />
-        <StatCard label="Income" value={borrower?.annual_income ? fmtMoney(borrower.annual_income, borrower.income_currency) : fp?.income?.annual ? fmtMoney(fp.income.annual) : "—"} />
-        <StatCard label="DTI" value={dti != null ? `${(dti * 100).toFixed(1)}%` : "—"} />
-        <StatCard label="Credit score" value={cp?.credit_score ?? "—"} />
-        <StatCard label="Risk" value={riskLevel} />
-        <StatCard label="AI recommendation" value={recommendation?.recommendation || "—"} highlight={recommendation?.recommendation === "APPROVE" ? "emerald" : recommendation?.recommendation === "DECLINE" ? "rose" : "amber"} />
-        <StatCard label="Final decision" value={decision?.decision || "—"} highlight={decision?.decision === "APPROVE" ? "emerald" : decision?.decision === "DECLINE" ? "rose" : "amber"} />
+      <div className="rounded-xl border border-slate-200 bg-white p-5">
+        <h3 className="text-sm font-semibold text-slate-900 mb-3">Credit picture</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatCard label="Borrower" value={borrower ? `${borrower.first_name} ${borrower.last_name}` : "—"} hint={borrower ? null : "Enter borrower details"} />
+          <StatCard label="Loan" value={fmtMoney(app?.loan_amount, app?.loan_currency)} />
+          <StatCard label="Income" value={borrower?.annual_income ? fmtMoney(borrower.annual_income, borrower.income_currency) : fp?.income?.annual ? fmtMoney(fp.income.annual) : "—"} hint={!borrower?.annual_income && !fp?.income?.annual ? "Upload a payslip" : null} />
+          <StatCard label="DTI" value={dti != null ? `${(dti * 100).toFixed(1)}%` : "—"} hint={dti == null ? "Upload a bank statement" : null} />
+          <StatCard label="Credit score" value={cp?.credit_score ?? "—"} hint={cp?.credit_score == null ? "Upload a credit report" : null} />
+          <StatCard label="Risk" value={riskLevel} hint={riskLevel === "—" ? "Awaiting analysis" : null} />
+          <StatCard label="AI recommendation" value={recommendation?.recommendation || "—"} highlight={recommendation?.recommendation === "APPROVE" ? "emerald" : recommendation?.recommendation === "DECLINE" ? "rose" : "amber"} hint={!recommendation ? "Awaiting analysis" : null} />
+          <StatCard label="Final decision" value={decision?.decision || "—"} highlight={decision?.decision === "APPROVE" ? "emerald" : decision?.decision === "DECLINE" ? "rose" : "amber"} hint={!decision ? "Awaiting policy evaluation" : null} />
+        </div>
       </div>
 
       {decision?.reasons?.length > 0 && (
@@ -46,12 +50,14 @@ export default function OverviewTab({ borrower, app, fp, cp, decision, recommend
   );
 }
 
-function StatCard({ label, value, highlight }) {
+function StatCard({ label, value, highlight, hint }) {
   const cls = highlight === "emerald" ? "text-emerald-700" : highlight === "rose" ? "text-rose-700" : highlight === "amber" ? "text-amber-700" : "text-slate-900";
+  const unavailable = value === "—" || value == null;
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
       <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{label}</div>
-      <div className={`text-base font-semibold mt-1 ${cls}`}>{value}</div>
+      <div className={`text-base font-semibold mt-1 ${unavailable ? "text-slate-300" : cls}`}>{value}</div>
+      {unavailable && hint && <div className="text-[11px] text-slate-400 mt-0.5">{hint}</div>}
     </div>
   );
 }

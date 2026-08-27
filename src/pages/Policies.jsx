@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X } from "lucide-react";
+import PolicySimulator from "@/components/policies/PolicySimulator";
 
 const FIELDS = [
   { value: "credit_score", label: "Credit score", type: "number" },
@@ -317,6 +318,9 @@ export default function Policies() {
               <h3 className="text-sm font-semibold text-slate-900 mb-2">Default outcome</h3>
               <p className="text-[13px] text-slate-500">If no rules are triggered, the application will be <span className="font-medium text-emerald-700">APPROVED</span>.</p>
             </div>
+
+            {/* Policy simulator */}
+            <PolicySimulator rules={editing.rules} />
           </div>
         ) : (
           /* Policy List */

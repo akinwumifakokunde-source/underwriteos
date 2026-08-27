@@ -311,6 +311,7 @@ export default function ApplicationDetail() {
               fmtMoney={fmtMoney}
               form={form} setForm={setForm}
               allExtracted={allExtracted} onSave={saveForm} saving={saving}
+              onNavigate={setTab}
             />
           )}
 
@@ -325,7 +326,7 @@ export default function ApplicationDetail() {
           )}
 
           {tab === "Financial Profile" && (
-            <FinancialProfileTab fp={fp} cp={cp} evidence={evidence} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
+            <FinancialProfileTab fp={fp} cp={cp} evidence={evidence} riskSignals={riskSignals} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
           )}
 
           {tab === "Risk" && (
@@ -338,6 +339,8 @@ export default function ApplicationDetail() {
               running={analyzing}
               lastUpdated={recommendation?.generated_at ? timeAgo(new Date(recommendation.generated_at)) : null}
               onRerun={() => runPipeline()}
+              borrower={borrower} app={app} fp={fp} cp={cp}
+              evidence={evidence} fmtMoney={fmtMoney}
             />
           )}
 

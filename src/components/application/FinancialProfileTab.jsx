@@ -1,9 +1,29 @@
 import React from "react";
-import { FileText } from "lucide-react";
+import { FileText, TrendingUp, TrendingDown, Minus } from "lucide-react";
 
-export default function FinancialProfileTab({ fp, cp, evidence, fmtMoney, onViewEvidence }) {
+const METRIC_SOURCES = {
+  "Annual income": "payslip or bank statement",
+  "Monthly income": "bank statement",
+  "Monthly expenses": "bank statement",
+  "Monthly debt payments": "bank statement",
+  "Debt-to-income": "bank statement",
+  "Monthly net cash flow": "bank statement",
+  "Disposable income": "bank statement",
+  "Average balance": "bank statement",
+  "Credit score": "credit report",
+  "Credit utilisation": "credit report",
+  "Repayment history": "credit report",
+  "Defaults": "credit report",
+  "Delinquent accounts": "credit report",
+  "Recent enquiries": "credit report",
+  "Outstanding balance": "credit report",
+};
+
+export default function FinancialProfileTab({ fp, cp, evidence, riskSignals, fmtMoney, onViewEvidence }) {
   const evBySignal = {};
   (evidence || []).forEach((e) => { if (e.signal) evBySignal[e.signal] = e; });
+  const signalBySignal = {};
+  (riskSignals || []).forEach((s) => { if (s.signal) signalBySignal[s.signal] = s; });
 
   const metrics = [
     { label: "Annual income", value: fp?.income?.annual, money: true, signal: "Annual income" },
@@ -27,43 +47,63 @@ export default function FinancialProfileTab({ fp, cp, evidence, fmtMoney, onView
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
-        <p className="text-[12px] text-slate-400 mt-1">Upload documents and UnderwriteOS will build the financial profile automatically.</p>
+        <p className="text-sm text-slate-500 font-medium">Financial profile not available yet</p>
+        <p className="text-[12px] text-slate-400 mt-1">Upload bank statements and a credit report. UnderwriteOS will build the financial profile automatically as documents are processed.</p>
       </div>
     );
   }
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">Financial profile</h3>
+      <h3 className="text-sm font-semibold text-slate-900 mb-1">Financial profile</h3>
+      <p className="text-[12px] text-slate-400 mb-4">Every metric shows its value, status, source and confidence.</p>
       <div className="space-y-1">
         {metrics.map((m, i) => (
-          <FinancialMetric key={i} {...m} evidence={evBySignal[m.signal]} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
+          <FinancialMetric key={i} {...m} evidence={evBySignal[m.signal]} signal={signalBySignal[m.signal]} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
         ))}
       </div>
     </div>
   );
 }
 
-function FinancialMetric({ label, value, money, evidence, fmtMoney, onViewEvidence }) {
+function FinancialMetric({ label, value, money, evidence, signal, fmtMoney, onViewEvidence }) {
   const display = value == null ? "—" : money ? fmtMoney(value) : value;
+  const isAvailable = value != null;
+  const sourceDoc = METRIC_SOURCES[label];
+
+  let status = null;
+  if (signal && isAvailable) {
+    if (signal.flag === "negative" || signal.flag === "critical") status = { text: signal.explanation || "Above policy threshold", icon: TrendingDown, cls: "text-amber-600" };
+    else if (signal.flag === "positive") status = { text: signal.explanation || "Within policy", icon: TrendingUp, cls: "text-emerald-600" };
+    else status = { text: "Neutral", icon: Minus, cls: "text-slate-400" };
+  }
+
   return (
-    <div className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
+    <div className="flex items-start gap-3 py-2.5 border-b border-slate-50 last:border-0">
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium text-slate-800">{label}</div>
-        {evidence ? (
-          <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 flex-wrap">
-            <span>Source: {evidence.source_type?.replace(/_/g, " ")}{evidence.source_location ? ` · ${evidence.source_location}` : ""}</span>
-            {evidence.confidence != null && <span className="text-teal-600">{Math.round(evidence.confidence * 100)}% confidence</span>}
+        {isAvailable ? (
+          <div className="flex items-center gap-2 text-[11px] mt-0.5 flex-wrap">
+            {status && (
+              <span className={`flex items-center gap-1 ${status.cls}`}>
+                <status.icon className="w-3 h-3" /> {status.text}
+              </span>
+            )}
+            {evidence ? (
+              <span className="text-slate-400">Source: {evidence.source_type?.replace(/_/g, " ")}{evidence.source_location ? ` · ${evidence.source_location}` : ""}</span>
+            ) : (
+              <span className="text-slate-300">Derived</span>
+            )}
+            {evidence?.confidence != null && <span className="text-teal-600">{Math.round(evidence.confidence * 100)}% confidence</span>}
+            {evidence && <button onClick={() => onViewEvidence(evidence)} className="text-teal-600 hover:text-teal-700 font-medium">View evidence</button>}
           </div>
         ) : (
-          <div className="text-[11px] text-slate-300 mt-0.5">Derived</div>
+          <div className="text-[11px] text-slate-400 mt-0.5">
+            Not available yet — upload a {sourceDoc || "document"} to calculate this.
+          </div>
         )}
       </div>
-      <div className="text-sm font-mono font-semibold text-slate-900 shrink-0">{display}</div>
-      {evidence && (
-        <button onClick={() => onViewEvidence(evidence)} className="text-[11px] font-medium text-teal-600 hover:text-teal-700 shrink-0">View evidence</button>
-      )}
+      <div className={`text-sm font-mono font-semibold shrink-0 ${isAvailable ? "text-slate-900" : "text-slate-300"}`}>{display}</div>
     </div>
   );
 }
