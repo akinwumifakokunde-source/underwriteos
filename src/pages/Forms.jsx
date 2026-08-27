@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Link2, Copy, Check, Pencil, Pause, Play, Trash2, FileText } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Link2, Copy, Check, Pencil, Pause, Play, Trash2, FileText, Inbox } from "lucide-react";
 
 export default function Forms() {
   const [forms, setForms] = useState([]);
@@ -123,6 +123,14 @@ export default function Forms() {
                     {copied === f.slug ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                     {copied === f.slug ? "Copied" : "Copy link"}
                   </button>
+                  <Link
+                    to={`/forms/${f.id}/submissions`}
+                    title="View submissions"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 transition-colors"
+                  >
+                    <Inbox className="w-3.5 h-3.5" />
+                    Submissions
+                  </Link>
                   <Link to={`/forms/${f.id}/edit`} title="Edit" className="inline-flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:bg-slate-100 transition-colors">
                     <Pencil className="w-4 h-4" />
                   </Link>

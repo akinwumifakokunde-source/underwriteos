@@ -71,6 +71,7 @@ export default async function(req: Request): Promise<Response> {
         environment: "sandbox",
         application_number: genId("APP"),
         borrower_id: borrower.id,
+        form_id: form.id,
         market,
         regulatory_profile: null,
         state: v.state || null,
@@ -123,6 +124,39 @@ export default async function(req: Request): Promise<Response> {
       const forms = await base44.asServiceRole.entities.ApplicationForm.filter({ id: form_id, organization_id }, "-created_date", 1);
       if (forms.length === 0) return apiError("FORM_NOT_FOUND", "Form not found.", 404);
       return apiSuccess({ form: forms[0] }, 200);
+    }
+
+    if (action === "submissions") {
+      requireScope(ctx, "applications:read");
+      const { form_id } = body;
+      if (!form_id) return apiError("VALIDATION_ERROR", "form_id is required.", 400);
+      const forms = await base44.asServiceRole.entities.ApplicationForm.filter({ id: form_id, organization_id }, "-created_date", 1);
+      if (forms.length === 0) return apiError("FORM_NOT_FOUND", "Form not found.", 404);
+      const form = forms[0];
+      const apps = await base44.asServiceRole.entities.Application.filter({ form_id, organization_id }, "-created_date", 200);
+      const borrowerIds = Array.from(new Set(apps.map((a: any) => a.borrower_id).filter(Boolean)));
+      const borrowers: any[] = await Promise.all(borrowerIds.map((id: string) =>
+        base44.asServiceRole.entities.Borrower.get(id).catch(() => null)
+      ));
+      const borrowerMap: any = {};
+      borrowers.forEach((b) => { if (b) borrowerMap[b.id] = b; });
+      const submissions = apps.map((a: any) => ({
+        application_id: a.id,
+        application_number: a.application_number,
+        status: a.status,
+        decision: a.decision,
+        loan_amount: a.loan_amount,
+        loan_currency: a.loan_currency,
+        market: a.market,
+        product_type: a.product_type,
+        created_date: a.created_date,
+        borrower: borrowerMap[a.borrower_id] ? {
+          first_name: borrowerMap[a.borrower_id].first_name,
+          last_name: borrowerMap[a.borrower_id].last_name,
+          email: borrowerMap[a.borrower_id].email,
+        } : null,
+      }));
+      return apiSuccess({ form, submissions }, 200);
     }
 
     if (action === "create") {

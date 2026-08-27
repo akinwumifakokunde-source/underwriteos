@@ -45,6 +45,7 @@ import WorkspaceHome from '@/pages/WorkspaceHome';
 import Forms from '@/pages/Forms';
 import FormEditor from '@/pages/FormEditor';
 import Apply from '@/pages/Apply';
+import FormSubmissions from '@/pages/FormSubmissions';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
         <Route path="/forms" element={<Forms />} />
         <Route path="/forms/new" element={<FormEditor />} />
         <Route path="/forms/:formId/edit" element={<FormEditor />} />
+        <Route path="/forms/:formId/submissions" element={<FormSubmissions />} />
         <Route path="/policies" element={<Policies />} />
         <Route path="/data-sources" element={<Providers />} />
         <Route path="/risk-signals" element={<RiskSignals />} />

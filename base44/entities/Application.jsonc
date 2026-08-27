@@ -20,6 +20,10 @@
     "borrower_id": {
       "type": "string"
     },
+    "form_id": {
+      "type": "string",
+      "description": "The ApplicationForm this application was submitted through, when created via a white-label form. Null for API-created applications."
+    },
     "market": {
       "type": "string",
       "enum": [
