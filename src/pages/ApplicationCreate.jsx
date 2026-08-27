@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
+import { getJurisdiction, getCurrency, getPolicies } from "@/lib/jurisdictions";
 import { Loader2, ArrowLeft } from "lucide-react";
 
 const SAMPLE = {
@@ -17,6 +18,7 @@ export default function ApplicationCreate() {
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState([]);
+  const [market, setMarket] = useState("GB");
 
   const addProgress = (msg) => setProgress((p) => [...p, { id: Date.now() + Math.random(), msg }]);
 
@@ -26,9 +28,9 @@ export default function ApplicationCreate() {
     setProgress([]);
     try {
       if (choice === "sample") {
-        await createSampleApplication(navigate, addProgress);
+        await createSampleApplication(navigate, addProgress, market);
       } else {
-        await createDraftApplication(choice, navigate, addProgress);
+        await createDraftApplication(choice, navigate, addProgress, market);
       }
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to create application.");
@@ -49,7 +51,7 @@ export default function ApplicationCreate() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
-      {!creating && !error && <EntryChoice onChoose={handleChoose} />}
+      {!creating && !error && <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />}
 
       {creating && (
         <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10">
@@ -81,16 +83,21 @@ export default function ApplicationCreate() {
   );
 }
 
-async function createDraftApplication(choice, navigate, addProgress) {
+async function createDraftApplication(choice, navigate, addProgress, market) {
+  const jur = getJurisdiction(market);
+  const currency = jur.currency;
+  const policyId = jur.policies[0]?.id || "consumer-v1";
+  const productType = jur.products[0]?.value || "personal_loan";
+
   addProgress("Creating borrower…");
   const isUpload = choice === "upload";
   const b = await base44.functions.invoke("apiBorrowers", {
     action: "create",
-    first_name: isUpload ? "New" : "New",
-    last_name: isUpload ? "Applicant" : "Applicant",
+    first_name: "New",
+    last_name: "Applicant",
     email: "", phone: "",
     employment_status: "employed",
-    income_currency: "GBP",
+    income_currency: currency,
   });
   const borrowerId = b.data.borrower_id;
   addProgress("✓ Borrower created");
@@ -100,11 +107,13 @@ async function createDraftApplication(choice, navigate, addProgress) {
     action: "create",
     borrower_id: borrowerId,
     loan_amount: 10000,
-    loan_currency: "GBP",
+    loan_currency: currency,
     loan_purpose: "general",
     loan_term_months: 12,
-    product_type: "personal_loan",
-    policy_id: "consumer-v1",
+    product_type: productType,
+    policy_id: policyId,
+    market,
+    borrower_type: "salaried",
   });
   const appId = a.data.application_id;
   addProgress("✓ Application created");
@@ -113,8 +122,13 @@ async function createDraftApplication(choice, navigate, addProgress) {
   setTimeout(() => navigate(`/applications/${appId}${isUpload ? "?tab=Documents" : ""}`), 400);
 }
 
-async function createSampleApplication(navigate, addProgress) {
+async function createSampleApplication(navigate, addProgress, market) {
   const s = SAMPLE;
+  const jur = getJurisdiction(market);
+  const currency = jur.currency;
+  const policyId = jur.policies[0]?.id || "consumer-v1";
+  const productType = jur.products[0]?.value || "personal_loan";
+
   addProgress("Creating borrower…");
   const b = await base44.functions.invoke("apiBorrowers", {
     action: "create",
@@ -123,7 +137,7 @@ async function createSampleApplication(navigate, addProgress) {
     employment_status: s.borrower.employment_status,
     employer_name: s.borrower.employer_name,
     annual_income: s.borrower.annual_income,
-    income_currency: "GBP",
+    income_currency: currency,
   });
   const borrowerId = b.data.borrower_id;
   addProgress("✓ Borrower created");
@@ -133,11 +147,13 @@ async function createSampleApplication(navigate, addProgress) {
     action: "create",
     borrower_id: borrowerId,
     loan_amount: s.application.loan_amount,
-    loan_currency: "GBP",
+    loan_currency: currency,
     loan_purpose: s.application.loan_purpose,
     loan_term_months: s.application.loan_term_months,
-    product_type: s.application.product_type,
-    policy_id: s.application.policy_id,
+    product_type: productType,
+    policy_id: policyId,
+    market,
+    borrower_type: "salaried",
   });
   const appId = a.data.application_id;
   addProgress("✓ Application created");

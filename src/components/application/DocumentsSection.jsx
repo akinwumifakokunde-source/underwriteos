@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CheckCircle2, AlertTriangle, FileText, ChevronDown, ChevronRight, Loader2, FileWarning, Trash2, Eye } from "lucide-react";
 import DocumentUploader from "./DocumentUploader";
-import { POLICY_REQUIRED_DOCS } from "./ApplicationFormSection";
+import { getDocumentRequirements } from "@/lib/jurisdictions";
 
 const TYPE_LABELS = {
   bank_statement: "Bank Statement",
@@ -35,9 +35,9 @@ const STATUS_CONFIG = {
 };
 
 export default function DocumentsSection({
-  documents, policyId, onUpload, uploading, onReprocess, onDelete, onView, processingDocId
+  documents, policyId, onUpload, uploading, onReprocess, onDelete, onView, processingDocId, market, borrowerType
 }) {
-  const required = POLICY_REQUIRED_DOCS[policyId] || POLICY_REQUIRED_DOCS["consumer-v1"];
+  const required = getDocumentRequirements(market, policyId, borrowerType);
   const docsByType = {};
   documents.forEach((d) => {
     if (!docsByType[d.document_type]) docsByType[d.document_type] = [];

@@ -16,7 +16,7 @@ export default async function(req: Request): Promise<Response> {
       const existing = await findIdempotent(base44, "Application", organization_id, idempotencyKey);
       if (existing) return apiSuccess({ application_id: existing.id, application: existing, idempotent_replay: true }, 200);
 
-      const { borrower_id, loan_amount, loan_currency, loan_purpose, loan_term_months, interest_rate, policy_id } = body;
+      const { borrower_id, loan_amount, loan_currency, loan_purpose, loan_term_months, interest_rate, policy_id, market, regulatory_profile, state, borrower_type, product_type } = body;
       if (!borrower_id) return apiError("VALIDATION_ERROR", "borrower_id is required.", 400);
       if (loan_amount === undefined || loan_amount <= 0) return apiError("VALIDATION_ERROR", "loan_amount must be a positive number.", 400);
 
@@ -28,6 +28,11 @@ export default async function(req: Request): Promise<Response> {
         environment: "sandbox",
         application_number: genId("APP"),
         borrower_id,
+        market: market || "GB",
+        regulatory_profile: regulatory_profile || null,
+        state: state || null,
+        borrower_type: borrower_type || "salaried",
+        product_type: product_type || "personal_loan",
         loan_amount: Number(loan_amount),
         loan_currency: loan_currency || "GBP",
         loan_purpose: loan_purpose || "general",
@@ -61,7 +66,7 @@ export default async function(req: Request): Promise<Response> {
 
     if (action === "update") {
       requireScope(ctx, "applications:write");
-      const { application_id, loan_amount, loan_currency, loan_purpose, loan_term_months, interest_rate, policy_id, product_type } = body;
+      const { application_id, loan_amount, loan_currency, loan_purpose, loan_term_months, interest_rate, policy_id, product_type, market, regulatory_profile, state, borrower_type } = body;
       if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
       const apps = await base44.asServiceRole.entities.Application.filter({ id: application_id, organization_id }, "-created_date", 1);
       if (apps.length === 0) return apiError("APPLICATION_NOT_FOUND", `Application ${application_id} was not found.`, 404);
@@ -73,6 +78,10 @@ export default async function(req: Request): Promise<Response> {
       if (interest_rate !== undefined) updates.interest_rate = interest_rate;
       if (policy_id !== undefined) updates.policy_id = policy_id;
       if (product_type !== undefined) updates.product_type = product_type;
+      if (market !== undefined) updates.market = market;
+      if (regulatory_profile !== undefined) updates.regulatory_profile = regulatory_profile;
+      if (state !== undefined) updates.state = state;
+      if (borrower_type !== undefined) updates.borrower_type = borrower_type;
       if (Object.keys(updates).length === 0) return apiError("VALIDATION_ERROR", "No fields to update.", 400);
       const updated = await base44.asServiceRole.entities.Application.update(application_id, updates);
       await audit(base44, organization_id, "application.updated", { application_id, actor, actor_type, endpoint: "PATCH /v1/applications/{id}", details: updates });

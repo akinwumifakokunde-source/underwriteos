@@ -13,6 +13,10 @@ import PolicySection from "@/components/application/PolicySection";
 import DecisionSection from "@/components/application/DecisionSection";
 import EvidenceTab from "@/components/application/EvidenceTab";
 import ActivityTab from "@/components/application/ActivityTab";
+import ApplicationHeader from "@/components/application/ApplicationHeader";
+import AffordabilityTab from "@/components/application/AffordabilityTab";
+import ReconciliationPanel from "@/components/application/ReconciliationPanel";
+import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 
 const STATUS_STYLES = {
   draft: "bg-slate-50 text-slate-600 border-slate-200",
@@ -32,7 +36,7 @@ const STATUS_LABELS = {
   failed: "FAILED",
 };
 
-const TABS = ["Overview", "Documents", "Financial Profile", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence", "Activity"];
+const TABS = ["Overview", "Documents", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence", "Activity"];
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
@@ -52,23 +56,6 @@ export default function ApplicationDetail() {
   const [analyzing, setAnalyzing] = useState(false);
   const [overriding, setOverriding] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
-  const [showFormErrors, setShowFormErrors] = useState(false);
-
-  const validateForm = (f) => {
-    const errors = {};
-    if (!f?.first_name?.trim()) errors.first_name = "First name is required";
-    if (!f?.last_name?.trim()) errors.last_name = "Last name is required";
-    if (!f?.email?.trim()) errors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = "Enter a valid email";
-    if (!f?.annual_income || Number(f.annual_income) <= 0) errors.annual_income = "Annual income is required";
-    if (!f?.loan_amount || Number(f.loan_amount) <= 0) errors.loan_amount = "Requested amount is required";
-    if (!f?.loan_term_months || Number(f.loan_term_months) <= 0) errors.loan_term_months = "Term is required";
-    return errors;
-  };
-
-  const formErrors = form ? validateForm(form) : {};
-  const formValid = !!form && Object.keys(formErrors).length === 0;
-  const displayErrors = showFormErrors ? formErrors : {};
 
   const load = useCallback(async () => {
     try {
@@ -111,6 +98,9 @@ export default function ApplicationDetail() {
         loan_purpose: app.loan_purpose || "general",
         product_type: app.product_type || "personal_loan",
         policy_id: app.policy_id || "consumer-v1",
+        market: app.market || "GB",
+        borrower_type: app.borrower_type || "salaried",
+        state: app.state || "",
       });
     }
   }, [borrower, app]);
@@ -141,11 +131,11 @@ export default function ApplicationDetail() {
 
   // Auto-run the pipeline once on load if documents exist but no decision yet
   useEffect(() => {
-    if (!loading && !autoRan && documents.length > 0 && !results?.decision && formValid) {
+    if (!loading && !autoRan && documents.length > 0 && !results?.decision) {
       setAutoRan(true);
       runPipeline();
     }
-  }, [loading, autoRan, documents, results?.decision, formValid, runPipeline]);
+  }, [loading, autoRan, documents, results?.decision, runPipeline]);
 
   const uploadDocument = async (file) => {
     setUploading(true);
@@ -160,7 +150,7 @@ export default function ApplicationDetail() {
       setProcessingDocId(doc.id);
       await base44.functions.invoke("apiDocuments", { action: "process", document_id: doc.id });
       await load();
-      if (formValid) await runPipeline();
+      await runPipeline();
       setTab("Documents");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
@@ -195,12 +185,6 @@ export default function ApplicationDetail() {
   };
 
   const saveForm = async () => {
-    const errors = validateForm(form);
-    if (Object.keys(errors).length > 0) {
-      setShowFormErrors(true);
-      return;
-    }
-    setShowFormErrors(false);
     setSaving(true);
     try {
       await base44.functions.invoke("apiBorrowers", {
@@ -211,10 +195,13 @@ export default function ApplicationDetail() {
         employer_name: form.employer_name,
         annual_income: form.annual_income ? Number(form.annual_income) : null,
       });
+      const jur = getJurisdiction(form.market);
       await base44.functions.invoke("apiApplications", {
         action: "update", application_id: applicationId,
         loan_amount: Number(form.loan_amount), loan_term_months: Number(form.loan_term_months),
         loan_purpose: form.loan_purpose, product_type: form.product_type, policy_id: form.policy_id,
+        market: form.market, borrower_type: form.borrower_type, state: form.state,
+        loan_currency: jur.currency,
       });
       await load();
       await runPipeline(form.policy_id);
@@ -295,16 +282,9 @@ export default function ApplicationDetail() {
           <ArrowLeft className="w-4 h-4" /> Applications
         </Link>
 
-        {/* Header */}
         <div className="flex items-start justify-between mb-5 gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-2xl font-semibold tracking-tight">{app?.application_number || applicationId.slice(-8)}</h1>
-              <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${STATUS_STYLES[app?.status] || STATUS_STYLES.draft}`}>{STATUS_LABELS[app?.status] || app?.status}</span>
-            </div>
-            <p className="text-sm text-slate-500">
-              {borrower ? `${borrower.first_name} ${borrower.last_name}` : "—"} · {fmtMoney(app?.loan_amount, app?.loan_currency)} · {(app?.product_type || "personal_loan").replace(/_/g, " ")} · {app?.loan_term_months ? `${app.loan_term_months} months` : ""}
-            </p>
+          <div className="flex-1">
+            <ApplicationHeader app={app} borrower={borrower} documents={documents} decision={decision} fmtMoney={fmtMoney} />
           </div>
           <StatusIndicator status={status} lastUpdated={lastUpdated} onRerun={() => runPipeline()} />
         </div>
@@ -335,7 +315,6 @@ export default function ApplicationDetail() {
               form={form} setForm={setForm}
               allExtracted={allExtracted} onSave={saveForm} saving={saving}
               onNavigate={setTab}
-              formErrors={displayErrors} formValid={formValid}
             />
           )}
 
@@ -346,11 +325,20 @@ export default function ApplicationDetail() {
               onReprocess={reprocessDoc} onDelete={deleteDoc}
               onView={(doc) => window.open(doc.file_url, "_blank")}
               processingDocId={processingDocId}
+              market={app?.market} borrowerType={app?.borrower_type}
             />
           )}
 
           {tab === "Financial Profile" && (
             <FinancialProfileTab fp={fp} cp={cp} evidence={evidence} riskSignals={riskSignals} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
+          )}
+
+          {tab === "Affordability" && (
+            <AffordabilityTab fp={fp} app={app} fmtMoney={fmtMoney} />
+          )}
+
+          {tab === "Reconciliation" && (
+            <ReconciliationPanel documents={documents} borrower={borrower} fp={fp} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
           )}
 
           {tab === "Risk" && (
@@ -369,7 +357,7 @@ export default function ApplicationDetail() {
           )}
 
           {tab === "Policy" && (
-            <PolicySection decision={decision} policyInfo={{ name: app?.policy_id === "sme-v1" ? "SME Lending v1" : "Consumer Lending v1" }} />
+            <PolicySection decision={decision} policyInfo={{ name: getPolicyLabel(app?.policy_id, app?.market) }} />
           )}
 
           {tab === "Decision" && (
