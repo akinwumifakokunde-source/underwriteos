@@ -14,16 +14,16 @@ import {
 const NAV_ITEMS = [
   { to: "/workspace", label: "Home" },
   { to: "/applications", label: "Applications" },
-  { to: "/forms", label: "Forms" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
-  { to: "/risk-signals", label: "Risk Signals" },
-  { to: "/decisions", label: "Decisions" },
-  { to: "/evidence", label: "Evidence" },
   { to: "/reports", label: "Reports" },
 ];
 
 const SECONDARY_ITEMS = [
+  { to: "/forms", label: "Forms" },
+  { to: "/risk-signals", label: "Risk Signals" },
+  { to: "/decisions", label: "Decisions" },
+  { to: "/evidence", label: "Evidence" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/members", label: "Members" },
   { to: "/settings", label: "Settings" },
@@ -84,7 +84,7 @@ export default function Nav() {
               <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-[#6b6f76]">Workspace</DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
               {SECONDARY_ITEMS.map((i) => {
-                const active = location.pathname === i.to;
+                const active = location.pathname === i.to || location.pathname.startsWith(i.to + "/");
                 return (
                   <DropdownMenuItem key={i.to} asChild className="focus:bg-white/10 data-[highlighted]:bg-white/10">
                     <NavLink to={i.to} className={`flex items-center justify-between rounded px-2 py-1.5 text-[13px] ${active ? "text-white" : "text-[#a0a4ab]"}`}>

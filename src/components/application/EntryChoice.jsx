@@ -55,8 +55,11 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
             <Upload className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-slate-900">Upload documents</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">Drop in bank statements, payslips, or credit reports. UnderwriteOS extracts the data and builds the credit file automatically.</p>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-900">Start with documents</h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-700 bg-teal-100 rounded px-1.5 py-0.5">Recommended</span>
+            </div>
+            <p className="text-[13px] text-slate-500 mt-0.5">Upload borrower documents and let UnderwriteOS build the underwriting case — we extract the data, build the credit profile and flag what needs your attention.</p>
           </div>
           <div className="inline-flex items-center gap-1 text-[12px] font-medium text-teal-700 group-hover:gap-2 transition-all shrink-0 w-full sm:w-auto justify-end">
             Get started <ArrowRight className="w-3.5 h-3.5" />

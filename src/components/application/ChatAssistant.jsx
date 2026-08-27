@@ -3,10 +3,12 @@ import { MessageSquare, X, Send, Loader2, Sparkles } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 const SUGGESTED = [
-  "What are the main risk factors?",
-  "Can the borrower afford this loan?",
-  "Summarise the credit profile",
-  "What documents are still missing?",
+  "Why is this application under review?",
+  "What are the biggest risks?",
+  "Show me the evidence supporting the income figure.",
+  "Which policy rules were triggered?",
+  "What information is missing?",
+  "Why did the AI recommend review?",
 ];
 
 export default function ChatAssistant({ applicationId }) {
