@@ -4,6 +4,8 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, ArrowRight, CheckCircle2, Clock, Activity, ClipboardCheck, FileText } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
+import EmptyState from "@/components/shared/EmptyState";
+import ErrorState from "@/components/shared/ErrorState";
 
 const PRIORITY = { underwriting: 0, data_collection: 1, analyzing: 2, draft: 3, failed: 4, completed: 5 };
 
@@ -58,12 +60,7 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-            <p className="text-sm text-rose-700">{error}</p>
-          </div>
-        )}
+        {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
 
         {loading ? (
           <div className="rounded-xl border border-slate-200 bg-white p-10 flex items-center justify-center gap-3">
@@ -99,9 +96,7 @@ export default function Dashboard() {
                 </Link>
               </div>
               {queue.length === 0 ? (
-                <div className="p-8 text-center text-sm text-slate-400">
-                  No applications yet. <Link to="/applications/new" className="text-[#0d9488] font-medium">Create one</Link>.
-                </div>
+                <EmptyState bare icon={FileText} title="No applications yet" description="Create your first application to start underwriting." actionLabel="New Application" actionTo="/applications/new" actionIcon={Plus} />
               ) : (
                 <div className="divide-y divide-slate-100">
                   {queue.map((app) => (
@@ -129,7 +124,7 @@ export default function Dashboard() {
                 </Link>
               </div>
               {(data?.decisions?.recent || []).length === 0 ? (
-                <div className="p-8 text-center text-sm text-slate-400">No decisions yet.</div>
+                <EmptyState bare icon={CheckCircle2} title="No decisions yet" description="Decisions will appear here once you underwrite an application." />
               ) : (
                 <div className="divide-y divide-slate-100">
                   {(data?.decisions?.recent || []).slice(0, 6).map((d) => (

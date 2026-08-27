@@ -2,8 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Search, Filter } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Search, Filter, FileText } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
+import EmptyState from "@/components/shared/EmptyState";
+import ErrorState from "@/components/shared/ErrorState";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -85,12 +87,7 @@ export default function Applications() {
           </Link>
         </div>
 
-        {error && (
-          <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
-            <p className="text-sm text-rose-700">{error}</p>
-          </div>
-        )}
+        {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
 
         {/* Filters + Search */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
@@ -122,12 +119,7 @@ export default function Applications() {
             <span className="text-sm text-slate-500">Loading applications…</span>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
-            <p className="text-sm text-slate-400 mb-3">No applications found.</p>
-            <Link to="/applications/new" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0d9488]">
-              <Plus className="w-4 h-4" /> Create your first application
-            </Link>
-          </div>
+          <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionTo="/applications/new" actionIcon={Plus} />
         ) : (
           <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
             <table className="w-full">
