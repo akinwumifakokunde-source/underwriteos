@@ -10,21 +10,22 @@ export default function FinalCta() {
           Run your first underwriting decision.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#a0a5b0] leading-relaxed max-w-xl mx-auto">
-          Start with synthetic borrower data. Connect your own providers when you're ready.
+          Connect live credit and bank data, or upload your own documents. UnderwriteOS handles the rest —
+          across six markets, with full evidence lineage.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            to="/sandbox"
+            to="/onboarding"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-4 py-2.5 rounded-md hover:bg-[#e8eaee] transition-colors"
           >
-            Try the sandbox <ArrowRight className="w-4 h-4" />
+            Start building <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            to="/onboarding"
+            to="/pricing"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-white border border-white/20 px-4 py-2.5 rounded-md hover:bg-white/5 transition-colors"
           >
-            Start building <ArrowRight className="w-4 h-4" />
+            View pricing <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
