@@ -41,12 +41,12 @@ export default function WorkspaceHome() {
         <div className="border-t border-slate-200 mb-8" />
 
         {/* Policies section */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight">Policies</h2>
             <p className="text-sm text-slate-500 mt-1">Create and manage underwriting policies without code.</p>
           </div>
-          <Link to="/policies" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
+          <Link to="/policies" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] self-start sm:self-auto">
             <Plus className="w-4 h-4" /> New Policy
           </Link>
         </div>

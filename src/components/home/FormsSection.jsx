@@ -17,12 +17,12 @@ const BENEFITS = [
 export default function FormsSection() {
   return (
     <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-10">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">Forms</h2>
           <p className="text-sm text-slate-500 mt-1">White-label borrower application forms. Share a link, collect standardised data, and start underwriting automatically.</p>
         </div>
-        <Link to="/forms/new" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
+        <Link to="/forms/new" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] self-start sm:self-auto">
           <Plus className="w-4 h-4" /> New form
         </Link>
       </div>
