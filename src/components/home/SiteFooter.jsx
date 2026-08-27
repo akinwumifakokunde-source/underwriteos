@@ -69,7 +69,7 @@ export default function SiteFooter() {
         <div className="mt-6 flex flex-col items-center justify-center gap-1.5 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
           <span className="inline-flex items-center gap-1.5">
             <span className="text-base leading-none">🌍</span>
-            Built across the United States, the United Kingdom &amp; Africa
+            Built for lenders across the United States, United Kingdom &amp; Africa
           </span>
           <span className="hidden sm:inline text-[#d4d7dd]">·</span>
           <span className="font-medium text-[#525965]">UnderwriteOS</span>
