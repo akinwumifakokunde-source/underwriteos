@@ -86,19 +86,6 @@ export default function Nav() {
                   </DropdownMenuItem>
                 );
               })}
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-[#6b6f76]">Developer</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem asChild className="focus:bg-white/10 data-[highlighted]:bg-white/10">
-                <NavLink to="/api-reference" className="flex items-center rounded px-2 py-1.5 text-[13px] text-[#a0a4ab]">
-                  API Reference
-                </NavLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="focus:bg-white/10 data-[highlighted]:bg-white/10">
-                <NavLink to="/api-keys" className="flex items-center rounded px-2 py-1.5 text-[13px] text-[#a0a4ab]">
-                  API Keys
-                </NavLink>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </nav>

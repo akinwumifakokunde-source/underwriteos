@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Building2, CheckCircle2, Loader2, ArrowRight, AlertTriangle, ShieldCheck, Circle, Rocket, MousePointerClick, Database, FileText, Brain } from "lucide-react";
+import { Building2, CheckCircle2, Loader2, ArrowRight, AlertTriangle, ShieldCheck, Circle, Rocket, MousePointerClick, Database, FileText } from "lucide-react";
 
 const STEPS = [
   { key: "workspace", label: "Create organization", icon: Building2 },
@@ -167,16 +167,6 @@ export default function Onboarding() {
                     <div>
                       <div className="text-sm font-medium text-slate-900">Create your first application</div>
                       <div className="text-[12px] text-slate-400">Enter borrower data and upload documents</div>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
-                </Link>
-                <Link to="/sandbox" className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50">
-                  <div className="flex items-center gap-3">
-                    <Brain className="w-4 h-4 text-[#0d9488]" />
-                    <div>
-                      <div className="text-sm font-medium text-slate-900">Try the sandbox</div>
-                      <div className="text-[12px] text-slate-400">Run a synthetic application and see how the policy decides</div>
                     </div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-slate-400" />
