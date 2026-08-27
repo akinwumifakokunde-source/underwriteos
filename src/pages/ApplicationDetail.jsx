@@ -17,6 +17,7 @@ import ApplicationHeader from "@/components/application/ApplicationHeader";
 import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
+import { computeRiskDimensions } from "@/lib/riskDimensions";
 
 const STATUS_STYLES = {
   draft: "bg-slate-50 text-slate-600 border-slate-200",
@@ -244,6 +245,7 @@ export default function ApplicationDetail() {
 
   const lastUpdated = decision?.decision_timestamp ? timeAgo(new Date(decision.decision_timestamp)) : null;
   const onViewEvidence = () => setTab("Evidence");
+  const dimensions = computeRiskDimensions({ fp, cp, riskSignals, documents, decision });
 
   if (loading) {
     return (
@@ -364,6 +366,7 @@ export default function ApplicationDetail() {
             <DecisionSection
               decision={decision} recommendation={recommendation}
               evidence={evidence} onOverride={overrideDecision} overriding={overriding}
+              dimensions={dimensions}
             />
           )}
 

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Check, X, AlertTriangle, Brain, ShieldCheck, GitBranch, Loader2, ArrowDown, FileText } from "lucide-react";
+import { DIMENSION_STYLES } from "@/lib/riskDimensions";
 
 const DECISION_STYLES = {
   APPROVE: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: Check },
@@ -7,7 +8,7 @@ const DECISION_STYLES = {
   DECLINE: { bg: "bg-rose-50", text: "text-rose-700", border: "border-rose-200", icon: X },
 };
 
-export default function DecisionSection({ decision, recommendation, evidence, onOverride, overriding }) {
+export default function DecisionSection({ decision, recommendation, evidence, onOverride, overriding, dimensions }) {
   const [overrideMode, setOverrideMode] = useState(false);
   const [overrideDecision, setOverrideDecision] = useState("");
   const [overrideReason, setOverrideReason] = useState("");
@@ -89,6 +90,30 @@ export default function DecisionSection({ decision, recommendation, evidence, on
           </div>
         </div>
       </div>
+
+      {/* Risk dimensions */}
+      {dimensions && (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { label: "Affordability", ...dimensions.affordability },
+            { label: "Credit risk", ...dimensions.creditRisk },
+            { label: "Fraud risk", ...dimensions.fraudRisk },
+            { label: "Data quality", ...dimensions.dataQuality },
+          ].map((d, i) => {
+            const style = DIMENSION_STYLES[d.level] || DIMENSION_STYLES.Pending;
+            return (
+              <div key={i} className={`rounded-xl border p-3 ${style.cls}`}>
+                <div className="text-[10px] uppercase tracking-wider opacity-70 font-semibold">{d.label}</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                  <span className="text-sm font-semibold">{d.level}</span>
+                </div>
+                <div className="text-[10px] opacity-70 mt-0.5">{d.detail}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Decision path */}
       <div className="rounded-xl border border-slate-200 bg-white p-5">

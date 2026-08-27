@@ -16,15 +16,26 @@ export default function RiskSignalsTab({ signals, evidence, onViewEvidence }) {
   const evBySignalId = {};
   (evidence || []).forEach((e) => { if (e.signal_id) evBySignalId[e.signal_id] = e; });
 
-  const positive = signals.filter((s) => s.flag === "positive");
-  const attention = signals.filter((s) => s.flag === "negative" || s.flag === "critical");
-  const neutral = signals.filter((s) => s.flag === "neutral" || !s.flag);
+  const CATEGORIES = [
+    { key: "affordability", label: "Affordability" },
+    { key: "credit", label: "Credit" },
+    { key: "cashflow", label: "Cash Flow" },
+    { key: "income", label: "Income" },
+    { key: "fraud", label: "Fraud & Identity" },
+    { key: "identity", label: "Identity" },
+    { key: "data_quality", label: "Data Quality" },
+    { key: "policy", label: "Policy" },
+  ];
 
-  const groups = [
-    { label: "Positive", icon: "✓", items: positive, cls: "text-emerald-600" },
-    { label: "Attention", icon: "⚠", items: attention, cls: "text-amber-600" },
-    { label: "Neutral", icon: "•", items: neutral, cls: "text-slate-400" },
-  ].filter((g) => g.items.length > 0);
+  const groups = CATEGORIES.map((c) => ({
+    ...c,
+    items: signals.filter((s) => s.category === c.key),
+  })).filter((g) => g.items.length > 0);
+
+  // Also include any signals with uncategorized categories
+  const categorized = new Set(groups.flatMap((g) => g.items.map((s) => s.id)));
+  const uncategorized = signals.filter((s) => !categorized.has(s.id));
+  if (uncategorized.length > 0) groups.push({ key: "other", label: "Other", items: uncategorized });
 
   return (
     <div className="space-y-4">
