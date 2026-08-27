@@ -24,8 +24,6 @@ const NAV_ITEMS = [
 
 const SECONDARY_ITEMS = [
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/sandbox", label: "Sandbox" },
-  { to: "/monitoring", label: "Monitoring" },
   { to: "/members", label: "Members" },
   { to: "/settings", label: "Settings" },
 ];
