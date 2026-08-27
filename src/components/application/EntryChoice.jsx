@@ -24,9 +24,10 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {Object.values(JURISDICTIONS).map((j) => (
             <button
+              type="button"
               key={j.code}
               onClick={() => onMarketChange?.(j.code)}
-              className={`rounded-lg border px-2 py-2 text-center transition-all ${market === j.code ? "border-teal-400 bg-teal-50" : "border-slate-200 bg-white hover:bg-slate-50"}`}
+              className={`cursor-pointer rounded-lg border px-2 py-2 text-center transition-all ${market === j.code ? "border-teal-400 bg-teal-50 ring-2 ring-teal-200" : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300"}`}
             >
               <div className={`text-[12px] font-semibold ${market === j.code ? "text-teal-700" : "text-slate-700"}`}>{j.name}</div>
               <div className="text-[10px] text-slate-400 font-mono">{j.currency}</div>

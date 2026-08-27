@@ -10,6 +10,7 @@ export default function WorkspaceHome() {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [market, setMarket] = useState("GB");
 
   const load = useCallback(async () => {
     try {
@@ -26,12 +27,12 @@ export default function WorkspaceHome() {
 
   useEffect(() => { load(); }, [load]);
 
-  const handleChoose = (choice) => navigate(`/applications/new?choice=${choice}`);
+  const handleChoose = (choice) => navigate(`/applications/new?choice=${choice}&market=${market}`);
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
-      <EntryChoice onChoose={handleChoose} />
+      <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8 pb-12">
         <div className="border-t border-slate-200 mb-8" />

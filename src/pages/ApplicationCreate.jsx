@@ -22,15 +22,16 @@ export default function ApplicationCreate() {
 
   const addProgress = (msg) => setProgress((p) => [...p, { id: Date.now() + Math.random(), msg }]);
 
-  const handleChoose = async (choice) => {
+  const handleChoose = async (choice, overrideMarket) => {
+    const effectiveMarket = overrideMarket || market;
     setCreating(true);
     setError(null);
     setProgress([]);
     try {
       if (choice === "sample") {
-        await createSampleApplication(navigate, addProgress, market);
+        await createSampleApplication(navigate, addProgress, effectiveMarket);
       } else {
-        await createDraftApplication(choice, navigate, addProgress, market);
+        await createDraftApplication(choice, navigate, addProgress, effectiveMarket);
       }
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to create application.");
@@ -44,7 +45,9 @@ export default function ApplicationCreate() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const choice = urlParams.get("choice");
-    if (choice) handleChoose(choice);
+    const marketParam = urlParams.get("market");
+    if (marketParam) setMarket(marketParam);
+    if (choice) handleChoose(choice, marketParam);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
