@@ -7,7 +7,6 @@ import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
 import Security from "@/components/home/Security.jsx";
-import SandboxCta from "@/components/home/SandboxCta.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 
@@ -22,7 +21,6 @@ export default function Home() {
       <Evidence />
       <WorkflowSection />
       <Security />
-      <SandboxCta />
       <FinalCta />
       <SiteFooter />
     </div>

@@ -136,15 +136,15 @@ export default function Hero() {
                 Start building <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                to="/sandbox"
+                to="/pricing"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-4 py-2.5 rounded-md hover:bg-[#f7f8fa] transition-colors"
               >
-                Try the sandbox <ArrowRight className="w-4 h-4" />
+                View pricing <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
             <p className="mt-4 text-sm text-[#8a909c]">
-              Create an account. Configure your policy. Run your first decision.
+              Create an account. Connect your data. Run your first decision.
             </p>
           </div>
 
