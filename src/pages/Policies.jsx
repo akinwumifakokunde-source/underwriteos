@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare } from "lucide-react";
 import PolicySimulator from "@/components/policies/PolicySimulator";
+import ComparePolicies from "@/components/policies/ComparePolicies";
 
 const FIELDS = [
   { value: "credit_score", label: "Credit score", type: "number" },
@@ -25,6 +26,17 @@ const FIELDS = [
 const OPERATORS = ["<", "<=", ">", ">=", "==", "!=", "between", "contains", "in"];
 
 const OUTCOMES = ["APPROVE", "REVIEW", "DECLINE"];
+
+const CATEGORIES = [
+  { value: "eligibility", label: "Eligibility" },
+  { value: "credit", label: "Credit" },
+  { value: "affordability", label: "Affordability" },
+  { value: "income", label: "Income" },
+  { value: "cashflow", label: "Cash flow" },
+  { value: "fraud", label: "Fraud" },
+  { value: "documents", label: "Documents" },
+  { value: "data_quality", label: "Data quality" },
+];
 
 const TEMPLATES = {
   "consumer-v1": {
@@ -59,6 +71,7 @@ export default function Policies() {
   const [selected, setSelected] = useState(null);
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -165,13 +178,17 @@ export default function Policies() {
   };
 
   // Editing helpers
-  const addRule = () => setEditing((e) => ({ ...e, rules: [...e.rules, { rule_id: "R-" + Date.now().toString(36).slice(-4), field: "credit_score", operator: "<", threshold: 500, decision: "REVIEW", reason: "" }] }));
+  const addRule = (category = "credit") => setEditing((e) => ({ ...e, rules: [...e.rules, { rule_id: "R-" + Date.now().toString(36).slice(-4), category, field: "credit_score", operator: "<", threshold: 500, decision: "REVIEW", reason: "" }] }));
   const updateRule = (idx, key, val) => setEditing((e) => ({ ...e, rules: e.rules.map((r, i) => i === idx ? { ...r, [key]: val } : r) }));
   const removeRule = (idx) => setEditing((e) => ({ ...e, rules: e.rules.filter((_, i) => i !== idx) }));
   const moveRule = (idx, dir) => setEditing((e) => {
     const rules = [...e.rules];
-    const target = idx + dir;
-    if (target < 0 || target >= rules.length) return e;
+    const cat = rules[idx].category || "credit";
+    let target = idx;
+    for (let i = idx + dir; i >= 0 && i < rules.length; i += dir) {
+      if ((rules[i].category || "credit") === cat) { target = i; break; }
+    }
+    if (target === idx) return e;
     [rules[idx], rules[target]] = [rules[target], rules[idx]];
     return { ...e, rules };
   });
@@ -198,9 +215,14 @@ export default function Policies() {
             <p className="text-sm text-slate-500 mt-1">Create and manage underwriting policies without code.</p>
           </div>
           {!editing && (
-            <button onClick={() => startNewPolicy("consumer-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
-              <Plus className="w-4 h-4" /> New Policy
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setCompareOpen(true)} disabled={policies.length < 2} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-4 py-2.5 rounded-lg hover:bg-slate-50 disabled:opacity-50">
+                <GitCompare className="w-4 h-4" /> Compare
+              </button>
+              <button onClick={() => startNewPolicy("consumer-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
+                <Plus className="w-4 h-4" /> New Policy
+              </button>
+            </div>
           )}
         </div>
 
@@ -260,55 +282,76 @@ export default function Policies() {
 
             {/* Rules */}
             <div className="rounded-xl border border-slate-200 bg-white p-5">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                 <h3 className="text-sm font-semibold text-slate-900">Rules ({editing.rules.length})</h3>
-                <button onClick={addRule} className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50">
-                  <Plus className="w-3.5 h-3.5" /> Add rule
-                </button>
-              </div>
-              <div className="space-y-2">
-                {editing.rules.map((r, idx) => (
-                  <div key={idx} className="flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
-                    <div className="flex flex-col gap-0.5 pt-1">
-                      <button onClick={() => moveRule(idx, -1)} className="text-slate-300 hover:text-slate-600 text-[10px]">▲</button>
-                      <GripVertical className="w-3.5 h-3.5 text-slate-300" />
-                      <button onClick={() => moveRule(idx, 1)} className="text-slate-300 hover:text-slate-600 text-[10px]">▼</button>
-                    </div>
-                    <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
-                      <div>
-                        <label className="text-[10px] text-slate-400 font-medium">Field</label>
-                        <select value={r.field} onChange={(e) => updateRule(idx, "field", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
-                          {FIELDS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-slate-400 font-medium">Operator</label>
-                        <select value={r.operator} onChange={(e) => updateRule(idx, "operator", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
-                          {OPERATORS.map((o) => <option key={o} value={o}>{o}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-slate-400 font-medium">Threshold</label>
-                        <input value={r.threshold} onChange={(e) => updateRule(idx, "threshold", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] font-mono" />
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-slate-400 font-medium">If triggered</label>
-                        <select value={r.decision} onChange={(e) => updateRule(idx, "decision", e.target.value)} className={`w-full rounded-md border px-2 py-1.5 text-[12px] font-medium ${r.decision === "APPROVE" ? "bg-emerald-50 border-emerald-200 text-emerald-700" : r.decision === "DECLINE" ? "bg-rose-50 border-rose-200 text-rose-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
-                          {OUTCOMES.map((o) => <option key={o} value={o}>{o}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-slate-400 font-medium">Reason</label>
-                        <input value={r.reason} onChange={(e) => updateRule(idx, "reason", e.target.value)} placeholder="Why this rule exists…" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px]" />
-                      </div>
-                    </div>
-                    <button onClick={() => removeRule(idx)} className="text-slate-300 hover:text-rose-600 pt-6">
-                      <Trash2 className="w-4 h-4" />
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {CATEGORIES.map((c) => (
+                    <button key={c.value} onClick={() => addRule(c.value)} title={`Add ${c.label} rule`} className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 hover:text-slate-900 px-2 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50">
+                      <Plus className="w-3 h-3" /> {c.label}
                     </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                {CATEGORIES.map((cat) => {
+                  const catRules = editing.rules.map((r, idx) => ({ r, idx })).filter(({ r }) => (r.category || "credit") === cat.value);
+                  if (catRules.length === 0) return null;
+                  return (
+                    <div key={cat.value}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{cat.label}</span>
+                        <span className="text-[10px] text-slate-300">{catRules.length}</span>
+                        <div className="flex-1 h-px bg-slate-100" />
+                      </div>
+                      <div className="space-y-2">
+                        {catRules.map(({ r, idx }) => (
+                          <div key={idx} className="flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50/50 p-3">
+                            <div className="flex flex-col gap-0.5 pt-1">
+                              <button onClick={() => moveRule(idx, -1)} className="text-slate-300 hover:text-slate-600 text-[10px]">▲</button>
+                              <button onClick={() => moveRule(idx, 1)} className="text-slate-300 hover:text-slate-600 text-[10px]">▼</button>
+                            </div>
+                            <div className="flex-1">
+                              <div className="text-[11px] text-slate-400 mb-1.5 font-mono">IF</div>
+                              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
+                                <div>
+                                  <label className="text-[10px] text-slate-400 font-medium">Field</label>
+                                  <select value={r.field} onChange={(e) => updateRule(idx, "field", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
+                                    {FIELDS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="text-[10px] text-slate-400 font-medium">Operator</label>
+                                  <select value={r.operator} onChange={(e) => updateRule(idx, "operator", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
+                                    {OPERATORS.map((o) => <option key={o} value={o}>{o}</option>)}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="text-[10px] text-slate-400 font-medium">Threshold</label>
+                                  <input value={r.threshold} onChange={(e) => updateRule(idx, "threshold", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] font-mono" />
+                                </div>
+                                <div>
+                                  <label className="text-[10px] text-slate-400 font-medium">Then</label>
+                                  <select value={r.decision} onChange={(e) => updateRule(idx, "decision", e.target.value)} className={`w-full rounded-md border px-2 py-1.5 text-[12px] font-medium ${r.decision === "APPROVE" ? "bg-emerald-50 border-emerald-200 text-emerald-700" : r.decision === "DECLINE" ? "bg-rose-50 border-rose-200 text-rose-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
+                                    {OUTCOMES.map((o) => <option key={o} value={o}>{o}</option>)}
+                                  </select>
+                                </div>
+                                <div>
+                                  <label className="text-[10px] text-slate-400 font-medium">Reason</label>
+                                  <input value={r.reason} onChange={(e) => updateRule(idx, "reason", e.target.value)} placeholder="Why this rule exists…" className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px]" />
+                                </div>
+                              </div>
+                            </div>
+                            <button onClick={() => removeRule(idx)} className="text-slate-300 hover:text-rose-600 pt-6">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
                 {editing.rules.length === 0 && (
-                  <div className="text-center py-8 text-sm text-slate-400">No rules yet. Click "Add rule" to start building your policy.</div>
+                  <div className="text-center py-8 text-sm text-slate-400">No rules yet. Add a rule by category above.</div>
                 )}
               </div>
             </div>
@@ -373,6 +416,7 @@ export default function Policies() {
           </div>
         )}
       </div>
+      {compareOpen && <ComparePolicies policies={policies} onClose={() => setCompareOpen(false)} />}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { FlaskConical, Play, X } from "lucide-react";
 
-const FIELD_DEFAULTS = {
+export const FIELD_DEFAULTS = {
   credit_score: 680,
   debt_to_income: 0.35,
   credit_utilisation: 0.25,
@@ -19,7 +19,7 @@ const FIELD_DEFAULTS = {
   suspicious_transactions: 0,
 };
 
-function evaluateRules(rules, values) {
+export function evaluateRules(rules, values) {
   const results = rules.map((r) => {
     const val = values[r.field];
     let triggered = false;
