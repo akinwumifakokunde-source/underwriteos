@@ -1,22 +1,18 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import {
-  Loader2, AlertTriangle, ArrowLeft, RotateCcw, Check, X, AlertTriangle as Alert,
-  Activity
-} from "lucide-react";
+import { Loader2, AlertTriangle, ArrowLeft } from "lucide-react";
+import StatusIndicator from "@/components/application/StatusIndicator";
+import OverviewTab from "@/components/application/OverviewTab";
 import DocumentsSection from "@/components/application/DocumentsSection";
+import FinancialProfileTab from "@/components/application/FinancialProfileTab";
+import RiskSignalsTab from "@/components/application/RiskSignalsTab";
 import AnalysisSection from "@/components/application/AnalysisSection";
 import PolicySection from "@/components/application/PolicySection";
 import DecisionSection from "@/components/application/DecisionSection";
-import ApplicationFormSection from "@/components/application/ApplicationFormSection";
-
-const DECISION_STYLES = {
-  APPROVE: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", icon: Check },
-  REVIEW: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", icon: Alert },
-  DECLINE: { bg: "bg-rose-50", text: "text-rose-700", border: "border-rose-200", icon: X },
-};
+import EvidenceTab from "@/components/application/EvidenceTab";
+import ActivityTab from "@/components/application/ActivityTab";
 
 const STATUS_STYLES = {
   draft: "bg-slate-50 text-slate-600 border-slate-200",
@@ -36,11 +32,10 @@ const STATUS_LABELS = {
   failed: "FAILED",
 };
 
-const TABS = ["Overview", "Documents", "Financials", "Risk", "AI Analysis", "Policy", "Decision", "Evidence", "Activity"];
+const TABS = ["Overview", "Documents", "Financial Profile", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence", "Activity"];
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
-  const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
 
   const [app, setApp] = useState(null);
@@ -54,8 +49,9 @@ export default function ApplicationDetail() {
   const [uploading, setUploading] = useState(false);
   const [processingDocId, setProcessingDocId] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [running, setRunning] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [overriding, setOverriding] = useState(false);
+  const [autoRan, setAutoRan] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -112,6 +108,28 @@ export default function ApplicationDetail() {
     return fields;
   }, [documents]);
 
+  // Auto-run analysis pipeline (analyze + underwrite) — silent on failure
+  const runPipeline = useCallback(async (policyId) => {
+    setAnalyzing(true);
+    try {
+      await base44.functions.invoke("apiAnalyze", { application_id: applicationId });
+      await base44.functions.invoke("apiUnderwrite", { application_id: applicationId, policy_id: policyId || app?.policy_id || "consumer-v1" });
+      await load();
+    } catch (e) {
+      console.warn("Auto-analysis failed", e);
+    } finally {
+      setAnalyzing(false);
+    }
+  }, [applicationId, app?.policy_id, load]);
+
+  // Auto-run the pipeline once on load if documents exist but no decision yet
+  useEffect(() => {
+    if (!loading && !autoRan && documents.length > 0 && !results?.decision) {
+      setAutoRan(true);
+      runPipeline();
+    }
+  }, [loading, autoRan, documents, results?.decision, runPipeline]);
+
   const uploadDocument = async (file) => {
     setUploading(true);
     try {
@@ -125,6 +143,8 @@ export default function ApplicationDetail() {
       setProcessingDocId(doc.id);
       await base44.functions.invoke("apiDocuments", { action: "process", document_id: doc.id });
       await load();
+      await runPipeline();
+      setTab("Documents");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
     } finally {
@@ -138,6 +158,7 @@ export default function ApplicationDetail() {
     try {
       await base44.functions.invoke("apiDocuments", { action: "reprocess", document_id: doc.id });
       await load();
+      await runPipeline();
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message);
     } finally {
@@ -150,6 +171,7 @@ export default function ApplicationDetail() {
     try {
       await base44.functions.invoke("apiDocuments", { action: "delete", document_id: doc.id });
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
+      await runPipeline();
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message);
     }
@@ -172,25 +194,11 @@ export default function ApplicationDetail() {
         loan_purpose: form.loan_purpose, product_type: form.product_type, policy_id: form.policy_id,
       });
       await load();
+      await runPipeline(form.policy_id);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message);
     } finally {
       setSaving(false);
-    }
-  };
-
-  const runAnalysis = async () => {
-    setRunning(true);
-    setError(null);
-    try {
-      await base44.functions.invoke("apiAnalyze", { application_id: applicationId });
-      await base44.functions.invoke("apiUnderwrite", { application_id: applicationId, policy_id: app?.policy_id || "consumer-v1" });
-      await load();
-      setTab("AI Analysis");
-    } catch (e) {
-      setError(e?.response?.data?.error?.message || e.message || "Analysis failed.");
-    } finally {
-      setRunning(false);
     }
   };
 
@@ -210,6 +218,22 @@ export default function ApplicationDetail() {
   };
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
+
+  const decision = results?.decision;
+  const recommendation = results?.recommendation;
+  const riskSignals = results?.riskSignals || [];
+  const evidence = results?.evidence || [];
+  const fp = results?.financialProfile;
+  const cp = results?.creditProfile;
+  const audit = results?.audit || [];
+
+  const status = analyzing ? "analyzing"
+    : (decision?.decision === "REVIEW" || decision?.human_review_required) ? "review"
+    : decision ? "up_to_date"
+    : "needs_info";
+
+  const lastUpdated = decision?.decision_timestamp ? timeAgo(new Date(decision.decision_timestamp)) : null;
+  const onViewEvidence = () => setTab("Evidence");
 
   if (loading) {
     return (
@@ -240,15 +264,6 @@ export default function ApplicationDetail() {
     );
   }
 
-  const decision = results?.decision;
-  const recommendation = results?.recommendation;
-  const riskSignals = results?.riskSignals || [];
-  const evidence = results?.evidence || [];
-  const fp = results?.financialProfile;
-  const cp = results?.creditProfile;
-  const audit = results?.audit || [];
-  const dStyle = decision ? DECISION_STYLES[decision.decision] || DECISION_STYLES.REVIEW : null;
-
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
@@ -258,26 +273,17 @@ export default function ApplicationDetail() {
         </Link>
 
         {/* Header */}
-        <div className="flex items-start justify-between mb-5">
+        <div className="flex items-start justify-between mb-5 gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-2xl font-semibold tracking-tight">{app?.application_number || applicationId.slice(-8)}</h1>
               <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${STATUS_STYLES[app?.status] || STATUS_STYLES.draft}`}>{STATUS_LABELS[app?.status] || app?.status}</span>
-              {decision && decision.decision !== "null" && (
-                <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${dStyle?.bg} ${dStyle?.text} ${dStyle?.border}`}>{decision.decision}</span>
-              )}
             </div>
             <p className="text-sm text-slate-500">
               {borrower ? `${borrower.first_name} ${borrower.last_name}` : "—"} · {fmtMoney(app?.loan_amount, app?.loan_currency)} · {(app?.product_type || "personal_loan").replace(/_/g, " ")} · {app?.loan_term_months ? `${app.loan_term_months} months` : ""}
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            {app?.status !== "completed" && (
-              <button onClick={runAnalysis} disabled={running} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-3.5 py-2 rounded-lg hover:bg-[#1c1f26] disabled:opacity-50">
-                {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />} Run analysis
-              </button>
-            )}
-          </div>
+          <StatusIndicator status={status} lastUpdated={lastUpdated} onRerun={() => runPipeline()} />
         </div>
 
         {error && (
@@ -297,13 +303,15 @@ export default function ApplicationDetail() {
 
         {/* Tab content */}
         <div className="space-y-4">
-          {tab === "Overview" && form && (
-            <OverviewTab borrower={borrower} app={app} fp={fp} cp={cp} decision={decision} recommendation={recommendation} fmtMoney={fmtMoney}>
-              <ApplicationFormSection
-                borrower={borrower} app={app} form={form} setForm={setForm}
-                extractedFields={allExtracted} onSave={saveForm} saving={saving}
-              />
-            </OverviewTab>
+          {tab === "Overview" && (
+            <OverviewTab
+              borrower={borrower} app={app} fp={fp} cp={cp}
+              decision={decision} recommendation={recommendation}
+              riskSignals={riskSignals} documents={documents}
+              fmtMoney={fmtMoney}
+              form={form} setForm={setForm}
+              allExtracted={allExtracted} onSave={saveForm} saving={saving}
+            />
           )}
 
           {tab === "Documents" && (
@@ -316,20 +324,20 @@ export default function ApplicationDetail() {
             />
           )}
 
-          {tab === "Financials" && (
-            <FinancialsTab fp={fp} cp={cp} fmtMoney={fmtMoney} />
+          {tab === "Financial Profile" && (
+            <FinancialProfileTab fp={fp} cp={cp} evidence={evidence} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
           )}
 
           {tab === "Risk" && (
-            <RiskTab signals={riskSignals} />
+            <RiskSignalsTab signals={riskSignals} evidence={evidence} onViewEvidence={onViewEvidence} />
           )}
 
-          {tab === "AI Analysis" && (
+          {tab === "AI Underwriter" && (
             <AnalysisSection
-              results={results}
-              running={running}
-              lastUpdated={decision?.decision_timestamp ? timeAgo(new Date(decision.decision_timestamp)) : null}
-              onRerun={runAnalysis}
+              recommendation={recommendation}
+              running={analyzing}
+              lastUpdated={recommendation?.generated_at ? timeAgo(new Date(recommendation.generated_at)) : null}
+              onRerun={() => runPipeline()}
             />
           )}
 
@@ -355,186 +363,6 @@ export default function ApplicationDetail() {
       </div>
     </div>
   );
-}
-
-// ── Overview Tab ──────────────────────────────────────────────
-function OverviewTab({ borrower, app, fp, cp, decision, recommendation, fmtMoney, children }) {
-  const dti = fp?.affordability?.debt_to_income;
-  const riskLevel = decision?.risk_score != null ? (decision.risk_score < 0.3 ? "LOW" : decision.risk_score < 0.6 ? "MEDIUM" : "HIGH") : "—";
-
-  return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Borrower" value={borrower ? `${borrower.first_name} ${borrower.last_name}` : "—"} />
-        <StatCard label="Loan" value={fmtMoney(app?.loan_amount, app?.loan_currency)} />
-        <StatCard label="Income" value={borrower?.annual_income ? fmtMoney(borrower.annual_income, borrower.income_currency) : fp?.income?.annual ? fmtMoney(fp.income.annual) : "—"} />
-        <StatCard label="DTI" value={dti != null ? `${(dti * 100).toFixed(1)}%` : "—"} />
-        <StatCard label="Credit score" value={cp?.credit_score ?? "—"} />
-        <StatCard label="Risk" value={riskLevel} />
-        <StatCard label="AI recommendation" value={recommendation?.recommendation || "—"} highlight={recommendation?.recommendation === "APPROVE" ? "emerald" : recommendation?.recommendation === "DECLINE" ? "rose" : "amber"} />
-        <StatCard label="Final decision" value={decision?.decision || "—"} highlight={decision?.decision === "APPROVE" ? "emerald" : decision?.decision === "DECLINE" ? "rose" : "amber"} />
-      </div>
-
-      {decision?.reasons?.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5">
-          <h3 className="text-sm font-semibold text-slate-900 mb-2">Why this decision?</h3>
-          <ul className="space-y-1.5">
-            {decision.reasons.slice(0, 3).map((r, i) => (
-              <li key={i} className="text-sm text-slate-600 flex gap-2"><span className="text-slate-300 mt-0.5">•</span>{r}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {children}
-    </div>
-  );
-}
-
-function StatCard({ label, value, highlight }) {
-  const cls = highlight === "emerald" ? "text-emerald-700" : highlight === "rose" ? "text-rose-700" : highlight === "amber" ? "text-amber-700" : "text-slate-900";
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{label}</div>
-      <div className={`text-base font-semibold mt-1 ${cls}`}>{value}</div>
-    </div>
-  );
-}
-
-// ── Financials Tab ────────────────────────────────────────────
-function FinancialsTab({ fp, cp, fmtMoney }) {
-  return (
-    <div className="space-y-4">
-      {cp && (
-        <Card title="Credit profile">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <Row label="Credit score" value={cp.credit_score} />
-            <Row label="Score band" value={cp.score_band} />
-            <Row label="Utilisation" value={cp.credit_utilisation != null ? `${Math.round(cp.credit_utilisation * 100)}%` : "—"} />
-            <Row label="Defaults" value={cp.defaults} />
-            <Row label="Active accounts" value={cp.active_accounts} />
-            <Row label="Delinquent accounts" value={cp.delinquent_accounts} />
-            <Row label="Recent enquiries" value={cp.recent_enquiries} />
-            <Row label="Repayment history" value={cp.repayment_history != null ? `${cp.repayment_history}%` : "—"} />
-            <Row label="Outstanding balance" value={cp.outstanding_balance != null ? fmtMoney(cp.outstanding_balance) : "—"} />
-          </div>
-        </Card>
-      )}
-      {fp && (
-        <Card title="Financial profile">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            <Row label="Monthly income" value={fp.income?.monthly ? fmtMoney(fp.income.monthly) : "—"} />
-            <Row label="Annual income" value={fp.income?.annual ? fmtMoney(fp.income.annual) : "—"} />
-            <Row label="Monthly expenses" value={fp.expenses?.monthly ? fmtMoney(fp.expenses.monthly) : "—"} />
-            <Row label="Monthly net" value={fp.cashflow?.monthly_net ? fmtMoney(fp.cashflow.monthly_net) : "—"} />
-            <Row label="Disposable income" value={fp.cashflow?.disposable_income ? fmtMoney(fp.cashflow.disposable_income) : "—"} />
-            <Row label="Average balance" value={fp.cashflow?.average_balance ? fmtMoney(fp.cashflow.average_balance) : "—"} />
-            <Row label="Debt-to-income" value={fp.affordability?.debt_to_income != null ? fp.affordability.debt_to_income.toFixed(2) : "—"} />
-            <Row label="Repayment capacity" value={fp.affordability?.repayment_capacity ? fmtMoney(fp.affordability.repayment_capacity) : "—"} />
-            <Row label="Income stability" value={fp.financial_behaviour?.income_stability != null ? `${Math.round(fp.financial_behaviour.income_stability * 100)}%` : "—"} />
-          </div>
-        </Card>
-      )}
-      {!cp && !fp && <Card title="Financials"><p className="text-sm text-slate-400">No financial data yet. Upload documents or run analysis to generate financial profiles.</p></Card>}
-    </div>
-  );
-}
-
-// ── Risk Tab ──────────────────────────────────────────────────
-function RiskTab({ signals }) {
-  if (!signals || signals.length === 0) {
-    return <Card title="Risk signals"><p className="text-sm text-slate-400">No risk signals generated yet. Run analysis to generate signals.</p></Card>;
-  }
-  return (
-    <Card title={`Risk signals (${signals.length})`}>
-      <div className="space-y-2">
-        {signals.map((s, i) => (
-          <div key={i} className="flex items-center gap-3 py-2 border-b border-slate-100 last:border-0">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${s.flag === "positive" ? "text-emerald-700 bg-emerald-50 border-emerald-200" : s.flag === "negative" ? "text-amber-700 bg-amber-50 border-amber-200" : s.flag === "critical" ? "text-rose-700 bg-rose-50 border-rose-200" : "text-slate-600 bg-slate-50 border-slate-200"}`}>{(s.flag || "neutral").toUpperCase()}</span>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-slate-800">{s.signal.replace(/_/g, " ")}</div>
-              {s.explanation && <div className="text-[12px] text-slate-500">{s.explanation}</div>}
-            </div>
-            <div className="text-sm font-mono text-slate-700">{formatSignalValue(s)}</div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-// ── Evidence Tab ──────────────────────────────────────────────
-function EvidenceTab({ evidence }) {
-  if (!evidence || evidence.length === 0) {
-    return <Card title="Evidence"><p className="text-sm text-slate-400">No evidence records yet. Run analysis to generate evidence.</p></Card>;
-  }
-  return (
-    <Card title={`Evidence (${evidence.length})`}>
-      <p className="text-[12px] text-slate-400 mb-3">Every risk signal is traceable to its source through these evidence records.</p>
-      <div className="space-y-1">
-        {evidence.map((e, i) => (
-          <div key={i} className="text-[12px] text-slate-600 flex gap-2 py-1.5 border-b border-slate-100 last:border-0">
-            <span className="text-slate-300">{i + 1}.</span>
-            <span className="flex-1">
-              <span className="font-medium text-slate-700">{e.signal}</span>: {String(e.value)}
-              <span className="text-slate-400 ml-1">[{e.source_type}{e.source_location ? ` · ${e.source_location}` : ""}{e.field ? ` · ${e.field}` : ""}]</span>
-              {e.confidence != null && <span className="text-teal-600 ml-1">{Math.round(e.confidence * 100)}%</span>}
-            </span>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-// ── Activity Tab ──────────────────────────────────────────────
-function ActivityTab({ audit }) {
-  if (!audit || audit.length === 0) {
-    return <Card title="Audit trail"><p className="text-sm text-slate-400">No activity recorded yet.</p></Card>;
-  }
-  return (
-    <Card title="Audit trail">
-      <div className="space-y-2">
-        {audit.map((e, i) => (
-          <div key={i} className="flex items-start gap-3 py-2 border-b border-slate-100 last:border-0">
-            <Activity className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" />
-            <div className="flex-1">
-              <div className="text-sm font-medium text-slate-800">{e.event.replace(/[._]/g, " ")}</div>
-              <div className="text-[11px] text-slate-400">{e.created_date ? new Date(e.created_date).toLocaleString() : ""} · {e.actor_type}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
-}
-
-// ── Helpers ───────────────────────────────────────────────────
-function Card({ title, children }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5">
-      <h3 className="text-sm font-semibold text-slate-900 mb-3">{title}</h3>
-      {children}
-    </div>
-  );
-}
-
-function Row({ label, value }) {
-  return (
-    <div className="flex items-center justify-between border-b border-slate-50 py-1.5">
-      <span className="text-sm text-slate-500">{label}</span>
-      <span className="text-sm font-medium text-slate-800">{value ?? "—"}</span>
-    </div>
-  );
-}
-
-function formatSignalValue(s) {
-  if (s.value_type === "number") {
-    if (s.currency) return new Intl.NumberFormat("en-US", { style: "currency", currency: s.currency, maximumFractionDigits: 0 }).format(s.value || 0);
-    if (s.value < 1 && s.value > 0) return `${Math.round(s.value * 100)}%`;
-    return String(s.value);
-  }
-  return String(s.value ?? "—");
 }
 
 function timeAgo(date) {

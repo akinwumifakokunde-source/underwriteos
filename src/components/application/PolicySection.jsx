@@ -10,8 +10,8 @@ export default function PolicySection({ decision, policyInfo }) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <ShieldCheck className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-        <p className="text-sm text-slate-400">No policy evaluation yet.</p>
-        <p className="text-[12px] text-slate-400 mt-1">Run analysis to see how the configured policy evaluates this borrower.</p>
+        <p className="text-sm text-slate-400">Waiting for borrower information.</p>
+        <p className="text-[12px] text-slate-400 mt-1">The policy evaluates automatically once documents are processed.</p>
       </div>
     );
   }
@@ -30,39 +30,41 @@ export default function PolicySection({ decision, policyInfo }) {
           </div>
         </div>
 
-        <div className="space-y-2">
-          {outcome.evaluated_rules?.map((r, i) => {
-            const passed = r.result !== "FAIL";
-            return (
-              <div key={i} className="flex items-center gap-3 py-2.5 border-b border-slate-50 last:border-0">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${passed ? "bg-emerald-100" : "bg-rose-100"}`}>
-                  {passed ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <X className="w-3.5 h-3.5 text-rose-600" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-slate-800">
-                    {r.field.replace(/_/g, " ")} {r.operator} {String(r.threshold)}
-                  </div>
-                  <div className="text-[11px] text-slate-400">{r.reason}</div>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className={`text-[10px] font-bold ${passed ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</div>
-                  <div className="text-[12px] font-mono text-slate-500">Observed: {String(r.input ?? "—")}</div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold border-b border-slate-100">
+                <th className="text-left py-2 pr-3">Rule</th>
+                <th className="text-right py-2 px-3">Observed</th>
+                <th className="text-right py-2 px-3">Threshold</th>
+                <th className="text-center py-2 px-3">Result</th>
+                <th className="text-center py-2 px-3">Action</th>
+                <th className="text-left py-2 pl-3">Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              {outcome.evaluated_rules?.map((r, i) => {
+                const passed = r.result !== "FAIL";
+                return (
+                  <tr key={i} className="border-b border-slate-50 last:border-0">
+                    <td className="py-2.5 pr-3 text-slate-800 font-medium whitespace-nowrap">{r.field.replace(/_/g, " ")} {r.operator}</td>
+                    <td className="py-2.5 px-3 text-right font-mono text-slate-700">{String(r.input ?? "—")}</td>
+                    <td className="py-2.5 px-3 text-right font-mono text-slate-500">{String(r.threshold)}</td>
+                    <td className="py-2.5 px-3 text-center">
+                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold ${passed ? "text-emerald-600" : "text-rose-600"}`}>
+                        {passed ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />} {r.result}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-center">
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded ${r.decision === "APPROVE" ? "bg-emerald-50 text-emerald-700" : r.decision === "DECLINE" ? "bg-rose-50 text-rose-700" : "bg-amber-50 text-amber-700"}`}>{r.decision}</span>
+                    </td>
+                    <td className="py-2.5 pl-3 text-[12px] text-slate-500">{r.reason}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-
-        {outcome.triggered_rules?.length > 0 && (
-          <div className="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-3">
-            <div className="text-[11px] font-semibold text-amber-700 mb-1">Policy result: {outcome.decision}</div>
-            <ul className="space-y-1">
-              {outcome.triggered_rules.map((r, i) => (
-                <li key={i} className="text-[12px] text-amber-700">• {r.reason}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
 
       <div className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-[12px] text-slate-500">
