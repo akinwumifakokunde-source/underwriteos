@@ -11,7 +11,7 @@ const STEPS = [
 
 export default function WorkflowSection() {
   return (
-    <section className="border-b border-[#eceef1]">
+    <section className="border-b border-[#eceef1] bg-[#fafbfc]">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16">
         <div className="text-center mb-10">
           <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The continuous underwriting loop</p>

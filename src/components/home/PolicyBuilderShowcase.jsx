@@ -11,7 +11,7 @@ const RULES = [
 
 export default function PolicyBuilderShowcase() {
   return (
-    <section className="border-b border-[#eceef1] bg-[#fafbfc]">
+    <section className="border-b border-[#eceef1] bg-white">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16">
         <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>

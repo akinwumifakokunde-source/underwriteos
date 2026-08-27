@@ -6,7 +6,7 @@ const LINEAGE = ["Decision", "Policy evaluation", "Risk signal", "Evidence", "So
 
 export default function Evidence() {
   return (
-    <section className="border-b border-[#eceef1] bg-[#fafbfc]">
+    <section className="border-b border-[#eceef1] bg-white">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
