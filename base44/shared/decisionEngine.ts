@@ -52,6 +52,7 @@ export interface FinalDecisionInput {
   actor?: string;
   decisionSource?: "policy_engine" | "human_underwriter" | "automated_workflow";
   overrideReason?: string;
+  overrideDecision?: "APPROVE" | "REVIEW" | "DECLINE";
 }
 
 export interface FinalDecisionResult {
@@ -73,14 +74,18 @@ export function finalizeDecision(input: FinalDecisionInput): FinalDecisionResult
   const policyDecision = input.policyOutcome.decision as "APPROVE" | "REVIEW" | "DECLINE";
   const decisionSource = input.decisionSource || "policy_engine";
 
-  // If an actor overrides the policy decision, a reason must be recorded.
+  // A human underwriter can override the policy decision to a specific outcome.
+  // The override decision must be recorded with a reason for audit traceability.
+  const hasOverride = decisionSource !== "policy_engine" && input.overrideDecision && input.overrideDecision !== policyDecision;
+  const finalDecision = hasOverride ? input.overrideDecision! : policyDecision;
+
   let overrideReason = input.overrideReason;
-  if (decisionSource !== "policy_engine" && policyDecision !== input.recommendation.recommendation && !overrideReason) {
+  if (hasOverride && !overrideReason) {
     overrideReason = "Decision overrides policy engine outcome based on underwriter judgement.";
   }
 
   return {
-    decision: policyDecision,
+    decision: finalDecision,
     decided_by: input.actor || "system",
     decision_source: decisionSource,
     policy_version: input.policyOutcome.policy_version,

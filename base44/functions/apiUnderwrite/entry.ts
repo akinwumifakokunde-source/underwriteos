@@ -14,7 +14,10 @@ export default async function(req: Request): Promise<Response> {
     const ctx = await resolveOrganization(base44, body);
     const { organization_id, actor, actor_type } = ctx;
     requireScope(ctx, "applications:write");
-    const { application_id, policy_id, decision_source, override_reason } = body;
+    const { application_id, policy_id, decision_source, override_reason, override } = body;
+    const overrideDecision = override?.decision;
+    const overrideReason = override?.reason || override_reason;
+    const overrideActor = override?.decided_by;
 
     if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
 
@@ -85,9 +88,10 @@ export default async function(req: Request): Promise<Response> {
       application: app,
       policyOutcome,
       recommendation,
-      actor: actor_type === "api_key" ? `api_key:${actor}` : actor,
-      decisionSource: decision_source || "policy_engine",
-      override_reason
+      actor: overrideActor || (actor_type === "api_key" ? `api_key:${actor}` : actor),
+      decisionSource: overrideDecision ? (decision_source || "human_underwriter") : (decision_source || "policy_engine"),
+      overrideReason,
+      overrideDecision
     });
 
     const decisionRecord = await base44.asServiceRole.entities.UnderwritingDecision.create({

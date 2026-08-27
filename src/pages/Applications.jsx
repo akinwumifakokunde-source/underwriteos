@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, Search, Filter } from "lucide-react";
@@ -31,6 +31,7 @@ const STATUS_LABELS = {
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
 export default function Applications() {
+  const navigate = useNavigate();
   const [apps, setApps] = useState([]);
   const [borrowers, setBorrowers] = useState({});
   const [loading, setLoading] = useState(true);
@@ -168,7 +169,7 @@ export default function Applications() {
                 {filtered.map((a) => {
                   const b = borrowers[a.borrower_id];
                   return (
-                    <tr key={a.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => window.location.href = `/applications/${a.id}`}>
+                    <tr key={a.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => navigate(`/applications/${a.id}`)}>
                       <td className="px-5 py-3">
                         <div className="text-sm font-medium text-slate-900">{b ? `${b.first_name} ${b.last_name}` : "—"}</div>
                         <div className="text-[11px] text-slate-400">{a.application_number || a.id.slice(-8)}</div>

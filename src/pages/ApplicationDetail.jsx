@@ -70,7 +70,7 @@ export default function ApplicationDetail() {
         riskSignals: risk?.signals || [],
         evidence: ev?.evidence || [],
       });
-      setAudit(aud?.events || []);
+      setAudit(aud?.audit_events || []);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load application.");
     } finally {
