@@ -1,10 +1,10 @@
 # UnderwriteOS
 
-### The infrastructure layer for automated underwriting.
+### The no-code underwriting operating system for lenders and fintechs.
 
-UnderwriteOS is an API-first underwriting platform that helps fintechs, lenders, insurers, and embedded-finance companies build, test, evaluate, and operate automated risk-decision workflows.
+UnderwriteOS is a no-code, AI-native underwriting platform that helps fintechs, lenders, insurers, and embedded-finance companies build policies visually, collect borrower applications through white-label forms with KYC, connect data providers, run risk assessments across five dimensions, and deliver explainable decisions — without writing code.
 
-Instead of building underwriting infrastructure from scratch, teams can use UnderwriteOS to connect data providers, define underwriting policies, run risk assessments, evaluate decisions, and move from prototype to production faster.
+Instead of building underwriting infrastructure from scratch, teams can use UnderwriteOS to build policies in a visual rule builder, collect applications via white-label intake forms, connect credit bureau and open banking data, evaluate decisions with full evidence lineage, and move from prototype to production across six markets.
 
 **Build the decision layer. Not the infrastructure around it.**
 
