@@ -67,8 +67,8 @@ const TIERS = [
 ];
 
 const TRANSACTIONS = [
-  { action: "Credit report pull", credits: 50, note: "Per bureau report (Experian, Equifax, CRC, XDS…)" },
-  { action: "Bank statement pull", credits: 40, note: "Open banking fetch (TrueLayer, Plaid, Okra, Mono…)" },
+  { action: "Credit report pull", credits: 50, note: "UnderwriteOS orchestration & normalization — bureau fees billed to your own credentials" },
+  { action: "Bank statement pull", credits: 40, note: "UnderwriteOS orchestration & normalization — open banking fees billed to your own credentials" },
   { action: "Document processing", credits: 15, note: "Per uploaded document — AI extraction & classification" },
   { action: "AI analysis", credits: 30, note: "Financial profile, risk signals, reconciliation" },
   { action: "Underwriting decision", credits: 20, note: "Policy evaluation + AI recommendation + audit record" },
@@ -87,7 +87,7 @@ const FAQ = [
   { q: "What counts as a billable transaction?", a: "Data pulls, document processing, AI analysis, underwriting decisions, and exports. Retrieving (reading) applications and decisions is always free." },
   { q: "How is a full application priced?", a: "A complete decision — credit pull, bank pull, document processing, analysis, and the underwriting decision — is roughly 160 credits. On Growth that's about $0.32 per decision, well below the cost of pulling the raw data separately." },
   { q: "Do credits expire?", a: "No. Your credit balance carries over until consumed." },
-  { q: "Are data source costs included?", a: "Yes. Credit bureau and open banking pulls are billed as credits — no separate pass-through invoices. You can also upload documents manually at a lower credit cost." },
+  { q: "Are data source costs included?", a: "No. Credits cover UnderwriteOS orchestration — fetching, normalizing, and reconciling the data. The underlying bureau and open-banking provider fees are billed directly to your own API credentials, which you enter during setup. You can also upload documents manually at a lower credit cost." },
   { q: "Can I switch plans?", a: "Anytime. Move between pay-as-you-go and Growth from your workspace, or talk to us about Scale when you reach production volume." },
 ];
 
@@ -106,7 +106,8 @@ export default function Pricing() {
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
             Usage-based credits with optional subscription. Every data pull, analysis, and decision is priced
-            transparently per transaction — your client owns the customer experience, we provide the intelligence.
+            transparently per transaction. Credits cover UnderwriteOS orchestration — bureau and open-banking
+            provider fees are billed to your own API credentials, so you keep full control of data costs.
           </p>
         </div>
       </section>
@@ -163,7 +164,7 @@ export default function Pricing() {
           <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Per-transaction pricing</h2>
           <p className="mt-2 text-base text-[#525965] leading-relaxed">
             Every billable action has a fixed credit cost. A full underwriting decision is roughly 160 credits —
-            transparent and predictable, with no hidden pass-through fees.
+            transparent and predictable. Credits cover UnderwriteOS processing; your data provider fees are billed directly to your own credentials.
           </p>
         </div>
         <div className="rounded-2xl border border-[#e5e7eb] overflow-hidden">
@@ -190,7 +191,7 @@ export default function Pricing() {
         </div>
         <p className="mt-3 text-xs text-[#8a909c]">
           Example: a full decision (credit pull + bank pull + doc processing + analysis + decision + export) ≈ 160 credits.
-          On Growth that's about $0.32/decision — far below pulling the same data directly from bureaus and open-banking providers.
+          On Growth that's about $0.32/decision in UnderwriteOS credits. Bureau and open-banking provider fees are billed separately to your own API credentials.
         </p>
       </section>
 
