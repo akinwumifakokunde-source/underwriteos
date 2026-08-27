@@ -1,8 +1,9 @@
 import React from "react";
+import { AlertCircle } from "lucide-react";
 import NeedsAttentionPanel from "./NeedsAttentionPanel";
 import ApplicationFormSection from "./ApplicationFormSection";
 
-export default function OverviewTab({ borrower, app, fp, cp, decision, recommendation, riskSignals, documents, fmtMoney, form, setForm, allExtracted, onSave, saving, onNavigate }) {
+export default function OverviewTab({ borrower, app, fp, cp, decision, recommendation, riskSignals, documents, fmtMoney, form, setForm, allExtracted, onSave, saving, onNavigate, formErrors, formValid }) {
   const dti = fp?.affordability?.debt_to_income;
   const riskLevel = decision?.risk_score != null ? (decision.risk_score < 0.3 ? "LOW" : decision.risk_score < 0.6 ? "MEDIUM" : "HIGH") : "—";
 
@@ -40,10 +41,21 @@ export default function OverviewTab({ borrower, app, fp, cp, decision, recommend
         </div>
       )}
 
+      {!formValid && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-amber-800">Borrower and loan details required before analysis</p>
+            <p className="text-[12px] text-amber-700 mt-0.5">Complete the required fields below and save. UnderwriteOS will not run analysis until the details are correct.</p>
+          </div>
+        </div>
+      )}
+
       {form && (
         <ApplicationFormSection
           borrower={borrower} app={app} form={form} setForm={setForm}
           extractedFields={allExtracted} onSave={onSave} saving={saving}
+          errors={formErrors}
         />
       )}
     </div>

@@ -67,7 +67,7 @@ export default function ApplicationDetail() {
   };
 
   const formErrors = form ? validateForm(form) : {};
-  const formValid = Object.keys(formErrors).length === 0;
+  const formValid = !!form && Object.keys(formErrors).length === 0;
   const displayErrors = showFormErrors ? formErrors : {};
 
   const load = useCallback(async () => {
