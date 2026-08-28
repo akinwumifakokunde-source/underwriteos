@@ -48,21 +48,21 @@ export default function BillingSection() {
     const status = params.get("status");
     if (status === "sub_success") {
       const planId = params.get("plan");
-      window.history.replaceState({}, "", "/settings");
+      window.history.replaceState({}, "", window.location.pathname);
       setSuccessMsg(planId ? `Subscription activated — your ${planId.replace("plan_", "")} plan is now live.` : "Subscription activated.");
       load();
     } else if (status === "sub_cancelled") {
-      window.history.replaceState({}, "", "/settings");
+      window.history.replaceState({}, "", window.location.pathname);
     } else if (status === "success") {
       const packId = params.get("pack");
       const tx = params.get("tx");
       const target = packId || localStorage.getItem("uw_pending_pack");
       if (target) {
         if (!packId) localStorage.removeItem("uw_pending_pack");
-        window.history.replaceState({}, "", "/settings");
+        window.history.replaceState({}, "", window.location.pathname);
         recordPurchase(target, tx || "");
       } else {
-        window.history.replaceState({}, "", "/settings");
+        window.history.replaceState({}, "", window.location.pathname);
       }
     } else {
       load();
