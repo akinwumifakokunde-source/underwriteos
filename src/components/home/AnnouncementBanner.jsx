@@ -9,7 +9,7 @@ export default function AnnouncementBanner() {
           New
         </span>
         <p className="text-[12px] sm:text-[13px] text-white/90">
-          UnderwriteOS now supports six markets — GB, US, NG, ZA, KE, GH.
+          GoUnderwriteOS now supports six markets — GB, US, NG, ZA, KE, GH.
         </p>
         <a href="/pricing" className="hidden sm:inline-flex items-center gap-1 text-[12px] font-medium text-[#5eead4] hover:text-[#99f0e3] transition-colors shrink-0">
           Learn more <ArrowRight className="w-3 h-3" />

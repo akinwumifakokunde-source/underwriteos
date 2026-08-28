@@ -56,7 +56,7 @@ export default function Nav() {
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
             <Layers className="w-4 h-4 text-[#0a0c12]" />
           </div>
-          <span className="font-semibold tracking-tight text-white hidden sm:inline">UnderwriteOS</span>
+          <span className="font-semibold tracking-tight text-white hidden sm:inline">GoUnderwriteOS</span>
         </Link>
 
         <nav className="flex-1 flex items-center gap-0.5 overflow-x-auto no-scrollbar">
