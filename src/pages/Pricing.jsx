@@ -89,6 +89,7 @@ const STEPS = [
 ];
 
 const FAQ = [
+  { q: "Do I get free credits to try it out?", a: "Yes — every new account gets 1,000 free credits on signup, no card required. That's enough to run roughly six full underwriting decisions end-to-end (credit pull, bank pull, document processing, AI analysis, decision, and export). Use them to explore the platform before subscribing." },
   { q: "What's included in a subscription?", a: "Each plan includes a monthly credit allowance — Starter (20,000), Growth (100,000), Scale (300,000) — that refreshes every billing cycle. All plans include access to all six markets, data sources, AI analysis, policy decisions, and exports." },
   { q: "What counts as a billable transaction?", a: "Credit report pull (50 credits), bank statement pull (40), document processing (15 per document), AI analysis (30), underwriting decision (20), and report exports (5 per PDF, CSV, or Word). Retrieving (reading) applications, profiles, and decisions is always free." },
   { q: "How is a full application priced?", a: "A complete decision — credit pull (50), bank pull (40), document processing (15), analysis (30), the underwriting decision (20), and a report export (5) — is 160 credits. On Growth that's about $0.64 per decision in GoUnderwriteOS credits, well below the cost of pulling the raw data separately." },
@@ -116,6 +117,13 @@ export default function Pricing() {
             credit packs on demand. Credits cover GoUnderwriteOS orchestration — fetching, normalizing, and reconciling
             your data so you can underwrite with confidence.
           </p>
+          <div className="mt-6 inline-flex items-center gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3">
+            <Sparkles className="w-4 h-4 text-[#0d9488] shrink-0" />
+            <p className="text-sm text-[#0a0c12]">
+              <span className="font-semibold">1,000 free credits</span> on signup — no card required. Run a full
+              underwriting decision end-to-end before you ever pay.
+            </p>
+          </div>
         </div>
       </section>
 

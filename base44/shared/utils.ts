@@ -1,3 +1,6 @@
+// Free credit grant for new signups — one-time, per new organization.
+export const SIGNUP_CREDIT_GRANT = 1000;
+
 // Shared utilities for UnderwriteOS API functions.
 // Two authentication mechanisms, never mixed:
 //   A. API key  — Authorization: Bearer uw_test_... / uw_live_...  (validated via hash, no Base44 session needed)
@@ -119,6 +122,18 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
     });
     organizationId = org.id;
     await base44.auth.updateMe({ organization_id: organizationId });
+    // Free signup credit grant — one-time, per new organization.
+    try {
+      await base44.asServiceRole.entities.Credit.create({
+        organization_id: organizationId, balance: SIGNUP_CREDIT_GRANT, currency: "usd", subscription_status: "none"
+      });
+      await base44.asServiceRole.entities.CreditTransaction.create({
+        organization_id: organizationId, type: "topup", credits: SIGNUP_CREDIT_GRANT, amount_cents: 0, currency: "usd",
+        description: "Free signup credits — welcome to GoUnderwriteOS"
+      });
+    } catch {
+      // signup grant must never block org creation
+    }
   }
   return {
     organization_id: organizationId,

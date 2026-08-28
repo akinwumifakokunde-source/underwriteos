@@ -175,6 +175,11 @@ export default function BillingSection() {
               <div className="text-3xl font-semibold tabular-nums">{(data?.balance || 0).toLocaleString()} <span className="text-base font-normal text-slate-400">credits</span></div>
             </div>
           </div>
+          {(data?.balance || 0) > 0 && !hasActiveSub && (data?.transactions || []).length <= 1 && (
+            <p className="mt-3 text-xs text-[#0d9488] flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" /> 1,000 free signup credits included — no card required.
+            </p>
+          )}
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-3">
