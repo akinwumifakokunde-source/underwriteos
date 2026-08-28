@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Settings as SettingsIcon, Loader2, AlertTriangle, Save, CheckCircle2, Building2, Users, Database, Brain, Shield, FileText, ArrowRight } from "lucide-react";
+import { Settings as SettingsIcon, Loader2, AlertTriangle, Save, CheckCircle2, Building2, Users, Database, Brain, Shield, FileText, ArrowRight, CreditCard } from "lucide-react";
+import BillingSection from "@/components/settings/BillingSection.jsx";
 
 const SECTIONS = [
   { id: "organization", label: "Organization", icon: Building2 },
+  { id: "billing", label: "Billing & Subscription", icon: CreditCard },
   { id: "users", label: "Users & Roles", icon: Users },
   { id: "data-sources", label: "Data Sources", icon: Database },
   { id: "ai", label: "AI Settings", icon: Brain },
@@ -154,6 +156,8 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
+
+                {section === "billing" && <BillingSection />}
 
                 {section === "users" && (
                   <div className="rounded-xl border border-slate-200 bg-white p-5">

@@ -1,7 +1,7 @@
 {
   "name": "Credit",
   "type": "object",
-  "description": "Per-organization credit balance. Decremented on billable API calls; topped up via Stripe checkout or auto top-up.",
+  "description": "Per-organization credit balance. Decremented on billable API calls; topped up via Stripe checkout or auto top-up. Tracks active subscription.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -17,7 +17,33 @@
     },
     "stripe_customer_id": {
       "type": "string",
-      "description": "Stripe customer used for off-session auto top-up charges"
+      "description": "Stripe customer used for subscriptions and off-session auto top-up charges"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Active Stripe subscription id, if subscribed"
+    },
+    "subscription_plan_id": {
+      "type": "string",
+      "description": "Subscribed plan id (plan_starter, plan_growth, plan_scale)"
+    },
+    "subscription_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "trialing",
+        "past_due",
+        "canceled",
+        "incomplete",
+        "none"
+      ],
+      "default": "none",
+      "description": "Stripe subscription status"
+    },
+    "subscription_current_period_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of the current subscription billing period"
     },
     "auto_topup_enabled": {
       "type": "boolean",
