@@ -144,6 +144,33 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
   };
 }
 
+// Idempotent free signup credit grant. Applied once per organization: the
+// first time the org has ANY credit activity (a CreditTransaction record),
+// the grant is considered done and never repeats. This retroactively covers
+// organizations created before the signup grant was wired into org creation.
+export async function applySignupGrantIfNeeded(base44: any, organization_id: string): Promise<boolean> {
+  try {
+    const txns = await base44.asServiceRole.entities.CreditTransaction.filter({ organization_id }, "-created_date", 1);
+    if (txns.length > 0) return false;
+    const credits = await base44.asServiceRole.entities.Credit.filter({ organization_id }, "-created_date", 1);
+    let credit = credits[0] || null;
+    if (!credit) {
+      credit = await base44.asServiceRole.entities.Credit.create({
+        organization_id, balance: SIGNUP_CREDIT_GRANT, currency: "usd", subscription_status: "none"
+      });
+    } else {
+      await base44.asServiceRole.entities.Credit.update(credit.id, { balance: (credit.balance || 0) + SIGNUP_CREDIT_GRANT });
+    }
+    await base44.asServiceRole.entities.CreditTransaction.create({
+      organization_id, type: "topup", credits: SIGNUP_CREDIT_GRANT, amount_cents: 0, currency: "usd",
+      description: "Free signup credits — welcome to GoUnderwriteOS"
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Scope enforcement. Dashboard (actor_type === "user") bypasses scope checks.
 export function requireScope(ctx: AuthContext, scope: string): void {
   if (ctx.actor_type === "user") return;

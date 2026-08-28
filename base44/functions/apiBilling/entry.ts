@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody, resolveOrganization, audit, hmacSha256 } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, audit, hmacSha256, applySignupGrantIfNeeded } from "../../shared/utils.ts";
 
 // Billing via Stripe: one-time credit packs + monthly subscriptions.
 // Actions:
@@ -112,6 +112,7 @@ export default async function(req: Request): Promise<Response> {
     const action = body.action || "balance";
 
     if (action === "balance") {
+      await applySignupGrantIfNeeded(base44, organization_id);
       const credit = await getCredit(base44, organization_id);
       const txns = await base44.asServiceRole.entities.CreditTransaction.filter({ organization_id }, "-created_date", 20);
       let subscription = null;
