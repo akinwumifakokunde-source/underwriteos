@@ -33,15 +33,15 @@ export default function Contact() {
   return (
     <div className="min-h-screen bg-white text-[#0a0c12]">
       <HomeNav />
-      <section className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-12">
-        <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-5">
+      <section className="max-w-3xl mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-14">
+        <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d9488] mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Contact
         </div>
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
+        <h1 className="text-[2.5rem] sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
           Talk to the team.
         </h1>
-        <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-          Building with UnderwriteOS? Need a security review or a custom integration? Reach out — we work directly with
+        <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-2xl">
+          Building with GoUnderwriteOS? Need a security review or a custom integration? Reach out — we work directly with
           lenders and fintechs on onboarding, data processing agreements, and production readiness.
         </p>
       </section>
@@ -52,9 +52,9 @@ export default function Contact() {
             <a
               key={c.title}
               href={c.href}
-              className="rounded-2xl border border-[#eceef1] bg-white p-5 hover:border-[#0d9488] transition-colors"
+              className="group rounded-2xl border border-[#e5e7eb] bg-white p-6 hover:border-[#0d9488] hover:shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_30px_-18px_rgba(10,12,18,0.12)] transition-all"
             >
-              <c.icon className="w-5 h-5 text-[#0d9488] mb-3.5" />
+              <c.icon className="w-5 h-5 text-[#0d9488] mb-4 transition-transform group-hover:scale-105" />
               <div className="text-[11px] uppercase tracking-wider text-[#8a909c]">{c.title}</div>
               <div className="mt-1 text-base font-semibold text-[#0a0c12]">{c.value}</div>
               <p className="mt-1.5 text-sm text-[#525965] leading-relaxed">{c.desc}</p>
@@ -63,9 +63,9 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-20">
-          <h2 className="text-lg font-semibold text-[#0a0c12] mb-1">Send a message</h2>
-          <p className="text-sm text-[#525965] mb-5">We'll get back to you at the email you provide.</p>
+      <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-24">
+          <h2 className="text-xl font-semibold tracking-tight text-[#0a0c12] mb-1">Send a message</h2>
+          <p className="text-sm text-[#525965] mb-6">We'll get back to you at the email you provide.</p>
           {sent ? (
             <div className="rounded-xl border border-[#e6f7f3] bg-[#e6f7f3] p-5 flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-[#0d9488] shrink-0 mt-0.5" />
