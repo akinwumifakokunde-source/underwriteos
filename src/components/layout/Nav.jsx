@@ -26,6 +26,8 @@ const SECONDARY_ITEMS = [
   { to: "/evidence", label: "Evidence" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/members", label: "Members" },
+  { to: "/billing", label: "Billing" },
+  { to: "/settings", label: "Subscription" },
   { to: "/settings", label: "Settings" },
 ];
 
