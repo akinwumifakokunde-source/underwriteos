@@ -47,7 +47,7 @@ export default async function(req: Request): Promise<Response> {
 
     // 3. Policy evaluation (lender policy — AI cannot override)
     const orgPolicies = await base44.asServiceRole.entities.Policy.filter({ organization_id, status: "active" }, "-created_date", 50);
-    const policy = getPolicy(policy_id || app.policy_id || "consumer-v1", orgPolicies);
+    const policy = getPolicy(policy_id || app.policy_id, orgPolicies, app.market);
     const policyOutcome = evaluatePolicy(policy, signals);
 
     // 4. AI underwriting memo (references evidence only)

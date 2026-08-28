@@ -2,6 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
 import { getProvider, scoreBand, isRealCreditProvider } from "../../shared/creditProviders.ts";
 import { getCredentials } from "../../shared/providerCredentials.ts";
+import { getDefaultCreditBureau } from "../../shared/markets.ts";
 
 // POST /v1/applications/{id}/credit-report — ingests raw credit bureau data,
 // normalizes it through the provider abstraction into a CreditProfile.
@@ -25,7 +26,7 @@ export default async function(req: Request): Promise<Response> {
       // mode === "auto"), the report is fetched automatically from the bureau
       // instead of being manually uploaded by the caller.
       const autoFetch = mode === "auto" || !raw_data;
-      const providerName = (provider || (autoFetch ? "experian" : "other")).toLowerCase();
+      const providerName = (provider || (autoFetch ? getDefaultCreditBureau(app.market) : "other")).toLowerCase();
       const creditProvider = getProvider(providerName);
 
       let reportData = raw_data;

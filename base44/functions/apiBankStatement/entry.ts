@@ -3,6 +3,7 @@ import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScop
 import { normalizeTransactions, buildFinancialProfile } from "../../shared/normalization.ts";
 import { getOpenBankingProvider, isRealOpenBankingProvider } from "../../shared/openBanking.ts";
 import { getCredentials } from "../../shared/providerCredentials.ts";
+import { getDefaultOpenBankingProvider } from "../../shared/markets.ts";
 
 // POST /v1/applications/{id}/bank-statement — ingests raw bank statement data,
 // normalizes transactions, and builds the canonical FinancialProfile.
@@ -41,7 +42,7 @@ export default async function(req: Request): Promise<Response> {
       let fetchReference: string | null = null;
 
       if (autoFetch) {
-        const obProviderNameRaw = (provider || "truelayer").toLowerCase();
+        const obProviderNameRaw = (provider || getDefaultOpenBankingProvider(app.market)).toLowerCase();
         const obProvider = getOpenBankingProvider(obProviderNameRaw);
         obProviderName = obProvider.name;
         fetchReference = consent_reference || app.id;

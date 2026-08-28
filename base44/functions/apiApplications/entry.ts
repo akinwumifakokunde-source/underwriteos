@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent } from "../../shared/utils.ts";
+import { getCurrency, getDefaultPolicyId, getRegulatoryProfile } from "../../shared/markets.ts";
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -23,22 +24,23 @@ export default async function(req: Request): Promise<Response> {
       const borrower = await base44.asServiceRole.entities.Borrower.filter({ id: borrower_id, organization_id }, "-created_date", 1);
       if (borrower.length === 0) return apiError("BORROWER_NOT_FOUND", `Borrower ${borrower_id} was not found.`, 404);
 
+      const resolvedMarket = (market || "GB").toUpperCase();
       const application = await base44.asServiceRole.entities.Application.create({
         organization_id,
         environment: "sandbox",
         application_number: genId("APP"),
         borrower_id,
-        market: market || "GB",
-        regulatory_profile: regulatory_profile || null,
+        market: resolvedMarket,
+        regulatory_profile: regulatory_profile || getRegulatoryProfile(resolvedMarket),
         state: state || null,
         borrower_type: borrower_type || "salaried",
         product_type: product_type || "personal_loan",
         loan_amount: Number(loan_amount),
-        loan_currency: loan_currency || "GBP",
+        loan_currency: loan_currency || getCurrency(resolvedMarket),
         loan_purpose: loan_purpose || "general",
         loan_term_months: Number(loan_term_months) || 12,
         interest_rate: interest_rate ?? null,
-        policy_id: policy_id || "consumer-v1",
+        policy_id: policy_id || getDefaultPolicyId(resolvedMarket),
         status: "draft",
         decision: "null",
         idempotency_key: idempotencyKey || null
