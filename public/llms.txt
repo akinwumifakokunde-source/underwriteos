@@ -1,41 +1,40 @@
-# UnderwriteOS
+# GoUnderwriteOS
 
-> API-first underwriting infrastructure for lenders and fintechs.
+> GoUnderwriteOS is a no-code, AI-native underwriting operating system for lenders and fintechs. Build lending policies visually, collect borrower applications via white-label forms with KYC, connect live credit bureau and open banking data, and let AI produce evidence-backed APPROVE / REVIEW / DECLINE decisions across six markets — without writing code.
 
-UnderwriteOS normalizes credit bureau, open banking and financial document data into a canonical model, generates structured risk signals with full evidence lineage, evaluates your versioned policy, and returns an explainable underwriting decision (APPROVE / REVIEW / DECLINE) over a versioned REST API.
+GoUnderwriteOS is the underwriting operating system for modern lenders. It replaces manual document review and hand-written credit memos with a continuous, no-code workspace: configure your lending policy in a visual rule builder, intake applications through branded white-label forms with market-specific KYC, connect live credit bureau and open banking data (or upload documents), and receive an explainable decision with full evidence lineage. The AI underwriter advises; your policy decides.
 
-## What it does
+## What you can do without code
 
-- **Normalize** — Turn credit, bank and document data into a consistent financial and credit profile.
-- **Analyze** — Generate structured risk signals across credit, cashflow and affordability.
-- **Decide** — Apply your policy and return an explainable decision with evidence.
+- Build lending policies visually: add rules, set thresholds, and define APPROVE / REVIEW / DECLINE outcomes. Policies are versioned — an active version is never silently overwritten.
+- Collect borrower applications through white-label intake forms with market-specific KYC and verification.
+- Connect live credit bureau and open banking data sources per market, or upload documents. Either path works.
+- Normalize financial and credit data into canonical, provider-independent profiles.
+- Generate structured risk signals across five dimensions: credit, affordability, fraud, data quality, and policy.
+- Get an AI underwriter recommendation with an in-context assistant. The AI advises; your policy stays authoritative.
+- Trace every risk signal back to its source field through an evidence graph.
+- Export decisions as PDF, CSV, or Word with a full audit trail.
+- Operate in isolated sandbox and production environments (uw_test_ and uw_live_ API keys).
+- Monitor post-decision loan outcomes and feed calibration back into your models.
 
-## Two ways to use it
+## Markets served
 
-- **No code** — A guided wizard to underwrite a borrower without integration.
-- **API integration** — A versioned REST API with environment-scoped keys, webhooks, providers and usage billing.
+United Kingdom, United States, Nigeria, Ghana, Kenya, South Africa. Each market resolves its own currency, regulatory profile, credit bureau, and open banking provider defaults.
 
-## Key capabilities
+## Pricing
 
-- Evidence graph: every decision is traceable to the source field it came from.
-- AI assists, your policy decides — the lender's versioned policy is authoritative.
-- Cross-border credit profile portability with attested provenance.
-- Model-monitoring feedback loop: predicted vs actual default calibration.
-- Sandbox / production isolation, organization-scoped access, audit logs, idempotency.
+Free sandbox with synthetic data and 1,000 trial credits. Paid plans (Starter, Growth, Scale) plus usage-based credit packs for production. See https://oldme.base44.app/pricing.
 
-## API (v1)
+## Key pages
 
-- POST /v1/applications — create an application
-- POST /v1/applications/{id}/credit-report — ingest credit bureau data
-- POST /v1/applications/{id}/bank-statement — ingest bank data
-- POST /v1/applications/{id}/analyze — generate risk signals
-- POST /v1/applications/{id}/underwrite — return a decision
-- GET /v1/applications/{id}/evidence-graph — decision lineage
+- [Home](https://oldme.base44.app/)
+- [Pricing](https://oldme.base44.app/pricing)
+- [Security](https://oldme.base44.app/security)
+- [Privacy](https://oldme.base44.app/privacy)
+- [Terms](https://oldme.base44.app/terms)
+- [Contact](https://oldme.base44.app/contact)
+- [Onboarding](https://oldme.base44.app/onboarding)
 
-## Links
+## Summary
 
-- Website: https://oldme.base44.app/
-- API reference: https://oldme.base44.app/api-reference
-- Documentation: https://oldme.base44.app/docs
-- Pricing: https://oldme.base44.app/pricing
-- Security: https://oldme.base44.app/security
+GoUnderwriteOS is the no-code underwriting operating system — go.
