@@ -40,7 +40,7 @@ export default function HomeNav() {
           <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
             <Layers className="w-4 h-4 text-[#0a0c12]" />
           </div>
-          <span className="font-semibold tracking-tight text-white">UnderwriteOS</span>
+          <span className="font-semibold tracking-tight text-white">GoUnderwriteOS</span>
           <span className="text-[10px] font-mono text-[#5b6472] border border-[#2a2f3a] rounded px-1.5 py-0.5">v1</span>
         </Link>
         <nav className="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar">
