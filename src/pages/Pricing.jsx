@@ -113,8 +113,8 @@ export default function Pricing() {
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
             Every plan includes a monthly credit allowance that refreshes each billing cycle. Need more? Buy one-time
-            credit packs on demand. Credits cover GoUnderwriteOS orchestration — bureau and open-banking provider fees
-            are billed to your own API credentials, so you keep full control of data costs.
+            credit packs on demand. Credits cover GoUnderwriteOS orchestration — fetching, normalizing, and reconciling
+            your data so you can underwrite with confidence.
           </p>
         </div>
       </section>
