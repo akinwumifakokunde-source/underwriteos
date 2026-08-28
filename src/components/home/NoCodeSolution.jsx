@@ -27,7 +27,7 @@ export default function NoCodeSolution() {
           </h2>
         </div>
 
-        <div className="grid sm:grid-cols-3 gap-4 mb-20">
+        <div className="grid sm:grid-cols-3 gap-4 mb-12 sm:mb-20">
           {PROBLEMS.map((p) => (
             <div key={p.num} className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6">
               <div className="text-2xl font-bold text-[#0d9488]/30 mb-3">{p.num}</div>

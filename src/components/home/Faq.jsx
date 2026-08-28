@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Accordion,
   AccordionContent,
@@ -66,9 +67,9 @@ export default function Faq() {
 
         <p className="mt-8 text-center text-sm text-[#8a909c]">
           Still have questions?{" "}
-          <a href="/contact" className="font-medium text-[#0d9488] hover:text-[#0b7d72] transition-colors">
+          <Link to="/contact" className="font-medium text-[#0d9488] hover:text-[#0b7d72] transition-colors">
             Talk to our team
-          </a>
+          </Link>
         </p>
       </div>
     </section>

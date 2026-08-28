@@ -34,8 +34,8 @@ export default function WorkflowSection() {
                   <div className="text-[11px] text-[#8a909c] leading-snug">{s.desc}</div>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="flex items-center justify-center text-[#b0b5be] shrink-0">
-                    <ArrowRight className="w-4 h-4 hidden sm:block rotate-90 sm:rotate-0" />
+                  <div className="hidden sm:flex items-center justify-center text-[#b0b5be] shrink-0">
+                    <ArrowRight className="w-4 h-4" />
                   </div>
                 )}
               </React.Fragment>
