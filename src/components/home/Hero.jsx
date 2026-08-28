@@ -90,18 +90,18 @@ function ProductPreview() {
           </div>
 
           {/* Decision */}
-          <div className="flex items-center justify-between pt-3 border-t border-[#eceef1]">
+          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#eceef1]">
             <div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
-              <div className="text-sm font-medium text-emerald-700">APPROVE</div>
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
+              <div className="text-[13px] font-medium text-emerald-700">APPROVE</div>
+            </div>
+            <div className="text-center">
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Policy</div>
+              <div className="text-[13px] font-medium text-amber-700">REVIEW</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Policy outcome</div>
-              <div className="text-sm font-medium text-amber-700">REVIEW</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
-              <div className="text-sm font-bold text-amber-700">REVIEW</div>
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
+              <div className="text-[13px] font-bold text-amber-700">REVIEW</div>
             </div>
           </div>
         </div>
