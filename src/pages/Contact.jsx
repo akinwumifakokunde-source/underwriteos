@@ -54,9 +54,7 @@ export default function Contact() {
               href={c.href}
               className="rounded-2xl border border-[#eceef1] bg-white p-5 hover:border-[#0d9488] transition-colors"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#f7f8fa] border border-[#e5e7eb] flex items-center justify-center mb-3.5">
-                <c.icon className="w-4 h-4 text-[#0d9488]" />
-              </div>
+              <c.icon className="w-5 h-5 text-[#0d9488] mb-3.5" />
               <div className="text-[11px] uppercase tracking-wider text-[#8a909c]">{c.title}</div>
               <div className="mt-1 text-base font-semibold text-[#0a0c12]">{c.value}</div>
               <p className="mt-1.5 text-sm text-[#525965] leading-relaxed">{c.desc}</p>
@@ -66,7 +64,6 @@ export default function Contact() {
       </section>
 
       <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-20">
-        <div className="rounded-2xl border border-[#eceef1] bg-white p-6">
           <h2 className="text-lg font-semibold text-[#0a0c12] mb-1">Send a message</h2>
           <p className="text-sm text-[#525965] mb-5">We'll get back to you at the email you provide.</p>
           {sent ? (
@@ -127,7 +124,6 @@ export default function Contact() {
               </div>
             </form>
           )}
-        </div>
       </section>
 
       <SiteFooter />
