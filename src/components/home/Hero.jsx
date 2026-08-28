@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Check, ShieldCheck, FileText, Brain, GitBranch } from "lucide-react";
+import { ArrowRight, Check, Sparkles } from "lucide-react";
 
 const PILLARS = [
   "Document intelligence", "Policy engine", "AI underwriter", "Affordability",
@@ -10,49 +10,49 @@ const PILLARS = [
 function ProductPreview() {
   return (
     <div className="w-full max-w-[480px]">
-      <div className="rounded-xl border border-[#eceef1] bg-white overflow-hidden shadow-[0_2px_8px_rgba(10,12,18,0.06)]">
+      <div className="rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)]">
         {/* Window chrome */}
-        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#eceef1] bg-[#fafbfc]">
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
           <div className="flex gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
           </div>
           <span className="text-[11px] font-mono text-[#8a909c] ml-2">Application #APP-10482</span>
-          <span className="ml-auto text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-0.5">UNDER REVIEW</span>
+          <span className="ml-auto text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">UNDER REVIEW</span>
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-1 px-4 pt-3 border-b border-[#eceef1]">
+        <div className="flex items-center gap-1 px-4 pt-3 border-b border-[#eceef1] overflow-x-auto no-scrollbar">
           {["Overview", "Financial Profile", "Risk Signals", "Evidence", "Audit Trail"].map((t, i) => (
-            <button key={t} className={`text-[11px] px-2.5 py-1.5 rounded-t-md ${i === 2 ? "text-[#0a0c12] font-medium border-b-2 border-[#0d9488]" : "text-[#8a909c]"}`}>
+            <button key={t} className={`shrink-0 text-[11px] px-2.5 py-1.5 rounded-t-md transition-colors ${i === 2 ? "text-[#0a0c12] font-medium border-b-2 border-[#0d9488]" : "text-[#8a909c] hover:text-[#525965]"}`}>
               {t}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-3 bg-gradient-to-b from-white to-[#fcfcfd]">
           {/* Borrower row */}
           <div className="flex items-center justify-between text-sm">
-            <span className="text-[#525965]">Borrower</span>
+            <span className="text-[#8a909c]">Borrower</span>
             <span className="font-medium text-[#0a0c12]">John Smith</span>
           </div>
           <div className="flex items-center justify-between text-sm">
-            <span className="text-[#525965]">Market</span>
+            <span className="text-[#8a909c]">Market</span>
             <span className="font-medium text-[#0a0c12]">United Kingdom · £25,000</span>
           </div>
           <div className="flex items-center justify-between text-[12px]">
-            <span className="text-[#525965]">Data sources</span>
+            <span className="text-[#8a909c]">Data sources</span>
             <span className="font-medium text-[#0d9488] flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Experian · TrueLayer connected
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Experian · TrueLayer connected
             </span>
           </div>
 
           {/* Risk dimensions */}
-          <div className="pt-2 border-t border-[#eceef1]">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Risk dimensions</p>
-            <div className="space-y-1.5">
+          <div className="pt-3 border-t border-[#eceef1]">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2.5">Risk dimensions</p>
+            <div className="space-y-2">
               {[
                 { label: "Credit risk", flag: "pass", value: "712" },
                 { label: "Affordability", flag: "fail", value: "DTI 48.2%" },
@@ -66,23 +66,23 @@ function ProductPreview() {
                     </span>
                     <span className="text-[#0a0c12]">{s.label}</span>
                   </div>
-                  <span className="font-mono text-[#525965]">{s.value}</span>
+                  <span className="font-mono text-[#8a909c]">{s.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Policy evaluation */}
-          <div className="pt-2 border-t border-[#eceef1]">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Policy: Consumer Lending v1</p>
-            <div className="space-y-1">
+          <div className="pt-3 border-t border-[#eceef1]">
+            <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2.5">Policy: Consumer Lending v1</p>
+            <div className="space-y-1.5">
               {[
                 { rule: "Annual income ≥ £40,000", result: "PASS" },
                 { rule: "DTI ≤ 45%", result: "FAIL" },
                 { rule: "Credit score ≥ 650", result: "PASS" },
               ].map((r) => (
                 <div key={r.rule} className="flex items-center justify-between text-[11px]">
-                  <span className="text-[#525965]">{r.rule}</span>
+                  <span className="text-[#8a909c]">{r.rule}</span>
                   <span className={`font-mono font-medium ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</span>
                 </div>
               ))}
@@ -106,49 +106,60 @@ function ProductPreview() {
           </div>
         </div>
       </div>
+
+      {/* Floating badge */}
+      <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-[#8a909c]">
+        <Sparkles className="w-3 h-3 text-[#0d9488]" />
+        Live workspace preview
+      </div>
     </div>
   );
 }
 
 export default function Hero() {
   return (
-    <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
+    <section className="relative overflow-hidden border-b border-[#eceef1]">
+      {/* Subtle gradient backdrop */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#fafbfc] via-white to-white" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-[#0d9488]/[0.04] rounded-full blur-3xl" />
+
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-5">
+            <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#0d9488] mb-6 bg-[#0d9488]/5 border border-[#0d9488]/15 rounded-full px-3 py-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" />
               No-code underwriting platform
-            </p>
-            <h1 className="text-[2rem] sm:text-[2.75rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.06]">
-              AI-powered underwriting.<br className="hidden sm:block" /> Governed by your policy.
+            </div>
+            <h1 className="text-[2.25rem] sm:text-[3.25rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.05]">
+              AI-powered underwriting.<br className="hidden sm:block" /> <span className="text-[#0d9488]">Governed</span> by your policy.
             </h1>
-            <p className="mt-6 text-lg text-[#525965] leading-relaxed">
+            <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-md">
               Turn borrower documents and financial data into explainable, audit-ready lending
               decisions — without writing code.
             </p>
 
-            <div className="mt-5 flex flex-wrap gap-1.5">
+            <div className="mt-6 flex flex-wrap gap-1.5">
               {PILLARS.map((p) => (
-                <span key={p} className="text-[11px] font-medium text-[#525965] bg-[#fafbfc] border border-[#eceef1] rounded px-2 py-1">{p}</span>
+                <span key={p} className="text-[11px] font-medium text-[#525965] bg-white border border-[#eceef1] rounded-full px-2.5 py-1 shadow-sm">{p}</span>
               ))}
             </div>
 
-            <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <Link
                 to="/onboarding"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-md hover:bg-[#1c1f26] transition-colors"
+                className="group inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-3 rounded-lg hover:bg-[#1c1f26] transition-all shadow-sm hover:shadow-md"
               >
-                Start underwriting <ArrowRight className="w-4 h-4" />
+                Start underwriting <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-4 py-2.5 rounded-md hover:bg-[#f7f8fa] transition-colors"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-5 py-3 rounded-lg hover:bg-[#f7f8fa] hover:border-[#d0d3d8] transition-all"
               >
                 View pricing <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            <p className="mt-4 text-sm text-[#8a909c]">
+            <p className="mt-5 text-sm text-[#8a909c]">
               Create an account. Connect your data. Run your first decision.
             </p>
           </div>

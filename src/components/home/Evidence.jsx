@@ -7,35 +7,35 @@ const LINEAGE = ["Decision", "Policy evaluation", "Risk signal", "Evidence", "So
 export default function Evidence() {
   return (
     <section className="border-b border-[#eceef1] bg-white">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
-          Every decision has a traceable reason.
+          Every decision has a <span className="text-[#0d9488]">traceable reason.</span>
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
           Every underwriting decision is linked to the policy, risk signals, evidence and source data
           behind it — and cross-document reconciliation flags inconsistencies automatically.
         </p>
 
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <div className="rounded-lg border border-[#eceef1] bg-white p-6">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-4">Decision lineage</p>
+        <div className="mt-10 grid md:grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6 shadow-sm">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-5">Decision lineage</p>
             <div className="space-y-2">
               {LINEAGE.map((l, i) => (
                 <React.Fragment key={l}>
-                  <div className="text-sm font-medium text-[#0a0c12] px-3 py-2 rounded-md bg-[#f7f8fa] border border-[#eceef1]">{l}</div>
-                  {i < LINEAGE.length - 1 && <div className="text-[#8a909c] text-xs pl-3">↓</div>}
+                  <div className="text-sm font-medium text-[#0a0c12] px-3.5 py-2.5 rounded-lg bg-white border border-[#eceef1] shadow-sm">{l}</div>
+                  {i < LINEAGE.length - 1 && <div className="text-[#b0b5be] text-xs pl-3.5">↓</div>}
                 </React.Fragment>
               ))}
             </div>
           </div>
 
-          <div className="rounded-lg border border-[#eceef1] bg-white p-6">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-4">Example</p>
-            <div className="space-y-3">
+          <div className="rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-5">Example</p>
+            <div className="space-y-3.5">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#525965]">Decision</span>
-                <span className="text-sm font-mono font-semibold text-[#b45309] bg-amber-50 border border-amber-200 rounded px-2 py-0.5">REVIEW</span>
+                <span className="text-sm font-mono font-semibold text-[#b45309] bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">REVIEW</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-[#525965]">Risk signal</span>
@@ -57,9 +57,9 @@ export default function Evidence() {
           </div>
         </div>
 
-        <div className="mt-8">
-          <Link to="/evidence" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
-            Open evidence explorer <ArrowRight className="w-3.5 h-3.5" />
+        <div className="mt-10">
+          <Link to="/evidence" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
+            Open evidence explorer <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
       </div>
