@@ -28,16 +28,16 @@ export default function Security() {
     <div className="min-h-screen bg-white text-[#0a0c12]">
       <HomeNav />
 
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-12">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-14">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-5">
+          <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d9488] mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Security & trust
           </div>
           <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
             Built for regulated lending.
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-            UnderwriteOS handles sensitive financial data. Security, isolation, and auditability are designed in from
+            GoUnderwriteOS handles sensitive financial data. Security, isolation, and auditability are designed in from
             the data layer up — not bolted on.
           </p>
         </div>

@@ -5,7 +5,7 @@ import SiteFooter from "@/components/home/SiteFooter.jsx";
 const SECTIONS = [
   {
     title: "Service",
-    body: "UnderwriteOS provides API-first underwriting infrastructure: financial data normalization, risk signaling, policy evaluation, and decisioning intelligence. We provide intelligence and workflow infrastructure; we do not make lending decisions for you and do not disburse funds or process payments.",
+    body: "GoUnderwriteOS provides API-first underwriting infrastructure: financial data normalization, risk signaling, policy evaluation, and decisioning intelligence. We provide intelligence and workflow infrastructure; we do not make lending decisions for you and do not disburse funds or process payments.",
   },
   {
     title: "Your responsibilities",
@@ -33,7 +33,7 @@ const SECTIONS = [
   },
   {
     title: "Limitation of liability",
-    body: "The service is provided as infrastructure. To the maximum extent permitted by law, UnderwriteOS is not liable for indirect, incidental, or consequential damages arising from use of the service, including lending decisions made on our output.",
+    body: "The service is provided as infrastructure. To the maximum extent permitted by law, GoUnderwriteOS is not liable for indirect, incidental, or consequential damages arising from use of the service, including lending decisions made on our output.",
   },
   {
     title: "Changes & termination",
@@ -49,8 +49,8 @@ export default function Terms() {
   return (
     <div className="min-h-screen bg-white text-[#0a0c12]">
       <HomeNav />
-      <section className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-20">
-        <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-5">
+      <section className="max-w-3xl mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-24">
+        <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#0d9488] mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Legal
         </div>
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
@@ -58,7 +58,7 @@ export default function Terms() {
         </h1>
         <p className="mt-4 text-sm text-[#8a909c]">Last updated: August 2026</p>
         <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-          These terms govern your use of UnderwriteOS. By creating an organization or calling the API, you agree to them.
+          These terms govern your use of GoUnderwriteOS. By creating an organization or calling the API, you agree to them.
         </p>
         <div className="mt-10 space-y-8">
           {SECTIONS.map((s, i) => (
