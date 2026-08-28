@@ -5,6 +5,7 @@ import AnnouncementBanner from "@/components/home/AnnouncementBanner.jsx";
 import TrustBar from "@/components/home/TrustBar.jsx";
 import NoCodeSolution from "@/components/home/NoCodeSolution.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
+import PipelineFlow from "@/components/home/PipelineFlow.jsx";
 import PolicyBuilderShowcase from "@/components/home/PolicyBuilderShowcase.jsx";
 import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
@@ -22,6 +23,7 @@ export default function Home() {
       <TrustBar />
       <NoCodeSolution />
       <WorkflowSection />
+      <PipelineFlow />
       <PolicyBuilderShowcase />
       <AiPolicy />
       <Evidence />
