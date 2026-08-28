@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
-import { Mail, MessageSquare, ArrowRight, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { Mail, MessageSquare, ArrowRight, CheckCircle2, Loader2, AlertCircle, Blocks, Database, Sparkles, FileDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 
 const CHANNELS = [
   { icon: Mail, title: "Email", value: "akinfaks@yahoo.com", href: "mailto:akinfaks@yahoo.com", desc: "For sales, security reviews, and data requests. We reply within one business day." },
   { icon: MessageSquare, title: "Product feedback", value: "Tell us what to build", href: "/onboarding", desc: "Feature requests and roadmap input from builders using the sandbox." },
+];
+
+const CAPABILITIES = [
+  { icon: Blocks, title: "Visual policy builder", desc: "Set rules, thresholds, and outcomes without code. Your policy is the authoritative decision engine." },
+  { icon: Database, title: "Live data sources", desc: "Connect credit bureaus and open banking per market — or upload documents. Either path works." },
+  { icon: Sparkles, title: "AI underwriter", desc: "Advisory recommendations and an in-context assistant, always traceable to source evidence." },
+  { icon: FileDown, title: "Export & audit", desc: "Download decisions as PDF, CSV, or Word. Every step is auditable and evidence-linked." },
 ];
 
 export default function Contact() {
@@ -38,12 +45,29 @@ export default function Contact() {
           <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Contact
         </div>
         <h1 className="text-[2.5rem] sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
-          Talk to the team.
+          Underwriting, without writing code.
         </h1>
         <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-2xl">
-          Building with GoUnderwriteOS? Need a security review or a custom integration? Reach out — we work directly with
-          lenders and fintechs on onboarding, data processing agreements, and production readiness.
+          GoUnderwriteOS is a no-code underwriting operating system for lenders and fintechs. Configure lending policies
+          visually, connect live credit and bank data, and let AI produce evidence-backed decisions — all from one
+          workspace. Tell us what you're building and we'll help you go live, fast.
         </p>
+      </section>
+
+      <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {CAPABILITIES.map((c) => (
+            <div key={c.title} className="flex items-start gap-3 rounded-2xl border border-[#e5e7eb] bg-white p-5">
+              <div className="w-9 h-9 shrink-0 rounded-lg bg-[#f0f7f4] border border-[#0d9488]/15 flex items-center justify-center">
+                <c.icon className="w-4 h-4 text-[#0d9488]" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-[#0a0c12]">{c.title}</div>
+                <p className="mt-1 text-[13px] text-[#525965] leading-relaxed">{c.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="max-w-3xl mx-auto px-5 sm:px-8 pb-10">
