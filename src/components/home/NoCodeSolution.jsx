@@ -2,11 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Shield, Plug, MessageSquare, FileDown } from "lucide-react";
 
-const PROBLEM_POINTS = [
-  "Building underwriting logic from scratch takes months",
-  "Connecting credit bureaus and bank data requires engineering resources",
-  "Risk teams can't adjust policies without developer help",
-  "Decisions are hard to explain and audit",
+const PROBLEMS = [
+  { num: "01", title: "Data stays trapped in documents", desc: "Raw figures and risk signals sit locked inside messy documents legacy tools can't read." },
+  { num: "02", title: "Files stay incomplete", desc: "Wrong documents, missing pages, round after round of messaging the borrower to chase what's missing." },
+  { num: "03", title: "Underwriting stays manual", desc: "Reconciliation and memos written by hand. Hours per file before a single decision." },
 ];
 
 const SOLUTION_POINTS = [
@@ -19,23 +18,31 @@ const SOLUTION_POINTS = [
 export default function NoCodeSolution() {
   return (
     <section className="border-b border-[#eceef1]">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-20">
-        <div className="text-center mb-14">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-20 sm:py-24">
+        {/* Problem — numbered cards */}
+        <div className="text-center mb-12">
           <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The problem</p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">Underwriting shouldn't require an engineering team</h2>
-          <div className="mt-6 grid sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-            {PROBLEM_POINTS.map((p) => (
-              <div key={p} className="flex items-center gap-2.5 text-sm text-[#525965] text-left rounded-xl border border-[#eceef1] bg-[#fafbfc] px-4 py-3">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
-                {p}
-              </div>
-            ))}
-          </div>
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
+            Legacy underwriting breaks in <span className="text-[#0d9488]">three places.</span>
+          </h2>
         </div>
 
+        <div className="grid sm:grid-cols-3 gap-4 mb-20">
+          {PROBLEMS.map((p) => (
+            <div key={p.num} className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6">
+              <div className="text-2xl font-bold text-[#0d9488]/30 mb-3">{p.num}</div>
+              <h3 className="text-base font-semibold text-[#0a0c12] mb-2">{p.title}</h3>
+              <p className="text-[13px] text-[#525965] leading-relaxed">{p.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Solution */}
         <div className="text-center mb-10">
           <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The solution</p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">A complete underwriting platform, no code needed</h2>
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
+            One platform. <span className="text-[#0d9488]">End-to-end underwriting.</span>
+          </h2>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -43,7 +50,7 @@ export default function NoCodeSolution() {
             const Icon = s.icon;
             return (
               <div key={s.title} className="group rounded-2xl border border-[#eceef1] bg-white p-6 transition-all hover:shadow-[0_4px_24px_-8px_rgba(10,12,18,0.1)] hover:border-[#d0d3d8]">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#f7f8fa] to-[#f0f1f4] border border-[#eceef1] flex items-center justify-center mb-4 group-hover:from-[#0d9488]/10 group-hover:to-[#0d9488]/5 group-hover:border-[#0d9488]/20 transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#f0f7f4] to-[#e6f1ed] border border-[#0d9488]/15 flex items-center justify-center mb-4 group-hover:from-[#0d9488]/15 group-hover:to-[#0d9488]/10 transition-colors">
                   <Icon className="w-5 h-5 text-[#0d9488]" />
                 </div>
                 <h3 className="text-sm font-semibold text-[#0a0c12] mb-1.5">{s.title}</h3>
