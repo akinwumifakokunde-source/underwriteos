@@ -30,7 +30,7 @@ export default function Hero() {
               and financial data into decision-ready files — with your policy in control.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-1.5">
+            <div className="mt-6 flex flex-wrap gap-2">
               {PILLARS.map((p) => (
                 <span key={p} className="text-[11px] font-medium text-[#525965] bg-white border border-[#eceef1] rounded-full px-2.5 py-1 shadow-sm">{p}</span>
               ))}
