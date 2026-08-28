@@ -20,7 +20,7 @@ const ROADMAP = [
   { label: "Sandbox / production isolation", status: "Shipped" },
   { label: "SOC 2 Type I", status: "In progress" },
   { label: "SOC 2 Type II", status: "Roadmap" },
-  { label: "GDPR / DPA", status: "Roadmap" },
+  { label: "GDPR / DPA", status: "Shipped" },
 ];
 
 export default function Security() {
