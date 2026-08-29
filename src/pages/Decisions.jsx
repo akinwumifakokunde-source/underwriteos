@@ -117,7 +117,6 @@ export default function Decisions() {
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Policy</th>
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Risk score</th>
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">AI rec</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Policy</th>
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Final</th>
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Source</th>
                   <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Date</th>
@@ -139,9 +138,6 @@ export default function Decisions() {
                       </td>
                       <td className="px-5 py-3">
                         {rec && <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${DECISION_STYLES[rec.recommendation] || ""}`}>{rec.recommendation}</span>}
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${DECISION_STYLES[d.decision] || ""}`}>{d.decision}</span>
                       </td>
                       <td className="px-5 py-3">
                         <span className={`text-[10px] font-bold border rounded px-1.5 py-0.5 ${DECISION_STYLES[d.decision] || ""}`}>{d.decision}</span>
