@@ -37,6 +37,7 @@ import Contact from '@/pages/Contact';
 import Applications from '@/pages/Applications';
 import ApplicationDetail from '@/pages/ApplicationDetail';
 import ApplicationCreate from '@/pages/ApplicationCreate';
+import BatchUnderwrite from '@/pages/BatchUnderwrite';
 import Policies from '@/pages/Policies';
 import Decisions from '@/pages/Decisions';
 import RiskSignals from '@/pages/RiskSignals';
@@ -90,6 +91,7 @@ const AuthenticatedApp = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/applications" element={<Applications />} />
         <Route path="/applications/new" element={<ApplicationCreate />} />
+        <Route path="/batch" element={<BatchUnderwrite />} />
         <Route path="/applications/:applicationId" element={<ApplicationDetail />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="/forms/new" element={<FormEditor />} />

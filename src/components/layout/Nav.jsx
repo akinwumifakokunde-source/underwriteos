@@ -21,6 +21,7 @@ const NAV_ITEMS = [
 
 const SECONDARY_ITEMS = [
   { to: "/forms", label: "Forms" },
+  { to: "/batch", label: "Batch" },
   { to: "/risk-signals", label: "Risk Signals" },
   { to: "/decisions", label: "Decisions" },
   { to: "/evidence", label: "Evidence" },
