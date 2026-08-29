@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Wallet, Loader2, AlertTriangle, Zap, CheckCircle2, CreditCard, Crown, X, Sparkles, RefreshCw } from "lucide-react";
+import AfricaPricingPanel from "@/components/settings/AfricaPricingPanel.jsx";
 
 export default function BillingSection() {
   const [data, setData] = useState(null);
@@ -250,6 +251,9 @@ export default function BillingSection() {
           ))}
         </div>
       </div>
+
+      {/* Africa market pricing */}
+      <AfricaPricingPanel />
 
       {/* Transactions */}
       <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
