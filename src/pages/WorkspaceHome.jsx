@@ -28,7 +28,10 @@ export default function WorkspaceHome() {
 
   useEffect(() => { load(); }, [load]);
 
-  const handleChoose = (choice) => navigate(`/applications/new?choice=${choice}&market=${market}`);
+  const handleChoose = (choice) => {
+    if (choice === "batch") { navigate(`/batch`); return; }
+    navigate(`/applications/new?choice=${choice}&market=${market}`);
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">

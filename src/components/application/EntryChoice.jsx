@@ -1,5 +1,5 @@
 import React from "react";
-import { Upload, FileText, Sparkles, ArrowRight, Globe } from "lucide-react";
+import { Upload, FileText, Sparkles, ArrowRight, Globe, Layers } from "lucide-react";
 import { JURISDICTIONS, getJurisdiction } from "@/lib/jurisdictions";
 
 export default function EntryChoice({ onChoose, market, onMarketChange }) {
@@ -90,6 +90,20 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-slate-900">Use sample application</h3>
             <p className="text-[13px] text-slate-500 mt-0.5">Pre-filled borrower with synthetic data. See the full underwriting pipeline in action.</p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 shrink-0" />
+        </button>
+
+        <button
+          onClick={() => onChoose("batch")}
+          className="group w-full text-left rounded-xl border border-slate-200 bg-white p-4 sm:p-5 transition-all hover:border-slate-300 hover:shadow-sm flex items-center gap-3 sm:gap-4"
+        >
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+            <Layers className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-slate-900">Batch underwriting</h3>
+            <p className="text-[13px] text-slate-500 mt-0.5">Upload a CSV of applicants and underwrite a whole portfolio in one run — decisions, risk scores and evidence for every row.</p>
           </div>
           <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 shrink-0" />
         </button>
