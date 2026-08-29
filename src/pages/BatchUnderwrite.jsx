@@ -20,6 +20,8 @@ const BORROWER_TYPES = [
 ];
 
 const REQUIRED = ["first_name", "last_name", "loan_amount"];
+const OPTIONAL = ["email", "phone", "date_of_birth", "annual_income", "employment_status", "employer_name", "loan_term_months", "loan_purpose", "product_type", "borrower_type", "market"];
+const ALL_COLUMNS = [...REQUIRED, ...OPTIONAL];
 
 // Minimal RFC-4180-ish CSV parser (handles quoted fields + commas inside quotes).
 function parseCsv(text) {
@@ -56,7 +58,7 @@ function toRows(raw) {
   });
 }
 
-const TEMPLATE = "first_name,last_name,email,annual_income,employment_status,employer_name,loan_amount,loan_term_months,loan_purpose\nJane,Doe,jane@example.com,48000,employed,Acme Ltd,12000,24,debt_consolidation\nJohn,Smith,john@example.com,36000,employed,Globex,8000,12,home_improvement";
+const TEMPLATE = "first_name,last_name,email,phone,date_of_birth,annual_income,employment_status,employer_name,loan_amount,loan_term_months,loan_purpose,product_type,borrower_type,market\nJane,Doe,jane@example.com,+447700900123,1988-05-12,48000,employed,Acme Ltd,12000,24,debt_consolidation,personal_loan,salaried,GB\nJohn,Smith,john@example.com,+12125550143,1990-11-03,36000,employed,Globex,8000,12,home_improvement,personal_loan,salaried,US\nAde,Okafor,ade@example.com,+2348031234567,1992-02-20,7200000,self_employed,Andela,1500000,18,business_expansion,business_loan,business,NG";
 
 function downloadTemplate() {
   const blob = new Blob([TEMPLATE], { type: "text/csv" });
@@ -106,8 +108,15 @@ export default function BatchUnderwrite() {
       const text = await file.text();
       const parsed = toRows(text);
       if (parsed.length === 0) { setParseError("CSV is empty or has no data rows."); setRows([]); return; }
-      const missing = parsed.findIndex((r) => REQUIRED.some((k) => !r[k]));
-      if (missing !== -1) { setParseError(`Row ${missing + 2} is missing required fields (first_name, last_name, loan_amount).`); setRows([]); return; }
+      const headers = parseCsv(text)[0]?.map((h) => h.trim().toLowerCase()) || [];
+      const missingCols = REQUIRED.filter((c) => !headers.includes(c));
+      if (missingCols.length) { setParseError(`CSV is missing required column(s): ${missingCols.join(", ")}. Required: ${REQUIRED.join(", ")}.`); setRows([]); return; }
+      const unknown = headers.filter((h) => !ALL_COLUMNS.includes(h));
+      if (unknown.length) { setParseError(`Unknown column(s): ${unknown.join(", ")}. Allowed: ${ALL_COLUMNS.join(", ")}.`); setRows([]); return; }
+      const badRow = parsed.findIndex((r) => REQUIRED.some((k) => !r[k]));
+      if (badRow !== -1) { setParseError(`Row ${badRow + 2} is missing required field(s): ${REQUIRED.filter((k) => !parsed[badRow][k]).join(", ")}.`); setRows([]); return; }
+      const badAmount = parsed.findIndex((r) => isNaN(Number(r.loan_amount)) || Number(r.loan_amount) <= 0);
+      if (badAmount !== -1) { setParseError(`Row ${badAmount + 2} has an invalid loan_amount (must be a positive number).`); setRows([]); return; }
       setRows(parsed);
       setResults({});
     } catch (e) {
@@ -125,13 +134,16 @@ export default function BatchUnderwrite() {
     const processRow = async (r, idx) => {
       setResults((prev) => ({ ...prev, [idx]: { ...prev[idx], status: "processing" } }));
       try {
-        const policyId = marketCfg.policy;
+        const rowMarket = (r.market || market).toUpperCase();
+        const rowMarketCfg = MARKETS.find((m) => m.code === rowMarket) || marketCfg;
+        const policyId = rowMarketCfg.policy;
         const borrowerRes = await base44.functions.invoke("apiBorrowers", {
           action: "create",
-          first_name: r.first_name, last_name: r.last_name, email: r.email || undefined,
+          first_name: r.first_name, last_name: r.last_name,
+          email: r.email || undefined, phone: r.phone || undefined, date_of_birth: r.date_of_birth || undefined,
           employment_status: r.employment_status || "employed", employer_name: r.employer_name || undefined,
           annual_income: r.annual_income ? Number(r.annual_income) : undefined,
-          income_currency: marketCfg.currency,
+          income_currency: rowMarketCfg.currency,
         });
         const borrowerId = borrowerRes.data.borrower_id;
         const appRes = await base44.functions.invoke("apiApplications", {
@@ -140,7 +152,9 @@ export default function BatchUnderwrite() {
           loan_amount: Number(r.loan_amount),
           loan_term_months: r.loan_term_months ? Number(r.loan_term_months) : 12,
           loan_purpose: r.loan_purpose || "general",
-          market, borrower_type: borrowerType, product_type: productType,
+          market: rowMarket,
+          borrower_type: r.borrower_type || borrowerType,
+          product_type: r.product_type || productType,
           policy_id: policyId,
         });
         const appId = appRes.data.application_id;
@@ -242,7 +256,7 @@ export default function BatchUnderwrite() {
               <div className="rounded-xl border-2 border-dashed border-slate-200 hover:border-teal-400 transition-colors px-4 py-6 flex flex-col items-center justify-center text-center">
                 <UploadCloud className="w-7 h-7 text-slate-300 mb-2" />
                 <span className="text-[13px] font-medium text-slate-700">{fileName || "Drop a CSV here or click to upload"}</span>
-                <span className="text-[11px] text-slate-400 mt-0.5">Columns: first_name, last_name, email, annual_income, employment_status, employer_name, loan_amount, loan_term_months, loan_purpose</span>
+                <span className="text-[11px] text-slate-400 mt-0.5">Required: first_name, last_name, loan_amount · Optional: email, phone, date_of_birth, annual_income, employment_status, employer_name, loan_term_months, loan_purpose, product_type, borrower_type, market</span>
               </div>
             </label>
             <button onClick={downloadTemplate}
