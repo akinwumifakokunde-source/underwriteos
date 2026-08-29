@@ -35,9 +35,8 @@ export default function AfricaPricingPanel() {
           <h3 className="text-sm font-semibold text-slate-900">Africa market pricing</h3>
         </div>
         <p className="text-xs text-slate-500 leading-relaxed">
-          USD pricing shown above applies to your location. We offer local-currency rates for lenders in Nigeria,
-          Ghana, Kenya, and South Africa.{" "}
-          <Link to="/contact" className="text-[#0d9488] font-medium hover:underline">Contact us</Link> to enable it.
+          USD pricing shown above applies to your location. Local-currency rates for lenders in Nigeria, Ghana,
+          Kenya, and South Africa are displayed automatically when we detect you're in one of those markets.
         </p>
       </div>
     );

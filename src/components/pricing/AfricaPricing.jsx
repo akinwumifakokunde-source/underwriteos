@@ -54,9 +54,9 @@ export default function AfricaPricing() {
         <div className="inline-flex items-start gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3 max-w-2xl">
           <MapPin className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
           <p className="text-sm text-[#0a0c12] leading-relaxed">
-            <span className="font-semibold">USD pricing shown above</span> applies to your location. African-market
-            local-currency pricing is available for Nigeria (₦), Ghana (GH₵), Kenya (KSh), and South Africa (R) —
-            contact us to enable it for your workspace.
+            <span className="font-semibold">USD pricing shown above</span> applies to your location. Local-currency
+            pricing for Nigeria (₦), Ghana (GH₵), Kenya (KSh), and South Africa (R) is displayed automatically when we
+            detect you're in one of those markets.
           </p>
         </div>
       </section>
