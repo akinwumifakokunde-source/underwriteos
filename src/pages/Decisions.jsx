@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Search, Brain, ShieldCheck, GitBranch } from "lucide-react";
@@ -13,6 +13,7 @@ const DECISION_STYLES = {
 const FILTERS = ["All", "Approve", "Review", "Decline"];
 
 export default function Decisions() {
+  const navigate = useNavigate();
   const [decisions, setDecisions] = useState([]);
   const [recommendations, setRecommendations] = useState({});
   const [apps, setApps] = useState({});
@@ -127,7 +128,7 @@ export default function Decisions() {
                   const app = apps[d.application_id];
                   const rec = recommendations[d.recommendation_id];
                   return (
-                    <tr key={d.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => window.location.href = `/applications/${d.application_id}`}>
+                    <tr key={d.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => navigate(`/applications/${d.application_id}`)}>
                       <td className="px-5 py-3">
                         <div className="text-sm font-medium text-slate-900">{app?.application_number || d.application_id?.slice(-8)}</div>
                       </td>
