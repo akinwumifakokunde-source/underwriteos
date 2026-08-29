@@ -5,6 +5,7 @@ import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
 import FormsSection from "@/components/home/FormsSection";
 import RecentApplications from "@/components/workspace/RecentApplications";
+import NeedsAttention from "@/components/workspace/NeedsAttention";
 import { Loader2, AlertTriangle, Shield, Plus, ArrowRight } from "lucide-react";
 
 export default function WorkspaceHome() {
@@ -40,6 +41,8 @@ export default function WorkspaceHome() {
       <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />
 
       <FormsSection />
+
+      <NeedsAttention />
 
       <RecentApplications />
 
