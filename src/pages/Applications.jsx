@@ -27,15 +27,15 @@ export default function Applications() {
       const res = await base44.functions.invoke("apiApplications", { action: "list", limit: 100 });
       const list = res.data?.applications || [];
       setApps(list);
-      // Load borrowers for each app
+      // Load borrowers in a single batch request
       const borrowerIds = [...new Set(list.map((a) => a.borrower_id).filter(Boolean))];
       const borrowerMap = {};
-      await Promise.all(borrowerIds.map(async (id) => {
+      if (borrowerIds.length > 0) {
         try {
-          const b = await base44.functions.invoke("apiBorrowers", { action: "get", borrower_id: id });
-          if (b.data?.borrower) borrowerMap[id] = b.data.borrower;
+          const bRes = await base44.functions.invoke("apiBorrowers", { action: "batch", borrower_ids: borrowerIds });
+          (bRes.data?.borrowers || []).forEach((b) => { borrowerMap[b.id] = b; });
         } catch {}
-      }));
+      }
       setBorrowers(borrowerMap);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load applications.");

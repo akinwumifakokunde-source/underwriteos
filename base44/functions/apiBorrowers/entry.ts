@@ -9,7 +9,7 @@ export default async function(req: Request): Promise<Response> {
     const { organization_id, actor, actor_type } = ctx;
     const action = body.action || "create";
     if (action === "create") requireScope(ctx, "borrowers:write");
-    if (action === "get") requireScope(ctx, "borrowers:read");
+    if (action === "get" || action === "batch") requireScope(ctx, "borrowers:read");
 
     if (action === "create") {
       const idempotencyKey = req.headers.get("idempotency-key") || body.idempotency_key;
@@ -48,6 +48,14 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ borrower: borrowers[0] }, 200);
     }
 
+    if (action === "batch") {
+      const ids: string[] = (body.borrower_ids || []).filter(Boolean);
+      if (ids.length === 0) return apiSuccess({ borrowers: [] }, 200);
+      const list = await base44.asServiceRole.entities.Borrower.filter({ organization_id }, "-created_date", 100);
+      const idSet = new Set(ids);
+      return apiSuccess({ borrowers: list.filter((b) => idSet.has(b.id)) }, 200);
+    }
+
     if (action === "update") {
       requireScope(ctx, "borrowers:write");
       const { borrower_id, first_name, last_name, email, phone, date_of_birth, address, employment_status, employer_name, annual_income, income_currency } = body;
@@ -71,7 +79,7 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ borrower: updated }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use create|get|update.`, 400);
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use create|get|batch|update.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
