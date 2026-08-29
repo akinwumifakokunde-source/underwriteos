@@ -30,21 +30,13 @@ export default function Decisions() {
       const oid = me.data?.organization_id || me.organization_id;
       const decs = await base44.entities.UnderwritingDecision.filter({ organization_id: oid }, "-created_date", 100);
       setDecisions(decs);
-      // Load related applications and recommendations
-      const appIds = [...new Set(decs.map((d) => d.application_id).filter(Boolean))];
-      const recIds = [...new Set(decs.map((d) => d.recommendation_id).filter(Boolean))];
-      const appMap = {};
-      const recMap = {};
-      await Promise.all([
-        ...appIds.map(async (id) => {
-          try { const a = await base44.entities.Application.filter({ id, organization_id: oid }, "-created_date", 1); if (a[0]) appMap[id] = a[0]; } catch {}
-        }),
-        ...recIds.map(async (id) => {
-          try { const r = await base44.entities.UnderwritingRecommendation.filter({ id, organization_id: oid }, "-created_date", 1); if (r[0]) recMap[id] = r[0]; } catch {}
-        }),
+      // Batch-load related applications and recommendations (avoid N+1 fetches)
+      const [appList, recList] = await Promise.all([
+        base44.entities.Application.filter({ organization_id: oid }, "-created_date", 100),
+        base44.entities.UnderwritingRecommendation.filter({ organization_id: oid }, "-created_date", 100),
       ]);
-      setApps(appMap);
-      setRecommendations(recMap);
+      setApps(Object.fromEntries(appList.map((a) => [a.id, a])));
+      setRecommendations(Object.fromEntries(recList.map((r) => [r.id, r])));
     } catch (e) {
       setError(e?.message || "Failed to load decisions.");
     } finally {
