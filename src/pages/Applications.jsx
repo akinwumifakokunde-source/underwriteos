@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, Search, Filter, FileText } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
+import ApplicationsStats from "@/components/applications/ApplicationsStats";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
 
@@ -88,6 +89,8 @@ export default function Applications() {
         </div>
 
         {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
+
+        {!loading && !error && <ApplicationsStats apps={apps} />}
 
         {/* Filters + Search */}
         <div className="flex flex-col sm:flex-row gap-3 mb-4">
