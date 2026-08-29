@@ -129,11 +129,12 @@ export default function Dashboard() {
                 <div className="divide-y divide-slate-100">
                   {(data?.decisions?.recent || []).slice(0, 6).map((d) => (
                     <Link key={d.id} to={`/applications/${d.application_id}`} className="px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         <DecisionBadge decision={d.decision} />
-                        <span className="text-[11px] text-slate-400">{d.policy_id} v{d.policy_version}</span>
+                        <span className="text-sm font-medium text-slate-900 truncate">{d.application_number || d.application_id?.slice(-8)}</span>
+                        <span className="text-[11px] text-slate-400 hidden sm:inline">{d.policy_id} v{d.policy_version}</span>
                       </div>
-                      <span className="text-[11px] text-slate-400">{d.decision_timestamp ? new Date(d.decision_timestamp).toLocaleDateString() : ""}</span>
+                      <span className="text-[11px] text-slate-400 shrink-0">{d.decision_timestamp ? new Date(d.decision_timestamp).toLocaleDateString() : ""}</span>
                     </Link>
                   ))}
                 </div>

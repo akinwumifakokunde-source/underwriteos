@@ -67,12 +67,16 @@ export default async function(req: Request): Promise<Response> {
       loan_currency: a.loan_currency, created_at: a.created_date
     }));
 
-    const recent_decisions = decisions.slice(0, 6).map((d: any) => ({
-      id: d.id, application_id: d.application_id, decision: d.decision,
-      decision_source: d.decision_source, risk_score: d.risk_score,
-      policy_id: d.policy_id, policy_version: d.policy_version,
-      decision_timestamp: d.decision_timestamp, created_at: d.created_date
-    }));
+    const appById = new Map(apps.map((a: any) => [a.id, a]));
+    const recent_decisions = decisions.slice(0, 6).map((d: any) => {
+      const app = appById.get(d.application_id);
+      return {
+        id: d.id, application_id: d.application_id, application_number: app?.application_number,
+        decision: d.decision, decision_source: d.decision_source, risk_score: d.risk_score,
+        policy_id: d.policy_id, policy_version: d.policy_version,
+        decision_timestamp: d.decision_timestamp, created_at: d.created_date
+      };
+    });
 
     return apiSuccess({
       api_status: "operational",
