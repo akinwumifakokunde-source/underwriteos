@@ -20,6 +20,7 @@ import ChatAssistant from "@/components/application/ChatAssistant";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
 import ExportControls from "@/components/underwrite/ExportControls";
 import RegulatoryOutputs from "@/components/application/RegulatoryOutputs";
+import RecordOutcome from "@/components/application/RecordOutcome";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 import { computeRiskDimensions } from "@/lib/riskDimensions";
 
@@ -436,6 +437,7 @@ export default function ApplicationDetail() {
                 riskSignals={riskSignals} evidence={evidence}
                 creditProfile={cp} financialProfile={fp}
               />
+              <RecordOutcome applicationId={applicationId} decision={decision} />
               <DecisionSection
                 decision={decision} recommendation={recommendation}
                 evidence={evidence} onOverride={overrideDecision} overriding={overriding}
