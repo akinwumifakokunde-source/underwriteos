@@ -19,6 +19,7 @@ function pct(n) {
 export default function Monitoring() {
   const [data, setData] = useState(null);
   const [outcomes, setOutcomes] = useState([]);
+  const [decidedApps, setDecidedApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,12 +34,15 @@ export default function Monitoring() {
     setLoading(true);
     setError(null);
     try {
-      const [mon, list] = await Promise.all([
+      const [mon, list, appRes] = await Promise.all([
         base44.functions.invoke("apiOutcomes", { action: "monitor" }),
         base44.functions.invoke("apiOutcomes", { action: "list" }),
+        base44.functions.invoke("apiApplications", { action: "list", limit: 100 }),
       ]);
       setData(mon.data);
       setOutcomes(list.data.outcomes || []);
+      const decided = (appRes.data?.applications || []).filter((a) => a.decision && a.decision !== "null");
+      setDecidedApps(decided);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load monitoring data.");
     } finally {
@@ -138,12 +142,22 @@ export default function Monitoring() {
               <p className="text-[12px] text-[#525965] mb-4">Report what happened on an underwritten loan. The predicted PD is snapshotted from the decision.</p>
               <form onSubmit={record} className="space-y-3">
                 <div>
-                  <label className="block text-[12px] font-medium text-[#0a0c12] mb-1">Application ID</label>
-                  <input
-                    value={appId} onChange={(e) => setAppId(e.target.value)}
-                    placeholder="6a8…"
-                    className="w-full rounded-lg border border-[#eceef1] px-3 py-2 text-[13px] font-mono outline-none focus:border-[#0d9488]"
-                  />
+                  <label className="block text-[12px] font-medium text-[#0a0c12] mb-1">Application</label>
+                  {decidedApps.length === 0 ? (
+                    <p className="text-[12px] text-[#8a909c] py-2">No decided applications yet. Underwrite an application first.</p>
+                  ) : (
+                    <select
+                      value={appId} onChange={(e) => setAppId(e.target.value)}
+                      className="w-full rounded-lg border border-[#eceef1] px-3 py-2 text-[13px] outline-none focus:border-[#0d9488] bg-white"
+                    >
+                      <option value="">Select an application…</option>
+                      {decidedApps.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.application_number || a.id.slice(-8)} · {a.decision} · {(a.loan_currency || "GBP")} {(a.loan_amount || 0).toLocaleString()}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div>
                   <label className="block text-[12px] font-medium text-[#0a0c12] mb-1">Status</label>
