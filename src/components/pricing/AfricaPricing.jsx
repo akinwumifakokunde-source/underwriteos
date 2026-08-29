@@ -1,43 +1,83 @@
-import React, { useState } from "react";
-import { CheckCircle2, Globe2, Sparkles } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { CheckCircle2, Globe2, Sparkles, Loader2, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AFRICA_PRICING, AFRICA_MARKET_ORDER as ORDER } from "@/lib/africaPricing";
+import { AFRICA_PRICING } from "@/lib/africaPricing";
+import { detectAfricaMarket } from "@/lib/geoPricing";
 
 export default function AfricaPricing() {
-  const [market, setMarket] = useState("NG");
+  const [market, setMarket] = useState(null);
+  const [detecting, setDetecting] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    detectAfricaMarket()
+      .then((code) => mounted && setMarket(code))
+      .finally(() => mounted && setDetecting(false));
+    return () => { mounted = false; };
+  }, []);
+
+  if (detecting) {
+    return (
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+        <div className="max-w-2xl mb-6">
+          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#0d9488] mb-3">
+            <Globe2 className="w-3.5 h-3.5" /> Africa market pricing
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">
+            Local-currency pricing for African lenders
+          </h2>
+        </div>
+        <div className="flex items-center gap-2.5 text-sm text-[#8a909c]">
+          <Loader2 className="w-4 h-4 animate-spin text-[#0d9488]" />
+          Detecting your location…
+        </div>
+      </section>
+    );
+  }
+
+  // Non-African visitor: USD pricing (shown above) applies.
+  if (!market) {
+    return (
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+        <div className="max-w-2xl mb-6">
+          <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#0d9488] mb-3">
+            <Globe2 className="w-3.5 h-3.5" /> Africa market pricing
+          </div>
+          <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">
+            Local-currency pricing for African lenders
+          </h2>
+          <p className="mt-3 text-base text-[#525965] leading-relaxed">
+            We offer purchasing-power-adjusted pricing in local currency for lenders in Nigeria, Ghana, Kenya, and
+            South Africa. If you're based in one of these markets, your local-currency rates are applied automatically.
+          </p>
+        </div>
+        <div className="inline-flex items-start gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3 max-w-2xl">
+          <MapPin className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
+          <p className="text-sm text-[#0a0c12] leading-relaxed">
+            <span className="font-semibold">USD pricing shown above</span> applies to your location. African-market
+            local-currency pricing is available for Nigeria (₦), Ghana (GH₵), Kenya (KSh), and South Africa (R) —
+            contact us to enable it for your workspace.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   const cfg = AFRICA_PRICING[market];
 
   return (
     <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
       <div className="max-w-2xl mb-6">
         <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#0d9488] mb-3">
-          <Globe2 className="w-3.5 h-3.5" /> Africa market pricing
+          <MapPin className="w-3.5 h-3.5" /> Pricing for your location · {cfg.label}
         </div>
         <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">
-          Local-currency pricing for African lenders
+          Local-currency pricing for {cfg.label}
         </h2>
         <p className="mt-3 text-base text-[#525965] leading-relaxed">
-          We offer purchasing-power-adjusted pricing in local currency for lenders in Nigeria, Ghana, Kenya, and
-          South Africa — the same platform, credits, and markets, at rates built for local economics. No FX surprises;
-          you're billed in your market currency.
+          We've detected you're in {cfg.label}. Your subscription and credit packs are billed in {cfg.currency} at
+          purchasing-power-adjusted rates — the same platform, credits, and markets, built for local economics.
         </p>
-      </div>
-
-      {/* Market selector */}
-      <div className="flex flex-wrap items-center gap-2 mb-5">
-        {ORDER.map((code) => (
-          <button
-            key={code}
-            onClick={() => setMarket(code)}
-            className={`text-sm px-3.5 py-1.5 rounded-lg border transition-colors ${
-              market === code
-                ? "border-[#0a0c12] bg-[#0a0c12] text-white"
-                : "border-[#e5e7eb] bg-white text-[#525965] hover:bg-[#f2f3f5]"
-            }`}
-          >
-            {AFRICA_PRICING[code].label}
-          </button>
-        ))}
       </div>
 
       {/* Tiers in local currency */}
@@ -99,9 +139,8 @@ export default function AfricaPricing() {
       <div className="mt-5 inline-flex items-start gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3 max-w-2xl">
         <Sparkles className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
         <p className="text-sm text-[#0a0c12] leading-relaxed">
-          <span className="font-semibold">1,000 free credits</span> on signup — no card required. African-market
-          pricing is applied automatically when your workspace is set to {cfg.label}. Contact us for volume or
-          micro-lender rates.
+          <span className="font-semibold">1,000 free credits</span> on signup — no card required. {cfg.label} rates
+          are applied automatically based on your location. Contact us for volume or micro-lender rates.
         </p>
       </div>
     </section>
