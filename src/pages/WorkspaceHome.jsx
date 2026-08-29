@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
 import FormsSection from "@/components/home/FormsSection";
+import RecentApplications from "@/components/workspace/RecentApplications";
 import { Loader2, AlertTriangle, Shield, Plus, ArrowRight } from "lucide-react";
 
 export default function WorkspaceHome() {
@@ -39,6 +40,8 @@ export default function WorkspaceHome() {
       <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />
 
       <FormsSection />
+
+      <RecentApplications />
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8 pb-12">
         <div className="border-t border-slate-200 mb-8" />
