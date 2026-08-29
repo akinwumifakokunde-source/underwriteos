@@ -31,15 +31,15 @@ export default function Home() {
       <NoCodeSolution />
       <WorkflowSection />
       <PipelineFlow />
+      <Providers />
+      <FormsFeature />
       <PolicyBuilderShowcase />
       <AiPolicy />
       <Evidence />
       <RegulatoryOutputs />
       <Outcomes />
-      <Providers />
-      <CompetitiveComparison />
-      <FormsFeature />
       <Security />
+      <CompetitiveComparison />
       <Faq />
       <FinalCta />
       <SiteFooter />
