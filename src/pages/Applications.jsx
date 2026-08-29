@@ -18,6 +18,7 @@ export default function Applications() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const [market, setMarket] = useState("All");
 
   const load = async () => {
     setLoading(true);
@@ -58,6 +59,9 @@ export default function Applications() {
       const target = filterMap[filter];
       result = result.filter((a) => a.status === target || a.decision === target);
     }
+    if (market !== "All") {
+      result = result.filter((a) => (a.market || "GB") === market);
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter((a) => {
@@ -67,7 +71,7 @@ export default function Applications() {
       });
     }
     return result;
-  }, [apps, filter, search, borrowers]);
+  }, [apps, filter, market, search, borrowers]);
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
 
@@ -105,14 +109,29 @@ export default function Applications() {
               </button>
             ))}
           </div>
-          <div className="relative sm:ml-auto sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search applications…"
-              className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
-            />
+          <div className="flex items-center gap-2 sm:ml-auto">
+            <select
+              value={market}
+              onChange={(e) => setMarket(e.target.value)}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            >
+              <option value="All">All markets</option>
+              <option value="GB">United Kingdom</option>
+              <option value="US">United States</option>
+              <option value="NG">Nigeria</option>
+              <option value="ZA">South Africa</option>
+              <option value="KE">Kenya</option>
+              <option value="GH">Ghana</option>
+            </select>
+            <div className="relative w-56">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search applications…"
+                className="w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+              />
+            </div>
           </div>
         </div>
 
