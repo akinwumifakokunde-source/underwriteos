@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Globe2, CheckCircle2, MapPin, Loader2 } from "lucide-react";
+import { CheckCircle2, MapPin, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AFRICA_PRICING } from "@/lib/africaPricing";
 import { detectAfricaMarket } from "@/lib/geoPricing";
@@ -27,20 +27,7 @@ export default function AfricaPricingPanel() {
     );
   }
 
-  if (!market) {
-    return (
-      <div className="rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/[0.03] p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <Globe2 className="w-4 h-4 text-[#0d9488]" />
-          <h3 className="text-sm font-semibold text-slate-900">Africa market pricing</h3>
-        </div>
-        <p className="text-xs text-slate-500 leading-relaxed">
-          USD pricing shown above applies to your location. Local-currency rates for lenders in Nigeria, Ghana,
-          Kenya, and South Africa are displayed automatically when we detect you're in one of those markets.
-        </p>
-      </div>
-    );
-  }
+  if (!market) return null;
 
   const cfg = AFRICA_PRICING[market];
 
