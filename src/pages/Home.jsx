@@ -12,6 +12,7 @@ import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import RegulatoryOutputs from "@/components/home/RegulatoryOutputs.jsx";
 import Outcomes from "@/components/home/Outcomes.jsx";
+import Providers from "@/components/home/Providers.jsx";
 import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import Security from "@/components/home/Security.jsx";
@@ -35,6 +36,7 @@ export default function Home() {
       <Evidence />
       <RegulatoryOutputs />
       <Outcomes />
+      <Providers />
       <CompetitiveComparison />
       <FormsFeature />
       <Security />
