@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { apiError, apiSuccess, readBody, resolveOrganization, audit, hmacSha256, applySignupGrantIfNeeded } from "../../shared/utils.ts";
+import { isAfricaMarket, getLocalTier, getLocalPack } from "../../shared/africaPricing.ts";
 
 // Billing via Stripe: one-time credit packs + monthly subscriptions.
 // Actions:
@@ -57,12 +58,15 @@ async function stripeRequest(path: string, init: RequestInit = {}): Promise<any>
 
 async function syncSubscription(base44: any, organization_id: string, subscriptionId: string) {
   const sub = await stripeRequest(`/subscriptions/${encodeURIComponent(subscriptionId)}`);
-  const plan = PLANS.find((p) => p.price_id === sub.items?.data?.[0]?.price?.id);
+  // Local-currency subscriptions use inline price_data, so the line item's price id
+  // won't match a saved PLANS entry — fall back to the plan_id we stamped on metadata.
+  const plan = PLANS.find((p) => p.price_id === sub.items?.data?.[0]?.price?.id)
+    || PLANS.find((p) => p.id === sub?.metadata?.plan_id);
   const credit = await ensureCredit(base44, organization_id, "usd");
   await base44.asServiceRole.entities.Credit.update(credit.id, {
     stripe_subscription_id: sub.id,
     stripe_customer_id: sub.customer,
-    subscription_plan_id: plan?.id || credit.subscription_plan_id,
+    subscription_plan_id: plan?.id || sub?.metadata?.plan_id || credit.subscription_plan_id,
     subscription_status: sub.status,
     subscription_current_period_end: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null
   });
@@ -122,7 +126,7 @@ export default async function(req: Request): Promise<Response> {
           subscription = {
             id: sub.id,
             status: sub.status,
-            plan_id: PLANS.find((p) => p.price_id === sub.items?.data?.[0]?.price?.id)?.id,
+            plan_id: PLANS.find((p) => p.price_id === sub.items?.data?.[0]?.price?.id)?.id || sub?.metadata?.plan_id,
             current_period_end: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
             cancel_at_period_end: sub.cancel_at_period_end
           };
@@ -144,6 +148,10 @@ export default async function(req: Request): Promise<Response> {
     if (action === "checkout") {
       const pack = PACKS.find((p) => p.id === body.pack_id);
       if (!pack) return apiError("UNKNOWN_PACK", "Unknown credit pack.", 400);
+      const market = (body.market || "").toUpperCase();
+      const local = isAfricaMarket(market) ? getLocalPack(market, pack.id) : null;
+      const currency = local ? local.currency : "usd";
+      const unitAmount = local ? local.amount : pack.amount;
       const origin = req.headers.get("origin") || APP_ORIGIN;
       const credit = await ensureCredit(base44, organization_id, "usd");
       const params = new URLSearchParams();
@@ -151,19 +159,20 @@ export default async function(req: Request): Promise<Response> {
       params.append("success_url", `${origin}/billing?status=success&pack=${pack.id}&tx={CHECKOUT_SESSION_ID}`);
       params.append("cancel_url", `${origin}/billing?status=cancelled`);
       params.append("line_items[0][quantity]", "1");
-      params.append("line_items[0][price_data][currency]", "usd");
-      params.append("line_items[0][price_data][unit_amount]", String(pack.amount));
+      params.append("line_items[0][price_data][currency]", currency);
+      params.append("line_items[0][price_data][unit_amount]", String(unitAmount));
       params.append("line_items[0][price_data][product_data][name]", pack.name);
       if (credit.stripe_customer_id) params.append("customer", credit.stripe_customer_id);
       params.append("metadata[base44_app_id]", Deno.env.get("BASE44_APP_ID") || "");
       params.append("metadata[pack_id]", pack.id);
       params.append("metadata[organization_id]", organization_id);
+      if (market) params.append("metadata[market]", market);
       const session = await stripeRequest("/checkout/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded", "Idempotency-Key": `billing_${pack.id}_${organization_id}_${Date.now()}` },
         body: params.toString()
       });
-      await audit(base44, organization_id, "billing.checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, session: session.id } });
+      await audit(base44, organization_id, "billing.checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, currency, session: session.id } });
       return apiSuccess({ url: session.url, pack_id: pack.id }, 200);
     }
 
@@ -186,8 +195,11 @@ export default async function(req: Request): Promise<Response> {
         const credit = await ensureCredit(base44, organization_id, "usd");
         if (!credit.stripe_customer_id) await base44.asServiceRole.entities.Credit.update(credit.id, { stripe_customer_id: session.customer });
       }
-      await applyCredit(base44, organization_id, pack.credits, "purchase", pack.amount, "usd", sessionId, `Credit purchase — ${pack.name}`);
-      await audit(base44, organization_id, "billing.purchase_credited", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, ref: sessionId } });
+      // Record the actual amount/currency the customer paid (USD or local market currency).
+      const paidCurrency = (session.currency || "usd").toLowerCase();
+      const paidAmount = typeof session.amount_total === "number" ? session.amount_total : pack.amount;
+      await applyCredit(base44, organization_id, pack.credits, "purchase", paidAmount, paidCurrency, sessionId, `Credit purchase — ${pack.name}`);
+      await audit(base44, organization_id, "billing.purchase_credited", { actor, actor_type, endpoint: "POST /v1/billing", details: { pack_id: pack.id, credits: pack.credits, currency: paidCurrency, amount: paidAmount, ref: sessionId } });
       const credit = await getCredit(base44, organization_id);
       return apiSuccess({ credited: true, credits: pack.credits, balance: credit?.balance || 0 }, 200);
     }
@@ -195,6 +207,8 @@ export default async function(req: Request): Promise<Response> {
     if (action === "subscription_checkout") {
       const plan = PLANS.find((p) => p.id === body.plan_id);
       if (!plan) return apiError("UNKNOWN_PLAN", "Unknown subscription plan.", 400);
+      const market = (body.market || "").toUpperCase();
+      const local = isAfricaMarket(market) ? getLocalTier(market, plan.id) : null;
       const origin = req.headers.get("origin") || APP_ORIGIN;
       const credit = await ensureCredit(base44, organization_id, "usd");
       const params = new URLSearchParams();
@@ -202,20 +216,30 @@ export default async function(req: Request): Promise<Response> {
       params.append("success_url", `${origin}/settings?status=sub_success&plan=${plan.id}&session_id={CHECKOUT_SESSION_ID}`);
       params.append("cancel_url", `${origin}/settings?status=sub_cancelled`);
       params.append("line_items[0][quantity]", "1");
-      params.append("line_items[0][price]", plan.price_id);
+      if (local) {
+        // Local-currency subscription: inline recurring price_data (no saved Stripe Price needed).
+        params.append("line_items[0][price_data][currency]", local.currency);
+        params.append("line_items[0][price_data][unit_amount]", String(local.amount));
+        params.append("line_items[0][price_data][recurring][interval]", "month");
+        params.append("line_items[0][price_data][product_data][name]", `GoUnderwriteOS ${plan.name}`);
+      } else {
+        params.append("line_items[0][price]", plan.price_id);
+      }
       if (credit.stripe_customer_id) params.append("customer", credit.stripe_customer_id);
       params.append("metadata[base44_app_id]", Deno.env.get("BASE44_APP_ID") || "");
       params.append("metadata[plan_id]", plan.id);
       params.append("metadata[organization_id]", organization_id);
+      if (market) params.append("metadata[market]", market);
       params.append("subscription_data[metadata][base44_app_id]", Deno.env.get("BASE44_APP_ID") || "");
       params.append("subscription_data[metadata][plan_id]", plan.id);
       params.append("subscription_data[metadata][organization_id]", organization_id);
+      if (market) params.append("subscription_data[metadata][market]", market);
       const session = await stripeRequest("/checkout/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded", "Idempotency-Key": `sub_${plan.id}_${organization_id}_${Date.now()}` },
         body: params.toString()
       });
-      await audit(base44, organization_id, "billing.subscription_checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { plan_id: plan.id, session: session.id } });
+      await audit(base44, organization_id, "billing.subscription_checkout_started", { actor, actor_type, endpoint: "POST /v1/billing", details: { plan_id: plan.id, currency: local ? local.currency : "usd", session: session.id } });
       return apiSuccess({ url: session.url, plan_id: plan.id }, 200);
     }
 

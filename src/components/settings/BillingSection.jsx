@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Wallet, Loader2, AlertTriangle, Zap, CheckCircle2, CreditCard, Crown, X, Sparkles, RefreshCw } from "lucide-react";
 import AfricaPricingPanel from "@/components/settings/AfricaPricingPanel.jsx";
+import { detectAfricaMarket } from "@/lib/geoPricing";
 
 export default function BillingSection() {
   const [data, setData] = useState(null);
@@ -13,6 +14,8 @@ export default function BillingSection() {
   const [crediting, setCrediting] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [checkoutBlocked, setCheckoutBlocked] = useState(false);
+  const [africaMarket, setAfricaMarket] = useState(null);
+  const [detectedMarket, setDetectedMarket] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -45,6 +48,9 @@ export default function BillingSection() {
 
   useEffect(() => {
     if (window.self !== window.top) setCheckoutBlocked(true);
+    detectAfricaMarket()
+      .then((code) => setAfricaMarket(code))
+      .finally(() => setDetectedMarket(true));
     const params = new URLSearchParams(window.location.search);
     const status = params.get("status");
     if (status === "sub_success") {
@@ -205,6 +211,8 @@ export default function BillingSection() {
         </div>
       </div>
 
+      {!africaMarket && (
+      <>
       {/* Subscription plans */}
       <div className="rounded-xl border border-slate-200 bg-white p-5">
         <h3 className="text-sm font-semibold text-slate-900 mb-1 flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-[#0d9488]" /> Subscription plans</h3>
@@ -251,6 +259,8 @@ export default function BillingSection() {
           ))}
         </div>
       </div>
+      </>
+      )}
 
       {/* Africa market pricing */}
       <AfricaPricingPanel />
