@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Download, TrendingUp, CheckCircle2, XCircle, Clock, FileText } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LineChart, Line } from "recharts";
+import MarketBreakdown from "@/components/reports/MarketBreakdown";
 
 export default function Reports() {
   const [data, setData] = useState(null);
@@ -136,6 +137,8 @@ export default function Reports() {
                 </div>
               </div>
             </div>
+
+            <MarketBreakdown />
 
             {/* Application status breakdown */}
             <div className="rounded-xl border border-slate-200 bg-white p-5">
