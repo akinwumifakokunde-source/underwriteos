@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Search, Filter, FileText } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Search, Filter, FileText, Download } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
 import ApplicationsStats from "@/components/applications/ApplicationsStats";
 import EmptyState from "@/components/shared/EmptyState";
@@ -75,6 +75,36 @@ export default function Applications() {
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
 
+  const exportCsv = () => {
+    const headers = ["Application number", "Applicant", "Email", "Market", "Product", "Loan amount", "Currency", "Risk score", "Probability of default", "Policy", "Status", "Decision", "Updated"];
+    const rows = filtered.map((a) => {
+      const b = borrowers[a.borrower_id];
+      return [
+        a.application_number || a.id,
+        b ? `${b.first_name} ${b.last_name}` : "",
+        b?.email || "",
+        a.market || "GB",
+        a.product_type || "personal_loan",
+        a.loan_amount ?? "",
+        a.loan_currency || "",
+        a.risk_score ?? "",
+        a.probability_of_default ?? "",
+        a.policy_id || "",
+        a.status || "",
+        a.decision || "",
+        a.updated_date || a.created_date || "",
+      ];
+    });
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `applications-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
@@ -84,12 +114,21 @@ export default function Applications() {
             <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
             <p className="text-sm text-slate-500 mt-1">Manage and review all underwriting applications.</p>
           </div>
-          <Link
-            to="/applications/new"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
-          >
-            <Plus className="w-4 h-4" /> New Application
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={exportCsv}
+              disabled={filtered.length === 0}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-4 py-2.5 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Download className="w-4 h-4" /> Export CSV
+            </button>
+            <Link
+              to="/applications/new"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
+            >
+              <Plus className="w-4 h-4" /> New Application
+            </Link>
+          </div>
         </div>
 
         {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
