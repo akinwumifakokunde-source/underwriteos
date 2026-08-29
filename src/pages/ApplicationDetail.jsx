@@ -19,6 +19,7 @@ import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
 import ExportControls from "@/components/underwrite/ExportControls";
+import RegulatoryOutputs from "@/components/application/RegulatoryOutputs";
 import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
 import { computeRiskDimensions } from "@/lib/riskDimensions";
 
@@ -428,6 +429,12 @@ export default function ApplicationDetail() {
               <ExportControls
                 results={{ decision, recommendation, riskSignals, evidence, financialProfile: fp, creditProfile: cp }}
                 ids={{ application_id: applicationId }}
+              />
+              <RegulatoryOutputs
+                decision={decision} recommendation={recommendation}
+                borrower={borrower} app={app}
+                riskSignals={riskSignals} evidence={evidence}
+                creditProfile={cp} financialProfile={fp}
               />
               <DecisionSection
                 decision={decision} recommendation={recommendation}
