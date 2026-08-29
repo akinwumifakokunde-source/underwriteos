@@ -11,6 +11,7 @@ import PolicyBuilderShowcase from "@/components/home/PolicyBuilderShowcase.jsx";
 import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import RegulatoryOutputs from "@/components/home/RegulatoryOutputs.jsx";
+import Outcomes from "@/components/home/Outcomes.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import Security from "@/components/home/Security.jsx";
 import Faq from "@/components/home/Faq.jsx";
@@ -32,6 +33,7 @@ export default function Home() {
       <AiPolicy />
       <Evidence />
       <RegulatoryOutputs />
+      <Outcomes />
       <FormsFeature />
       <Security />
       <Faq />

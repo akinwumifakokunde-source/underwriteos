@@ -25,6 +25,7 @@ const SECONDARY_ITEMS = [
   { to: "/decisions", label: "Decisions" },
   { to: "/evidence", label: "Evidence" },
   { to: "/dashboard", label: "Dashboard" },
+  { to: "/monitoring", label: "Calibration" },
   { to: "/members", label: "Members" },
   { to: "/billing", label: "Billing" },
   { to: "/settings", label: "Subscription" },
