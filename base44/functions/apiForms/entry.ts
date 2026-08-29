@@ -42,6 +42,13 @@ export default async function(req: Request): Promise<Response> {
       for (const f of kyc) {
         if (!v[f.key] || !String(v[f.key]).trim()) return apiError("VALIDATION_ERROR", `${f.label} is required.`, 400);
       }
+      const docReqs = (form.document_requirements || []).filter((d: any) => d.enabled && d.required);
+      const uploadedDocs: any[] = Array.isArray(v.documents) ? v.documents : [];
+      for (const d of docReqs) {
+        if (!uploadedDocs.find((u) => u.type === d.type && u.file_url)) {
+          return apiError("VALIDATION_ERROR", `${d.label} is required. Please upload the document.`, 400);
+        }
+      }
       const kycValues = kyc.map((f) => String(v[f.key] || "")).filter(Boolean).join("|");
       const national_id_hash = kycValues ? await hashId(`${v.first_name}${v.last_name}${kycValues}`) : (v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null);
 
@@ -87,6 +94,22 @@ export default async function(req: Request): Promise<Response> {
         decision: "null",
         idempotency_key: null,
       });
+
+      for (const u of uploadedDocs) {
+        const req = (form.document_requirements || []).find((d: any) => d.type === u.type);
+        if (!req || !u.file_url) continue;
+        try {
+          await base44.asServiceRole.entities.Document.create({
+            organization_id,
+            application_id: application.id,
+            document_type: u.type,
+            file_url: u.file_url,
+            file_name: u.file_name || null,
+            file_format: inferFormat(u.file_name || u.file_url),
+            status: "uploaded",
+          });
+        } catch {}
+      }
 
       try {
         await base44.asServiceRole.entities.ApplicationForm.update(form.id, { submissions_count: (form.submissions_count || 0) + 1 });
@@ -161,7 +184,7 @@ export default async function(req: Request): Promise<Response> {
 
     if (action === "create") {
       requireScope(ctx, "applications:write");
-      const { name, title, intro, accent_color, logo_url, market, borrower_type, product_type, policy_id, fields, thank_you_message } = body;
+      const { name, title, intro, accent_color, logo_url, market, borrower_type, product_type, policy_id, fields, document_requirements, thank_you_message } = body;
       if (!name) return apiError("VALIDATION_ERROR", "name is required.", 400);
       const slug = genId("frm", 10).toLowerCase();
       const form = await base44.asServiceRole.entities.ApplicationForm.create({
@@ -177,6 +200,7 @@ export default async function(req: Request): Promise<Response> {
         product_type: product_type || "personal_loan",
         policy_id: policy_id || "consumer-v1",
         fields: Array.isArray(fields) ? fields : defaultFields(),
+        document_requirements: Array.isArray(document_requirements) ? document_requirements : [],
         thank_you_message: thank_you_message || "Thank you. Your application has been received.",
         status: "active",
         submissions_count: 0,
@@ -187,7 +211,7 @@ export default async function(req: Request): Promise<Response> {
 
     if (action === "update") {
       requireScope(ctx, "applications:write");
-      const { form_id, name, title, intro, accent_color, logo_url, market, borrower_type, product_type, policy_id, fields, thank_you_message, status } = body;
+      const { form_id, name, title, intro, accent_color, logo_url, market, borrower_type, product_type, policy_id, fields, document_requirements, thank_you_message, status } = body;
       if (!form_id) return apiError("VALIDATION_ERROR", "form_id is required.", 400);
       const forms = await base44.asServiceRole.entities.ApplicationForm.filter({ id: form_id, organization_id }, "-created_date", 1);
       if (forms.length === 0) return apiError("FORM_NOT_FOUND", "Form not found.", 404);
@@ -202,6 +226,7 @@ export default async function(req: Request): Promise<Response> {
       if (product_type !== undefined) updates.product_type = product_type;
       if (policy_id !== undefined) updates.policy_id = policy_id;
       if (fields !== undefined) updates.fields = fields;
+      if (document_requirements !== undefined) updates.document_requirements = document_requirements;
       if (thank_you_message !== undefined) updates.thank_you_message = thank_you_message;
       if (status !== undefined) updates.status = status;
       if (Object.keys(updates).length === 0) return apiError("VALIDATION_ERROR", "No fields to update.", 400);
@@ -241,6 +266,7 @@ function publicForm(f: any) {
     product_type: f.product_type,
     kyc: kycFor(f.market),
     fields: (f.fields || []).filter((x: any) => x.enabled),
+    document_requirements: (f.document_requirements || []).filter((x: any) => x.enabled),
     thank_you_message: f.thank_you_message,
   };
 }
@@ -285,6 +311,15 @@ function defaultFields() {
 function currencyFor(market: string): string {
   const map: any = { GB: "GBP", US: "USD", NG: "NGN", ZA: "ZAR", KE: "KES", GH: "GHS" };
   return map[market] || "GBP";
+}
+
+function inferFormat(name: string): string {
+  const n = (name || "").toLowerCase();
+  if (n.endsWith(".pdf")) return "pdf";
+  if (n.endsWith(".csv")) return "csv";
+  if (n.endsWith(".json")) return "json";
+  if (/\.(png|jpe?g|webp|gif|bmp|tiff?)$/.test(n)) return "image";
+  return "other";
 }
 
 async function hashId(input: string): Promise<string> {

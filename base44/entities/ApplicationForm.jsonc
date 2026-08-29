@@ -79,6 +79,30 @@
         }
       }
     },
+    "document_requirements": {
+      "type": "array",
+      "description": "Documents the borrower must upload, derived from market defaults. Each item: { type, label, detail, required, enabled }.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
     "thank_you_message": {
       "type": "string"
     },

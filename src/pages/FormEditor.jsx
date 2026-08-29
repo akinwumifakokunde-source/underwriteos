@@ -2,9 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, ArrowLeft, Save, Copy, Check, ExternalLink } from "lucide-react";
-import { JURISDICTIONS, getJurisdiction, getPolicies, getProducts, getKycConfig } from "@/lib/jurisdictions";
+import { Loader2, AlertTriangle, ArrowLeft, Save, Copy, Check, ExternalLink, Upload } from "lucide-react";
+import { JURISDICTIONS, getJurisdiction, getPolicies, getProducts, getKycConfig, getDocumentRequirements } from "@/lib/jurisdictions";
 import { FIELD_SECTIONS, DEFAULT_FIELDS } from "@/lib/formFields";
+
+const buildDocRequirements = (market, policyId, borrowerType) =>
+  getDocumentRequirements(market, policyId, borrowerType).map((d) => ({
+    type: d.type,
+    label: d.label,
+    detail: d.detail,
+    required: !!d.required,
+    enabled: true,
+  }));
 
 export default function FormEditor() {
   const { formId } = useParams();
@@ -28,6 +37,7 @@ export default function FormEditor() {
     policy_id: "consumer-v1",
     thank_you_message: "Thank you. Your application has been received. We'll be in touch shortly.",
     fields: DEFAULT_FIELDS,
+    document_requirements: buildDocRequirements("GB", "consumer-v1", "salaried"),
   });
 
   useEffect(() => {
@@ -49,6 +59,10 @@ export default function FormEditor() {
             policy_id: f.policy_id || "consumer-v1",
             thank_you_message: f.thank_you_message || "",
             fields: Array.isArray(f.fields) && f.fields.length ? f.fields : DEFAULT_FIELDS,
+            document_requirements:
+              Array.isArray(f.document_requirements) && f.document_requirements.length
+                ? f.document_requirements
+                : buildDocRequirements(f.market || "GB", f.policy_id || "consumer-v1", f.borrower_type || "salaried"),
             slug: f.slug,
             status: f.status,
           });
@@ -64,13 +78,30 @@ export default function FormEditor() {
   const set = (k, v) => setForm((prev) => ({ ...prev, [k]: v }));
 
   const onMarketChange = (market) => {
-    const jur = getJurisdiction(market);
     const policies = getPolicies(market);
+    const policy_id = policies[0]?.id || "consumer-v1";
     setForm((prev) => ({
       ...prev,
       market,
-      policy_id: policies[0]?.id || "consumer-v1",
+      policy_id,
       product_type: getProducts(market)[0]?.value || "personal_loan",
+      document_requirements: buildDocRequirements(market, policy_id, prev.borrower_type),
+    }));
+  };
+
+  const onBorrowerTypeChange = (borrower_type) => {
+    setForm((prev) => ({
+      ...prev,
+      borrower_type,
+      document_requirements: buildDocRequirements(prev.market, prev.policy_id, borrower_type),
+    }));
+  };
+
+  const onPolicyChange = (policy_id) => {
+    setForm((prev) => ({
+      ...prev,
+      policy_id,
+      document_requirements: buildDocRequirements(prev.market, policy_id, prev.borrower_type),
     }));
   };
 
@@ -78,6 +109,13 @@ export default function FormEditor() {
     setForm((prev) => ({
       ...prev,
       fields: prev.fields.map((f) => (f.key === key ? { ...f, [prop]: !f[prop] } : f)),
+    }));
+  };
+
+  const toggleDoc = (type, prop) => {
+    setForm((prev) => ({
+      ...prev,
+      document_requirements: prev.document_requirements.map((d) => (d.type === type ? { ...d, [prop]: !d[prop] } : d)),
     }));
   };
 
@@ -98,6 +136,7 @@ export default function FormEditor() {
         policy_id: form.policy_id,
         thank_you_message: form.thank_you_message,
         fields: form.fields,
+        document_requirements: form.document_requirements,
       };
       if (isEdit) {
         await base44.functions.invoke("apiForms", { action: "update", form_id: formId, ...payload });
@@ -200,7 +239,7 @@ export default function FormEditor() {
                 </select>
               </Field>
               <Field label="Borrower type">
-                <select value={form.borrower_type} onChange={(e) => set("borrower_type", e.target.value)} className="ui-input">
+                <select value={form.borrower_type} onChange={(e) => onBorrowerTypeChange(e.target.value)} className="ui-input">
                   <option value="salaried">Salaried</option>
                   <option value="self_employed">Self-employed</option>
                   <option value="business">Business</option>
@@ -212,7 +251,7 @@ export default function FormEditor() {
                 </select>
               </Field>
               <Field label="Policy">
-                <select value={form.policy_id} onChange={(e) => set("policy_id", e.target.value)} className="ui-input">
+                <select value={form.policy_id} onChange={(e) => onPolicyChange(e.target.value)} className="ui-input">
                   {getPolicies(form.market).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
                 </select>
               </Field>
@@ -229,6 +268,35 @@ export default function FormEditor() {
                     <div className="text-[11px] text-slate-400 mt-0.5">{f.hint}</div>
                   </div>
                   <span className="text-[10px] font-medium uppercase tracking-wider text-white bg-slate-700 rounded px-2 py-0.5">Required</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Document upload">
+            <p className="text-xs text-slate-500">Documents the borrower must upload for this market. Defaults are derived from the selected market, borrower type, and policy. Toggle which are collected and required.</p>
+            <div className="space-y-2">
+              {form.document_requirements.map((d) => (
+                <div key={d.type} className="rounded-lg border border-slate-200 px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Upload className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-sm text-slate-700">{d.label}</div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">{d.detail}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <label className="flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+                        <input type="checkbox" checked={!!d.enabled} onChange={() => toggleDoc(d.type, "enabled")} className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                        Collect
+                      </label>
+                      <label className={`flex items-center gap-1.5 text-xs cursor-pointer ${d.enabled ? "text-slate-600" : "text-slate-300"}`}>
+                        <input type="checkbox" checked={!!d.required} onChange={() => toggleDoc(d.type, "required")} disabled={!d.enabled} className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                        Required
+                      </label>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Loader2, AlertTriangle, CheckCircle2, ShieldCheck } from "lucide-react";
+import { Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2 } from "lucide-react";
 import { FIELD_SECTIONS, FIELD_META } from "@/lib/formFields";
 
 export default function Apply() {
@@ -10,6 +10,8 @@ export default function Apply() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [values, setValues] = useState({});
+  const [documents, setDocuments] = useState([]);
+  const [uploading, setUploading] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
 
@@ -28,12 +30,26 @@ export default function Apply() {
 
   const set = (k, v) => setValues((prev) => ({ ...prev, [k]: v }));
 
+  const onFileChange = async (type, file) => {
+    if (!file) return;
+    setUploading((u) => ({ ...u, [type]: true }));
+    setError(null);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setDocuments((prev) => [...prev.filter((d) => d.type !== type), { type, file_url, file_name: file.name }]);
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || `Failed to upload ${file.name}.`);
+    } finally {
+      setUploading((u) => ({ ...u, [type]: false }));
+    }
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("apiForms", { action: "public_submit", slug, values });
+      const res = await base44.functions.invoke("apiForms", { action: "public_submit", slug, values: { ...values, documents } });
       setSubmitted(res.data);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Submission failed. Please try again.");
@@ -66,6 +82,7 @@ export default function Apply() {
 
   const accent = form.accent_color || "#0d9488";
   const enabledFields = form.fields || [];
+  const docRequirements = (form.document_requirements || []).filter((d) => d.enabled);
 
   if (submitted) {
     return (
@@ -171,6 +188,44 @@ export default function Apply() {
             );
           })}
 
+          {docRequirements.length > 0 && (
+            <div>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Documents</h2>
+              <div className="rounded-xl border border-slate-200 bg-white divide-y divide-slate-100">
+                {docRequirements.map((d) => {
+                  const uploaded = documents.find((x) => x.type === d.type);
+                  const isUploading = uploading[d.type];
+                  return (
+                    <div key={d.type} className="px-4 py-3">
+                      <label className="block text-sm font-medium text-slate-700 mb-0.5">
+                        {d.label}{d.required && <span className="text-rose-500 ml-0.5">*</span>}
+                      </label>
+                      <p className="text-[11px] text-slate-400 leading-relaxed mb-2">{d.detail}</p>
+                      <label className={`flex items-center gap-2 rounded-md border border-dashed px-3 py-2.5 cursor-pointer transition-colors ${uploaded ? "border-emerald-300 bg-emerald-50/50" : "border-slate-300 bg-slate-50 hover:bg-slate-100"}`}>
+                        {isUploading ? (
+                          <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                        ) : uploaded ? (
+                          <FileCheck2 className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                          <Upload className="w-4 h-4 text-slate-400" />
+                        )}
+                        <span className="text-xs text-slate-600 truncate">
+                          {isUploading ? "Uploading…" : uploaded ? uploaded.file_name : "Choose a file to upload"}
+                        </span>
+                        <input
+                          type="file"
+                          onChange={(e) => onFileChange(d.type, e.target.files?.[0])}
+                          className="hidden"
+                          accept=".pdf,.png,.jpg,.jpeg,.csv,.json"
+                        />
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={submitting}
@@ -183,7 +238,7 @@ export default function Apply() {
 
         <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Secured by UnderwriteOS</span>
+          <span>Secured by GoUnderwriteOS</span>
         </div>
       </div>
     </div>
