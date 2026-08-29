@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Zap, Wallet, RefreshCw, Building2, Sparkles } from "lucide-react";
 import HomeNav from "@/components/home/HomeNav.jsx";
+import AfricaPricing from "@/components/pricing/AfricaPricing.jsx";
 
 const TIERS = [
   {
@@ -172,6 +173,8 @@ export default function Pricing() {
           All plans include access to all six markets (GB, US, NG, ZA, KE, GH). Subscribe from Settings → Billing & Subscription. Cancel anytime — your plan stays active until the end of the current period.
         </p>
       </section>
+
+      <AfricaPricing />
 
       {/* Credit packs */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
