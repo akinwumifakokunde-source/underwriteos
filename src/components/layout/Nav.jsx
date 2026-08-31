@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Layers, LogOut, ChevronDown, Terminal } from "lucide-react";
+import { LogOut, ChevronDown, Terminal } from "lucide-react";
+import Logo from "@/components/Logo";
 import { base44 } from "@/api/base44Client";
 import {
   DropdownMenu,
@@ -57,10 +58,7 @@ export default function Nav() {
     <header className="sticky top-0 z-40 bg-[#0a0c12] border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
         <Link to="/workspace" className="flex items-center gap-2.5 shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center">
-            <Layers className="w-4 h-4 text-[#0a0c12]" />
-          </div>
-          <span className="font-semibold tracking-tight text-white hidden sm:inline">CreditDecide</span>
+          <Logo size={28} textClassName="text-white hidden sm:inline" />
         </Link>
 
         <nav className="flex-1 flex items-center gap-0.5 overflow-x-auto no-scrollbar">

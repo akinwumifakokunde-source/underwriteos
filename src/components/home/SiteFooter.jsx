@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Layers } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const COLS = [
   {
@@ -35,10 +35,7 @@ export default function SiteFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 gap-y-10">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-[#0a0c12] flex items-center justify-center">
-                <Layers className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-semibold tracking-tight text-[#0a0c12]">CreditDecide</span>
+              <Logo size={24} />
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
               The AI-native underwriting platform for lenders and fintechs. Automate applications, configure policies, and make smarter, explainable decisions across six markets.

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Layers, ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
+import Logo from "@/components/Logo";
 import { base44 } from "@/api/base44Client";
 
 const NAV = [
@@ -23,10 +24,7 @@ export default function HomeNav() {
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-[#eceef1]">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 shrink-0" onClick={() => setOpen(false)}>
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0a0c12] to-[#1c1f26] flex items-center justify-center shadow-sm ring-1 ring-black/5">
-            <Layers className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-semibold tracking-tight text-[#0a0c12]">CreditDecide</span>
+          <Logo size={32} />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
