@@ -39,8 +39,32 @@ export default function CompetitiveComparison() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="overflow-x-auto no-scrollbar">
+        {/* Mobile: stacked cards */}
+        <div className="sm:hidden space-y-3">
+          {FEATURES.map((f) => (
+            <div key={f.label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="text-sm font-medium text-slate-800 mb-3">{f.label}</p>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-lg bg-teal-50/60 py-2">
+                  <div className="flex justify-center"><Cell value={f.us} /></div>
+                  <span className="block text-[10px] text-teal-600 font-mono mt-1">CreditDecide</span>
+                </div>
+                <div className="rounded-lg bg-slate-50 py-2">
+                  <div className="flex justify-center"><Cell value={f.legacy} /></div>
+                  <span className="block text-[10px] text-slate-400 font-mono mt-1">Legacy</span>
+                </div>
+                <div className="rounded-lg bg-slate-50 py-2">
+                  <div className="flex justify-center"><Cell value={f.point} /></div>
+                  <span className="block text-[10px] text-slate-400 font-mono mt-1">Point tools</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: table */}
+        <div className="hidden sm:block rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-100">
