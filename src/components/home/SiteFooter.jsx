@@ -41,7 +41,7 @@ export default function SiteFooter() {
               <span className="font-semibold tracking-tight text-[#0a0c12]">CreditDecide</span>
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
-              CreditDecide — no-code, AI-native underwriting for lenders and fintechs. Build policies, collect applications, and make explainable decisions.
+              The AI-native underwriting platform for lenders and fintechs. Automate applications, configure policies, and make smarter, explainable decisions across six markets.
             </p>
           </div>
 
