@@ -72,9 +72,9 @@ export default function SiteFooter() {
           <span className="font-medium text-[#525965]">The underwriting operating system — go.</span>
         </div>
 
-        <div className="mt-5 flex flex-col items-center justify-center gap-1.5 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-[#8a909c] sm:justify-start sm:text-left">
           <span className="font-mono uppercase tracking-wider text-[#8a909c]">Our HQ</span>
-          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
+          <span className="text-[#d4d7dd]">·</span>
           <span className="text-[#525965]">San Francisco</span>
           <span className="text-[#d4d7dd]">·</span>
           <span className="text-[#525965]">London</span>
