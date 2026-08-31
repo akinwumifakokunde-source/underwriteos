@@ -5,7 +5,7 @@ import SiteFooter from "@/components/home/SiteFooter.jsx";
 const SECTIONS = [
   {
     title: "Data we process",
-    body: "GoUnderwriteOS processes borrower financial data you submit or pull through connected providers — credit reports, bank transactions, and borrower declarations — solely to produce normalized profiles, risk signals, and underwriting decisions for your organization.",
+    body: "CreditDecide processes borrower financial data you submit or pull through connected providers — credit reports, bank transactions, and borrower declarations — solely to produce normalized profiles, risk signals, and underwriting decisions for your organization.",
   },
   {
     title: "Data isolation",
@@ -50,7 +50,7 @@ export default function Privacy() {
         </h1>
         <p className="mt-4 text-sm text-[#8a909c]">Last updated: August 2026</p>
         <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-          GoUnderwriteOS is underwriting infrastructure. This policy explains what data we process on your behalf, how it
+          CreditDecide is underwriting infrastructure. This policy explains what data we process on your behalf, how it
           is isolated and protected, and the controls available to you.
         </p>
         <div className="mt-10 space-y-8">

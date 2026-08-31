@@ -48,7 +48,7 @@ export default function Contact() {
           Underwriting, without writing code.
         </h1>
         <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-2xl">
-          GoUnderwriteOS is a no-code underwriting operating system for lenders and fintechs. Configure lending policies
+          CreditDecide is a no-code underwriting operating system for lenders and fintechs. Configure lending policies
           visually, connect live credit and bank data, and let AI produce evidence-backed decisions — all from one
           workspace. Tell us what you're building and we'll help you go live, fast.
         </p>

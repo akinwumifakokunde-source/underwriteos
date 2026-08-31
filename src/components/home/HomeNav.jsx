@@ -26,7 +26,7 @@ export default function HomeNav() {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0a0c12] to-[#1c1f26] flex items-center justify-center shadow-sm ring-1 ring-black/5">
             <Layers className="w-4 h-4 text-white" />
           </div>
-          <span className="font-semibold tracking-tight text-[#0a0c12]">GoUnderwriteOS</span>
+          <span className="font-semibold tracking-tight text-[#0a0c12]">CreditDecide</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">

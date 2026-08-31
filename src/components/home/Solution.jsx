@@ -27,7 +27,7 @@ export default function Solution() {
           One workspace for the entire underwriting layer.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          Connect live credit and bank data or upload documents across six markets. UnderwriteOS turns
+          Connect live credit and bank data or upload documents across six markets. CreditDecide turns
           fragmented financial data into structured risk signals, reconciles it across sources, evaluates
           your policy and returns an explainable, exportable underwriting decision.
         </p>

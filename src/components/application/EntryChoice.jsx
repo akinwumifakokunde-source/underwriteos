@@ -13,7 +13,7 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Start with the borrower file</h1>
         <p className="mt-2 text-sm text-slate-500 max-w-lg mx-auto">
-          Upload financial documents and UnderwriteOS will extract the information, build the credit profile and identify what needs your attention.
+          Upload financial documents and CreditDecide will extract the information, build the credit profile and identify what needs your attention.
         </p>
       </div>
 
@@ -59,7 +59,7 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
               <h3 className="text-sm font-semibold text-slate-900">Start with documents</h3>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-teal-700 bg-teal-100 rounded px-1.5 py-0.5">Recommended</span>
             </div>
-            <p className="text-[13px] text-slate-500 mt-0.5">Upload borrower documents and let UnderwriteOS build the underwriting case — we extract the data, build the credit profile and flag what needs your attention.</p>
+            <p className="text-[13px] text-slate-500 mt-0.5">Upload borrower documents and let CreditDecide build the underwriting case — we extract the data, build the credit profile and flag what needs your attention.</p>
           </div>
           <div className="inline-flex items-center gap-1 text-[12px] font-medium text-teal-700 group-hover:gap-2 transition-all shrink-0 w-full sm:w-auto justify-end">
             Get started <ArrowRight className="w-3.5 h-3.5" />

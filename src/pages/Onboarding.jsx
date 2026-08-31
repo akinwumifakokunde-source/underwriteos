@@ -67,7 +67,7 @@ export default function Onboarding() {
           <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-slate-500 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Getting started
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight">Welcome to UnderwriteOS</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Welcome to CreditDecide</h1>
           <p className="mt-2 text-slate-500">
             Set up your underwriting workspace and reach your first decision — no code required.
           </p>

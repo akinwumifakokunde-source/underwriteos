@@ -50,7 +50,7 @@ export default function AffordabilityTab({ fp, app, fmtMoney }) {
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <Activity className="w-8 h-8 text-slate-300 mx-auto mb-2" />
         <p className="text-sm text-slate-500 font-medium">Affordability not calculated yet</p>
-        <p className="text-[12px] text-slate-400 mt-1">Upload bank statements to calculate income, expenses, and disposable income. UnderwriteOS will calculate affordability automatically.</p>
+        <p className="text-[12px] text-slate-400 mt-1">Upload bank statements to calculate income, expenses, and disposable income. CreditDecide will calculate affordability automatically.</p>
       </div>
     );
   }

@@ -48,7 +48,7 @@ export default function FinancialProfileTab({ fp, cp, evidence, riskSignals, fmt
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
         <p className="text-sm text-slate-500 font-medium">Financial profile not available yet</p>
-        <p className="text-[12px] text-slate-400 mt-1">Upload bank statements and a credit report. UnderwriteOS will build the financial profile automatically as documents are processed.</p>
+        <p className="text-[12px] text-slate-400 mt-1">Upload bank statements and a credit report. CreditDecide will build the financial profile automatically as documents are processed.</p>
       </div>
     );
   }

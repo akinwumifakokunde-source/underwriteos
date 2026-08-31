@@ -7,7 +7,7 @@ export default function AnalysisSection({ recommendation, running, lastUpdated, 
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
         <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" />
-        <h3 className="text-sm font-semibold text-slate-900">UnderwriteOS is analyzing the application.</h3>
+        <h3 className="text-sm font-semibold text-slate-900">CreditDecide is analyzing the application.</h3>
         <p className="text-[13px] text-slate-500 mt-1">Extracting financial metrics, generating risk signals, and evaluating the policy.</p>
       </div>
     );

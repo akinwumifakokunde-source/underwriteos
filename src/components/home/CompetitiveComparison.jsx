@@ -27,14 +27,14 @@ export default function CompetitiveComparison() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why GoUnderwriteOS
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why CreditDecide
           </div>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
             One operating system, not a stack of point tools
           </h2>
           <p className="mt-3 text-[15px] text-[#525965] max-w-2xl mx-auto leading-relaxed">
             Legacy decision engines take quarters to deploy and explain nothing. Point tools each solve one
-            step and leave you to stitch them together. GoUnderwriteOS covers the whole pipeline — no code,
+            step and leave you to stitch them together. CreditDecide covers the whole pipeline — no code,
             with evidence — and gets you live in hours.
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function CompetitiveComparison() {
                   <th className="text-left font-medium text-slate-500 py-4 px-5 w-[44%]">Capability</th>
                   <th className="py-4 px-3 bg-teal-50/60">
                     <div className="flex flex-col items-center">
-                      <span className="text-[13px] font-semibold text-teal-700">GoUnderwriteOS</span>
+                      <span className="text-[13px] font-semibold text-teal-700">CreditDecide</span>
                       <span className="text-[10px] text-teal-500 font-mono mt-0.5">This platform</span>
                     </div>
                   </th>

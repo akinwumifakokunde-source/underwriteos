@@ -8,7 +8,7 @@ export default function RiskSignalsTab({ signals, evidence, onViewEvidence }) {
     return (
       <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
         <p className="text-sm text-slate-500 font-medium">Risk analysis will begin automatically when borrower information becomes available.</p>
-        <p className="text-[12px] text-slate-400 mt-1">Upload documents or enter borrower details. UnderwriteOS will generate risk signals and evaluate them against your policy.</p>
+        <p className="text-[12px] text-slate-400 mt-1">Upload documents or enter borrower details. CreditDecide will generate risk signals and evaluate them against your policy.</p>
       </div>
     );
   }

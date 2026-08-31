@@ -5,7 +5,7 @@ import SiteFooter from "@/components/home/SiteFooter.jsx";
 const SECTIONS = [
   {
     title: "Service",
-    body: "GoUnderwriteOS provides API-first underwriting infrastructure: financial data normalization, risk signaling, policy evaluation, and decisioning intelligence. We provide intelligence and workflow infrastructure; we do not make lending decisions for you and do not disburse funds or process payments.",
+    body: "CreditDecide provides API-first underwriting infrastructure: financial data normalization, risk signaling, policy evaluation, and decisioning intelligence. We provide intelligence and workflow infrastructure; we do not make lending decisions for you and do not disburse funds or process payments.",
   },
   {
     title: "Your responsibilities",
@@ -33,7 +33,7 @@ const SECTIONS = [
   },
   {
     title: "Limitation of liability",
-    body: "The service is provided as infrastructure. To the maximum extent permitted by law, GoUnderwriteOS is not liable for indirect, incidental, or consequential damages arising from use of the service, including lending decisions made on our output.",
+    body: "The service is provided as infrastructure. To the maximum extent permitted by law, CreditDecide is not liable for indirect, incidental, or consequential damages arising from use of the service, including lending decisions made on our output.",
   },
   {
     title: "Changes & termination",
@@ -58,7 +58,7 @@ export default function Terms() {
         </h1>
         <p className="mt-4 text-sm text-[#8a909c]">Last updated: August 2026</p>
         <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-          These terms govern your use of GoUnderwriteOS. By creating an organization or calling the API, you agree to them.
+          These terms govern your use of CreditDecide. By creating an organization or calling the API, you agree to them.
         </p>
         <div className="mt-10 space-y-8">
           {SECTIONS.map((s, i) => (

@@ -235,7 +235,7 @@ export default function Sandbox() {
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-6">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-semibold tracking-tight">UnderwriteOS Sandbox</h1>
+              <h1 className="text-2xl font-semibold tracking-tight">CreditDecide Sandbox</h1>
               <p className="text-sm text-slate-500 mt-1">Test the complete underwriting pipeline with synthetic borrower data.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -329,7 +329,7 @@ export default function Sandbox() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 pb-10 space-y-6">
         <div className="rounded-xl border border-slate-200 bg-white p-4 text-[11px] text-slate-400 leading-relaxed">
           <p>Sandbox uses synthetic data. Do not upload real customer financial or credit information.</p>
-          <p className="mt-1">UnderwriteOS provides underwriting intelligence and workflow infrastructure. Final lending decisions remain subject to the lender's policies and applicable requirements.</p>
+          <p className="mt-1">CreditDecide provides underwriting intelligence and workflow infrastructure. Final lending decisions remain subject to the lender's policies and applicable requirements.</p>
         </div>
       </div>
     </div>

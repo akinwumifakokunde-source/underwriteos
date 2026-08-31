@@ -38,10 +38,10 @@ export default function SiteFooter() {
               <div className="w-6 h-6 rounded-md bg-[#0a0c12] flex items-center justify-center">
                 <Layers className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-semibold tracking-tight text-[#0a0c12]">GoUnderwriteOS</span>
+              <span className="font-semibold tracking-tight text-[#0a0c12]">CreditDecide</span>
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
-              GoUnderwriteOS — no-code, AI-native underwriting for lenders and fintechs. Build policies, collect applications, and make explainable decisions.
+              CreditDecide — no-code, AI-native underwriting for lenders and fintechs. Build policies, collect applications, and make explainable decisions.
             </p>
           </div>
 
@@ -62,7 +62,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} GoUnderwriteOS</p>
+          <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} CreditDecide</p>
           <p className="text-xs text-[#8a909c] text-center sm:text-right max-w-md">No-code underwriting · AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports</p>
         </div>
 

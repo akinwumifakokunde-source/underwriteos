@@ -221,7 +221,7 @@ export default async function(req: Request): Promise<Response> {
         params.append("line_items[0][price_data][currency]", local.currency);
         params.append("line_items[0][price_data][unit_amount]", String(local.amount));
         params.append("line_items[0][price_data][recurring][interval]", "month");
-        params.append("line_items[0][price_data][product_data][name]", `GoUnderwriteOS ${plan.name}`);
+        params.append("line_items[0][price_data][product_data][name]", `CreditDecide ${plan.name}`);
       } else {
         params.append("line_items[0][price]", plan.price_id);
       }

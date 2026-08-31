@@ -38,7 +38,7 @@ export default function Problem() {
         </div>
 
         <p className="mt-6 text-lg font-medium text-[#0a0c12]">
-          UnderwriteOS provides the layer in between.
+          CreditDecide provides the layer in between.
         </p>
       </div>
     </section>

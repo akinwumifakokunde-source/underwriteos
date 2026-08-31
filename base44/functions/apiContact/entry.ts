@@ -26,7 +26,7 @@ export default async function(req) {
 
     const subject = `New contact message from ${name}`;
     const bodyText = [
-      `New message from the UnderwriteOS contact form.`,
+      `New message from the CreditDecide contact form.`,
       ``,
       `Name: ${name}`,
       `Email: ${email}`,
@@ -39,7 +39,7 @@ export default async function(req) {
       to: TO,
       subject,
       body: bodyText,
-      from_name: "UnderwriteOS Contact",
+      from_name: "CreditDecide Contact",
     });
 
     return Response.json({ ok: true, delivered_to: TO });

@@ -37,7 +37,7 @@ export default function Security() {
             Built for regulated lending.
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-            GoUnderwriteOS handles sensitive financial data. Security, isolation, and auditability are designed in from
+            CreditDecide handles sensitive financial data. Security, isolation, and auditability are designed in from
             the data layer up — not bolted on.
           </p>
         </div>

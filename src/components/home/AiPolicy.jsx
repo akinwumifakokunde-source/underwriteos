@@ -11,7 +11,7 @@ export default function AiPolicy() {
           AI assists. <span className="text-[#0d9488]">Your policy decides.</span>
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          UnderwriteOS can generate an AI underwriting recommendation with risk factors, positive
+          CreditDecide can generate an AI underwriting recommendation with risk factors, positive
           signals and reasoning. Your versioned policy remains authoritative.
         </p>
 

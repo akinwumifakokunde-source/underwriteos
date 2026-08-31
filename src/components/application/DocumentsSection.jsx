@@ -53,7 +53,7 @@ export default function DocumentsSection({
         <p className="text-[12px] text-slate-500">
           {completeness === 100
             ? "All required documents received. Underwriting analysis is complete."
-            : `${requiredMet} of ${requiredTotal} required documents. UnderwriteOS can begin analysis with the available information.`}
+            : `${requiredMet} of ${requiredTotal} required documents. CreditDecide can begin analysis with the available information.`}
         </p>
       </div>
 
@@ -93,7 +93,7 @@ export default function DocumentsSection({
         <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center">
           <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
           <p className="text-sm text-slate-500 font-medium">No documents uploaded yet</p>
-          <p className="text-[12px] text-slate-400 mt-1">Upload bank statements, payslips, or credit reports. UnderwriteOS will extract the data and build the credit file automatically.</p>
+          <p className="text-[12px] text-slate-400 mt-1">Upload bank statements, payslips, or credit reports. CreditDecide will extract the data and build the credit file automatically.</p>
         </div>
       )}
     </div>

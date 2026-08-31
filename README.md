@@ -1,16 +1,16 @@
-# UnderwriteOS
+# CreditDecide
 
 ### The no-code underwriting operating system for lenders and fintechs.
 
-UnderwriteOS is a no-code, AI-native underwriting platform that helps fintechs, lenders, insurers, and embedded-finance companies build policies visually, collect borrower applications through white-label forms with KYC, connect data providers, run risk assessments across five dimensions, and deliver explainable decisions — without writing code.
+CreditDecide is a no-code, AI-native underwriting platform that helps fintechs, lenders, insurers, and embedded-finance companies build policies visually, collect borrower applications through white-label forms with KYC, connect data providers, run risk assessments across five dimensions, and deliver explainable decisions — without writing code.
 
-Instead of building underwriting infrastructure from scratch, teams can use UnderwriteOS to build policies in a visual rule builder, collect applications via white-label intake forms, connect credit bureau and open banking data, evaluate decisions with full evidence lineage, and move from prototype to production across six markets.
+Instead of building underwriting infrastructure from scratch, teams can use CreditDecide to build policies in a visual rule builder, collect applications via white-label intake forms, connect credit bureau and open banking data, evaluate decisions with full evidence lineage, and move from prototype to production across six markets.
 
 **Build the decision layer. Not the infrastructure around it.**
 
 ---
 
-## Why UnderwriteOS?
+## Why CreditDecide?
 
 Traditional underwriting systems are expensive to build and difficult to evolve.
 
@@ -27,7 +27,7 @@ Teams typically have to build and maintain:
 * Production integrations
 * Monitoring and decision analytics
 
-UnderwriteOS provides these capabilities as a unified infrastructure layer.
+CreditDecide provides these capabilities as a unified infrastructure layer.
 
 The goal is simple:
 
@@ -35,7 +35,7 @@ The goal is simple:
 
 ---
 
-## What UnderwriteOS Provides
+## What CreditDecide Provides
 
 ### 1. Developer Workspaces
 
@@ -125,7 +125,7 @@ This allows underwriting logic to evolve without rebuilding the entire applicati
 
 ### 6. AI-Ready Architecture
 
-UnderwriteOS is designed for the next generation of underwriting systems.
+CreditDecide is designed for the next generation of underwriting systems.
 
 AI and machine-learning models can be incorporated into workflows while keeping deterministic business rules and decision controls separate.
 
@@ -143,7 +143,7 @@ AI should assist underwriting—not become an uncontrolled black box.
 
 Every underwriting decision should be explainable.
 
-UnderwriteOS is designed around structured decision records that can capture:
+CreditDecide is designed around structured decision records that can capture:
 
 * Inputs
 * Data sources
@@ -159,7 +159,7 @@ This creates an auditable trail for debugging, operations, compliance, and futur
 
 ### 8. Environment Separation
 
-UnderwriteOS separates development and production concerns.
+CreditDecide separates development and production concerns.
 
 Typical environments include:
 
@@ -186,7 +186,7 @@ At a high level:
                                │
                                ▼
                     ┌─────────────────────┐
-                    │     UnderwriteOS    │
+                    │     CreditDecide    │
                     │      API Layer      │
                     └──────────┬──────────┘
                                │
@@ -216,7 +216,7 @@ At a high level:
 
 ## Developer Experience
 
-UnderwriteOS is designed around a self-service developer experience.
+CreditDecide is designed around a self-service developer experience.
 
 ### Typical workflow
 
@@ -246,7 +246,7 @@ The objective is to reduce the amount of infrastructure a development team needs
 
 ## Example Use Cases
 
-UnderwriteOS can support underwriting workflows across multiple financial and risk-based products.
+CreditDecide can support underwriting workflows across multiple financial and risk-based products.
 
 ### Lending
 
@@ -331,7 +331,7 @@ You will need:
 
 * Node.js
 * npm
-* A configured UnderwriteOS development environment
+* A configured CreditDecide development environment
 
 ### Install
 
@@ -395,7 +395,7 @@ npm run preview
 
 ## Security
 
-UnderwriteOS is designed for infrastructure where financial and risk-related data may be involved.
+CreditDecide is designed for infrastructure where financial and risk-related data may be involved.
 
 When contributing or deploying:
 
@@ -413,7 +413,7 @@ If you discover a security vulnerability, please do not open a public issue cont
 
 ## Roadmap
 
-The long-term vision for UnderwriteOS is to become a programmable underwriting infrastructure layer.
+The long-term vision for CreditDecide is to become a programmable underwriting infrastructure layer.
 
 Planned areas include:
 
@@ -456,7 +456,7 @@ Underwriting is becoming software.
 
 As financial products become more embedded, underwriting cannot remain a collection of disconnected spreadsheets, provider integrations, rules engines, and manual processes.
 
-**UnderwriteOS is building the infrastructure layer that makes underwriting programmable.**
+**CreditDecide is building the infrastructure layer that makes underwriting programmable.**
 
 ```text
 Data
@@ -476,7 +476,7 @@ Programmable Underwriting
 
 🚧 **Under active development**
 
-UnderwriteOS is currently being developed as an early-stage underwriting infrastructure platform.
+CreditDecide is currently being developed as an early-stage underwriting infrastructure platform.
 
 The public repository is intended to provide visibility into the platform's architecture and development while the product continues to evolve.
 

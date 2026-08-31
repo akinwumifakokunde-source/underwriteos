@@ -1,4 +1,4 @@
-// OpenAPI 3.0 spec generator for the UnderwriteOS public API surface.
+// OpenAPI 3.0 spec generator for the CreditDecide public API surface.
 // All schemas are stable and versioned. Internal database implementation
 // details are not exposed.
 
@@ -6,10 +6,10 @@ export function buildOpenApiSpec(apiBase: string): any {
   return {
     openapi: "3.0.3",
     info: {
-      title: "UnderwriteOS API",
+      title: "CreditDecide API",
       version: "1.0.0",
       description: "API-first B2B underwriting infrastructure. Pipeline: Ingestion -> Normalization -> Intelligence -> Evidence -> Policy -> Underwriting Recommendation -> Decision Workflow. All resources are scoped to an organization. Credit reports and bank statements can be pulled automatically via bureau / open-banking providers (Experian, TrueLayer, and more — no manual upload), or submitted directly. Use GET /applications/{id}/summary to retrieve the full result set in one call, and GET /providers to discover available integrations and their setup parameters.",
-      contact: { name: "UnderwriteOS", url: "https://underwriteos.dev" }
+      contact: { name: "CreditDecide", url: "https://underwriteos.dev" }
     },
     servers: [{ url: `${apiBase}/v1` }],
     components: {

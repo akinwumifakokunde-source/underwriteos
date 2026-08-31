@@ -9,7 +9,7 @@ import {
 
 const FAQS = [
   {
-    q: "Do I need to write code to use GoUnderwriteOS?",
+    q: "Do I need to write code to use CreditDecide?",
     a: "No. Build lending policies visually, publish white-label intake forms, and run underwriting decisions from the workspace — no engineering required. A full REST API is available for teams that want to embed underwriting into their own product.",
   },
   {
@@ -44,7 +44,7 @@ export default function Faq() {
             Questions, answered.
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#525965] max-w-xl mx-auto">
-            Everything you need to evaluate GoUnderwriteOS before you start building.
+            Everything you need to evaluate CreditDecide before you start building.
           </p>
         </div>
 

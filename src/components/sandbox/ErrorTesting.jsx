@@ -94,7 +94,7 @@ export default function ErrorTesting() {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <h3 className="text-sm font-semibold text-slate-900 mb-1">Test error handling</h3>
-      <p className="text-xs text-slate-500 mb-3">Trigger common API errors to see how UnderwriteOS responds.</p>
+      <p className="text-xs text-slate-500 mb-3">Trigger common API errors to see how CreditDecide responds.</p>
       <div className="flex flex-wrap gap-2 mb-4">
         {SCENARIOS.map((s) => (
           <button

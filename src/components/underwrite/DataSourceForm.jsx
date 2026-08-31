@@ -45,7 +45,7 @@ export default function DataSourceForm({ form, set }) {
     <div className="space-y-5">
       <div>
         <h3 className="text-sm font-semibold text-slate-900 mb-1">Financial data source</h3>
-        <p className="text-[12px] text-slate-500">Choose how UnderwriteOS gathers the applicant's credit and bank data.</p>
+        <p className="text-[12px] text-slate-500">Choose how CreditDecide gathers the applicant's credit and bank data.</p>
       </div>
 
       {/* mode toggle */}

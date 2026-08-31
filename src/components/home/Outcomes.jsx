@@ -30,7 +30,7 @@ export default function Outcomes() {
           Decisions get smarter <span className="text-[#0d9488]">after the loan.</span>
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          Most underwriting tools stop at the decision. GoUnderwriteOS records what actually happened on every
+          Most underwriting tools stop at the decision. CreditDecide records what actually happened on every
           loan and measures the predicted probability of default against the observed default rate — the
           feedback loop that turns one-time decisions into a self-improving model.
         </p>

@@ -3,8 +3,8 @@ import Nav from "@/components/layout/Nav.jsx";
 import { ChevronDown } from "lucide-react";
 
 const PIPELINE = [
-  { id: "client", label: "Client", desc: "Your application — a lender, fintech, or credit provider — sends borrower data and financial documents to the UnderwriteOS API. You own the customer experience; UnderwriteOS provides the intelligence." },
-  { id: "api", label: "UnderwriteOS API", desc: "Versioned REST API under /v1. Authenticated with organization-scoped API keys. Idempotent writes, async jobs, and stable response schemas." },
+  { id: "client", label: "Client", desc: "Your application — a lender, fintech, or credit provider — sends borrower data and financial documents to the CreditDecide API. You own the customer experience; CreditDecide provides the intelligence." },
+  { id: "api", label: "CreditDecide API", desc: "Versioned REST API under /v1. Authenticated with organization-scoped API keys. Idempotent writes, async jobs, and stable response schemas." },
   { id: "ingestion", label: "Ingestion", desc: "Raw credit reports and bank statements are accepted in provider-specific formats and validated on entry." },
   { id: "normalization", label: "Normalization", desc: "A canonical layer transforms raw data into provider-independent FinancialProfile and CreditProfile models. No provider-specific fields reach the engine." },
   { id: "financial", label: "Financial profile", desc: "Derived income, expenses, cashflow, affordability, debt-to-income, and financial behaviour metrics from normalized transactions." },

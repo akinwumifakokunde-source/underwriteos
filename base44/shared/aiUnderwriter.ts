@@ -32,7 +32,7 @@ export async function generateUnderwritingMemo(base44: any, input: AIUnderwriter
     .map(s => `- ${s.category}/${s.signal}: ${s.value} [${s.flag}]`)
     .join("\n");
 
-  const prompt = `You are an AI underwriting analyst for UnderwriteOS, a B2B underwriting infrastructure platform.
+  const prompt = `You are an AI underwriting analyst for CreditDecide, a B2B underwriting infrastructure platform.
 You are reviewing a loan application. You MUST base your analysis ONLY on the structured evidence and risk signals provided below.
 Do NOT invent, estimate, or assume any financial figures that are not present in the evidence.
 If information is missing, state that it is unavailable.

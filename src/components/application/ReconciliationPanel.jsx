@@ -56,7 +56,7 @@ export default function ReconciliationPanel({ documents, borrower, fp, fmtMoney,
           <FileSearch className="w-4 h-4 text-[#0d9488]" />
           <h3 className="text-sm font-semibold text-slate-900">Cross-document reconciliation</h3>
         </div>
-        <p className="text-[12px] text-slate-400 mb-4">UnderwriteOS compares information across documents to detect inconsistencies and verify borrower-declared data.</p>
+        <p className="text-[12px] text-slate-400 mb-4">CreditDecide compares information across documents to detect inconsistencies and verify borrower-declared data.</p>
 
         {/* Result banner */}
         <div className={`rounded-lg border p-4 flex items-start gap-3 mb-4 ${config.bg}`}>

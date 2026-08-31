@@ -238,7 +238,7 @@ export default function Apply() {
 
         <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Secured by GoUnderwriteOS</span>
+          <span>Secured by CreditDecide</span>
         </div>
       </div>
     </div>

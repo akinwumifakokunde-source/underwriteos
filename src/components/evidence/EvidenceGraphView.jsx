@@ -145,7 +145,7 @@ export default function EvidenceGraphView({ data }) {
 
           {!selectedSignal ? (
             <div className="p-6 text-sm text-slate-500">
-              Select a risk signal to trace it back to the source record and field it was derived from. Every decision in UnderwriteOS is auditable to its evidence.
+              Select a risk signal to trace it back to the source record and field it was derived from. Every decision in CreditDecide is auditable to its evidence.
             </div>
           ) : (
             <div className="p-4 space-y-4">

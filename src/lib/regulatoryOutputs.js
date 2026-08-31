@@ -184,7 +184,7 @@ export function buildAdverseActionLetter({
   lines.push({ kind: "p", text: `If you have any questions about this notice or wish to request additional information, please contact ${lenderName}.` });
   lines.push({ kind: "sp" });
   lines.push({ kind: "m", text: `Regulatory basis: ${fw.statute}` });
-  lines.push({ kind: "m", text: `This notice is generated automatically by UnderwriteOS and is retained in the decision audit trail.` });
+  lines.push({ kind: "m", text: `This notice is generated automatically by CreditDecide and is retained in the decision audit trail.` });
 
   return { framework: fw.name, statute: fw.statute, action, reasonCodes, bureau, lines };
 }
@@ -220,7 +220,7 @@ export function downloadAdverseActionPdf(letter, applicationId) {
   doc.setFillColor(17, 24, 39); doc.rect(0, 0, pageW, 40, "F");
   doc.setFillColor(13, 148, 136); doc.rect(0, 40, pageW, 3, "F");
   doc.setFont("helvetica", "bold"); doc.setFontSize(13); doc.setTextColor(255, 255, 255);
-  doc.text("UnderwriteOS", left, 25);
+  doc.text("CreditDecide", left, 25);
   doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(180, 185, 192);
   doc.text("Regulatory Notice — Evidence-Backed", right, 25, { align: "right" });
 

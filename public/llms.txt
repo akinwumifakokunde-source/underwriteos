@@ -1,8 +1,8 @@
-# GoUnderwriteOS
+# CreditDecide
 
-> GoUnderwriteOS is a no-code, AI-native underwriting operating system for lenders and fintechs. Build lending policies visually, collect borrower applications via white-label forms with KYC, connect live credit bureau and open banking data, and let AI produce evidence-backed APPROVE / REVIEW / DECLINE decisions across six markets — without writing code.
+> CreditDecide is a no-code, AI-native underwriting operating system for lenders and fintechs. Build lending policies visually, collect borrower applications via white-label forms with KYC, connect live credit bureau and open banking data, and let AI produce evidence-backed APPROVE / REVIEW / DECLINE decisions across six markets — without writing code.
 
-GoUnderwriteOS is the underwriting operating system for modern lenders. It replaces manual document review and hand-written credit memos with a continuous, no-code workspace: configure your lending policy in a visual rule builder, intake applications through branded white-label forms with market-specific KYC, connect live credit bureau and open banking data (or upload documents), and receive an explainable decision with full evidence lineage. The AI underwriter advises; your policy decides.
+CreditDecide is the underwriting operating system for modern lenders. It replaces manual document review and hand-written credit memos with a continuous, no-code workspace: configure your lending policy in a visual rule builder, intake applications through branded white-label forms with market-specific KYC, connect live credit bureau and open banking data (or upload documents), and receive an explainable decision with full evidence lineage. The AI underwriter advises; your policy decides.
 
 ## What you can do without code
 
@@ -37,4 +37,4 @@ Free sandbox with synthetic data and 1,000 trial credits. Paid plans (Starter, G
 
 ## Summary
 
-GoUnderwriteOS is the no-code underwriting operating system — go.
+CreditDecide is the no-code underwriting operating system — go.

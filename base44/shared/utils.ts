@@ -1,7 +1,7 @@
 // Free credit grant for new signups — one-time, per new organization.
 export const SIGNUP_CREDIT_GRANT = 1000;
 
-// Shared utilities for UnderwriteOS API functions.
+// Shared utilities for CreditDecide API functions.
 // Two authentication mechanisms, never mixed:
 //   A. API key  — Authorization: Bearer uw_test_... / uw_live_...  (validated via hash, no Base44 session needed)
 //   B. Dashboard — Base44 user session (base44.functions.invoke from the UI)
@@ -46,7 +46,7 @@ export async function readBody(req: Request): Promise<any> {
   }
 }
 
-// Generate a new UnderwriteOS API key. The full key is returned to the caller
+// Generate a new CreditDecide API key. The full key is returned to the caller
 // only at creation/rotation time; only the hash is persisted.
 export function generateApiKey(environment: "sandbox" | "production"): { fullKey: string; prefix: string } {
   const prefix = environment === "production" ? "uw_live_" : "uw_test_";
@@ -69,7 +69,7 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
 
   // An explicit empty string means "I am an API client with no key" -> 401 MISSING_API_KEY
   if (bodyKey === "" && body._api_key !== undefined) {
-    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
+    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an CreditDecide API key." };
   }
 
   const token = bodyKey || headerToken;
@@ -78,7 +78,7 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
     const keyHash = await sha256(token);
     const keys = await base44.asServiceRole.entities.APIKey.filter({ key_hash: keyHash, status: "active" }, "-created_date", 1);
     if (keys.length === 0) {
-      throw { status: 401, code: "INVALID_API_KEY", message: "The provided UnderwriteOS API key is invalid or inactive." };
+      throw { status: 401, code: "INVALID_API_KEY", message: "The provided CreditDecide API key is invalid or inactive." };
     }
     const key = keys[0];
     const keyEnv = (key.environment as "sandbox" | "production") || envFromToken;
@@ -98,7 +98,7 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
 
   // Non-uw_ token present but not recognized
   if (token && !token.startsWith("uw_test_") && !token.startsWith("uw_live_")) {
-    throw { status: 401, code: "INVALID_API_KEY", message: "The provided UnderwriteOS API key is invalid or inactive." };
+    throw { status: 401, code: "INVALID_API_KEY", message: "The provided CreditDecide API key is invalid or inactive." };
   }
 
   // Dashboard: authenticated Base44 user
@@ -106,9 +106,9 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
   try {
     user = await base44.auth.me();
   } catch {
-    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
+    throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an CreditDecide API key." };
   }
-  if (!user) throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an UnderwriteOS API key." };
+  if (!user) throw { status: 401, code: "MISSING_API_KEY", message: "Authentication is required. Provide an CreditDecide API key." };
 
   let organizationId = user.organization_id;
   if (!organizationId) {
@@ -129,7 +129,7 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
       });
       await base44.asServiceRole.entities.CreditTransaction.create({
         organization_id: organizationId, type: "topup", credits: SIGNUP_CREDIT_GRANT, amount_cents: 0, currency: "usd",
-        description: "Free signup credits — welcome to GoUnderwriteOS"
+        description: "Free signup credits — welcome to CreditDecide"
       });
     } catch {
       // signup grant must never block org creation
@@ -163,7 +163,7 @@ export async function applySignupGrantIfNeeded(base44: any, organization_id: str
     }
     await base44.asServiceRole.entities.CreditTransaction.create({
       organization_id, type: "topup", credits: SIGNUP_CREDIT_GRANT, amount_cents: 0, currency: "usd",
-      description: "Free signup credits — welcome to GoUnderwriteOS"
+      description: "Free signup credits — welcome to CreditDecide"
     });
     return true;
   } catch {

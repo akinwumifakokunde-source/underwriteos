@@ -26,7 +26,7 @@ const STEPS = [
   {
     n: 4,
     title: "Submit financial data",
-    body: "Submit a credit report and bank statement, or let UnderwriteOS fetch them automatically from a connected provider (mode: \"auto\"). All sources normalize into canonical profiles.",
+    body: "Submit a credit report and bank statement, or let CreditDecide fetch them automatically from a connected provider (mode: \"auto\"). All sources normalize into canonical profiles.",
     req: { method: "POST", path: "/applications/{id}/bank-statement", body: { mode: "auto", provider: "truelayer", consent_reference: "consent_001" } },
   },
   {
@@ -73,7 +73,7 @@ export default function Docs() {
         <div className="rounded-xl border border-slate-200 bg-white p-6">
           <h2 className="text-base font-semibold text-slate-900">Environments & live data</h2>
           <p className="text-sm text-slate-500 mt-1 leading-relaxed">
-            UnderwriteOS isolates <span className="font-medium text-slate-700">sandbox</span> and <span className="font-medium text-slate-700">production</span> completely. A sandbox key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_test_…</code>) only reads synthetic data and sandbox credentials; a production key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_live_…</code>) only uses production credentials. Credentials never cross environments.
+            CreditDecide isolates <span className="font-medium text-slate-700">sandbox</span> and <span className="font-medium text-slate-700">production</span> completely. A sandbox key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_test_…</code>) only reads synthetic data and sandbox credentials; a production key (<code className="text-[12px] bg-slate-100 px-1 py-0.5 rounded">uw_live_…</code>) only uses production credentials. Credentials never cross environments.
           </p>
           <div className="mt-5 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-5">

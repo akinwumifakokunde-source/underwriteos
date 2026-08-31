@@ -67,7 +67,7 @@ export default async function(req: Request): Promise<Response> {
       const sig = await sha256(hook.secret + payload);
       let result: any = { status: "failed" };
       try {
-        const res = await fetch(hook.url, { method: "POST", headers: { "Content-Type": "application/json", "X-UnderwriteOS-Signature": sig }, body: payload });
+        const res = await fetch(hook.url, { method: "POST", headers: { "Content-Type": "application/json", "X-CreditDecide-Signature": sig }, body: payload });
         result = { status: res.ok ? "ok" : "failed", http_status: res.status };
         await base44.asServiceRole.entities.Webhook.update(id, { last_delivery_status: `${res.ok ? "ok" : "failed"}:${res.status}` });
       } catch (e: any) {

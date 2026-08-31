@@ -74,8 +74,8 @@ const PACKS = [
 ];
 
 const TRANSACTIONS = [
-  { action: "Credit report pull", credits: 50, note: "UnderwriteOS orchestration & normalization — bureau fees billed to your own credentials" },
-  { action: "Bank statement pull", credits: 40, note: "UnderwriteOS orchestration & normalization — open banking fees billed to your own credentials" },
+  { action: "Credit report pull", credits: 50, note: "CreditDecide orchestration & normalization — bureau fees billed to your own credentials" },
+  { action: "Bank statement pull", credits: 40, note: "CreditDecide orchestration & normalization — open banking fees billed to your own credentials" },
   { action: "Document processing", credits: 15, note: "Per uploaded document — AI extraction & classification" },
   { action: "AI analysis", credits: 30, note: "Financial profile, risk signals, reconciliation" },
   { action: "Underwriting decision", credits: 20, note: "Policy evaluation + AI recommendation + audit record" },
@@ -93,9 +93,9 @@ const FAQ = [
   { q: "Do I get free credits to try it out?", a: "Yes — every new account gets 1,000 free credits on signup, no card required. That's enough to run roughly six full underwriting decisions end-to-end (credit pull, bank pull, document processing, AI analysis, decision, and export). Use them to explore the platform before subscribing." },
   { q: "What's included in a subscription?", a: "Each plan includes a monthly credit allowance — Starter (20,000), Growth (100,000), Scale (300,000) — that refreshes every billing cycle. All plans include access to all six markets, data sources, AI analysis, policy decisions, and exports." },
   { q: "What counts as a billable transaction?", a: "Credit report pull (50 credits), bank statement pull (40), document processing (15 per document), AI analysis (30), underwriting decision (20), and report exports (5 per PDF, CSV, or Word). Retrieving (reading) applications, profiles, and decisions is always free." },
-  { q: "How is a full application priced?", a: "A complete decision — credit pull (50), bank pull (40), document processing (15), analysis (30), the underwriting decision (20), and a report export (5) — is 160 credits. On Growth that's about $0.64 per decision in GoUnderwriteOS credits, well below the cost of pulling the raw data separately." },
+  { q: "How is a full application priced?", a: "A complete decision — credit pull (50), bank pull (40), document processing (15), analysis (30), the underwriting decision (20), and a report export (5) — is 160 credits. On Growth that's about $0.64 per decision in CreditDecide credits, well below the cost of pulling the raw data separately." },
   { q: "Do credits expire?", a: "No. Both your subscription credits and any one-time pack credits carry over until consumed." },
-  { q: "Are data source costs included?", a: "No. Credits cover GoUnderwriteOS orchestration — fetching, normalizing, and reconciling the data. The underlying bureau and open-banking provider fees are billed directly to your own API credentials, which you enter during setup. You can also upload documents manually at a lower credit cost." },
+  { q: "Are data source costs included?", a: "No. Credits cover CreditDecide orchestration — fetching, normalizing, and reconciling the data. The underlying bureau and open-banking provider fees are billed directly to your own API credentials, which you enter during setup. You can also upload documents manually at a lower credit cost." },
   { q: "Can I switch or cancel plans?", a: "Yes. Subscribe, switch, or cancel anytime from Settings → Billing & Subscription. Cancellation keeps your plan active until the end of the current billing period." },
   { q: "What if I run out of credits mid-cycle?", a: "Buy a one-time credit pack from your workspace to top up instantly — no need to wait for the next cycle or upgrade your plan." },
 ];
@@ -115,7 +115,7 @@ export default function Pricing() {
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
             Every plan includes a monthly credit allowance that refreshes each billing cycle. Need more? Buy one-time
-            credit packs on demand. Credits cover GoUnderwriteOS orchestration — fetching, normalizing, and reconciling
+            credit packs on demand. Credits cover CreditDecide orchestration — fetching, normalizing, and reconciling
             your data so you can underwrite with confidence.
           </p>
           <div className="mt-6 inline-flex items-center gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3">
@@ -211,7 +211,7 @@ export default function Pricing() {
           <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Per-transaction pricing</h2>
           <p className="mt-2 text-base text-[#525965] leading-relaxed">
             Every billable action has a fixed credit cost. A full underwriting decision is roughly 160 credits —
-            transparent and predictable. Credits cover UnderwriteOS processing; your data provider fees are billed directly to your own credentials.
+            transparent and predictable. Credits cover CreditDecide processing; your data provider fees are billed directly to your own credentials.
           </p>
         </div>
         <div className="rounded-2xl border border-[#e5e7eb] overflow-hidden">
@@ -238,7 +238,7 @@ export default function Pricing() {
         </div>
         <p className="mt-3 text-xs text-[#8a909c]">
           Example: a full decision (credit pull + bank pull + doc processing + analysis + decision + export) ≈ 160 credits.
-          On Growth that's about $0.64/decision in GoUnderwriteOS credits. Bureau and open-banking provider fees are billed separately to your own API credentials.
+          On Growth that's about $0.64/decision in CreditDecide credits. Bureau and open-banking provider fees are billed separately to your own API credentials.
         </p>
       </section>
 
@@ -273,7 +273,7 @@ export default function Pricing() {
 
       <footer className="border-t border-[#eceef1]">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 text-sm text-[#8a909c]">
-          GoUnderwriteOS — subscribe, top up, and underwrite at scale.
+          CreditDecide — subscribe, top up, and underwrite at scale.
         </div>
       </footer>
     </div>

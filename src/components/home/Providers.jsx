@@ -29,7 +29,7 @@ export default function Providers() {
           Bring the financial data you already have.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
-          UnderwriteOS normalizes provider-specific credit, banking and financial data into a
+          CreditDecide normalizes provider-specific credit, banking and financial data into a
           consistent underwriting model.
         </p>
 

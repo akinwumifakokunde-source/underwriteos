@@ -17,7 +17,7 @@ export default function FinalCta() {
           Run your first underwriting<br className="hidden sm:block" /> decision.
         </h2>
         <p className="mt-6 text-base sm:text-lg text-[#a0a5b0] leading-relaxed max-w-xl mx-auto">
-          Connect live credit and bank data, or upload your own documents. UnderwriteOS handles the rest —
+          Connect live credit and bank data, or upload your own documents. CreditDecide handles the rest —
           across six markets, with full evidence lineage.
         </p>
 
