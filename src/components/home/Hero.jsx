@@ -60,7 +60,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="flex md:justify-end">
+          <div className="flex justify-center md:justify-end">
             <AnimatedProductPreview />
           </div>
         </div>

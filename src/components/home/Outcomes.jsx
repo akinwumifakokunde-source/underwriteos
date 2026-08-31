@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Target, RefreshCw, TrendingUp } from "lucide-react";
+import { ArrowRight, Target, TrendingUp } from "lucide-react";
 
 const LOOP = [
   { step: "Decide", desc: "AI recommends with a predicted probability of default." },
@@ -36,22 +36,15 @@ export default function Outcomes() {
         </p>
 
         {/* Loop */}
-        <div className="mt-10 grid grid-cols-2 sm:grid-cols-5 gap-3">
+        <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {LOOP.map((l, i) => (
-            <React.Fragment key={l.step}>
-              <div className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-6 h-6 rounded-full bg-[#0d9488] text-white text-[11px] font-semibold flex items-center justify-center">{i + 1}</span>
-                  <span className="text-[13px] font-semibold text-[#0a0c12]">{l.step}</span>
-                </div>
-                <p className="text-[12px] text-[#525965] leading-relaxed">{l.desc}</p>
+            <div key={l.step} className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-4 shadow-sm">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-6 h-6 rounded-full bg-[#0d9488] text-white text-[11px] font-semibold flex items-center justify-center">{i + 1}</span>
+                <span className="text-[13px] font-semibold text-[#0a0c12]">{l.step}</span>
               </div>
-              {i < LOOP.length - 1 && (
-                <div className="hidden sm:flex items-center justify-center text-[#b0b5be]">
-                  <RefreshCw className="w-3.5 h-3.5" />
-                </div>
-              )}
-            </React.Fragment>
+              <p className="text-[12px] text-[#525965] leading-relaxed">{l.desc}</p>
+            </div>
           ))}
         </div>
 

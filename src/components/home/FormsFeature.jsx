@@ -11,7 +11,7 @@ const FIELDS = [
 export default function FormsFeature() {
   return (
     <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-20">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">Borrower intake</p>
