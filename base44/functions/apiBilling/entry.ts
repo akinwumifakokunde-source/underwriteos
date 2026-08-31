@@ -15,9 +15,9 @@ const PACKS = [
 ];
 
 const PLANS = [
-  { id: "plan_starter", name: "Starter", price_id: "price_1U9Sr9Bi3pPX2jhn5zCqipip", amount: 9900, credits: 20000, tagline: "For small lenders getting started" },
-  { id: "plan_growth", name: "Growth", price_id: "price_1U9SrABi3pPX2jhnISbymy6k", amount: 39900, credits: 100000, tagline: "For growing lending teams", popular: true },
-  { id: "plan_scale", name: "Scale", price_id: "price_1U9SrABi3pPX2jhniTaXKcP8", amount: 99900, credits: 300000, tagline: "For high-volume lenders" }
+  { id: "plan_starter", name: "Starter", price_id: "price_1UAdDWPc6QrSt4INFg9iId3F", amount: 9900, credits: 20000, tagline: "For small lenders getting started" },
+  { id: "plan_growth", name: "Growth", price_id: "price_1UAdDWPc6QrSt4INpHFMQmFX", amount: 39900, credits: 100000, tagline: "For growing lending teams", popular: true },
+  { id: "plan_scale", name: "Scale", price_id: "price_1UAdDWPc6QrSt4INJ5vlQhlp", amount: 99900, credits: 300000, tagline: "For high-volume lenders" }
 ];
 
 const APP_ORIGIN = "https://oldme.base44.app";
