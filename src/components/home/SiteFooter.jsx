@@ -38,7 +38,7 @@ export default function SiteFooter() {
               <Logo size={24} />
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
-              The AI-native underwriting platform for lenders and fintechs. Automate applications, configure policies, and make smarter, explainable decisions across six markets.
+              AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure policies, and make smarter, explainable decisions across six markets.
             </p>
           </div>
 

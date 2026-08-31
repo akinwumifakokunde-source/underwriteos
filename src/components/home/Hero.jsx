@@ -26,7 +26,7 @@ export default function Hero() {
               Underwrite borrowers anywhere, in <span className="text-[#0d9488]">minutes.</span>
             </h1>
             <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-md">
-              The AI-native underwriting platform for lenders and fintechs. Automate applications, configure
+              AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure
               policies, and make smarter, explainable decisions.
             </p>
 
