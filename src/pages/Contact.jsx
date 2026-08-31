@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 
 const CHANNELS = [
-  { icon: Mail, title: "Email", value: "akinfaks@yahoo.com", href: "mailto:akinfaks@yahoo.com", desc: "For sales, security reviews, and data requests. We reply within one business day." },
+  { icon: Mail, title: "Email", value: "Talk to our team", href: "/onboarding", desc: "For sales, security reviews, and data requests. We reply within one business day." },
   { icon: MessageSquare, title: "Product feedback", value: "Tell us what to build", href: "/onboarding", desc: "Feature requests and roadmap input from builders using the sandbox." },
 ];
 
@@ -95,7 +95,7 @@ export default function Contact() {
               <CheckCircle2 className="w-5 h-5 text-[#0d9488] shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium text-[#0a0c12]">Thanks — your message has been sent.</p>
-                <p className="text-sm text-[#525965] mt-0.5">We'll reply to {form.email || "your email"} shortly. You can also reach us directly at akinfaks@yahoo.com.</p>
+                <p className="text-sm text-[#525965] mt-0.5">We'll reply to {form.email || "your email"} shortly.</p>
               </div>
             </div>
           ) : (
