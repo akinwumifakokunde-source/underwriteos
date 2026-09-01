@@ -48,6 +48,9 @@ import FormEditor from '@/pages/FormEditor';
 import Apply from '@/pages/Apply';
 import FormSubmissions from '@/pages/FormSubmissions';
 import LinkedInAds from '@/pages/LinkedInAds';
+import About from '@/pages/About';
+import Features from '@/pages/Features';
+import FeatureDetail from '@/pages/FeatureDetail';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -86,6 +89,9 @@ const AuthenticatedApp = () => {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/features" element={<Features />} />
+      <Route path="/features/:slug" element={<FeatureDetail />} />
       <Route path="/apply/:slug" element={<Apply />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/workspace" element={<WorkspaceHome />} />

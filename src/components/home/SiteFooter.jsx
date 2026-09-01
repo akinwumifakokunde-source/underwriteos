@@ -10,6 +10,8 @@ const COLS = [
       { to: "/policies", label: "Policy Builder" },
       { to: "/applications", label: "Applications" },
       { to: "/data-sources", label: "Data Sources" },
+      { to: "/features", label: "Capabilities" },
+      { to: "/about", label: "About" },
       { to: "/pricing", label: "Pricing" },
     ],
   },
