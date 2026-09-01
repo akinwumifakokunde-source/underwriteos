@@ -80,13 +80,13 @@ function Field({ label, value }) {
 
 function ApplicationTab() {
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-base font-semibold text-[#0a0c12]">John Smith</div>
           <div className="text-[11px] text-[#8a909c] mt-0.5">Personal Loan · United Kingdom</div>
         </div>
-        <div className="text-right">
+        <div className="text-right shrink-0">
           <div className="text-base font-semibold text-[#0a0c12]">£25,000</div>
           <div className="mt-1 flex justify-end"><Badge>Needs review</Badge></div>
         </div>
@@ -95,39 +95,30 @@ function ApplicationTab() {
       <div>
         <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider mb-1.5">
           <span className="text-[#0a0c12] border-b-2 border-[#0d9488] pb-0.5">Application materials</span>
-          <span className="text-[#8a909c]">Credit memo</span>
+          <span className="text-[#8a909c]">3 accepted · 1 review</span>
         </div>
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
           <div className="h-full bg-[#0d9488] rounded-full" style={{ width: "75%" }} />
         </div>
-        <p className="text-[10px] text-[#8a909c] mt-1.5">• 3 accepted · 1 needs review</p>
       </div>
 
-      <div className="pt-1">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Document checklist · 3 of 4</span>
-          <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">✓ All read</span>
-        </div>
-        <div className="space-y-2">
+      <div>
+        <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Document checklist · 3 of 4</div>
+        <div className="space-y-1.5">
           {DOCS.map((d) => (
             <div
               key={d.name}
-              className={`rounded-xl border p-2.5 ${d.ok ? "border-[#eceef1] bg-white" : "border-amber-200 bg-amber-50/60"}`}
+              className={`rounded-lg border p-2 ${d.ok ? "border-[#eceef1] bg-white" : "border-amber-200 bg-amber-50/60"}`}
             >
-              <div className="flex items-start gap-2.5">
+              <div className="flex items-center gap-2">
                 <Dot state={d.ok ? "good" : "warn"} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[12px] font-medium text-[#0a0c12] truncate">{d.name}</span>
-                    <Badge tone={d.ok ? "green" : "amber"}>{d.ok ? "Accepted" : "Needs review"}</Badge>
+                    <Badge tone={d.ok ? "green" : "amber"}>{d.ok ? "Accepted" : "Review"}</Badge>
                   </div>
-                  <div className="text-[10px] text-[#8a909c] mt-0.5">{d.file}</div>
-                  {d.note ? (
-                    <p className="text-[10px] text-amber-700 mt-1.5 leading-snug">{d.note}</p>
-                  ) : null}
-                  <div className="mt-1.5">
-                    <Field label={d.field} value={d.value} />
-                  </div>
+                  <div className="text-[9px] text-[#8a909c] mt-0.5 truncate">{d.file} · {d.field}: {d.value}</div>
+                  {d.note ? <p className="text-[9px] text-amber-700 mt-1 leading-snug">{d.note}</p> : null}
                 </div>
               </div>
             </div>
@@ -347,7 +338,7 @@ export default function WorkspacePreview() {
         </div>
 
         {/* Sliding content */}
-        <div className="p-4 bg-gradient-to-b from-white to-[#fcfcfd] min-h-[300px]">
+        <div className="p-4 bg-gradient-to-b from-white to-[#fcfcfd] min-h-[380px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
