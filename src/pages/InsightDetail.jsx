@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Clock, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { normalizeMarkdown } from "@/lib/markdown";
 import HomeNav from "@/components/home/HomeNav";
 import SiteFooter from "@/components/home/SiteFooter";
 import { base44 } from "@/api/base44Client";
@@ -142,21 +144,25 @@ export default function InsightDetail() {
       <article className="max-w-2xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <div className="prose-custom">
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             components={{
-              h2: ({ node, ...p }) => <h2 className="text-xl sm:text-2xl font-semibold text-[#0a0c12] mt-10 mb-3" {...p} />,
-              h3: ({ node, ...p }) => <h3 className="text-lg font-semibold text-[#0a0c12] mt-8 mb-2" {...p} />,
-              p: ({ node, ...p }) => <p className="text-[15px] text-[#3f4651] leading-relaxed mb-4" {...p} />,
-              ul: ({ node, ...p }) => <ul className="list-disc pl-5 space-y-1.5 mb-4 text-[15px] text-[#3f4651] leading-relaxed" {...p} />,
-              ol: ({ node, ...p }) => <ol className="list-decimal pl-5 space-y-1.5 mb-4 text-[15px] text-[#3f4651] leading-relaxed" {...p} />,
+              h2: ({ node, ...p }) => <h2 className="text-xl sm:text-2xl font-semibold text-[#0a0c12] mt-12 mb-4 tracking-tight" {...p} />,
+              h3: ({ node, ...p }) => <h3 className="text-base sm:text-lg font-semibold text-[#0a0c12] mt-8 mb-3" {...p} />,
+              p: ({ node, ...p }) => <p className="text-[15px] sm:text-[16px] text-[#3f4651] leading-[1.75] mb-5" {...p} />,
+              ul: ({ node, ...p }) => <ul className="list-disc pl-5 space-y-2 mb-5 text-[15px] sm:text-[16px] text-[#3f4651] leading-[1.75]" {...p} />,
+              ol: ({ node, ...p }) => <ol className="list-decimal pl-5 space-y-2 mb-5 text-[15px] sm:text-[16px] text-[#3f4651] leading-[1.75]" {...p} />,
               li: ({ node, ...p }) => <li {...p} />,
               strong: ({ node, ...p }) => <strong className="font-semibold text-[#0a0c12]" {...p} />,
+              a: ({ node, ...p }) => <a className="text-[#0d9488] underline underline-offset-2 hover:text-[#0a2e2a]" target="_blank" rel="noopener noreferrer" {...p} />,
+              blockquote: ({ node, ...p }) => <blockquote className="border-l-2 border-[#0d9488]/40 pl-4 italic text-[#525965] my-5" {...p} />,
               code: ({ node, ...p }) => <code className="font-mono text-[13px] bg-[#f3f5f4] text-[#0a2e2a] px-1.5 py-0.5 rounded" {...p} />,
-              table: ({ node, ...p }) => <div className="overflow-x-auto my-6"><table className="w-full text-sm border border-[#eceef1] rounded-lg" {...p} /></div>,
-              th: ({ node, ...p }) => <th className="text-left font-medium text-[#0a0c12] bg-[#f7f8fa] border-b border-[#eceef1] px-3 py-2" {...p} />,
-              td: ({ node, ...p }) => <td className="text-[#3f4651] border-b border-[#f0f1f3] px-3 py-2" {...p} />,
+              table: ({ node, ...p }) => <div className="overflow-x-auto my-8"><table className="w-full text-sm border-collapse" {...p} /></div>,
+              thead: ({ node, ...p }) => <thead className="bg-[#f7f8fa]" {...p} />,
+              th: ({ node, ...p }) => <th className="text-left font-semibold text-[#0a0c12] border border-[#e8eaee] px-4 py-2.5" {...p} />,
+              td: ({ node, ...p }) => <td className="text-[#3f4651] border border-[#e8eaee] px-4 py-2.5 align-top" {...p} />,
             }}
           >
-            {article.content}
+            {normalizeMarkdown(article.content)}
           </ReactMarkdown>
         </div>
 

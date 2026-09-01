@@ -101,6 +101,20 @@ export function slugify(s) {
     .slice(0, 80);
 }
 
+// Ensures generated markdown has real line breaks between blocks so it renders
+// correctly (some LLMs collapse newlines in JSON string fields). Used by the
+// apiInsights generator before storing; mirrored in src/lib/markdown.js for
+// the public renderer.
+export function normalizeMarkdown(content) {
+  if (!content) return "";
+  let s = String(content).trim();
+  s = s.replace(/([^\n])\s*(#{2,3}\s)/g, "$1\n\n$2");
+  s = s.replace(/([^\n])\s+(\d+\.\s)/g, "$1\n\n$2");
+  s = s.replace(/ \| \| /g, " |\n| ");
+  s = s.replace(/([.!?])\s+(\|)/g, "$1\n\n$2");
+  return s.trim();
+}
+
 export function buildPrompt(market, topic) {
   const country = market.geo;
   const topicTitle = topic.title.replace("{country}", market.short);
@@ -128,6 +142,7 @@ CONTENT REQUIREMENTS:
 - Audience: B2B lenders, fintechs, and credit teams in ${country}. Tone: authoritative, technical, practical — never generic AI marketing fluff or empty buzzwords.
 - Length: 600-900 words.
 - Structure as markdown: a short intro paragraph, 3-5 ## (H2) sections, and where useful ### (H3) subheadings, bullet lists, and one small comparison table if it adds clarity.
+- CRITICAL FORMATTING: Use real newline characters to separate every paragraph, heading, table row, and list item. Never place two markdown blocks on the same line — each ## heading, ### subheading, table row, and numbered item must start on its own line, with a blank line between paragraphs.
 - Ground the article in real underwriting concepts: canonical financial and credit profiles, structured risk signals across five dimensions (credit, affordability, fraud, data quality, policy), evidence lineage to source fields, a versioned no-code policy engine, document intelligence with confidence scores, and explainable APPROVE / REVIEW / DECLINE decisions.
 - CreditDecide's actual capabilities (do not invent others): white-label borrower application forms with market-specific KYC; live credit bureau and open banking data sources (or document upload); AI document classification and extraction; normalization into canonical profiles; structured risk signals with an evidence graph; a visual no-code policy builder with versioned, never-overwrite policies; an AI underwriter that produces advisory recommendations with probability of default and confidence; final lender decisions with override reasons; decision exports as PDF, CSV, and Word; sandbox and production environment isolation; support for six markets (UK, US, Nigeria, South Africa, Kenya, Ghana).
 - End with a short ## section titled "What this means for lenders in ${market.short}" with 2-3 practical takeaways.

@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
-import { MARKETS, TOPICS, FEATURE_SLUGS, AUTHOR, slugify, buildPrompt } from '../../shared/insights.ts';
+import { MARKETS, TOPICS, FEATURE_SLUGS, AUTHOR, slugify, buildPrompt, normalizeMarkdown } from '../../shared/insights.ts';
 
 // Generates and publishes one SEO/GEO-optimized Insights article.
 // Invoked by the "Daily Insights" workflow (twice daily, Mon-Fri) and by admins.
@@ -65,7 +65,7 @@ export default async function(req) {
       slug,
       title: generated.title,
       excerpt: generated.excerpt,
-      content: generated.content,
+      content: normalizeMarkdown(generated.content),
       category: generated.category || topic.category,
       market: market.code,
       market_name: market.geo,
