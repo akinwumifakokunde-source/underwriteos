@@ -84,6 +84,7 @@ export default async function(req) {
       ok: true,
       slug: record.slug,
       title: record.title,
+      excerpt: record.excerpt,
       market: market.code,
       rotation_index: nextIndex,
     });

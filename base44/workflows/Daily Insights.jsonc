@@ -1,4 +1,5 @@
 {
+  "name": "Daily Insights",
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -16,16 +17,33 @@
               "generate": true
             }
           },
-          "then": "end",
+          "then": "post_linkedin",
           "x-base44": {
             "title": "Generate insight article",
             "description": "AI-generate and publish one market-targeted article"
           }
         }
+      },
+      {
+        "post_linkedin": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "apiLinkedInPost",
+            "args": {
+              "slug": "${ .generate.slug }",
+              "title": "${ .generate.title }",
+              "excerpt": "${ .generate.excerpt }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Post to LinkedIn",
+            "description": "Share the new article on the company page"
+          }
+        }
       }
     ]
   },
-  "name": "Daily Insights",
   "trigger": {
     "condition": null,
     "config": {
@@ -43,5 +61,5 @@
       "ends_after_count": null
     }
   },
-  "description": "Generates and publishes two SEO/GEO-optimized Insights articles per weekday (9am and 2pm, Mon-Fri), rotating across the six supported markets (UK, US, Nigeria, South Africa, Kenya, Ghana)."
+  "description": "Generates and publishes two SEO/GEO-optimized Insights articles per weekday (9am and 2pm, Mon-Fri), rotating across the six supported markets (UK, US, Nigeria, South Africa, Kenya, Ghana), then shares each new article to the CreditDecide LinkedIn company page."
 }
