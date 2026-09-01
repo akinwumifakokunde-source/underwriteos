@@ -11,6 +11,7 @@ const COLS = [
       { to: "/features/ai-underwriting", label: "Applications" },
       { to: "/features/document-intelligence", label: "Data Sources" },
       { to: "/features", label: "Capabilities" },
+      { to: "/insights", label: "Insights" },
       { to: "/about", label: "About" },
       { to: "/pricing", label: "Pricing" },
     ],

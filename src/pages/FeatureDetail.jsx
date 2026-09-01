@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { FEATURES, getFeature } from "@/lib/features";
+import { insightsForFeature } from "@/lib/insights";
 import SiteFooter from "@/components/home/SiteFooter";
 import HomeNav from "@/components/home/HomeNav";
 
@@ -54,6 +55,29 @@ export default function FeatureDetail() {
             ))}
           </ul>
         </div>
+
+        {(() => {
+          const relatedInsights = insightsForFeature(slug);
+          if (relatedInsights.length === 0) return null;
+          return (
+            <div className="mt-12">
+              <h3 className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mb-4">Related insights</h3>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {relatedInsights.map((a) => (
+                  <Link
+                    key={a.slug}
+                    to={`/insights/${a.slug}`}
+                    className="group rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 transition-colors"
+                  >
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-teal-600">{a.category}</span>
+                    <p className="text-sm font-semibold text-slate-900 mt-1 group-hover:text-teal-700 transition-colors">{a.title}</p>
+                    <p className="text-xs text-slate-500 mt-1 line-clamp-2">{a.excerpt}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {related.length > 0 && (
           <div className="mt-12">

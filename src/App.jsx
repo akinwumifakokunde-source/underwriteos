@@ -51,6 +51,8 @@ import LinkedInAds from '@/pages/LinkedInAds';
 import About from '@/pages/About';
 import Features from '@/pages/Features';
 import FeatureDetail from '@/pages/FeatureDetail';
+import Insights from '@/pages/Insights';
+import InsightDetail from '@/pages/InsightDetail';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -92,6 +94,8 @@ const AuthenticatedApp = () => {
       <Route path="/about" element={<About />} />
       <Route path="/features" element={<Features />} />
       <Route path="/features/:slug" element={<FeatureDetail />} />
+      <Route path="/insights" element={<Insights />} />
+      <Route path="/insights/:slug" element={<InsightDetail />} />
       <Route path="/apply/:slug" element={<Apply />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/workspace" element={<WorkspaceHome />} />

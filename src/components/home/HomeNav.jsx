@@ -5,6 +5,7 @@ import Logo from "@/components/Logo";
 import { base44 } from "@/api/base44Client";
 
 const NAV = [
+  { to: "/insights", label: "Insights" },
   { to: "/pricing", label: "Pricing" },
   { to: "/security", label: "Security" },
   { to: "/contact", label: "Contact" },
