@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Check, Sparkles } from "lucide-react";
 
 // End-to-end animated underwriting flow, shown as a looping sequence.
 // Purely presentational — no business logic.
+//
+// To avoid layout "shaking" during the reveal, the full skeleton is always
+// rendered (space reserved up front) and only each row's content fades in
+// via opacity. No mount/unmount, no vertical translate — so the card height
+// never changes during the animation.
 
 const RISK_DIMENSIONS = [
   { label: "Credit risk", flag: "pass", value: "712" },
@@ -44,21 +49,17 @@ function StatusIcon({ flag }) {
   );
 }
 
-function Reveal({ show, children, className = "" }) {
+// Always-mounted, opacity-only fade. Keeps layout stable (no reflow).
+function Fade({ show, children, className = "" }) {
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
-          className={className}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: show ? 1 : 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 }
 
@@ -103,88 +104,90 @@ export default function AnimatedProductPreview() {
           ))}
         </div>
 
-        {/* Content */}
-        <div className="p-4 space-y-3 bg-gradient-to-b from-white to-[#fcfcfd] min-h-[340px]">
+        {/* Content — full skeleton always rendered so height stays stable */}
+        <div className="p-4 space-y-3 bg-gradient-to-b from-white to-[#fcfcfd]">
           {/* Borrower row */}
-          <Reveal show={visible.has("borrower")}>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#8a909c]">Borrower</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[#8a909c]">Borrower</span>
+            <Fade show={visible.has("borrower")}>
               <span className="font-medium text-[#0a0c12]">John Smith</span>
-            </div>
-          </Reveal>
+            </Fade>
+          </div>
 
-          <Reveal show={visible.has("market")}>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-[#8a909c]">Market</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-[#8a909c]">Market</span>
+            <Fade show={visible.has("market")}>
               <span className="font-medium text-[#0a0c12]">United Kingdom · £25,000</span>
-            </div>
-          </Reveal>
+            </Fade>
+          </div>
 
-          <Reveal show={visible.has("sources_connect")}>
-            <div className="flex items-center justify-between text-[12px]">
-              <span className="text-[#8a909c]">Data sources</span>
+          <div className="flex items-center justify-between text-[12px]">
+            <span className="text-[#8a909c]">Data sources</span>
+            <Fade show={visible.has("sources_connect")}>
               <span className="font-medium text-[#0d9488] flex items-center gap-1.5">
                 <span className={`w-1.5 h-1.5 rounded-full ${sourcesConnected ? "bg-emerald-500" : "bg-amber-400 animate-pulse"}`} />
                 {sourcesConnected ? "Experian · TrueLayer connected" : "Connecting Experian · TrueLayer…"}
               </span>
-            </div>
-          </Reveal>
+            </Fade>
+          </div>
 
           {/* Risk dimensions */}
           <div className="pt-3 border-t border-[#eceef1]">
             <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2.5">Risk dimensions</p>
             <div className="space-y-2">
               {RISK_DIMENSIONS.map((s, i) => (
-                <Reveal key={s.label} show={visible.has(`risk_${i}`)}>
-                  <div className="flex items-center justify-between text-[12px]">
-                    <div className="flex items-center gap-2">
+                <div key={s.label} className="flex items-center justify-between text-[12px]">
+                  <div className="flex items-center gap-2">
+                    <Fade show={visible.has(`risk_${i}`)}>
                       <StatusIcon flag={s.flag} />
-                      <span className="text-[#0a0c12]">{s.label}</span>
-                    </div>
-                    <span className="font-mono text-[#8a909c]">{s.value}</span>
+                    </Fade>
+                    <span className="text-[#0a0c12]">{s.label}</span>
                   </div>
-                </Reveal>
+                  <Fade show={visible.has(`risk_${i}`)}>
+                    <span className="font-mono text-[#8a909c]">{s.value}</span>
+                  </Fade>
+                </div>
               ))}
             </div>
           </div>
 
           {/* Policy evaluation */}
           <div className="pt-3 border-t border-[#eceef1]">
-            <Reveal show={showPolicyHeader}>
+            <Fade show={showPolicyHeader}>
               <p className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2.5">Policy: Consumer Lending v1</p>
-            </Reveal>
+            </Fade>
             <div className="space-y-1.5">
               {POLICY_RULES.map((r, i) => (
-                <Reveal key={r.rule} show={visible.has(`policy_${i}`)}>
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className="text-[#8a909c]">{r.rule}</span>
+                <div key={r.rule} className="flex items-center justify-between text-[11px]">
+                  <span className="text-[#8a909c]">{r.rule}</span>
+                  <Fade show={visible.has(`policy_${i}`)}>
                     <span className={`font-mono font-medium ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</span>
-                  </div>
-                </Reveal>
+                  </Fade>
+                </div>
               ))}
             </div>
           </div>
 
           {/* Decision */}
           <div className="grid grid-cols-3 gap-2 pt-3 border-t border-[#eceef1]">
-            <Reveal show={visible.has("ai")}>
-              <div>
-                <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
+            <div>
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
+              <Fade show={visible.has("ai")}>
                 <div className="text-[13px] font-medium text-emerald-700">APPROVE</div>
-              </div>
-            </Reveal>
-            <Reveal show={visible.has("policy_decision")}>
-              <div className="text-center">
-                <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Policy</div>
+              </Fade>
+            </div>
+            <div className="text-center">
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Policy</div>
+              <Fade show={visible.has("policy_decision")}>
                 <div className="text-[13px] font-medium text-amber-700">REVIEW</div>
-              </div>
-            </Reveal>
-            <Reveal show={visible.has("final")}>
-              <div className="text-right">
-                <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
+              </Fade>
+            </div>
+            <div className="text-right">
+              <div className="text-[9px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
+              <Fade show={visible.has("final")}>
                 <div className="text-[13px] font-bold text-amber-700">REVIEW</div>
-              </div>
-            </Reveal>
+              </Fade>
+            </div>
           </div>
         </div>
       </div>
