@@ -17,6 +17,7 @@ import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import Security from "@/components/home/Security.jsx";
 import Faq from "@/components/home/Faq.jsx";
+import TeamBar from "@/components/home/TeamBar.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 
@@ -41,6 +42,7 @@ export default function Home() {
       <Security />
       <CompetitiveComparison />
       <Faq />
+      <TeamBar />
       <FinalCta />
       <SiteFooter />
     </div>
