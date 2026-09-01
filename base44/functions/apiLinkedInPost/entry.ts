@@ -26,10 +26,6 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
       registerUploadRequest: {
         recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
         owner: orgUrn,
-        relationships: [{
-          relationshipType: 'urn:li:recipeRelationshipType:content',
-          recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
-        }],
       },
     }),
   });
@@ -40,9 +36,13 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
   const regData = await registerRes.json();
   const value = regData.value || regData;
   const assetUrn = value.asset;
-  const uploadUrl = value.uploadUrl;
+  let uploadUrl = value.uploadUrl;
+  if (!uploadUrl && value.uploadMechanism) {
+    const mech = value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'];
+    if (mech && mech.uploadUrl) uploadUrl = mech.uploadUrl;
+  }
   if (!assetUrn || !uploadUrl) {
-    throw new Error('LinkedIn registerUpload did not return asset/uploadUrl');
+    throw new Error('LinkedIn registerUpload did not return asset/uploadUrl. Response: ' + JSON.stringify(regData).slice(0, 600));
   }
 
   const uploadRes = await fetch(uploadUrl, {
@@ -154,6 +154,7 @@ export default async function(req) {
     // Generate a cover image and upload it to LinkedIn (best-effort; falls back to text-only).
     let assetUrn = null;
     let imageUrl = null;
+    let imageError = null;
     try {
       const gen = await base44.asServiceRole.integrations.Core.GenerateImage({
         prompt: buildImagePrompt(title, market),
@@ -169,10 +170,11 @@ export default async function(req) {
       }
     } catch (imgErr) {
       assetUrn = null;
+      imageError = imgErr && imgErr.message ? imgErr.message : String(imgErr);
     }
 
     if (dryRun) {
-      return Response.json({ ok: true, dry_run: true, organization_urn: orgUrn, organization_name: orgName, link, text, image_url: imageUrl, asset_urn: assetUrn, has_image: !!assetUrn });
+      return Response.json({ ok: true, dry_run: true, organization_urn: orgUrn, organization_name: orgName, link, text, image_url: imageUrl, asset_urn: assetUrn, has_image: !!assetUrn, image_error: imageError });
     }
 
     const shareContent = {

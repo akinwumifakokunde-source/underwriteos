@@ -1,5 +1,23 @@
 {
+  "description": "Generates and publishes two SEO/GEO-optimized Insights articles per weekday (9am and 2pm, Mon-Fri), rotating across the six supported markets (UK, US, Nigeria, South Africa, Kenya, Ghana), then shares each new article \u2014 with an AI-generated cover image \u2014 to the CreditDecide LinkedIn company page.",
   "name": "Daily Insights",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9,14 * * 1-5",
+      "one_time_date": null,
+      "timezone": "Europe/London",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -32,34 +50,17 @@
             "args": {
               "slug": "${ .generate.slug }",
               "title": "${ .generate.title }",
-              "excerpt": "${ .generate.excerpt }"
+              "excerpt": "${ .generate.excerpt }",
+              "market": "${ .generate.market }"
             }
           },
           "then": "end",
           "x-base44": {
             "title": "Post to LinkedIn",
-            "description": "Share the new article on the company page"
+            "description": "Share the new article with a cover image on the company page"
           }
         }
       }
     ]
-  },
-  "trigger": {
-    "condition": null,
-    "config": {
-      "trigger_type": "scheduled",
-      "events": [],
-      "schedule_mode": "recurring",
-      "cron_expression": "0 9,14 * * 1-5",
-      "one_time_date": null,
-      "timezone": "Europe/London",
-      "interval_value": null,
-      "interval_unit": null,
-      "interval_anchor": null,
-      "ends_type": "never",
-      "ends_on_date": null,
-      "ends_after_count": null
-    }
-  },
-  "description": "Generates and publishes two SEO/GEO-optimized Insights articles per weekday (9am and 2pm, Mon-Fri), rotating across the six supported markets (UK, US, Nigeria, South Africa, Kenya, Ghana), then shares each new article to the CreditDecide LinkedIn company page."
+  }
 }
