@@ -26,7 +26,10 @@ export function buildOpenApiSpec(apiBase: string): any {
         Evidence: evidenceSchema(),
         UnderwritingRecommendation: recommendationSchema(),
         FinalDecision: decisionSchema(),
-        Job: jobSchema()
+        Job: jobSchema(),
+        ApplicationForm: applicationFormSchema(),
+        LoanOutcome: loanOutcomeSchema(),
+        CreditBalance: creditBalanceSchema()
       }
     },
     security: [{ ApiKeyAuth: [] }],
@@ -50,7 +53,12 @@ export function buildOpenApiSpec(apiBase: string): any {
       "/applications/{application_id}/policy": { get: opGet("Retrieve policy definition and policy outcome", null) },
       "/webhooks": { get: opGet("List configured webhooks", null) },
       "/providers": { get: opGet("List available bureau / open-banking integrations and setup parameters", null) },
-      "/jobs/{job_id}": { get: opGet("Retrieve job status", "Job") }
+      "/jobs/{job_id}": { get: opGet("Retrieve job status", "Job") },
+      "/forms": { post: op("Manage white-label borrower application forms (action: create | list | get | update | delete | submissions | public_get | public_submit)", "ApplicationForm", "ApplicationForm", 200) },
+      "/outcomes": { post: op("Record or monitor loan outcomes for model calibration (action: record | list | monitor)", null, "LoanOutcome", 200) },
+      "/portable": { post: op("Cross-border credit portability (action: attest | import). Attest produces a SHA-256-attested portable credit bundle; import ingests it into a target-region application with full provenance.", null, null, 200) },
+      "/billing": { post: op("Billing & credits via Stripe (action: balance | checkout | record_purchase | subscription_checkout | subscription_status | subscription_cancel | charge_export). New orgs receive a 1,000-credit trial grant.", null, "CreditBalance", 200) },
+      "/usage": { post: op("Usage analytics & audit log (action: overview | logs)", null, null, 200) }
     }
   };
 }
@@ -131,4 +139,39 @@ function decisionSchema() {
 }
 function jobSchema() {
   return { type: "object", properties: { job_id: { type: "string" }, status: { type: "string", enum: ["processing", "completed", "failed"] } } };
+}
+function applicationFormSchema() {
+  return {
+    type: "object", description: "White-label borrower application form. A public share link (/apply/:slug) lets borrowers submit details, which create a Borrower + Application for the lender's organization.",
+    properties: {
+      name: { type: "string" }, slug: { type: "string", description: "Unique public slug used in the share link" }, title: { type: "string" },
+      market: { type: "string", enum: ["GB", "US", "NG", "ZA", "KE", "GH"] }, borrower_type: { type: "string", enum: ["salaried", "self_employed", "business"] },
+      product_type: { type: "string" }, policy_id: { type: "string" }, accent_color: { type: "string" }, logo_url: { type: "string" },
+      fields: { type: "array", items: { type: "object", properties: { key: { type: "string" }, label: { type: "string" }, enabled: { type: "boolean" }, required: { type: "boolean" } } } },
+      document_requirements: { type: "array", items: { type: "object", properties: { type: { type: "string" }, label: { type: "string" }, required: { type: "boolean" }, enabled: { type: "boolean" } } } },
+      status: { type: "string", enum: ["active", "paused", "archived"] }, submissions_count: { type: "number" }
+    }, required: ["name", "slug"]
+  };
+}
+function loanOutcomeSchema() {
+  return {
+    type: "object", description: "Observed outcome of an underwritten loan, used to close the model-calibration feedback loop.",
+    properties: {
+      application_id: { type: "string" }, status: { type: "string", enum: ["active", "repaid", "late", "defaulted"] },
+      bad: { type: "boolean", description: "Derived: defaulted, or late with days_past_due >= 30" }, days_past_due: { type: "number" },
+      predicted_pd: { type: "number", nullable: true, description: "Snapshotted probability of default from the latest decision" },
+      predicted_risk_score: { type: "number", nullable: true }, decision: { type: "string", enum: ["APPROVE", "REVIEW", "DECLINE"], nullable: true },
+      loan_amount: { type: "number" }, loan_currency: { type: "string" }, observed_at: { type: "string", format: "date-time" }, note: { type: "string", nullable: true }
+    }, required: ["application_id", "status"]
+  };
+}
+function creditBalanceSchema() {
+  return {
+    type: "object", description: "Per-organization credit balance and subscription state.",
+    properties: {
+      balance: { type: "number" }, currency: { type: "string" },
+      subscription_status: { type: "string", enum: ["active", "trialing", "past_due", "canceled", "incomplete", "none"] },
+      subscription_plan_id: { type: "string", nullable: true }, subscription_current_period_end: { type: "string", format: "date-time", nullable: true }
+    }
+  };
 }
