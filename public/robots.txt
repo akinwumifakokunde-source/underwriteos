@@ -1,4 +1,36 @@
 User-agent: *
 Allow: /
 
+# Private, login-gated app screens — not for indexing
+Disallow: /workspace
+Disallow: /dashboard
+Disallow: /applications
+Disallow: /applications/
+Disallow: /batch
+Disallow: /forms
+Disallow: /forms/
+Disallow: /policies
+Disallow: /data-sources
+Disallow: /risk-signals
+Disallow: /decisions
+Disallow: /evidence
+Disallow: /evidence/
+Disallow: /reports
+Disallow: /sandbox
+Disallow: /underwrite
+Disallow: /monitoring
+Disallow: /playground
+Disallow: /api-reference
+Disallow: /api-keys
+Disallow: /providers
+Disallow: /usage
+Disallow: /billing
+Disallow: /webhooks
+Disallow: /members
+Disallow: /settings
+Disallow: /architecture
+Disallow: /docs
+Disallow: /onboarding
+Disallow: /linkedin-ads
+
 Sitemap: https://creditdecide.com/sitemap.xml

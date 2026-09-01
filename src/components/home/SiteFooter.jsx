@@ -7,9 +7,9 @@ const COLS = [
   {
     title: "Product",
     links: [
-      { to: "/policies", label: "Policy Builder" },
-      { to: "/applications", label: "Applications" },
-      { to: "/data-sources", label: "Data Sources" },
+      { to: "/features/lending-policies", label: "Policy Builder" },
+      { to: "/features/ai-underwriting", label: "Applications" },
+      { to: "/features/document-intelligence", label: "Data Sources" },
       { to: "/features", label: "Capabilities" },
       { to: "/about", label: "About" },
       { to: "/pricing", label: "Pricing" },
