@@ -5,6 +5,7 @@ import HomeNav from "@/components/home/HomeNav";
 import SiteFooter from "@/components/home/SiteFooter";
 import { base44 } from "@/api/base44Client";
 import { INSIGHTS, AUTHOR, MARKET_NAMES, normalizeInsight } from "@/lib/insights";
+import GooglePagination from "@/components/insights/GooglePagination";
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -23,6 +24,8 @@ function MarketBadge({ market }) {
 export default function Insights() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     base44.entities.Insight.filter({ status: "published" }, "-published_at", 50)
@@ -40,6 +43,8 @@ export default function Insights() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => { setPage(1); }, [articles.length]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -49,6 +54,8 @@ export default function Insights() {
   }
 
   const [featured, ...rest] = articles;
+  const pageCount = Math.ceil(rest.length / PAGE_SIZE);
+  const paged = rest.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="min-h-screen bg-white">
@@ -107,10 +114,10 @@ export default function Insights() {
       )}
 
       {/* Article grid */}
-      <section className="max-w-5xl mx-auto px-5 sm:px-8 pb-16">
+      <section id="articles" className="max-w-5xl mx-auto px-5 sm:px-8 pb-16 scroll-mt-4">
         <h3 className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-5">All articles</h3>
         <div className="grid sm:grid-cols-2 gap-4">
-          {rest.map((a) => (
+          {paged.map((a) => (
             <Link
               key={a.slug}
               to={`/insights/${a.slug}`}
@@ -131,6 +138,15 @@ export default function Insights() {
             </Link>
           ))}
         </div>
+
+        <GooglePagination
+          page={page}
+          pageCount={pageCount}
+          onChange={(p) => {
+            setPage(p);
+            document.getElementById("articles")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+        />
       </section>
 
       <SiteFooter />
