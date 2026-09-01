@@ -37,9 +37,13 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
   const value = regData.value || regData;
   const assetUrn = value.asset;
   let uploadUrl = value.uploadUrl;
-  if (!uploadUrl && value.uploadMechanism) {
+  let uploadHeaders = {};
+  if (value.uploadMechanism) {
     const mech = value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'];
-    if (mech && mech.uploadUrl) uploadUrl = mech.uploadUrl;
+    if (mech) {
+      if (mech.uploadUrl) uploadUrl = mech.uploadUrl;
+      if (mech.headers) uploadHeaders = mech.headers;
+    }
   }
   if (!assetUrn || !uploadUrl) {
     throw new Error('LinkedIn registerUpload did not return asset/uploadUrl. Response: ' + JSON.stringify(regData).slice(0, 600));
@@ -47,28 +51,33 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
 
   const uploadRes = await fetch(uploadUrl, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': contentType || 'image/jpeg' },
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': contentType || 'image/jpeg', ...uploadHeaders },
     body: imageBytes,
   });
+  const uploadStatus = uploadRes.status;
   if (!uploadRes.ok) {
     const detail = await uploadRes.text();
-    throw new Error(`LinkedIn image upload failed: ${detail}`);
+    throw new Error(`LinkedIn image upload failed (${uploadStatus}): ${detail}`);
   }
 
   // Poll until the asset is processed (LinkedIn needs this before the post can reference it).
   const assetId = assetUrn.split(':').pop();
-  for (let i = 0; i < 12; i++) {
-    await new Promise((r) => setTimeout(r, 1500));
+  let lastPoll = null;
+  for (let i = 0; i < 6; i++) {
+    await new Promise((r) => setTimeout(r, 2000));
     const stRes = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, { headers });
     if (stRes.ok) {
       const stData = await stRes.json();
+      lastPoll = stData;
       const recipes = stData.recipes || [];
       const recipe = recipes.find((r) => r.recipe === 'urn:li:digitalmediaRecipe:feedshare-image');
-      if (recipe && recipe.status === 'ALLOWED') return assetUrn;
+      if (recipe && (recipe.status === 'AVAILABLE' || recipe.status === 'ALLOWED')) return assetUrn;
       if (recipe && recipe.status === 'FAILED') throw new Error('LinkedIn image processing failed');
+    } else {
+      lastPoll = { httpStatus: stRes.status, body: await stRes.text().catch(() => '') };
     }
   }
-  throw new Error('LinkedIn image processing timed out');
+  throw new Error(`LinkedIn image processing timed out. uploadStatus=${uploadStatus} lastPoll=${JSON.stringify(lastPoll).slice(0, 500)}`);
 }
 
 export default async function(req) {
