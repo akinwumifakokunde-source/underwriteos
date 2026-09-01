@@ -10,6 +10,9 @@ const LOGOS = [
   { name: "Goldman Sachs", weight: "font-semibold" },
   { name: "JPMorgan", weight: "font-semibold" },
   { name: "Visa", weight: "font-bold italic" },
+  { name: "McKinsey", weight: "font-semibold" },
+  { name: "Mastercard", weight: "font-bold" },
+  { name: "Amazon", weight: "font-bold" },
 ];
 
 export default function TeamBar() {
