@@ -1,38 +1,297 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Check, AlertTriangle, Paperclip, ArrowRight, FileText, Brain, ShieldCheck, Workflow } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  FileText, ShieldAlert, Brain, CheckCircle2, Check, AlertTriangle,
+  TrendingUp, TrendingDown, Download,
+} from "lucide-react";
 
-// kita.ai-style hero preview: pill tabs + a two-pane "live workspace" —
-// a conversational document-collection chat on the left and a borrower-file
-// checklist sidebar with a completeness bar on the right. Presentational only.
+// Richer, kita.ai-style hero preview: a tabbed "live workspace" card that
+// auto-advances through detailed views with a slide animation. Purely
+// presentational — no business logic.
 
 const TABS = [
-  { id: "documents", label: "Documents", icon: FileText },
-  { id: "risk", label: "Risk Signals", icon: ShieldCheck },
-  { id: "underwriter", label: "AI Underwriter", icon: Brain },
-  { id: "decision", label: "Decision", icon: Workflow },
+  { id: "application", label: "Application", icon: FileText },
+  { id: "risk", label: "Risk Signals", icon: ShieldAlert },
+  { id: "ai", label: "AI Underwriter", icon: Brain },
+  { id: "decision", label: "Decision", icon: CheckCircle2 },
 ];
 
-const CHAT = [
-  { from: "borrower", text: "Here are my last 3 months of bank statements." },
-  { from: "ai", text: "Got it — average monthly deposits £3,420 extracted. I flagged 1 missed payment on your credit file for review." },
-  { from: "borrower", text: "Can you include my payslip too?" },
-  { from: "ai", text: "Done — annual income verified at £48,000. Borrower file is 78% complete." },
+const DOCS = [
+  { ok: true, name: "Loan Application", file: "app-form.pdf", field: "Requested", value: "£25,000" },
+  { ok: true, name: "Bank Statements", file: "statements.pdf", field: "Avg balance", value: "£3,420" },
+  { ok: true, name: "Payslip", file: "payslip-may.pdf", field: "Annual income", value: "£48,000" },
+  { ok: false, name: "Credit Report", file: "experian.pdf", field: "Score", value: "712",
+    note: "1 missed payment in the last 6 months flagged for review." },
 ];
 
-const CHECKLIST = [
-  { label: "borrower", done: true },
-  { label: "channel", done: true },
-  { label: "loan_request", done: true },
-  { label: "documents", done: true },
-  { label: "credit_report", done: true },
-  { label: "affordability", done: false },
+const RISKS = [
+  { label: "Credit risk", value: "712", state: "good" },
+  { label: "Affordability", value: "DTI 48.2%", state: "warn" },
+  { label: "Fraud", value: "Clear", state: "good" },
+  { label: "Data quality", value: "Verified", state: "good" },
 ];
 
-const DWELL_MS = 4200;
+const RULES = [
+  { rule: "Annual income ≥ £40,000", result: "PASS" },
+  { rule: "DTI ≤ 45%", result: "FAIL" },
+  { rule: "Credit score ≥ 650", result: "PASS" },
+];
+
+const POSITIVES = ["Stable employment (2+ yrs)", "Verified income £48,000", "Clean fraud profile"];
+const FACTORS = ["DTI 48.2% above 45% threshold", "1 recent missed payment"];
+
+const DWELL_MS = 4800;
+
+function Dot({ state }) {
+  if (state === "good") {
+    return (
+      <span className="w-4 h-4 rounded-full flex items-center justify-center bg-emerald-50 shrink-0">
+        <Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} />
+      </span>
+    );
+  }
+  return (
+    <span className="w-4 h-4 rounded-full flex items-center justify-center bg-amber-50 shrink-0">
+      <AlertTriangle className="w-2.5 h-2.5 text-amber-600" />
+    </span>
+  );
+}
+
+function Badge({ children, tone = "amber" }) {
+  const tones = {
+    amber: "text-amber-700 bg-amber-50 border-amber-200",
+    green: "text-emerald-700 bg-emerald-50 border-emerald-200",
+  };
+  return (
+    <span className={`text-[9px] font-semibold uppercase tracking-wider border rounded-full px-2 py-0.5 ${tones[tone]}`}>
+      {children}
+    </span>
+  );
+}
+
+function Field({ label, value }) {
+  return (
+    <div>
+      <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">{label}</div>
+      <div className="text-[11px] font-medium text-[#0a0c12] mt-0.5">{value}</div>
+    </div>
+  );
+}
+
+function ApplicationTab() {
+  return (
+    <div className="space-y-3.5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="text-base font-semibold text-[#0a0c12]">John Smith</div>
+          <div className="text-[11px] text-[#8a909c] mt-0.5">Personal Loan · United Kingdom</div>
+        </div>
+        <div className="text-right">
+          <div className="text-base font-semibold text-[#0a0c12]">£25,000</div>
+          <div className="mt-1 flex justify-end"><Badge>Needs review</Badge></div>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider mb-1.5">
+          <span className="text-[#0a0c12] border-b-2 border-[#0d9488] pb-0.5">Application materials</span>
+          <span className="text-[#8a909c]">Credit memo</span>
+        </div>
+        <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div className="h-full bg-[#0d9488] rounded-full" style={{ width: "75%" }} />
+        </div>
+        <p className="text-[10px] text-[#8a909c] mt-1.5">• 3 accepted · 1 needs review</p>
+      </div>
+
+      <div className="pt-1">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Document checklist · 3 of 4</span>
+          <span className="text-[9px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full px-2 py-0.5">✓ All read</span>
+        </div>
+        <div className="space-y-2">
+          {DOCS.map((d) => (
+            <div
+              key={d.name}
+              className={`rounded-xl border p-2.5 ${d.ok ? "border-[#eceef1] bg-white" : "border-amber-200 bg-amber-50/60"}`}
+            >
+              <div className="flex items-start gap-2.5">
+                <Dot state={d.ok ? "good" : "warn"} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[12px] font-medium text-[#0a0c12] truncate">{d.name}</span>
+                    <Badge tone={d.ok ? "green" : "amber"}>{d.ok ? "Accepted" : "Needs review"}</Badge>
+                  </div>
+                  <div className="text-[10px] text-[#8a909c] mt-0.5">{d.file}</div>
+                  {d.note ? (
+                    <p className="text-[10px] text-amber-700 mt-1.5 leading-snug">{d.note}</p>
+                  ) : null}
+                  <div className="mt-1.5">
+                    <Field label={d.field} value={d.value} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RiskTab() {
+  return (
+    <div className="space-y-3.5">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-sm font-semibold text-[#0a0c12]">Risk Signals</div>
+          <div className="text-[11px] text-[#8a909c] mt-0.5">4 dimensions · 1 needs attention</div>
+        </div>
+        <ShieldAlert className="w-4 h-4 text-[#0d9488]" />
+      </div>
+
+      <div className="space-y-2">
+        {RISKS.map((r) => (
+          <div key={r.label} className="flex items-center justify-between rounded-xl border border-[#eceef1] bg-white px-3 py-2.5">
+            <div className="flex items-center gap-2.5">
+              <Dot state={r.state} />
+              <span className="text-[12px] font-medium text-[#0a0c12]">{r.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px] text-[#525965]">{r.value}</span>
+              <Badge tone={r.state === "good" ? "green" : "amber"}>{r.state === "good" ? "Pass" : "Review"}</Badge>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2.5 flex items-start gap-2">
+        <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mt-0.5 shrink-0" />
+        <p className="text-[11px] text-amber-700 leading-snug">1 signal exceeds policy threshold — triggers human review before decisioning.</p>
+      </div>
+    </div>
+  );
+}
+
+function AiTab() {
+  return (
+    <div className="space-y-3.5">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-sm font-semibold text-[#0a0c12]">AI Underwriting Memo</div>
+          <div className="text-[11px] text-[#8a909c] mt-0.5">Evidence-referenced · advisory only</div>
+        </div>
+        <Brain className="w-4 h-4 text-[#0d9488]" />
+      </div>
+
+      <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 px-3 py-3 flex items-center justify-between">
+        <div>
+          <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Recommendation</div>
+          <div className="text-lg font-semibold text-emerald-700 mt-0.5">APPROVE</div>
+        </div>
+        <div className="text-right">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c]">Confidence</div>
+          <div className="text-lg font-semibold text-[#0a0c12] mt-0.5">86%</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2">
+        <div className="rounded-lg border border-[#eceef1] bg-white px-2.5 py-2 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Risk score</div>
+          <div className="text-sm font-semibold text-[#0a0c12] mt-0.5">72<span className="text-[10px] text-[#8a909c]">/100</span></div>
+        </div>
+        <div className="rounded-lg border border-[#eceef1] bg-white px-2.5 py-2 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Prob. default</div>
+          <div className="text-sm font-semibold text-[#0a0c12] mt-0.5">4.8%</div>
+        </div>
+        <div className="rounded-lg border border-[#eceef1] bg-white px-2.5 py-2 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Confidence</div>
+          <div className="text-sm font-semibold text-[#0a0c12] mt-0.5">86%</div>
+        </div>
+      </div>
+
+      <div>
+        <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-1.5 flex items-center gap-1">
+          <TrendingUp className="w-3 h-3 text-emerald-600" /> Positive signals
+        </div>
+        <div className="space-y-1">
+          {POSITIVES.map((p) => (
+            <div key={p} className="flex items-center gap-2 text-[11px] text-[#3f4651]">
+              <Check className="w-3 h-3 text-emerald-600 shrink-0" strokeWidth={3} /> {p}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-1.5 flex items-center gap-1">
+          <TrendingDown className="w-3 h-3 text-amber-600" /> Risk factors
+        </div>
+        <div className="space-y-1">
+          {FACTORS.map((f) => (
+            <div key={f} className="flex items-center gap-2 text-[11px] text-[#3f4651]">
+              <AlertTriangle className="w-3 h-3 text-amber-600 shrink-0" /> {f}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DecisionTab() {
+  return (
+    <div className="space-y-3.5">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="text-sm font-semibold text-[#0a0c12]">Decision</div>
+          <div className="text-[11px] text-[#8a909c] mt-0.5">Policy: Consumer Lending v1</div>
+        </div>
+        <CheckCircle2 className="w-4 h-4 text-[#0d9488]" />
+      </div>
+
+      <div>
+        <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Policy evaluation</div>
+        <div className="space-y-1.5">
+          {RULES.map((r) => (
+            <div key={r.rule} className="flex items-center justify-between text-[11px] rounded-lg border border-[#eceef1] bg-white px-3 py-2">
+              <span className="text-[#525965]">{r.rule}</span>
+              <span className={`font-mono font-semibold ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 pt-1">
+        <div className="rounded-xl border border-[#eceef1] bg-white px-2.5 py-2.5 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
+          <div className="text-[13px] font-semibold text-emerald-700 mt-1">APPROVE</div>
+        </div>
+        <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-2.5 py-2.5 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Policy</div>
+          <div className="text-[13px] font-semibold text-amber-700 mt-1">REVIEW</div>
+        </div>
+        <div className="rounded-xl border-2 border-amber-300 bg-amber-50 px-2.5 py-2.5 text-center">
+          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
+          <div className="text-[13px] font-bold text-amber-700 mt-1">REVIEW</div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#8a909c] pt-1">
+        <Download className="w-3 h-3" /> Export as PDF · CSV · Word
+      </div>
+    </div>
+  );
+}
+
+const TAB_CONTENT = {
+  application: ApplicationTab,
+  risk: RiskTab,
+  ai: AiTab,
+  decision: DecisionTab,
+};
 
 export default function WorkspacePreview() {
-  const [active, setActive] = useState(0); // "Documents" — matches the collection chat content
+  const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
@@ -41,125 +300,77 @@ export default function WorkspacePreview() {
     return () => clearInterval(t);
   }, [paused]);
 
+  const ActiveContent = TAB_CONTENT[TABS[active].id];
+
   return (
-    <div className="w-full max-w-[520px]">
+    <div className="w-full max-w-[460px]">
       <div
-        className="rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_28px_64px_-28px_rgba(10,12,18,0.22)]"
+        className="rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_24px_60px_-24px_rgba(10,12,18,0.18)]"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/* Pill tabs */}
-        <div className="flex items-center gap-1.5 px-3 pt-3 overflow-x-auto no-scrollbar">
+        {/* Window chrome */}
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6]" />
+          </div>
+          <span className="text-[11px] font-mono text-[#8a909c] ml-2">Application #APP-10482</span>
+          <span className="ml-auto text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">UNDER REVIEW</span>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex items-center gap-1 px-3 pt-3 border-b border-[#eceef1] overflow-x-auto no-scrollbar">
           {TABS.map((t, i) => {
+            const Icon = t.icon;
             const isActive = i === active;
             return (
               <button
                 key={t.id}
                 onClick={() => setActive(i)}
-                className="relative shrink-0 text-[10px] font-medium px-2.5 py-1.5 rounded-full border transition-colors"
-                style={isActive ? { borderColor: "#0c1120" } : { borderColor: "#e8eaee" }}
+                className={`relative shrink-0 flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-t-md transition-colors ${
+                  isActive ? "text-[#0a0c12] font-medium" : "text-[#8a909c] hover:text-[#525965]"
+                }`}
               >
+                <Icon className="w-3 h-3" />
+                {t.label}
                 {isActive && (
-                  <motion.span
-                    layoutId="hero-pill"
-                    className="absolute inset-0 rounded-full bg-[#0c1120]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  <motion.div
+                    layoutId="hero-tab-underline"
+                    className="absolute left-0 right-0 -bottom-px h-0.5 bg-[#0d9488] rounded-full"
                   />
                 )}
-                <span className={`relative z-10 ${isActive ? "text-white" : "text-[#525965]"}`}>{t.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Two-pane workspace */}
-        <div className="grid grid-cols-5 border-t border-[#eceef1]">
-          {/* Chat pane */}
-          <div className="col-span-3 p-3.5 border-r border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[8px] font-mono uppercase tracking-wider text-[#0d9488] flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] animate-pulse" /> Live · Document collection
-              </span>
-              <span className="text-[8px] font-mono text-[#8a909c]">3m 12s</span>
-            </div>
+        {/* Sliding content */}
+        <div className="p-4 bg-gradient-to-b from-white to-[#fcfcfd] min-h-[300px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, x: 28 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -28 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              <ActiveContent />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-            <div className="space-y-2.5">
-              {CHAT.map((m, i) => {
-                const isBorrower = m.from === "borrower";
-                return (
-                  <div key={i} className={`flex items-start gap-2 ${isBorrower ? "" : "flex-row-reverse"}`}>
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-semibold shrink-0 ${
-                      isBorrower ? "bg-slate-100 text-slate-600" : "bg-[#0d9488] text-white"
-                    }`}>
-                      {isBorrower ? "JS" : "CD"}
-                    </span>
-                    <div className={`max-w-[78%] rounded-xl px-2.5 py-1.5 text-[11px] leading-snug ${
-                      isBorrower ? "bg-white border border-[#eceef1] text-[#3f4651]" : "bg-[#0c1120] text-white"
-                    }`}>
-                      {m.text}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Attachment chip */}
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-[#eceef1] bg-white px-2 py-1.5">
-              <Paperclip className="w-3 h-3 text-[#0d9488]" />
-              <span className="text-[10px] font-medium text-[#0a0c12]">chase-statements.zip</span>
-              <span className="text-[9px] text-[#8a909c]">· 3 files</span>
-            </div>
-          </div>
-
-          {/* Checklist sidebar */}
-          <div className="col-span-2 p-3.5 bg-[#fafbfc]">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">File · APP-10482</span>
-            </div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-semibold text-[#0a0c12]">Borrower file</span>
-              <span className="text-[10px] font-mono text-[#0d9488]">6 of 7</span>
-            </div>
-
-            <div className="space-y-1.5">
-              {CHECKLIST.map((c) => (
-                <div key={c.label} className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-[#525965]">{c.label}</span>
-                  <span className="flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${c.done ? "bg-emerald-500" : "bg-slate-300"}`} />
-                    {c.done ? (
-                      <Check className="w-3 h-3 text-emerald-600" strokeWidth={3} />
-                    ) : (
-                      <span className="w-3 h-3 rounded-full border border-slate-300" />
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Completeness bar */}
-            <div className="mt-3.5">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">File completeness</span>
-                <span className="text-[9px] font-mono text-[#0a0c12]">78%</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-slate-200 overflow-hidden">
-                <div className="h-full bg-[#0d9488] rounded-full" style={{ width: "78%" }} />
-              </div>
-            </div>
-
-            {/* Footer status */}
-            <div className="mt-3 space-y-1 text-[9px] text-[#525965]">
-              <div className="flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} /> Identity verified</div>
-              <div className="flex items-center gap-1"><Check className="w-2.5 h-2.5 text-emerald-600" strokeWidth={3} /> 3 docs collected</div>
-              <div className="flex items-center gap-1"><AlertTriangle className="w-2.5 h-2.5 text-amber-600" /> 1 pending</div>
-            </div>
-
-            {/* Hand-off link */}
-            <div className="mt-3 pt-2.5 border-t border-[#eceef1] flex items-center justify-end gap-1 text-[10px] font-medium text-[#0d9488]">
-              Hand off to AI Underwriter <ArrowRight className="w-3 h-3" />
-            </div>
-          </div>
+        {/* Step dots */}
+        <div className="flex items-center justify-center gap-1.5 pb-3">
+          {TABS.map((t, i) => (
+            <button
+              key={t.id}
+              onClick={() => setActive(i)}
+              aria-label={t.label}
+              className={`h-1.5 rounded-full transition-all ${i === active ? "w-5 bg-[#0d9488]" : "w-1.5 bg-slate-200"}`}
+            />
+          ))}
         </div>
       </div>
 
