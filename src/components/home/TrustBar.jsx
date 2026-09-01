@@ -22,7 +22,7 @@ export default function TrustBar() {
     <section className="border-b border-[#eceef1] bg-white">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
         <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] mb-8">
-          Trusted by leading lenders &amp; fintechs across six markets
+          Designed for leading lenders &amp; fintechs across six markets
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:gap-x-12">
           {LOGOS.map((l) => (
@@ -34,6 +34,9 @@ export default function TrustBar() {
             </span>
           ))}
         </div>
+        <p className="mt-6 text-center text-[10px] text-[#b0b4bd]">
+          Brand names shown for illustrative marketing purposes only and do not imply endorsement or partnership.
+        </p>
       </div>
     </section>
   );

@@ -20,7 +20,7 @@ export default function TeamBar() {
     <section className="border-y border-[#eceef1] bg-white">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10">
         <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] mb-6">
-          Built by a team from
+          Built by a team with experience from
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 sm:gap-x-10">
           {LOGOS.map((l) => (
@@ -32,6 +32,9 @@ export default function TeamBar() {
             </span>
           ))}
         </div>
+        <p className="mt-5 text-center text-[10px] text-[#b0b4bd]">
+          Brand names shown for illustrative marketing purposes only and do not imply endorsement or partnership.
+        </p>
       </div>
     </section>
   );
