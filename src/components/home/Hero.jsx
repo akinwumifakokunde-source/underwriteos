@@ -22,17 +22,17 @@ export default function Hero() {
               <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] animate-pulse" />
               No-code underwriting platform
             </div>
-            <h1 className="text-[2.25rem] sm:text-[3.5rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.04]">
+            <h1 className="text-[2rem] sm:text-[3.5rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.12] sm:leading-[1.04]">
               Underwrite borrowers anywhere, in <span className="text-[#0d9488]">minutes.</span>
             </h1>
-            <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-md">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[#525965] leading-relaxed max-w-md">
               AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure
               policies, and make smarter, explainable decisions.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-5 sm:mt-6 flex flex-wrap gap-2">
               {PILLARS.map((p) => (
-                <span key={p} className="text-[11px] font-medium text-[#525965] bg-white border border-[#eceef1] rounded-full px-2.5 py-1 shadow-sm">{p}</span>
+                <span key={p} className="text-[11px] font-medium text-[#525965] bg-white border border-[#eceef1] rounded-full px-3 py-1.5 shadow-sm">{p}</span>
               ))}
             </div>
 
