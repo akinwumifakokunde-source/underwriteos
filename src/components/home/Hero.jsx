@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import AnimatedProductPreview from "@/components/home/AnimatedProductPreview";
+import WorkspacePreview from "@/components/home/WorkspacePreview";
 
 const PILLARS = [
   "Document intelligence", "Policy engine", "AI underwriter", "Affordability",
@@ -61,7 +61,7 @@ export default function Hero() {
           </div>
 
           <div className="flex justify-center md:justify-end">
-            <AnimatedProductPreview />
+            <WorkspacePreview />
           </div>
         </div>
       </div>
