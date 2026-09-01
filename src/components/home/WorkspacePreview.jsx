@@ -7,10 +7,10 @@ import { Check, AlertTriangle, Paperclip, ArrowRight, FileText, Brain, ShieldChe
 // checklist sidebar with a completeness bar on the right. Presentational only.
 
 const TABS = [
-  { id: "application", label: "Application", icon: FileText },
-  { id: "officer", label: "AI Credit Officer", icon: ShieldCheck },
+  { id: "documents", label: "Documents", icon: FileText },
+  { id: "risk", label: "Risk Signals", icon: ShieldCheck },
   { id: "underwriter", label: "AI Underwriter", icon: Brain },
-  { id: "workflow", label: "Lender Workflow", icon: Workflow },
+  { id: "decision", label: "Decision", icon: Workflow },
 ];
 
 const CHAT = [
@@ -32,7 +32,7 @@ const CHECKLIST = [
 const DWELL_MS = 4200;
 
 export default function WorkspacePreview() {
-  const [active, setActive] = useState(1); // "AI Credit Officer" active, like the reference
+  const [active, setActive] = useState(0); // "Documents" — matches the collection chat content
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
