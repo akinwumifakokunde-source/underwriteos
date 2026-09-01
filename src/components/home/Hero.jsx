@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-[#0d9488]/[0.06] rounded-full blur-3xl" />
 
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-[11px] font-medium text-[#0a2e2a] mb-5 bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] animate-pulse" />
