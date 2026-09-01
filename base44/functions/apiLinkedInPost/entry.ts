@@ -46,7 +46,7 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
     }
   }
   if (!assetUrn || !uploadUrl) {
-    throw new Error('LinkedIn registerUpload did not return asset/uploadUrl. Response: ' + JSON.stringify(regData).slice(0, 600));
+    throw new Error('LinkedIn registerUpload did not return asset/uploadUrl');
   }
 
   const uploadRes = await fetch(uploadUrl, {
@@ -77,7 +77,7 @@ async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, con
       lastPoll = { httpStatus: stRes.status, body: await stRes.text().catch(() => '') };
     }
   }
-  throw new Error(`LinkedIn image processing timed out. uploadStatus=${uploadStatus} lastPoll=${JSON.stringify(lastPoll).slice(0, 500)}`);
+  throw new Error('LinkedIn image processing timed out');
 }
 
 export default async function(req) {
@@ -187,15 +187,15 @@ export default async function(req) {
     }
 
     const shareContent = {
-      shareCommentary: { text },
+      shareCommentary: { attributes: [], text },
       shareMediaCategory: assetUrn ? 'IMAGE' : 'NONE',
     };
     if (assetUrn) {
       shareContent.media = [{
         status: 'READY',
         media: assetUrn,
-        title: { text: title.slice(0, 120) },
-        description: { text: (excerpt || title).slice(0, 200) },
+        title: { attributes: [], text: title.slice(0, 120) },
+        description: { attributes: [], text: (excerpt || title).slice(0, 200) },
       }];
     }
 
@@ -205,8 +205,8 @@ export default async function(req) {
       body: JSON.stringify({
         author: orgUrn,
         lifecycleState: 'PUBLISHED',
-        specificContent: { 'com.linkedin.ugcpost.ShareContent': shareContent },
-        visibility: { 'com.linkedin.ugcpost.VisibilityEnum': 'PUBLIC' },
+        specificContent: { 'com.linkedin.ugc.ShareContent': shareContent },
+        visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' },
       }),
     });
     if (!postRes.ok) {
