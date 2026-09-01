@@ -1,17 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Loader2 } from "lucide-react";
 import HomeNav from "@/components/home/HomeNav";
 import SiteFooter from "@/components/home/SiteFooter";
-import { INSIGHTS, AUTHOR } from "@/lib/insights";
+import { base44 } from "@/api/base44Client";
+import { INSIGHTS, AUTHOR, MARKET_NAMES, normalizeInsight } from "@/lib/insights";
 
 function formatDate(iso) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function MarketBadge({ market }) {
+  const m = MARKET_NAMES[market] || MARKET_NAMES.GLOBAL;
+  if (market === "GLOBAL" || !m) return null;
+  return (
+    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0a2e2a] bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-2 py-0.5">
+      <span className="text-[11px] leading-none">{m.flag}</span> {m.name}
+    </span>
+  );
 }
 
 export default function Insights() {
-  const [featured, ...rest] = INSIGHTS;
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    base44.entities.Insight.filter({ status: "published" }, "-published_at", 50)
+      .then((rows) => {
+        const dyn = (rows || []).map((r) => normalizeInsight(r, true));
+        const stat = INSIGHTS.map((a) => normalizeInsight(a, false));
+        const merged = [...dyn, ...stat].sort(
+          (a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)
+        );
+        setArticles(merged);
+      })
+      .catch(() => {
+        setArticles(INSIGHTS.map((a) => normalizeInsight(a, false)));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-[#0d9488] animate-spin" />
+      </div>
+    );
+  }
+
+  const [featured, ...rest] = articles;
 
   return (
     <div className="min-h-screen bg-white">
@@ -30,40 +67,44 @@ export default function Insights() {
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-2xl">
             Practical, technical writing on AI underwriting, credit decisioning, document intelligence, and
-            explainable risk — drawn from the platform's real architecture, not generic AI content.
+            explainable risk — covering all six markets we serve, with new articles published every weekday.
           </p>
         </div>
       </section>
 
-      {/* Featured article */}
-      <section className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
-        <Link
-          to={`/insights/${featured.slug}`}
-          className="group block rounded-2xl border border-[#e8eaee] bg-white hover:border-[#d0d3d8] transition-colors overflow-hidden"
-        >
-          <div className="grid md:grid-cols-5">
-            <div className="md:col-span-2 bg-gradient-to-br from-[#f0f7f4] to-white p-8 flex flex-col justify-center">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0d9488] mb-3">Featured · {featured.category}</span>
-              <h2 className="text-xl sm:text-2xl font-semibold text-[#0a0c12] leading-snug group-hover:text-[#0d9488] transition-colors">
-                {featured.title}
-              </h2>
-              <p className="mt-3 text-sm text-[#525965] leading-relaxed line-clamp-3">{featured.excerpt}</p>
-              <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12]">
-                Read article <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+      {featured && (
+        <section className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
+          <Link
+            to={`/insights/${featured.slug}`}
+            className="group block rounded-2xl border border-[#e8eaee] bg-white hover:border-[#d0d3d8] transition-colors overflow-hidden"
+          >
+            <div className="grid md:grid-cols-5">
+              <div className="md:col-span-2 bg-gradient-to-br from-[#f0f7f4] to-white p-8 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-[#0d9488]">Featured · {featured.category}</span>
+                  <MarketBadge market={featured.market} />
+                </div>
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#0a0c12] leading-snug group-hover:text-[#0d9488] transition-colors">
+                  {featured.title}
+                </h2>
+                <p className="mt-3 text-sm text-[#525965] leading-relaxed line-clamp-3">{featured.excerpt}</p>
+                <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12]">
+                  Read article <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
+              <div className="md:col-span-3 p-8 bg-[#fcfcfd] flex flex-col justify-center border-l border-[#eceef1]">
+                <div className="text-xs text-[#8a909c] flex items-center gap-3">
+                  <span>{formatDate(featured.publishedAt)}</span>
+                  <span className="text-[#d0d3d8]">·</span>
+                  <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" /> {featured.readingTime} min read</span>
+                </div>
+                <p className="mt-4 text-[15px] text-[#525965] leading-relaxed">{featured.excerpt}</p>
+                <p className="mt-6 text-xs text-[#8a909c]">By {featured.authorName} · {featured.authorRole}</p>
               </div>
             </div>
-            <div className="md:col-span-3 p-8 bg-[#fcfcfd] flex flex-col justify-center border-l border-[#eceef1]">
-              <div className="text-xs text-[#8a909c] flex items-center gap-3">
-                <span>{formatDate(featured.publishedAt)}</span>
-                <span className="text-[#d0d3d8]">·</span>
-                <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" /> {featured.readingTime} min read</span>
-              </div>
-              <p className="mt-4 text-[15px] text-[#525965] leading-relaxed">{featured.excerpt}</p>
-              <p className="mt-6 text-xs text-[#8a909c]">By {AUTHOR.name} · {AUTHOR.role}</p>
-            </div>
-          </div>
-        </Link>
-      </section>
+          </Link>
+        </section>
+      )}
 
       {/* Article grid */}
       <section className="max-w-5xl mx-auto px-5 sm:px-8 pb-16">
@@ -75,7 +116,10 @@ export default function Insights() {
               to={`/insights/${a.slug}`}
               className="group flex flex-col rounded-2xl border border-[#e8eaee] bg-white p-6 hover:border-[#d0d3d8] hover:shadow-sm transition-all"
             >
-              <span className="text-[11px] font-mono uppercase tracking-wider text-[#0d9488] mb-3">{a.category}</span>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-[#0d9488]">{a.category}</span>
+                <MarketBadge market={a.market} />
+              </div>
               <h4 className="text-base font-semibold text-[#0a0c12] leading-snug group-hover:text-[#0d9488] transition-colors">
                 {a.title}
               </h4>

@@ -361,3 +361,35 @@ export function getInsight(slug) {
 export function insightsForFeature(featureSlug) {
   return INSIGHTS.filter((i) => i.relatedFeatures.includes(featureSlug));
 }
+
+// Display names + flag for each supported market, used for geo badges on cards.
+export const MARKET_NAMES = {
+  GB: { name: "United Kingdom", short: "UK", flag: "🇬🇧" },
+  US: { name: "United States", short: "US", flag: "🇺🇸" },
+  NG: { name: "Nigeria", short: "Nigeria", flag: "🇳🇬" },
+  ZA: { name: "South Africa", short: "South Africa", flag: "🇿🇦" },
+  KE: { name: "Kenya", short: "Kenya", flag: "🇰🇪" },
+  GH: { name: "Ghana", short: "Ghana", flag: "🇬🇭" },
+  GLOBAL: { name: "Global", short: "Global", flag: "🌍" },
+};
+
+// Normalizes a record (static module article OR entity record) into one shape
+// the Insights pages render against, so the two sources can be merged cleanly.
+export function normalizeInsight(a, isEntity) {
+  return {
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    content: a.content,
+    category: a.category,
+    market: isEntity ? a.market : "GLOBAL",
+    marketName: isEntity ? a.market_name : null,
+    authorName: isEntity ? a.author_name : AUTHOR.name,
+    authorRole: isEntity ? a.author_role : AUTHOR.role,
+    publishedAt: isEntity ? a.published_at : a.publishedAt,
+    readingTime: isEntity ? a.reading_time : a.readingTime,
+    relatedFeatures: isEntity ? a.related_features : a.relatedFeatures,
+    seoKeywords: isEntity ? a.seo_keywords : null,
+    isEntity,
+  };
+}

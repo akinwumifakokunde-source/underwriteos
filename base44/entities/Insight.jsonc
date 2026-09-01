@@ -1,0 +1,123 @@
+{
+  "name": "Insight",
+  "type": "object",
+  "description": "Editorial article in the public Insights section. Market-specific articles are auto-generated and published by the Daily Insights workflow; foundational articles are seeded manually. Public read; admin-only writes (the workflow's backend function uses the service role, which bypasses RLS).",
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL slug. Must be unique."
+    },
+    "title": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "1-2 sentence summary used as the meta description and card text."
+    },
+    "content": {
+      "type": "string",
+      "description": "Article body in markdown."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Foundations",
+        "Technology",
+        "Compliance",
+        "Risk",
+        "Markets"
+      ],
+      "default": "Markets"
+    },
+    "market": {
+      "type": "string",
+      "enum": [
+        "GB",
+        "US",
+        "NG",
+        "ZA",
+        "KE",
+        "GH",
+        "GLOBAL"
+      ],
+      "default": "GLOBAL",
+      "description": "Country/market this article targets. GLOBAL for non-market-specific foundational pieces."
+    },
+    "market_name": {
+      "type": "string",
+      "description": "Human-readable market name (e.g. United Kingdom)."
+    },
+    "author_name": {
+      "type": "string",
+      "default": "CreditDecide"
+    },
+    "author_role": {
+      "type": "string",
+      "default": "Engineering & Risk Team"
+    },
+    "published_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reading_time": {
+      "type": "number",
+      "default": 6,
+      "description": "Estimated minutes to read."
+    },
+    "related_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Feature slugs this article relates to, for cross-linking from feature pages."
+    },
+    "seo_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Target SEO keywords including the primary keyword and market name."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "published",
+        "draft"
+      ],
+      "default": "published"
+    },
+    "rotation_index": {
+      "type": "number",
+      "default": 0,
+      "description": "Rotation counter the generator uses to pick the next market/topic pair."
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "slug",
+    "title",
+    "content",
+    "published_at"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
