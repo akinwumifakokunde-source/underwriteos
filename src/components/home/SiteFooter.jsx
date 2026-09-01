@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Linkedin } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const COLS = [
@@ -59,7 +60,18 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-12 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} CreditDecide</p>
+          <div className="flex items-center gap-3">
+            <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} CreditDecide</p>
+            <a
+              href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="CreditDecide on LinkedIn"
+              className="text-[#8a909c] hover:text-[#0a76b1] transition-colors"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
+          </div>
           <p className="text-xs text-[#8a909c] text-center sm:text-right max-w-md">No-code underwriting · AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports</p>
         </div>
 
