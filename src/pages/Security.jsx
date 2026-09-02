@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
 import HomeNav from "@/components/layout/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
+import ResponsibleAIGovernance from "@/components/security/ResponsibleAIGovernance.jsx";
 
 const PILLARS = [
   { icon: Boxes, title: "Tenant isolation", desc: "Every record is scoped to an organization. Row-Level Security enforces isolation at the data layer — one tenant can never read or mutate another's data." },
@@ -14,13 +15,18 @@ const PILLARS = [
 ];
 
 const ROADMAP = [
+  { label: "Encryption at rest & in transit", status: "Implemented" },
+  { label: "RBAC & organization-level access controls", status: "Shipped" },
+  { label: "API key hashing & credential protection", status: "Shipped" },
+  { label: "Audit trail & immutable decision history", status: "Shipped" },
   { label: "Tenant isolation & RLS", status: "Shipped" },
-  { label: "Audit logging & request IDs", status: "Shipped" },
-  { label: "Credential vaulting", status: "Shipped" },
   { label: "Sandbox / production isolation", status: "Shipped" },
+  { label: "Data retention & deletion controls", status: "Implemented" },
+  { label: "GDPR controls & DPA", status: "Implemented" },
+  { label: "Data residency / cross-border data controls", status: "Roadmap" },
   { label: "SOC 2 Type I", status: "In progress" },
   { label: "SOC 2 Type II", status: "Roadmap" },
-  { label: "GDPR / DPA", status: "Shipped" },
+  { label: "ISO 27001", status: "Future roadmap" },
 ];
 
 export default function Security() {
@@ -57,19 +63,27 @@ export default function Security() {
         </div>
       </section>
 
+      <ResponsibleAIGovernance />
+
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-[#eceef1] bg-white p-6">
             <div className="flex items-center gap-2 mb-4">
               <ClipboardCheck className="w-4 h-4 text-[#0d9488]" />
-              <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Compliance roadmap</h2>
+              <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Security &amp; compliance roadmap</h2>
             </div>
             <div className="divide-y divide-[#eceef1]">
               {ROADMAP.map((r) => (
                 <div key={r.label} className="flex items-center justify-between py-2.5">
                   <span className="text-sm text-[#3a3f4a]">{r.label}</span>
                   <span
-                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${r.status === "Shipped" ? "text-[#0d9488] bg-[#e6f7f3]" : r.status === "In progress" ? "text-amber-700 bg-amber-50" : "text-[#8a909c] bg-[#f2f3f5]"}`}
+                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${
+                      r.status === "Shipped" || r.status === "Implemented"
+                        ? "text-[#0d9488] bg-[#e6f7f3]"
+                        : r.status === "In progress"
+                        ? "text-amber-700 bg-amber-50"
+                        : "text-[#8a909c] bg-[#f2f3f5]"
+                    }`}
                   >
                     {r.status}
                   </span>
