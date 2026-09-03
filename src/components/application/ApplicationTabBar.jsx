@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   LayoutDashboard, FileText, Wallet, Scale, GitCompare,
   ShieldAlert, Brain, ScrollText, Gavel, Network, Activity as ActivityIcon,
+  ChevronRight, MousePointerClick,
 } from "lucide-react";
 
 const TAB_ICONS = {
@@ -19,36 +20,76 @@ const TAB_ICONS = {
 };
 
 export default function ApplicationTabBar({ tabs, active, onChange, documentsCount = 0 }) {
+  const scrollRef = useRef(null);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollRight(el.scrollWidth - el.scrollLeft - el.clientWidth > 4);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateScrollState, { passive: true });
+    window.addEventListener("resize", updateScrollState);
+    return () => {
+      el.removeEventListener("scroll", updateScrollState);
+      window.removeEventListener("resize", updateScrollState);
+    };
+  }, [tabs]);
+
   return (
     <div className="mb-5">
-      <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 overflow-x-auto no-scrollbar">
-        {tabs.map((t) => {
-          const Icon = TAB_ICONS[t] || LayoutDashboard;
-          const isActive = active === t;
-          const showCount = t === "Documents" && documentsCount > 0;
-          return (
-            <button
-              key={t}
-              onClick={() => onChange(t)}
-              aria-current={isActive ? "page" : undefined}
-              className={`group shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg border transition-all duration-150 ${
-                isActive
-                  ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-                  : "bg-white text-slate-600 border-transparent hover:bg-slate-50 hover:text-slate-900 hover:border-slate-200 active:scale-[0.97]"
-              }`}
-            >
-              <Icon className={`w-3.5 h-3.5 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-600"}`} />
-              <span>{t}</span>
-              {showCount && (
-                <span className={`ml-0.5 text-[10px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
-                  isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
-                }`}>
-                  {documentsCount}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="inline-flex items-center gap-1.5 text-[11px] text-slate-400">
+          <MousePointerClick className="w-3 h-3" />
+          Click a tab to view its details — swipe or scroll to see all {tabs.length} sections.
+        </p>
+        {canScrollRight && (
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 animate-pulse">
+            More <ChevronRight className="w-3 h-3" />
+          </span>
+        )}
+      </div>
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          className="flex items-center gap-1.5 border-b border-slate-200 pb-2 overflow-x-auto no-scrollbar"
+        >
+          {tabs.map((t) => {
+            const Icon = TAB_ICONS[t] || LayoutDashboard;
+            const isActive = active === t;
+            const showCount = t === "Documents" && documentsCount > 0;
+            return (
+              <button
+                key={t}
+                onClick={() => onChange(t)}
+                aria-current={isActive ? "page" : undefined}
+                className={`group shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg border transition-all duration-150 ${
+                  isActive
+                    ? "bg-slate-900 text-white border-slate-900 shadow-sm"
+                    : "bg-white text-slate-600 border-transparent hover:bg-slate-50 hover:text-slate-900 hover:border-slate-200 active:scale-[0.97]"
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 transition-colors ${isActive ? "text-white" : "text-slate-400 group-hover:text-slate-600"}`} />
+                <span>{t}</span>
+                {showCount && (
+                  <span className={`ml-0.5 text-[10px] font-semibold rounded-full px-1.5 py-0.5 leading-none ${
+                    isActive ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                  }`}>
+                    {documentsCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+        {canScrollRight && (
+          <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-10 bg-gradient-to-l from-[#f7f8fa] to-transparent" />
+        )}
       </div>
     </div>
   );
