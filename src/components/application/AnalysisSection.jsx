@@ -1,15 +1,30 @@
-import React from "react";
-import { Brain, TrendingUp, TrendingDown, Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import React, { useState } from "react";
+import { Brain, TrendingUp, TrendingDown, Sparkles, RefreshCw, Loader2, Gamepad2 } from "lucide-react";
 import CreditMemo from "./CreditMemo";
+import NeonRun from "@/components/game/NeonRun";
 
 export default function AnalysisSection({ recommendation, running, lastUpdated, onRerun, borrower, app, fp, cp, evidence, fmtMoney }) {
+  const [showGame, setShowGame] = useState(false);
+
   if (running) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
-        <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" />
-        <h3 className="text-sm font-semibold text-slate-900">CreditDecide is analyzing the application.</h3>
-        <p className="text-[13px] text-slate-500 mt-1">Extracting financial metrics, generating risk signals, and evaluating the policy.</p>
-      </div>
+      <>
+        <div className="rounded-xl border border-slate-200 bg-white p-10 text-center">
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" />
+          <h3 className="text-sm font-semibold text-slate-900">CreditDecide is analyzing the application.</h3>
+          <p className="text-[13px] text-slate-500 mt-1">Extracting financial metrics, generating risk signals, and evaluating the policy.</p>
+          <div className="mt-5 flex justify-center">
+            <button
+              onClick={() => setShowGame(true)}
+              className="inline-flex items-center gap-2 text-sm font-medium text-[#1f2937] bg-white border border-[#e5e7eb] rounded-lg px-4 py-2.5 hover:bg-slate-50 transition-colors shadow-sm"
+            >
+              <Gamepad2 className="w-4 h-4" /> Play a game
+            </button>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-2">Pass the time while the AI works.</p>
+        </div>
+        {showGame && <NeonRun onClose={() => setShowGame(false)} />}
+      </>
     );
   }
 
