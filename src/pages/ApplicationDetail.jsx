@@ -17,6 +17,7 @@ import ApplicationHeader from "@/components/application/ApplicationHeader";
 import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
+import ApplicationTabBar from "@/components/application/ApplicationTabBar";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
 import ExportControls from "@/components/underwrite/ExportControls";
 import RegulatoryOutputs from "@/components/application/RegulatoryOutputs";
@@ -332,13 +333,7 @@ export default function ApplicationDetail() {
         )}
 
         {/* Tabs */}
-        <div className="flex items-center gap-1.5 mb-5 border-b border-slate-100 pb-3 overflow-x-auto no-scrollbar">
-          {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`shrink-0 text-xs px-3 py-1.5 rounded-lg transition-colors ${tab === t ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
-              {t}{t === "Documents" && documents.length > 0 && <span className="ml-1 text-[10px] opacity-60">{documents.length}</span>}
-            </button>
-          ))}
-        </div>
+        <ApplicationTabBar tabs={TABS} active={tab} onChange={setTab} documentsCount={documents.length} />
 
         {/* Tab content */}
         <div className="space-y-4">
