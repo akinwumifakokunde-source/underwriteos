@@ -20,6 +20,7 @@ export const JURISDICTIONS = {
     products: [
       { value: "personal_loan", label: "Personal Loan" },
       { value: "auto_loan", label: "Auto Loan" },
+      { value: "business_loan", label: "Business Loan" },
       { value: "mortgage", label: "Mortgage" },
     ],
     hasStates: true,
@@ -31,6 +32,7 @@ export const JURISDICTIONS = {
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },
+      { value: "mortgage", label: "Mortgage" },
     ],
   },
   ZA: {
@@ -40,6 +42,8 @@ export const JURISDICTIONS = {
     products: [
       { value: "personal_loan", label: "Personal Loan" },
       { value: "auto_loan", label: "Auto Loan" },
+      { value: "business_loan", label: "Business Loan" },
+      { value: "mortgage", label: "Mortgage" },
     ],
   },
   KE: {
@@ -49,6 +53,7 @@ export const JURISDICTIONS = {
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },
+      { value: "mortgage", label: "Mortgage" },
     ],
   },
   GH: {
@@ -58,6 +63,7 @@ export const JURISDICTIONS = {
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },
+      { value: "mortgage", label: "Mortgage" },
     ],
   },
 };
