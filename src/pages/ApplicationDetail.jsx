@@ -384,6 +384,7 @@ export default function ApplicationDetail() {
                 onView={(doc) => window.open(doc.file_url, "_blank")}
                 processingDocId={processingDocId}
                 market={app?.market} borrowerType={app?.borrower_type}
+                autoIngested={documents.length === 0 && !!(fp || cp)}
               />
             </>
           )}

@@ -26,7 +26,7 @@ const STATUS_CONFIG = {
 };
 
 export default function DocumentsSection({
-  documents, policyId, onUpload, uploading, onReprocess, onDelete, onView, processingDocId, market, borrowerType
+  documents, policyId, onUpload, uploading, onReprocess, onDelete, onView, processingDocId, market, borrowerType, autoIngested
 }) {
   const required = getDocumentRequirements(market, policyId, borrowerType);
   const docsByType = {};
@@ -38,6 +38,39 @@ export default function DocumentsSection({
   const requiredMet = required.filter((r) => r.required && (docsByType[r.type] || []).some((d) => d.status === "verified" || d.status === "processed")).length;
   const requiredTotal = required.filter((r) => r.required).length;
   const completeness = requiredTotal > 0 ? Math.round((requiredMet / requiredTotal) * 100) : 0;
+
+  // When data was auto-ingested (sample application / data source pull) and no
+  // documents have been uploaded, show a clean "data collected automatically"
+  // state instead of the Missing checklist + upload prompt.
+  if (autoIngested && documents.length === 0) {
+    return (
+      <div className="space-y-5">
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-5">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-slate-900">Data collected automatically</h3>
+              <p className="text-[12px] text-slate-600 mt-1 leading-relaxed">
+                Credit report and bank transactions were ingested via data sources — no document uploads required for
+                this application. Underwriting analysis runs on the ingested data.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <details className="rounded-xl border border-slate-200 bg-white p-4">
+          <summary className="text-sm font-medium text-slate-700 cursor-pointer list-none flex items-center gap-1.5">
+            <ChevronRight className="w-4 h-4 text-slate-400" /> Add a document manually (optional)
+          </summary>
+          <div className="mt-3">
+            <DocumentUploader onUpload={onUpload} uploading={uploading} />
+          </div>
+        </details>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">
