@@ -82,16 +82,29 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
 
         <button
           onClick={() => onChoose("sample")}
-          className="group w-full text-left rounded-xl border border-slate-200 bg-white p-4 sm:p-5 transition-all hover:border-slate-300 hover:shadow-sm flex items-center gap-3 sm:gap-4"
+          className="group w-full text-left rounded-xl border-2 border-violet-400 bg-gradient-to-br from-violet-50/60 to-white p-4 sm:p-5 transition-all hover:shadow-md hover:border-violet-500 flex flex-wrap items-center gap-3 sm:gap-4"
         >
-          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white flex items-center justify-center shrink-0 shadow-sm">
             <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-slate-900">Use sample application</h3>
-            <p className="text-[13px] text-slate-500 mt-0.5">Pre-filled borrower with synthetic data. See the full underwriting pipeline in action.</p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-sm font-bold text-slate-900">Use sample application</h3>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-700 bg-violet-100 rounded px-1.5 py-0.5">Live demo</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-0.5">No setup needed</span>
+            </div>
+            <p className="text-[13px] text-slate-600 mt-1 leading-relaxed">
+              New here? Try a fully pre-filled borrower with synthetic credit and banking data — watch CreditDecide run the complete underwriting pipeline end-to-end: analysis, risk signals, policy evaluation and a final decision in seconds.
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
+              <span className="inline-flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-violet-400" /> Synthetic credit report</span>
+              <span className="inline-flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-violet-400" /> Bank statements</span>
+              <span className="inline-flex items-center gap-1"><span className="w-1 h-1 rounded-full bg-violet-400" /> AI recommendation</span>
+            </div>
           </div>
-          <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 shrink-0" />
+          <div className="inline-flex items-center gap-1 text-[12px] font-semibold text-violet-700 group-hover:gap-2 transition-all shrink-0 w-full sm:w-auto justify-end">
+            Try it now <ArrowRight className="w-3.5 h-3.5" />
+          </div>
         </button>
 
         <button
