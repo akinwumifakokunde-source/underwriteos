@@ -2,7 +2,7 @@ import React from "react";
 import { AlertTriangle, ChevronRight, Upload, FileSearch, MessageSquare } from "lucide-react";
 import { getDocumentRequirements } from "@/lib/jurisdictions";
 
-export default function NeedsAttentionPanel({ documents, app, decision, onNavigate }) {
+export default function NeedsAttentionPanel({ documents, app, decision, onNavigate, autoIngested }) {
   const required = getDocumentRequirements(app?.market, app?.policy_id, app?.borrower_type);
   const docsByType = {};
   documents.forEach((d) => {
@@ -14,19 +14,21 @@ export default function NeedsAttentionPanel({ documents, app, decision, onNaviga
   const actionRequired = [];
   const optional = [];
 
-  // Missing required documents → BLOCKING
-  required.filter((r) => r.required).forEach((r) => {
-    const docs = docsByType[r.type] || [];
-    const verified = docs.some((d) => d.status === "verified" || d.status === "processed");
-    if (!verified) {
-      blocking.push({
-        text: `${r.label} missing`,
-        detail: docs.length > 0 ? "Uploaded but not yet verified" : "Required before final decision",
-        action: "Upload",
-        target: "Documents",
-      });
-    }
-  });
+  // Missing required documents → BLOCKING (skipped when data auto-ingested via data sources)
+  if (!autoIngested) {
+    required.filter((r) => r.required).forEach((r) => {
+      const docs = docsByType[r.type] || [];
+      const verified = docs.some((d) => d.status === "verified" || d.status === "processed");
+      if (!verified) {
+        blocking.push({
+          text: `${r.label} missing`,
+          detail: docs.length > 0 ? "Uploaded but not yet verified" : "Required before final decision",
+          action: "Upload",
+          target: "Documents",
+        });
+      }
+    });
+  }
 
   // Documents needing review → ACTION REQUIRED
   documents.forEach((d) => {
@@ -48,9 +50,9 @@ export default function NeedsAttentionPanel({ documents, app, decision, onNaviga
     }
   });
 
-  // Income not verified → ACTION REQUIRED
+  // Income not verified → ACTION REQUIRED (skipped when income verified via bank data)
   const hasPayslip = docsByType["payslip"]?.length > 0;
-  if (!hasPayslip) {
+  if (!hasPayslip && !autoIngested) {
     actionRequired.push({
       text: "Income not verified",
       detail: "Upload payslip or connect banking data",
@@ -69,17 +71,19 @@ export default function NeedsAttentionPanel({ documents, app, decision, onNaviga
     }
   });
 
-  // Optional documents
-  required.filter((r) => !r.required).forEach((r) => {
-    if (!docsByType[r.type]) {
-      optional.push({
-        text: r.label,
-        detail: "Supporting information",
-        action: "Upload",
-        target: "Documents",
-      });
-    }
-  });
+  // Optional documents (skipped when data auto-ingested)
+  if (!autoIngested) {
+    required.filter((r) => !r.required).forEach((r) => {
+      if (!docsByType[r.type]) {
+        optional.push({
+          text: r.label,
+          detail: "Supporting information",
+          action: "Upload",
+          target: "Documents",
+        });
+      }
+    });
+  }
 
   const groups = [
     { label: "BLOCKING", desc: "Required before final decision", items: blocking, cls: "text-rose-700", bg: "bg-rose-50", border: "border-rose-200" },

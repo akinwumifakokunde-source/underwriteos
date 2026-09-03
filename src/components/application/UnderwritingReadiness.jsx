@@ -2,17 +2,18 @@ import React from "react";
 import { computeReadiness, READINESS_STYLES } from "@/lib/riskDimensions";
 import { getDocumentRequirements } from "@/lib/jurisdictions";
 
-export default function UnderwritingReadiness({ documents, app, fp, cp, decision, onNavigate }) {
+export default function UnderwritingReadiness({ documents, app, fp, cp, decision, onNavigate, autoIngested }) {
   const readiness = computeReadiness({
     documents,
     policyId: app?.policy_id,
     fp, cp, decision,
     borrowerType: app?.borrower_type,
     market: app?.market,
+    autoIngested,
   });
 
   const required = getDocumentRequirements(app?.market, app?.policy_id, app?.borrower_type);
-  const missingDocs = required.filter((r) => r.required && !documents.some((d) => d.document_type === r.type && (d.status === "verified" || d.status === "processed")));
+  const missingDocs = autoIngested ? [] : required.filter((r) => r.required && !documents.some((d) => d.document_type === r.type && (d.status === "verified" || d.status === "processed")));
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5">

@@ -351,6 +351,7 @@ export default function ApplicationDetail() {
               form={form} setForm={setForm}
               allExtracted={allExtracted} onSave={saveForm} saving={saving}
               onNavigate={setTab}
+              autoIngested={documents.length === 0 && !!(fp || cp)}
             />
           )}
 

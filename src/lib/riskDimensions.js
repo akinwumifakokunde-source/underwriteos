@@ -47,7 +47,7 @@ export function computeRiskDimensions({ fp, cp, riskSignals, documents, decision
   return { creditRisk, affordability, fraudRisk, dataQuality, policyEligibility };
 }
 
-export function computeReadiness({ documents, policyId, fp, cp, decision, borrowerType, market }) {
+export function computeReadiness({ documents, policyId, fp, cp, decision, borrowerType, market, autoIngested }) {
   const required = getDocumentRequirements(market, policyId, borrowerType);
   const requiredDocs = required.filter((r) => r.required);
   const docsMet = requiredDocs.filter((r) =>
@@ -55,16 +55,20 @@ export function computeReadiness({ documents, policyId, fp, cp, decision, borrow
   ).length;
   const docsTotal = requiredDocs.length;
 
+  // When data was auto-ingested via data sources (sample application / open banking),
+  // document requirements are fulfilled without manual uploads.
+  const docsComplete = autoIngested || docsMet >= docsTotal;
+
   const checks = [
     {
       label: "Documents",
-      status: docsMet >= docsTotal ? "complete" : docsMet > 0 ? "partial" : "missing",
-      detail: `${docsMet}/${docsTotal}`,
+      status: docsComplete ? "complete" : docsMet > 0 ? "partial" : "missing",
+      detail: autoIngested ? "Via data source" : `${docsMet}/${docsTotal}`,
     },
     {
       label: "Identity",
-      status: documents.some((d) => d.document_type === "identity" && d.status === "verified") ? "complete" : "pending",
-      detail: documents.some((d) => d.document_type === "identity") ? "Uploaded" : "Not provided",
+      status: autoIngested || documents.some((d) => d.document_type === "identity" && d.status === "verified") ? "complete" : "pending",
+      detail: autoIngested ? "Verified" : (documents.some((d) => d.document_type === "identity") ? "Uploaded" : "Not provided"),
     },
     {
       label: "Income",
