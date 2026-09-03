@@ -5,6 +5,8 @@ export const JURISDICTIONS = {
     policies: [
       { id: "consumer-v1", label: "UK Consumer Lending v1" },
       { id: "sme-v1", label: "UK SME Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
     ],
     products: [
       { value: "personal_loan", label: "Personal Loan" },
@@ -16,7 +18,11 @@ export const JURISDICTIONS = {
   US: {
     code: "US", name: "United States", currency: "USD",
     regulatoryProfile: "US Consumer Lending",
-    policies: [{ id: "us-consumer-v2", label: "US Consumer Lending v2" }],
+    policies: [
+      { id: "us-consumer-v2", label: "US Consumer Lending v2" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
     products: [
       { value: "personal_loan", label: "Personal Loan" },
       { value: "auto_loan", label: "Auto Loan" },
@@ -28,7 +34,11 @@ export const JURISDICTIONS = {
   NG: {
     code: "NG", name: "Nigeria", currency: "NGN",
     regulatoryProfile: "Nigeria Consumer Lending",
-    policies: [{ id: "ng-consumer-v1", label: "Nigeria Consumer Lending v1" }],
+    policies: [
+      { id: "ng-consumer-v1", label: "Nigeria Consumer Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },
@@ -38,7 +48,11 @@ export const JURISDICTIONS = {
   ZA: {
     code: "ZA", name: "South Africa", currency: "ZAR",
     regulatoryProfile: "South Africa Consumer Credit",
-    policies: [{ id: "za-consumer-v1", label: "South Africa Consumer Lending v1" }],
+    policies: [
+      { id: "za-consumer-v1", label: "South Africa Consumer Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
     products: [
       { value: "personal_loan", label: "Personal Loan" },
       { value: "auto_loan", label: "Auto Loan" },
@@ -49,7 +63,11 @@ export const JURISDICTIONS = {
   KE: {
     code: "KE", name: "Kenya", currency: "KES",
     regulatoryProfile: "Kenya Consumer Lending",
-    policies: [{ id: "ke-consumer-v1", label: "Kenya Consumer Lending v1" }],
+    policies: [
+      { id: "ke-consumer-v1", label: "Kenya Consumer Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },
@@ -59,7 +77,11 @@ export const JURISDICTIONS = {
   GH: {
     code: "GH", name: "Ghana", currency: "GHS",
     regulatoryProfile: "Ghana Consumer Lending",
-    policies: [{ id: "gh-consumer-v1", label: "Ghana Consumer Lending v1" }],
+    policies: [
+      { id: "gh-consumer-v1", label: "Ghana Consumer Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
     products: [
       { value: "personal_loan", label: "Digital Personal Loan" },
       { value: "business_loan", label: "Business Loan" },

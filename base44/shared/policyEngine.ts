@@ -115,6 +115,33 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" }
     ]
+  },
+  "mortgage-v1": {
+    policy_id: "mortgage-v1", version: "1", name: "Mortgage Lending v1",
+    description: "Baseline mortgage policy — stricter affordability and credit thresholds.",
+    rules: [
+      { rule_id: "CR-SCORE", field: "credit_score", operator: "<", threshold: 620, decision: "DECLINE", reason: "Credit score below mortgage minimum (620)" },
+      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.36, decision: "REVIEW", reason: "Debt-to-income exceeds mortgage threshold (36%)" },
+      { rule_id: "FR-FLAG", field: "suspicious_transactions", operator: "==", threshold: true, decision: "REVIEW", reason: "Potential fraud signal detected" },
+      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
+      { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
+      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.3, decision: "REVIEW", reason: "Credit utilisation above mortgage threshold (30%)" },
+      { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" }
+    ]
+  },
+  "business-v1": {
+    policy_id: "business-v1", version: "1", name: "Business Loan v1",
+    description: "Baseline business loan policy — revenue, cashflow and credit checks.",
+    rules: [
+      { rule_id: "AF-INC", field: "annual_income", operator: "<", threshold: 50000, decision: "DECLINE", reason: "Annual revenue below business minimum" },
+      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Debt-to-income exceeds 50%" },
+      { rule_id: "FR-FLAG", field: "suspicious_transactions", operator: "==", threshold: true, decision: "REVIEW", reason: "Potential fraud signal detected" },
+      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
+      { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
+      { rule_id: "INC-STAB", field: "income_stability", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Income stability below threshold" },
+      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" }
+    ]
   }
 };
 
