@@ -18,6 +18,7 @@ import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
 import ApplicationTabBar from "@/components/application/ApplicationTabBar";
+import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
 import ExportControls from "@/components/underwrite/ExportControls";
 import RegulatoryOutputs from "@/components/application/RegulatoryOutputs";
@@ -64,6 +65,7 @@ export default function ApplicationDetail() {
   const [overriding, setOverriding] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
   const [pulling, setPulling] = useState(null);
+  const [postUpload, setPostUpload] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -160,6 +162,7 @@ export default function ApplicationDetail() {
       await load();
       await runPipeline();
       setTab("Overview");
+      setPostUpload({ fileName: file.name });
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
     } finally {
@@ -334,6 +337,19 @@ export default function ApplicationDetail() {
 
         {/* Tabs */}
         <ApplicationTabBar tabs={TABS} active={tab} onChange={setTab} documentsCount={documents.length} />
+
+        {postUpload && (
+          <div className="mb-4">
+            <PostUploadPrompt
+              fileName={postUpload.fileName}
+              extractedCount={(documents.find((d) => d.file_name === postUpload.fileName)?.extracted_data?.fields || []).length}
+              form={form}
+              onAdjustPolicy={() => { setPostUpload(null); setTab("Policy"); }}
+              onReviewDetails={() => { setPostUpload(null); setTab("Overview"); }}
+              onDismiss={() => setPostUpload(null)}
+            />
+          </div>
+        )}
 
         {/* Tab content */}
         <div className="space-y-4">
