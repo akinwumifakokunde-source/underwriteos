@@ -1,6 +1,7 @@
 import React from "react";
 import { Sparkles, Save, Loader2, Globe } from "lucide-react";
 import { JURISDICTIONS, getJurisdiction, getProducts, getPolicies, getCurrency } from "@/lib/jurisdictions";
+import { suggestPolicyForProduct } from "@/lib/policyTemplates";
 
 export const POLICY_REQUIRED_DOCS = {
   "consumer-v1": [
@@ -53,7 +54,11 @@ export default function ApplicationFormSection({ borrower, app, form, setForm, e
             { value: "self_employed", label: "Self-employed" },
             { value: "business", label: "Business" },
           ]} />
-          <FormSelect label="Loan product" value={form.product_type} onChange={(v) => set("product_type", v)} options={jur.products} />
+          <FormSelect label="Loan product" value={form.product_type} onChange={(v) => {
+            set("product_type", v);
+            const suggested = suggestPolicyForProduct(form.market, v);
+            if (suggested && suggested !== form.policy_id) set("policy_id", suggested);
+          }} options={jur.products} />
           <FormSelect label="Underwriting policy" value={form.policy_id} onChange={(v) => set("policy_id", v)} options={jur.policies} />
           <div className="flex items-center gap-2 text-[12px] text-slate-400">
             <span>Currency:</span>

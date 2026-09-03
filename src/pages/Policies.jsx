@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare, Globe } from "lucide-react";
 import PolicySimulator from "@/components/policies/PolicySimulator";
 import ComparePolicies from "@/components/policies/ComparePolicies";
+import { JURISDICTIONS, getJurisdiction } from "@/lib/jurisdictions";
+import { getPolicyTemplate, TEMPLATE_TYPES } from "@/lib/policyTemplates";
 
 const FIELDS = [
   { value: "credit_score", label: "Credit score", type: "number" },
@@ -38,56 +40,6 @@ const CATEGORIES = [
   { value: "data_quality", label: "Data quality" },
 ];
 
-const TEMPLATES = {
-  "consumer-v1": {
-    name: "Consumer Lending v1",
-    description: "Baseline consumer credit policy",
-    rules: [
-      { rule_id: "CR-SCORE", field: "credit_score", operator: "<", threshold: 500, decision: "DECLINE", reason: "Credit score below minimum (500)" },
-      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.45, decision: "REVIEW", reason: "Debt-to-income exceeds 45%" },
-      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
-      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.4, decision: "REVIEW", reason: "Credit utilisation above 40%" },
-      { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below 80%" },
-    ],
-  },
-  "sme-v1": {
-    name: "SME Lending v1",
-    description: "Small business lending policy",
-    rules: [
-      { rule_id: "AF-INC", field: "annual_income", operator: "<", threshold: 30000, decision: "DECLINE", reason: "Annual revenue below minimum (£30,000)" },
-      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Debt-to-income exceeds 50%" },
-      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
-      { rule_id: "INC-STAB", field: "income_stability", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Income stability below threshold" },
-    ],
-  },
-  "mortgage-v1": {
-    name: "Mortgage Lending v1",
-    description: "Baseline mortgage policy — stricter affordability and credit thresholds",
-    rules: [
-      { rule_id: "CR-SCORE", field: "credit_score", operator: "<", threshold: 620, decision: "DECLINE", reason: "Credit score below mortgage minimum (620)" },
-      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.36, decision: "REVIEW", reason: "Debt-to-income exceeds mortgage threshold (36%)" },
-      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
-      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.3, decision: "REVIEW", reason: "Credit utilisation above mortgage threshold (30%)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" },
-      { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
-      { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
-    ],
-  },
-  "business-v1": {
-    name: "Business Loan v1",
-    description: "Baseline business loan policy — revenue, cashflow and credit checks",
-    rules: [
-      { rule_id: "AF-INC", field: "annual_income", operator: "<", threshold: 50000, decision: "DECLINE", reason: "Annual revenue below business minimum (£50,000)" },
-      { rule_id: "AF-DTI", field: "debt_to_income", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Debt-to-income exceeds 50%" },
-      { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
-      { rule_id: "INC-STAB", field: "income_stability", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Income stability below threshold" },
-      { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
-      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
-    ],
-  },
-};
-
 export default function Policies() {
   const [policies, setPolicies] = useState([]);
   const [orgId, setOrgId] = useState(null);
@@ -97,6 +49,7 @@ export default function Policies() {
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [market, setMarket] = useState("GB");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -121,14 +74,17 @@ export default function Policies() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const template = urlParams.get("template");
-    if (template) startNewPolicy(template);
+    const mkt = urlParams.get("market");
+    if (mkt) setMarket(mkt);
+    if (template) startNewPolicy(template, mkt);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const startNewPolicy = (templateKey) => {
-    const tpl = TEMPLATES[templateKey] || TEMPLATES["consumer-v1"];
+  const startNewPolicy = (templateType, mkt) => {
+    const useMarket = mkt || market;
+    const tpl = getPolicyTemplate(useMarket, templateType);
     setEditing({
-      policy_id: templateKey || "custom-" + Date.now().toString(36),
+      policy_id: tpl.policy_id,
       name: tpl.name,
       description: tpl.description,
       version: "1",
@@ -234,22 +190,45 @@ export default function Policies() {
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Policies</h1>
             <p className="text-sm text-slate-500 mt-1">Create and manage underwriting policies without code.</p>
           </div>
           {!editing && (
             <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <Globe className="w-4 h-4 text-[#0d9488]" />
+                <select
+                  value={market}
+                  onChange={(e) => setMarket(e.target.value)}
+                  className="text-sm rounded-lg border border-slate-200 px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                >
+                  {Object.values(JURISDICTIONS).map((j) => (
+                    <option key={j.code} value={j.code}>{j.name}</option>
+                  ))}
+                </select>
+              </div>
               <button onClick={() => setCompareOpen(true)} disabled={policies.length < 2} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-4 py-2.5 rounded-lg hover:bg-slate-50 disabled:opacity-50">
                 <GitCompare className="w-4 h-4" /> Compare
               </button>
-              <button onClick={() => startNewPolicy("consumer-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
+              <button onClick={() => startNewPolicy("consumer")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26]">
                 <Plus className="w-4 h-4" /> New Policy
               </button>
             </div>
           )}
         </div>
+
+        {!editing && (
+          <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-slate-500">
+            <span className="inline-flex items-center gap-1.5"><Globe className="w-3.5 h-3.5 text-[#0d9488]" /> Market: <span className="font-medium text-slate-700">{getJurisdiction(market).name}</span></span>
+            <span className="hidden sm:inline">·</span>
+            <span>Regulatory profile: <span className="font-medium text-slate-700">{getJurisdiction(market).regulatoryProfile}</span></span>
+            <span className="hidden sm:inline">·</span>
+            <span>Currency: <span className="font-mono font-medium text-slate-700">{getJurisdiction(market).currency}</span></span>
+            <span className="ml-auto text-[11px] text-slate-400">New policies start from this market's baseline</span>
+          </div>
+        )}
 
         {error && (
           <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 flex items-start gap-3">
@@ -396,19 +375,20 @@ export default function Policies() {
             {policies.length === 0 ? (
               <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
                 <Shield className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-                <p className="text-sm text-slate-400 mb-4">No policies yet. Start from a template.</p>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => startNewPolicy("consumer-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800">
+                <p className="text-sm text-slate-400 mb-1">No policies yet for {getJurisdiction(market).name}.</p>
+                <p className="text-[12px] text-slate-400 mb-4">Start from a template — rules are pre-filled for this market.</p>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  <button onClick={() => startNewPolicy("consumer")} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800">
                     Consumer Lending
                   </button>
-                  <button onClick={() => startNewPolicy("sme-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
-                    SME Lending
-                  </button>
-                  <button onClick={() => startNewPolicy("mortgage-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                  <button onClick={() => startNewPolicy("mortgage")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
                     Mortgage
                   </button>
-                  <button onClick={() => startNewPolicy("business-v1")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                  <button onClick={() => startNewPolicy("business")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
                     Business Loan
+                  </button>
+                  <button onClick={() => startNewPolicy("sme")} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                    SME Lending
                   </button>
                 </div>
               </div>

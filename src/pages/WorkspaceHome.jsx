@@ -125,13 +125,17 @@ export default function WorkspaceHome() {
         ) : policies.length === 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white p-12 text-center">
             <Shield className="w-8 h-8 text-slate-300 mx-auto mb-3" />
-            <p className="text-sm text-slate-400 mb-4">No policies yet. Start from a template.</p>
-            <div className="flex items-center justify-center gap-2">
-              <Link to="/policies?template=consumer-v1" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800">
+            <p className="text-sm text-slate-400 mb-1">No policies yet for {market === "GB" ? "the UK" : market}.</p>
+            <p className="text-[12px] text-slate-400 mb-4">Start from a template — rules are pre-filled for your market.</p>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <Link to={`/policies?template=consumer&market=${market}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-3.5 py-2 rounded-lg hover:bg-slate-800">
                 Consumer Lending
               </Link>
-              <Link to="/policies?template=sme-v1" className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
-                SME Lending
+              <Link to={`/policies?template=mortgage&market=${market}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                Mortgage
+              </Link>
+              <Link to={`/policies?template=business&market=${market}`} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-3.5 py-2 rounded-lg hover:bg-slate-50">
+                Business Loan
               </Link>
             </div>
           </div>
