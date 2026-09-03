@@ -8,6 +8,8 @@ const COMPETITORS = [
   { key: "us", name: "CreditDecide", tag: "This platform", tone: "teal" },
   { key: "legacy", name: "FICO / Experian", tag: "Legacy decisioning", tone: "slate" },
   { key: "lms", name: "TurnKey Lender", tag: "Modern LMS + decisioning", tone: "slate" },
+  { key: "loanpro", name: "LoanPro", tag: "US API-first LMS", tone: "slate" },
+  { key: "mambu", name: "Mambu", tag: "Enterprise cloud lending", tone: "slate" },
   { key: "africa", name: "Lendsqr", tag: "Africa-focused LMS", tone: "slate" },
 ];
 
@@ -25,20 +27,22 @@ const COVERAGE = {
   us: { GB: true, US: true, NG: true, ZA: true, KE: true, GH: true },
   legacy: { GB: true, US: true, NG: "partial", ZA: "partial", KE: false, GH: false },
   lms: { GB: true, US: true, NG: true, ZA: true, KE: true, GH: true },
+  loanpro: { GB: "partial", US: true, NG: "partial", ZA: "partial", KE: false, GH: false },
+  mambu: { GB: true, US: true, NG: "partial", ZA: "partial", KE: "partial", GH: "partial" },
   africa: { GB: "partial", US: "partial", NG: true, ZA: true, KE: true, GH: true },
 };
 
 const FEATURES = [
-  { label: "No-code policy builder", us: true, legacy: "partial", lms: "partial", africa: "partial" },
-  { label: "AI-assisted risk analysis (evidence-graph)", us: true, legacy: "partial", lms: "partial", africa: false },
-  { label: "Full evidence lineage (every signal → source)", us: true, legacy: false, lms: false, africa: false },
-  { label: "Automated adverse-action & reason codes", us: true, legacy: true, lms: "partial", africa: false },
-  { label: "Closed-loop outcome calibration", us: true, legacy: "partial", lms: "partial", africa: false },
-  { label: "Batch / portfolio underwriting (CSV)", us: true, legacy: true, lms: true, africa: false },
-  { label: "Multi-jurisdiction policies (6 markets)", us: true, legacy: "partial", lms: true, africa: "partial" },
-  { label: "White-label borrower application forms", us: true, legacy: false, lms: true, africa: true },
-  { label: "REST API + webhooks from day one", us: true, legacy: true, lms: true, africa: true },
-  { label: "Setup in hours, not quarters", us: true, legacy: false, lms: "partial", africa: true },
+  { label: "No-code policy builder", us: true, legacy: "partial", lms: "partial", loanpro: "partial", mambu: "partial", africa: "partial" },
+  { label: "AI-assisted risk analysis (evidence-graph)", us: true, legacy: "partial", lms: "partial", loanpro: "partial", mambu: false, africa: false },
+  { label: "Full evidence lineage (every signal → source)", us: true, legacy: false, lms: false, loanpro: false, mambu: false, africa: false },
+  { label: "Automated adverse-action & reason codes", us: true, legacy: true, lms: "partial", loanpro: "partial", mambu: "partial", africa: false },
+  { label: "Closed-loop outcome calibration", us: true, legacy: "partial", lms: "partial", loanpro: false, mambu: false, africa: false },
+  { label: "Batch / portfolio underwriting (CSV)", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: false },
+  { label: "Multi-jurisdiction policies (6 markets)", us: true, legacy: "partial", lms: true, loanpro: "partial", mambu: true, africa: "partial" },
+  { label: "White-label borrower application forms", us: true, legacy: false, lms: true, loanpro: true, mambu: "partial", africa: true },
+  { label: "REST API + webhooks from day one", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: true },
+  { label: "Setup in hours, not quarters", us: true, legacy: false, lms: "partial", loanpro: "partial", mambu: false, africa: true },
 ];
 
 function Cell({ value }) {
@@ -81,11 +85,11 @@ export default function CompetitiveComparison() {
               <span className="inline-flex items-center gap-1"><X className="w-3.5 h-3.5 text-slate-300" /> Not supported</span>
             </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-sm min-w-[640px]">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className="text-left font-medium text-slate-500 py-2 px-2 w-[28%]">Market</th>
+                  <th className="text-left font-medium text-slate-500 py-2 px-2 w-[24%]">Market</th>
                   {COMPETITORS.map((c) => (
                     <th key={c.key} className={`py-2 px-2 text-center ${c.tone === "teal" ? "bg-teal-50/60" : ""}`}>
                       <span className={`text-[12px] font-semibold ${c.tone === "teal" ? "text-teal-700" : "text-slate-700"}`}>{c.name}</span>
@@ -130,11 +134,11 @@ export default function CompetitiveComparison() {
 
         {/* Desktop: table */}
         <div className="hidden sm:block rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-sm min-w-[760px]">
               <thead>
                 <tr className="border-b border-slate-100">
-                  <th className="text-left font-medium text-slate-500 py-4 px-5 w-[40%]">Capability</th>
+                  <th className="text-left font-medium text-slate-500 py-4 px-5 w-[34%]">Capability</th>
                   {COMPETITORS.map((c) => (
                     <th key={c.key} className={`py-4 px-3 ${c.tone === "teal" ? "bg-teal-50/60" : ""}`}>
                       <div className="flex flex-col items-center">
