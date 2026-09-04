@@ -7,6 +7,7 @@ import StatsBand from "@/components/home/StatsBand.jsx";
 import NoCodeSolution from "@/components/home/NoCodeSolution.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
 import PipelineFlow from "@/components/home/PipelineFlow.jsx";
+import AgenticArchitecture from "@/components/home/AgenticArchitecture.jsx";
 import PolicyBuilderShowcase from "@/components/home/PolicyBuilderShowcase.jsx";
 import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
@@ -32,6 +33,7 @@ export default function Home() {
       <NoCodeSolution />
       <WorkflowSection />
       <PipelineFlow />
+      <AgenticArchitecture />
       <Providers />
       <FormsFeature />
       <PolicyBuilderShowcase />
