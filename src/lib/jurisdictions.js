@@ -88,6 +88,21 @@ export const JURISDICTIONS = {
       { value: "mortgage", label: "Mortgage" },
     ],
   },
+  OT: {
+    code: "OT", name: "Others", currency: "USD",
+    regulatoryProfile: "General / Other Jurisdiction",
+    policies: [
+      { id: "consumer-v1", label: "Consumer Lending v1" },
+      { id: "mortgage-v1", label: "Mortgage Lending v1" },
+      { id: "business-v1", label: "Business Loan v1" },
+    ],
+    products: [
+      { value: "personal_loan", label: "Personal Loan" },
+      { value: "auto_loan", label: "Auto Loan" },
+      { value: "business_loan", label: "Business Loan" },
+      { value: "mortgage", label: "Mortgage" },
+    ],
+  },
 };
 
 const KYC_FIELDS = {
@@ -113,8 +128,12 @@ const KYC_FIELDS = {
   ],
 };
 
+const OTHER_KYC = [
+  { key: "national_id", label: "National ID / Passport Number", placeholder: "ID or passport number", hint: "Government-issued ID for KYC verification" },
+];
+
 export function getKycConfig(market) {
-  return KYC_FIELDS[market] || KYC_FIELDS.GB;
+  return KYC_FIELDS[market] || OTHER_KYC;
 }
 
 export function getJurisdiction(code) {

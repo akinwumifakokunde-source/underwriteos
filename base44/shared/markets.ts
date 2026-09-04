@@ -20,7 +20,8 @@ export const MARKETS: Record<string, MarketConfig> = {
   NG: { code: "NG", name: "Nigeria", currency: "NGN", regulatoryProfile: "Nigeria Consumer Lending", defaultPolicyId: "ng-consumer-v1", defaultCreditBureau: "crc", defaultOpenBankingProvider: "okra" },
   ZA: { code: "ZA", name: "South Africa", currency: "ZAR", regulatoryProfile: "South Africa Consumer Credit", defaultPolicyId: "za-consumer-v1", defaultCreditBureau: "xds", defaultOpenBankingProvider: "stitch" },
   KE: { code: "KE", name: "Kenya", currency: "KES", regulatoryProfile: "Kenya Consumer Lending", defaultPolicyId: "ke-consumer-v1", defaultCreditBureau: "crb_africa", defaultOpenBankingProvider: "okra" },
-  GH: { code: "GH", name: "Ghana", currency: "GHS", regulatoryProfile: "Ghana Consumer Lending", defaultPolicyId: "gh-consumer-v1", defaultCreditBureau: "xds", defaultOpenBankingProvider: "mono" }
+  GH: { code: "GH", name: "Ghana", currency: "GHS", regulatoryProfile: "Ghana Consumer Lending", defaultPolicyId: "gh-consumer-v1", defaultCreditBureau: "xds", defaultOpenBankingProvider: "mono" },
+  OT: { code: "OT", name: "Others", currency: "USD", regulatoryProfile: "General / Other Jurisdiction", defaultPolicyId: "consumer-v1", defaultCreditBureau: "other", defaultOpenBankingProvider: "other" }
 };
 
 export const SUPPORTED_MARKETS = Object.keys(MARKETS);

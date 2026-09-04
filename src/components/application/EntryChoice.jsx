@@ -27,7 +27,7 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
           <span className="text-[11px] text-slate-400 sm:ml-auto">Determines currency, policy, and document requirements</span>
         </div>
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-          {Object.values(JURISDICTIONS).map((j) => (
+          {Object.values(JURISDICTIONS).filter((j) => j.code !== "OT").map((j) => (
             <button
               type="button"
               key={j.code}
@@ -39,6 +39,18 @@ export default function EntryChoice({ onChoose, market, onMarketChange }) {
             </button>
           ))}
         </div>
+        <button
+          type="button"
+          onClick={() => onMarketChange?.("OT")}
+          className={`mt-2 w-full cursor-pointer rounded-lg border px-3 py-2 text-left transition-all flex items-center gap-2 ${market === "OT" ? "border-teal-400 bg-teal-50 ring-2 ring-teal-200" : "border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300"}`}
+        >
+          <Globe className="w-4 h-4 text-slate-400" />
+          <div className="flex-1">
+            <div className={`text-[12px] font-semibold ${market === "OT" ? "text-teal-700" : "text-slate-700"}`}>Others</div>
+            <div className="text-[10px] text-slate-400">Outside the listed markets</div>
+          </div>
+          <span className="text-[10px] text-slate-400 font-mono">USD</span>
+        </button>
         <div className="mt-3 flex flex-col gap-1 text-[12px] text-slate-500 sm:flex-row sm:items-center sm:gap-3">
           <span>Regulatory profile: <span className="font-medium text-slate-700">{jur.regulatoryProfile}</span></span>
           <span className="hidden sm:inline">·</span>

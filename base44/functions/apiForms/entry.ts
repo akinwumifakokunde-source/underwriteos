@@ -285,8 +285,9 @@ function kycFor(market: string): any[] {
       { key: "kra_pin", label: "KRA PIN", placeholder: "e.g. A000000000X", hint: "Kenya Revenue Authority PIN" },
     ],
     GH: [{ key: "ghana_card_number", label: "Ghana Card Number", placeholder: "GHA-000000000", hint: "Used to verify identity and pull your Ghana credit report (XDS Ghana)" }],
+    OT: [{ key: "national_id", label: "National ID / Passport Number", placeholder: "ID or passport number", hint: "Government-issued ID for KYC verification" }],
   };
-  return map[market] || map.GB;
+  return map[market] || map.OT;
 }
 
 function defaultFields() {
@@ -309,8 +310,8 @@ function defaultFields() {
 }
 
 function currencyFor(market: string): string {
-  const map: any = { GB: "GBP", US: "USD", NG: "NGN", ZA: "ZAR", KE: "KES", GH: "GHS" };
-  return map[market] || "GBP";
+  const map: any = { GB: "GBP", US: "USD", NG: "NGN", ZA: "ZAR", KE: "KES", GH: "GHS", OT: "USD" };
+  return map[market] || "USD";
 }
 
 function inferFormat(name: string): string {

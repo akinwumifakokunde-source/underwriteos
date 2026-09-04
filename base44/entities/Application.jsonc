@@ -32,10 +32,11 @@
         "NG",
         "ZA",
         "KE",
-        "GH"
+        "GH",
+        "OT"
       ],
       "default": "GB",
-      "description": "Country / market for this application. Determines currency, regulatory profile, and available policies."
+      "description": "Country / market for this application. OT = Other (outside the listed markets). Determines currency, regulatory profile, and available policies."
     },
     "regulatory_profile": {
       "type": "string",
