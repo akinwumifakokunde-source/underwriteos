@@ -9,7 +9,7 @@ export default function AnnouncementBanner() {
           New
         </span>
         <p className="text-[12px] sm:text-[13px] text-white/90">
-          CreditDecide now supports lenders everywhere — dedicated configs for the UK, US, Nigeria, South Africa, Kenya &amp; Ghana, plus an "Others" market for any country.
+          CreditDecide now supports lenders everywhere — dedicated configurations for the UK, US, Nigeria, South Africa, Kenya &amp; Ghana, plus flexible support for other markets.
         </p>
         <a href="/pricing" className="hidden sm:inline-flex items-center gap-1 text-[12px] font-medium text-[#5eead4] hover:text-[#99f0e3] transition-colors shrink-0">
           Learn more <ArrowRight className="w-3 h-3" />
