@@ -129,7 +129,12 @@ export default function BillingSection() {
     }
   };
 
-  const fmt = (cents, currency) => new Intl.NumberFormat("en-US", { style: "currency", currency: (currency || "usd").toUpperCase() }).format((cents || 0) / 100);
+  const ZERO_DEC = new Set(["BIF", "CLF", "DJF", "GNF", "JPY", "KMF", "KRW", "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF"]);
+  const fmt = (amount, currency) => {
+    const cur = (currency || "usd").toUpperCase();
+    const value = ZERO_DEC.has(cur) ? (amount || 0) : (amount || 0) / 100;
+    return new Intl.NumberFormat("en-US", { style: "currency", currency: cur }).format(value);
+  };
 
   if (loading) {
     return (

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CheckCircle2, MapPin, Loader2, CreditCard, Crown, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { AFRICA_PRICING } from "@/lib/africaPricing";
+import { getPricingConfig } from "@/lib/africaPricing";
 import { detectAfricaMarket } from "@/lib/geoPricing";
 
 // Africa-market pricing panel with working Stripe checkout at local-currency rates.
@@ -66,7 +66,8 @@ export default function AfricaPricingPanel({ onPurchased }) {
 
   if (!market) return null;
 
-  const cfg = AFRICA_PRICING[market];
+  const cfg = getPricingConfig(market);
+  if (!cfg) return null;
 
   return (
     <div className="rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/[0.03] p-5">

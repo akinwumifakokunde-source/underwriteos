@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle2, Globe2, Sparkles, Loader2, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AFRICA_PRICING } from "@/lib/africaPricing";
+import { getPricingConfig } from "@/lib/africaPricing";
 import { detectAfricaMarket } from "@/lib/geoPricing";
 
 export default function AfricaPricing() {
@@ -47,23 +47,23 @@ export default function AfricaPricing() {
             Local-currency pricing for African lenders
           </h2>
           <p className="mt-3 text-base text-[#525965] leading-relaxed">
-            We offer purchasing-power-adjusted pricing in local currency for lenders in Nigeria, Ghana, Kenya, and
-            South Africa. If you're based in one of these markets, your local-currency rates are applied automatically.
+            We offer purchasing-power-adjusted pricing in local currency for lenders across Africa — including
+            Nigeria, Ghana, Kenya, South Africa, Egypt, Rwanda, Uganda, Morocco and more. If you're based anywhere
+            in Africa, your discounted local-currency rates are applied automatically.
           </p>
         </div>
         <div className="inline-flex items-start gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3 max-w-2xl">
           <MapPin className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
           <p className="text-sm text-[#0a0c12] leading-relaxed">
-            <span className="font-semibold">USD pricing shown above</span> applies to your location. Local-currency
-            pricing for Nigeria (₦), Ghana (GH₵), Kenya (KSh), and South Africa (R) is displayed automatically when we
-            detect you're in one of those markets.
+            <span className="font-semibold">Standard USD pricing shown above</span> applies to your location. African
+            lenders get discounted local-currency rates automatically when we detect you're in an African market.
           </p>
         </div>
       </section>
     );
   }
 
-  const cfg = AFRICA_PRICING[market];
+  const cfg = getPricingConfig(market);
 
   return (
     <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
@@ -72,12 +72,19 @@ export default function AfricaPricing() {
           <MapPin className="w-3.5 h-3.5" /> Pricing for your location · {cfg.label}
         </div>
         <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">
-          Local-currency pricing for {cfg.label}
+          {cfg.isFallback ? `Nigeria-rate pricing for ${cfg.label}` : `Local-currency pricing for ${cfg.label}`}
         </h2>
         <p className="mt-3 text-base text-[#525965] leading-relaxed">
           We've detected you're in {cfg.label}. Your subscription and credit packs are billed in {cfg.currency} at
           purchasing-power-adjusted rates — the same platform, credits, and markets, built for local economics.
         </p>
+        {cfg.isFallback && (
+          <p className="mt-2 text-sm text-[#525965] leading-relaxed">
+            We don't yet have a dedicated {cfg.label} currency tier, so you're billed in Nigerian Naira (₦) at the
+            Nigeria rate. <Link to="/contact" className="text-[#0d9488] font-medium hover:underline">Contact us</Link> for
+            local-currency billing.
+          </p>
+        )}
       </div>
 
       {/* Tiers in local currency */}
