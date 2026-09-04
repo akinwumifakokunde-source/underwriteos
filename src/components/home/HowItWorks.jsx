@@ -4,7 +4,7 @@ const STEPS = [
   {
     n: "01",
     title: "Connect",
-    body: "Create an application for any of six markets. Connect a live credit bureau or open banking source, or upload documents — whichever you have.",
+    body: "Create an application for any market — six dedicated jurisdictions or \"Others\" for anywhere else. Connect a live credit bureau or open banking source, or upload documents — whichever you have.",
     endpoint: "POST /v1/applications",
   },
   {

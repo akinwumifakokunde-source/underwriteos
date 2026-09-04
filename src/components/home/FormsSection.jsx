@@ -10,7 +10,7 @@ const FLOW = [
 
 const BENEFITS = [
   { icon: Zap, title: "No manual entry", desc: "Borrowers self-serve; submissions flow straight into your pipeline, eliminating re-keying and data-entry errors." },
-  { icon: ClipboardList, title: "Standardised data", desc: "Every submission maps to the same canonical borrower + application model across all six markets." },
+  { icon: ClipboardList, title: "Standardised data", desc: "Every submission maps to the same canonical borrower + application model across all markets." },
   { icon: ShieldCheck, title: "KYC built in", desc: "Market-specific identity verification is required on every form, so credit pulls start from verified identity." },
 ];
 

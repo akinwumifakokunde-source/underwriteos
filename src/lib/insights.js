@@ -11,7 +11,7 @@
 export const AUTHOR = {
   name: "CreditDecide",
   role: "Engineering & Risk Team",
-  bio: "CreditDecide's engineering and risk team builds the AI-native underwriting operating system used by lenders across six markets. These articles draw on the platform's real architecture — canonical financial profiles, structured risk signals, evidence lineage, and a versioned policy engine.",
+  bio: "CreditDecide's engineering and risk team builds the AI-native underwriting operating system used by lenders worldwide. These articles draw on the platform's real architecture — canonical financial profiles, structured risk signals, evidence lineage, and a versioned policy engine.",
 };
 
 export const INSIGHTS = [

@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: "Which markets and currencies are supported?",
-    a: "Six markets out of the box: the United Kingdom, United States, Nigeria, South Africa, Kenya and Ghana. Each market ships with its own currency defaults, regulatory profile, built-in baseline policy and supported data providers.",
+    a: "Six markets ship out of the box — the United Kingdom, United States, Nigeria, South Africa, Kenya and Ghana — each with its own currency defaults, regulatory profile, built-in baseline policy and data providers. Outside those? Pick \"Others\" and CreditDecide works for any country, with standard USD pricing or discounted local-currency rates across Africa.",
   },
   {
     q: "Can I bring my own data providers?",

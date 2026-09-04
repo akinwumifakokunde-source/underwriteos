@@ -1,7 +1,6 @@
 import React from "react";
 
-// Curated top lenders & fintechs across the six markets CreditDecide serves:
-// GB, US, NG, ZA, KE, GH — two notable names per market.
+// Curated top lenders & fintechs across the markets CreditDecide serves — two notable names per region.
 const LOGOS = [
   { name: "Monzo", weight: "font-bold" },
   { name: "Zopa", weight: "font-semibold" },
@@ -22,7 +21,7 @@ export default function TrustBar() {
     <section className="border-b border-[#eceef1] bg-white">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
         <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] mb-8">
-          Designed for leading lenders &amp; fintechs across six markets
+          Designed for leading lenders &amp; fintechs worldwide
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-5 sm:gap-x-12">
           {LOGOS.map((l) => (

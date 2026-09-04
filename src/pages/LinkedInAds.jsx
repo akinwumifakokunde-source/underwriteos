@@ -8,7 +8,7 @@ const SPONSORED_ADS = [
     angle: "No-code underwriting",
     intro: "Underwriting shouldn't take a quarter to deploy — or explain nothing when it's done.",
     headline: "Underwrite borrowers in minutes, not quarters",
-    description: "CreditDecide is the AI-native underwriting OS. Build policies visually, connect live credit & bank data, and ship explainable APPROVE / REVIEW / DECLINE decisions across 6 markets — no code.",
+    description: "CreditDecide is the AI-native underwriting OS. Build policies visually, connect live credit & bank data, and ship explainable APPROVE / REVIEW / DECLINE decisions worldwide — no code.",
   },
   {
     id: "ad-2",
@@ -20,7 +20,7 @@ const SPONSORED_ADS = [
   {
     id: "ad-3",
     angle: "Multi-market",
-    intro: "One platform, six markets — UK, US, Nigeria, South Africa, Kenya, Ghana.",
+    intro: "One platform, every market — UK, US, Nigeria, South Africa, Kenya, Ghana & beyond.",
     headline: "Lend across borders without rebuilding your stack",
     description: "Market-specific policies, KYC, and data sources out of the box. Go live in a new jurisdiction in hours, not quarters. Sandbox and production fully isolated.",
   },
@@ -53,7 +53,7 @@ const CONVERSATION_ADS = [
 const TEXT_ADS = [
   { id: "ta-1", headline: "AI underwriting, no code required", description: "Build policies visually. Decide in minutes. Explain every decision.", cta: "Start free" },
   { id: "ta-2", headline: "Explainable credit decisions", description: "Every signal traces to its source. Export as PDF, CSV, Word.", cta: "See it work" },
-  { id: "ta-3", headline: "Lend across 6 markets", description: "UK, US, NG, ZA, KE, GH — live in hours, not quarters.", cta: "View pricing" },
+  { id: "ta-3", headline: "Lend across borders", description: "6 dedicated markets + \"Others\" for anywhere — live in hours, not quarters.", cta: "View pricing" },
 ];
 
 const AUDIENCE = {

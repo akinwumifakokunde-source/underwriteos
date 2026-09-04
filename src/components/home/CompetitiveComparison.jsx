@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Check, Minus, X, ArrowRight } from "lucide-react";
 
-// Competitors chosen as the most-evaluated alternatives across the 6 markets we serve.
+// Competitors chosen as the most-evaluated alternatives across the markets we serve.
 // Values reflect honest, publicly-documented capability — not a hit piece.
 const COMPETITORS = [
   { key: "us", name: "CreditDecide", tag: "This platform", tone: "teal" },
@@ -39,7 +39,7 @@ const FEATURES = [
   { label: "Automated adverse-action & reason codes", us: true, legacy: true, lms: "partial", loanpro: "partial", mambu: "partial", africa: false },
   { label: "Closed-loop outcome calibration", us: true, legacy: "partial", lms: "partial", loanpro: false, mambu: false, africa: false },
   { label: "Batch / portfolio underwriting (CSV)", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: false },
-  { label: "Multi-jurisdiction policies (6 markets)", us: true, legacy: "partial", lms: true, loanpro: "partial", mambu: true, africa: "partial" },
+  { label: "Multi-jurisdiction policies (6+ markets)", us: true, legacy: "partial", lms: true, loanpro: "partial", mambu: true, africa: "partial" },
   { label: "White-label borrower application forms", us: true, legacy: false, lms: true, loanpro: true, mambu: "partial", africa: true },
   { label: "REST API + webhooks from day one", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: true },
   { label: "Setup in hours, not quarters", us: true, legacy: false, lms: "partial", loanpro: "partial", mambu: false, africa: true },
@@ -66,12 +66,12 @@ export default function CompetitiveComparison() {
             <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why CreditDecide
           </div>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
-            The AI underwriting layer for lenders across 6 markets
+            The AI underwriting layer for lenders everywhere
           </h2>
           <p className="mt-3 text-[15px] text-[#525965] max-w-2xl mx-auto leading-relaxed">
             Legacy decision engines explain nothing. Loan management systems cover breadth but under-invest in
             decision quality. CreditDecide is the evidence-native underwriting brain — no code, fully auditable,
-            live in hours — across the UK, US, Nigeria, South Africa, Kenya and Ghana.
+            live in hours — across the UK, US, Nigeria, South Africa, Kenya, Ghana and beyond.
           </p>
         </div>
 

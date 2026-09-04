@@ -18,7 +18,7 @@ export default function FinalCta() {
         </h2>
         <p className="mt-6 text-base sm:text-lg text-[#a0a5b0] leading-relaxed max-w-xl mx-auto">
           Connect live credit and bank data, or upload your own documents. CreditDecide handles the rest —
-          across six markets, with full evidence lineage.
+          anywhere in the world, with full evidence lineage.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">

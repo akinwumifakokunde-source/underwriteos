@@ -46,16 +46,17 @@ export default function About() {
 
           <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">Where CreditDecide operates</h2>
           <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
-            CreditDecide supports lenders across the United Kingdom, United States, Nigeria, South Africa,
-            Kenya, and Ghana — with market-specific policies, KYC requirements, and data sources out of the box.
+            CreditDecide supports lenders everywhere — with dedicated, market-specific policies, KYC
+            requirements, and data sources for the United Kingdom, United States, Nigeria, South Africa,
+            Kenya and Ghana out of the box, and an "Others" option for any other country.
           </p>
         </div>
 
         <div className="grid sm:grid-cols-3 gap-4 mt-10">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <Globe className="w-5 h-5 text-teal-600 mb-3" />
-            <h3 className="text-sm font-semibold text-slate-900 mb-1">Six markets</h3>
-            <p className="text-xs text-slate-500">UK, US, NG, ZA, KE, GH — with local data sources and KYC.</p>
+            <h3 className="text-sm font-semibold text-slate-900 mb-1">Available worldwide</h3>
+            <p className="text-xs text-slate-500">6 dedicated markets + "Others" for any country — with local data sources and KYC.</p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <Layers className="w-5 h-5 text-teal-600 mb-3" />

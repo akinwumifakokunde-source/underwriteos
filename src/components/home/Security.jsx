@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 
 const ITEMS = [
-  "Multi-jurisdiction policies (GB, US, NG, ZA, KE, GH)",
+  "Multi-jurisdiction policies (6 markets + Others)",
   "Organization-scoped access",
   "Live data source connections",
   "Immutable audit logging",

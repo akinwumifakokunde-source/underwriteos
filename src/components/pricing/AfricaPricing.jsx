@@ -109,7 +109,7 @@ export default function AfricaPricing() {
             </div>
             <div className="mt-1 text-xs text-[#525965] font-medium">{t.credits}</div>
             <div className="mt-5 space-y-2.5">
-              {["All 6 markets & data sources", "Live credit + bank data pulls", "AI analysis & policy decisions", "Evidence lineage & audit trail", "PDF / CSV / Word exports"].map((f) => (
+              {["All markets & data sources", "Live credit + bank data pulls", "AI analysis & policy decisions", "Evidence lineage & audit trail", "PDF / CSV / Word exports"].map((f) => (
                 <div key={f} className="flex items-start gap-2 text-sm text-[#3a3f4a]">
                   <CheckCircle2 className="w-4 h-4 text-[#0d9488] shrink-0 mt-0.5" />
                   {f}

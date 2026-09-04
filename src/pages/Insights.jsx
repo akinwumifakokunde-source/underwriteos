@@ -74,7 +74,7 @@ export default function Insights() {
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed max-w-2xl">
             Practical, technical writing on AI underwriting, credit decisioning, document intelligence, and
-            explainable risk — covering all six markets we serve, with new articles published every weekday.
+            explainable risk — covering every market we serve, with new articles published every weekday.
           </p>
         </div>
       </section>

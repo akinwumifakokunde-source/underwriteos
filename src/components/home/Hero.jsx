@@ -52,7 +52,7 @@ export default function Hero() {
             </div>
 
             <div className="mt-10 sm:mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-6 text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">
-              <span>6 markets supported</span>
+              <span>Available worldwide</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
               <span>5 risk dimensions</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
