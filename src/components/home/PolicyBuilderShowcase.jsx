@@ -41,8 +41,8 @@ export default function PolicyBuilderShowcase() {
             </Link>
           </div>
 
-          <div className="rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)]">
-            <div className="px-5 py-4 border-b border-[#eceef1] flex items-center justify-between bg-gradient-to-b from-[#fafbfc] to-white">
+          <div className="group rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)] transition-all duration-500 hover:shadow-[0_24px_70px_-24px_rgba(13,148,136,0.3)] hover:-translate-y-1">
+            <div className="px-5 py-4 border-b border-[#eceef1] flex items-center justify-between bg-gradient-to-r from-teal-50 via-white to-indigo-50">
               <div>
                 <div className="text-sm font-semibold text-[#0a0c12]">Consumer Lending v1</div>
                 <div className="text-[11px] text-[#8a909c]">Active · 4 rules · v1.0</div>

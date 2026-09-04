@@ -27,7 +27,7 @@ export default function TrustBar() {
           {LOGOS.map((l) => (
             <span
               key={l.name}
-              className={`text-xl sm:text-2xl ${l.weight} tracking-tight text-[#9ca3af] hover:text-[#0d9488] transition-colors select-none`}
+              className={`text-xl sm:text-2xl ${l.weight} tracking-tight text-[#9ca3af] transition-all duration-300 hover:scale-110 hover:bg-gradient-to-r hover:from-teal-500 hover:to-emerald-500 hover:bg-clip-text hover:text-transparent select-none`}
             >
               {l.name}
             </span>

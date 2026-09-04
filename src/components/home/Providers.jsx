@@ -6,7 +6,8 @@ const DOCUMENTS = ["PDF", "CSV", "JSON", "Images"];
 
 function Category({ title, note, items, accent }) {
   return (
-    <div className="group rounded-xl border border-[#eceef1] bg-white p-5 transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/30">
+    <div className="group relative rounded-xl border border-[#eceef1] bg-white p-5 transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/30 overflow-hidden">
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${accent}`} />
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold text-[#0a0c12] uppercase tracking-wide flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full bg-gradient-to-br ${accent}`} /> {title}

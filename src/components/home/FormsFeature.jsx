@@ -10,8 +10,10 @@ const FIELDS = [
 
 export default function FormsFeature() {
   return (
-    <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+    <section className="relative overflow-hidden border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
+      <div className="absolute top-1/4 right-0 w-[320px] h-[320px] bg-[#0d9488]/10 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-0 left-1/4 w-[280px] h-[280px] bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">Borrower intake</p>

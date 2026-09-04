@@ -3,12 +3,12 @@ import { Globe, MapPin, FileText, DollarSign, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DEDICATED = [
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
-  { code: "US", name: "United States", flag: "🇺🇸" },
-  { code: "NG", name: "Nigeria", flag: "🇳🇬" },
-  { code: "ZA", name: "South Africa", flag: "🇿🇦" },
-  { code: "KE", name: "Kenya", flag: "🇰🇪" },
-  { code: "GH", name: "Ghana", flag: "🇬🇭" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧", grad: "from-blue-500/15 to-indigo-500/10" },
+  { code: "US", name: "United States", flag: "🇺🇸", grad: "from-rose-500/15 to-blue-500/10" },
+  { code: "NG", name: "Nigeria", flag: "🇳🇬", grad: "from-emerald-500/15 to-teal-500/10" },
+  { code: "ZA", name: "South Africa", flag: "🇿🇦", grad: "from-amber-500/15 to-emerald-500/10" },
+  { code: "KE", name: "Kenya", flag: "🇰🇪", grad: "from-red-500/15 to-emerald-500/10" },
+  { code: "GH", name: "Ghana", flag: "🇬🇭", grad: "from-amber-500/15 to-rose-500/10" },
 ];
 
 export default function GlobalCoverage() {
@@ -37,9 +37,9 @@ export default function GlobalCoverage() {
             {DEDICATED.map((m) => (
               <div
                 key={m.code}
-                className="group rounded-lg border border-[#eceef1] bg-[#fafbfc] px-3 py-3 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_-12px_rgba(13,148,136,0.3)] hover:border-[#0d9488]/40 hover:bg-white"
+                className={`group rounded-lg border border-[#eceef1] bg-gradient-to-br ${m.grad} px-3 py-3 text-center transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_36px_-14px_rgba(13,148,136,0.35)] hover:border-[#0d9488]/40`}
               >
-                <div className="text-xl leading-none mb-1.5 transition-transform duration-300 group-hover:scale-125">{m.flag}</div>
+                <div className="text-xl leading-none mb-1.5 transition-transform duration-300 group-hover:scale-125 group-hover:-rotate-6">{m.flag}</div>
                 <div className="text-[13px] font-semibold text-[#0a0c12]">{m.name}</div>
                 <div className="text-[10px] font-mono text-[#8a909c]">{m.code}</div>
               </div>
@@ -48,7 +48,7 @@ export default function GlobalCoverage() {
         </div>
 
         {/* Others / flexible */}
-        <div className="mt-4 rounded-xl border-2 border-dashed border-[#0d9488]/40 bg-[#0d9488]/[0.03] p-5">
+        <div className="mt-4 rounded-xl border border-[#0d9488]/30 bg-gradient-to-br from-[#f0fdfa] via-white to-[#eef2ff] p-5 shadow-[0_10px_40px_-12px_rgba(13,148,136,0.25)]">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#0d9488]/10 text-[#0d9488] flex items-center justify-center shrink-0">
               <Globe className="w-5 h-5" />

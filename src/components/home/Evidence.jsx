@@ -3,6 +3,13 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
 const LINEAGE = ["Decision", "Policy evaluation", "Risk signal", "Evidence", "Source field"];
+const NODE_GRADS = [
+  "from-teal-400 to-emerald-500",
+  "from-sky-400 to-indigo-500",
+  "from-violet-400 to-purple-500",
+  "from-amber-400 to-orange-500",
+  "from-rose-400 to-pink-500",
+];
 
 export default function Evidence() {
   return (
@@ -23,8 +30,8 @@ export default function Evidence() {
             <div className="space-y-2">
               {LINEAGE.map((l, i) => (
                 <React.Fragment key={l}>
-                  <div className="text-sm font-medium text-[#0a0c12] px-3.5 py-2.5 rounded-lg bg-white border border-[#eceef1] border-l-4 border-l-[#0d9488] shadow-sm transition-all hover:translate-x-1 hover:shadow-md">{l}</div>
-                  {i < LINEAGE.length - 1 && <div className="text-[#0d9488] text-xs pl-3.5">↓</div>}
+                  <div className={`text-sm font-medium text-white px-3.5 py-2.5 rounded-lg bg-gradient-to-r ${NODE_GRADS[i]} shadow-sm transition-all duration-300 hover:translate-x-1 hover:shadow-md`}>{l}</div>
+                  {i < LINEAGE.length - 1 && <div className="text-[#0d9488] text-xs pl-3.5 animate-pulse">↓</div>}
                 </React.Fragment>
               ))}
             </div>
