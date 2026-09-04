@@ -23,8 +23,8 @@ export default function Evidence() {
             <div className="space-y-2">
               {LINEAGE.map((l, i) => (
                 <React.Fragment key={l}>
-                  <div className="text-sm font-medium text-[#0a0c12] px-3.5 py-2.5 rounded-lg bg-white border border-[#eceef1] shadow-sm">{l}</div>
-                  {i < LINEAGE.length - 1 && <div className="text-[#b0b5be] text-xs pl-3.5">↓</div>}
+                  <div className="text-sm font-medium text-[#0a0c12] px-3.5 py-2.5 rounded-lg bg-white border border-[#eceef1] border-l-4 border-l-[#0d9488] shadow-sm transition-all hover:translate-x-1 hover:shadow-md">{l}</div>
+                  {i < LINEAGE.length - 1 && <div className="text-[#0d9488] text-xs pl-3.5">↓</div>}
                 </React.Fragment>
               ))}
             </div>

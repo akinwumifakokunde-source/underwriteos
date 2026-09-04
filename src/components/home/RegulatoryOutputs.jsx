@@ -17,18 +17,21 @@ const OUTPUTS = [
     title: "Adverse-action notices",
     desc: "Market-specific letters addressed to the borrower, naming the credit bureau consulted and stating the applicant's rights.",
     tag: "PDF",
+    grad: "from-teal-400 to-emerald-500",
   },
   {
     icon: FileSpreadsheet,
     title: "Reason codes",
     desc: "FCRA-style reason codes mapped from the negative and critical risk signals that drove the decision — capped to the four key factors.",
     tag: "CSV",
+    grad: "from-sky-400 to-indigo-500",
   },
   {
     icon: FileJson,
     title: "Audit exports",
     desc: "The full decision with every risk signal and its evidence record, so an examiner can trace each figure to its source document.",
     tag: "JSON",
+    grad: "from-amber-400 to-orange-500",
   },
 ];
 
@@ -47,10 +50,10 @@ export default function RegulatoryOutputs() {
 
         <div className="mt-10 grid md:grid-cols-3 gap-5">
           {OUTPUTS.map((o) => (
-            <div key={o.title} className="rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div key={o.title} className="group rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
               <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-lg bg-[#0d9488]/10 flex items-center justify-center">
-                  <o.icon className="w-5 h-5 text-[#0d9488]" />
+                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${o.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
+                  <o.icon className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] border border-[#eceef1] rounded px-1.5 py-0.5">{o.tag}</span>
               </div>

@@ -24,9 +24,9 @@ export default function Security() {
 
         <div className="mt-10 grid sm:grid-cols-2 gap-x-8 gap-y-4 max-w-2xl">
           {ITEMS.map((it) => (
-            <div key={it} className="flex items-center gap-3">
-              <span className="w-5 h-5 rounded-full bg-[#0d9488]/10 flex items-center justify-center shrink-0">
-                <Check className="w-3 h-3 text-[#0d9488]" />
+            <div key={it} className="group flex items-center gap-3 transition-transform duration-200 hover:translate-x-1">
+              <span className="w-5 h-5 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110">
+                <Check className="w-3 h-3 text-white" strokeWidth={3} />
               </span>
               <span className="text-sm text-[#0a0c12]">{it}</span>
             </div>

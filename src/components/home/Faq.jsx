@@ -53,7 +53,7 @@ export default function Faq() {
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="border-[#eceef1] bg-white rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border"
+              className="border-[#eceef1] bg-white rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/40"
             >
               <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-[#0a0c12] hover:no-underline py-5">
                 {f.q}

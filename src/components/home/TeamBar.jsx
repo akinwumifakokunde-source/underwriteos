@@ -26,7 +26,7 @@ export default function TeamBar() {
           {LOGOS.map((l) => (
             <span
               key={l.name}
-              className={`text-lg sm:text-xl ${l.weight} tracking-tight text-[#9ca3af] hover:text-[#0a0c12] transition-colors select-none`}
+              className={`text-lg sm:text-xl ${l.weight} tracking-tight text-[#9ca3af] hover:text-[#0d9488] transition-colors select-none`}
             >
               {l.name}
             </span>

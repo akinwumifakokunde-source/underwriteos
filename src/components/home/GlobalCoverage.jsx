@@ -37,9 +37,9 @@ export default function GlobalCoverage() {
             {DEDICATED.map((m) => (
               <div
                 key={m.code}
-                className="rounded-lg border border-[#eceef1] bg-[#fafbfc] px-3 py-3 text-center"
+                className="group rounded-lg border border-[#eceef1] bg-[#fafbfc] px-3 py-3 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_30px_-12px_rgba(13,148,136,0.3)] hover:border-[#0d9488]/40 hover:bg-white"
               >
-                <div className="text-xl leading-none mb-1.5">{m.flag}</div>
+                <div className="text-xl leading-none mb-1.5 transition-transform duration-300 group-hover:scale-125">{m.flag}</div>
                 <div className="text-[13px] font-semibold text-[#0a0c12]">{m.name}</div>
                 <div className="text-[10px] font-mono text-[#8a909c]">{m.code}</div>
               </div>

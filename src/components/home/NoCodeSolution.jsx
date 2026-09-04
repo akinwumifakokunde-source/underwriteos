@@ -9,10 +9,10 @@ const PROBLEMS = [
 ];
 
 const SOLUTION_POINTS = [
-  { icon: Plug, title: "Live data sources", desc: "Connect credit bureaus and open banking per market — or upload documents. Either way works." },
-  { icon: Shield, title: "Continuous assessment", desc: "Five risk dimensions — credit, affordability, fraud, data quality, policy — assessed as data arrives, not in batches." },
-  { icon: MessageSquare, title: "AI underwriter + chat", desc: "Advisory AI recommendations and an in-context assistant. Your policy stays authoritative." },
-  { icon: FileDown, title: "Exports & audit trail", desc: "Download decisions as PDF, CSV, or Word. Every step is traceable to its source evidence." },
+  { icon: Plug, title: "Live data sources", desc: "Connect credit bureaus and open banking per market — or upload documents. Either way works.", grad: "from-teal-400 to-emerald-500" },
+  { icon: Shield, title: "Continuous assessment", desc: "Five risk dimensions — credit, affordability, fraud, data quality, policy — assessed as data arrives, not in batches.", grad: "from-sky-400 to-indigo-500" },
+  { icon: MessageSquare, title: "AI underwriter + chat", desc: "Advisory AI recommendations and an in-context assistant. Your policy stays authoritative.", grad: "from-violet-400 to-purple-500" },
+  { icon: FileDown, title: "Exports & audit trail", desc: "Download decisions as PDF, CSV, or Word. Every step is traceable to its source evidence.", grad: "from-amber-400 to-orange-500" },
 ];
 
 export default function NoCodeSolution() {
@@ -29,8 +29,8 @@ export default function NoCodeSolution() {
 
         <div className="grid sm:grid-cols-3 gap-4 mb-12 sm:mb-20">
           {PROBLEMS.map((p) => (
-            <div key={p.num} className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6">
-              <div className="text-2xl font-bold text-[#0d9488]/30 mb-3">{p.num}</div>
+            <div key={p.num} className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(10,12,18,0.14)]">
+              <div className="text-2xl font-bold mb-3 bg-gradient-to-br from-[#0d9488] to-indigo-500 bg-clip-text text-transparent">{p.num}</div>
               <h3 className="text-base font-semibold text-[#0a0c12] mb-2">{p.title}</h3>
               <p className="text-[13px] text-[#525965] leading-relaxed">{p.desc}</p>
             </div>
@@ -49,9 +49,9 @@ export default function NoCodeSolution() {
           {SOLUTION_POINTS.map((s) => {
             const Icon = s.icon;
             return (
-              <div key={s.title} className="group rounded-2xl border border-[#eceef1] bg-white p-6 transition-all hover:shadow-[0_4px_24px_-8px_rgba(10,12,18,0.1)] hover:border-[#d0d3d8]">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#f0f7f4] to-[#e6f1ed] border border-[#0d9488]/15 flex items-center justify-center mb-4 group-hover:from-[#0d9488]/15 group-hover:to-[#0d9488]/10 transition-colors">
-                  <Icon className="w-5 h-5 text-[#0d9488]" />
+              <div key={s.title} className="group rounded-2xl border border-[#eceef1] bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${s.grad} flex items-center justify-center mb-4 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-sm font-semibold text-[#0a0c12] mb-1.5">{s.title}</h3>
                 <p className="text-[13px] text-[#525965] leading-relaxed">{s.desc}</p>

@@ -51,7 +51,7 @@ export default function PolicyBuilderShowcase() {
             </div>
             <div className="p-4 space-y-2.5">
               {RULES.map((r, i) => (
-                <div key={i} className="flex flex-wrap items-center gap-2.5 rounded-xl border border-[#eceef1] bg-[#fafbfc] px-3.5 py-3 transition-colors hover:bg-white hover:border-[#d0d3d8]">
+                <div key={i} className="group flex flex-wrap items-center gap-2.5 rounded-xl border border-[#eceef1] bg-[#fafbfc] px-3.5 py-3 transition-all duration-200 hover:bg-white hover:border-[#0d9488]/40 hover:shadow-sm hover:translate-x-0.5">
                   <GripVertical className="w-3.5 h-3.5 text-[#b0b5be] shrink-0" />
                   <div className="flex-1 min-w-0 flex items-center gap-2 text-[12px] flex-wrap">
                     <span className="font-medium text-[#0a0c12]">{r.field}</span>
