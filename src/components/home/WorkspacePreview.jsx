@@ -243,28 +243,52 @@ function DecisionTab() {
       <div>
         <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-2">Policy evaluation</div>
         <div className="space-y-1.5">
-          {RULES.map((r) => (
-            <div key={r.rule} className="flex items-center justify-between text-[11px] rounded-lg border border-[#eceef1] bg-white px-3 py-2">
+          {RULES.map((r, i) => (
+            <motion.div
+              key={r.rule}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.08, type: "spring", stiffness: 300, damping: 24 }}
+              className="flex items-center justify-between text-[11px] rounded-lg border border-[#eceef1] bg-white px-3 py-2"
+            >
               <span className="text-[#525965]">{r.rule}</span>
-              <span className={`font-mono font-semibold ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}>{r.result}</span>
-            </div>
+              <motion.span
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.25 + i * 0.08, type: "spring", stiffness: 420, damping: 16 }}
+                className={`font-mono font-semibold ${r.result === "PASS" ? "text-emerald-600" : "text-rose-600"}`}
+              >
+                {r.result}
+              </motion.span>
+            </motion.div>
           ))}
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 pt-1">
-        <div className="rounded-xl border border-[#eceef1] bg-white px-2.5 py-2.5 text-center">
-          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">AI advisory</div>
-          <div className="text-[13px] font-semibold text-emerald-700 mt-1">APPROVE</div>
-        </div>
-        <div className="rounded-xl border border-amber-200 bg-amber-50/60 px-2.5 py-2.5 text-center">
-          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Policy</div>
-          <div className="text-[13px] font-semibold text-amber-700 mt-1">REVIEW</div>
-        </div>
-        <div className="rounded-xl border-2 border-amber-300 bg-amber-50 px-2.5 py-2.5 text-center">
-          <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">Final</div>
-          <div className="text-[13px] font-bold text-amber-700 mt-1">REVIEW</div>
-        </div>
+        {[
+          { label: "AI advisory", value: "APPROVE", cls: "border-[#eceef1] bg-white", vcls: "text-emerald-700", bold: false },
+          { label: "Policy", value: "REVIEW", cls: "border-amber-200 bg-amber-50/60", vcls: "text-amber-700", bold: false },
+          { label: "Final", value: "REVIEW", cls: "border-2 border-amber-300 bg-amber-50", vcls: "text-amber-700", bold: true, active: true },
+        ].map((b, i) => (
+          <motion.div
+            key={b.label}
+            initial={{ opacity: 0, y: 10, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.4 + i * 0.1, type: "spring", stiffness: 300, damping: 20 }}
+            className={`relative rounded-xl border ${b.cls} px-2.5 py-2.5 text-center`}
+          >
+            <div className="text-[8px] font-mono uppercase tracking-wider text-[#8a909c]">{b.label}</div>
+            <div className={`text-[13px] ${b.bold ? "font-bold" : "font-semibold"} ${b.vcls} mt-1`}>{b.value}</div>
+            {b.active && (
+              <motion.div
+                className="absolute -inset-px rounded-xl border-2 border-amber-300 pointer-events-none"
+                animate={{ opacity: [0.9, 0.25, 0.9], scale: [1, 1.06, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+            )}
+          </motion.div>
+        ))}
       </div>
 
       <div className="flex items-center justify-center gap-1.5 text-[10px] text-[#8a909c] pt-1">
@@ -342,10 +366,10 @@ export default function WorkspacePreview() {
           <AnimatePresence mode="wait">
             <motion.div
               key={active}
-              initial={{ opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -28 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              initial={{ opacity: 0, x: 24, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -24, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 260, damping: 28 }}
             >
               <ActiveContent />
             </motion.div>
