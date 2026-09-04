@@ -6,12 +6,9 @@ import TrustBar from "@/components/home/TrustBar.jsx";
 import StatsBand from "@/components/home/StatsBand.jsx";
 import NoCodeSolution from "@/components/home/NoCodeSolution.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
-import PipelineFlow from "@/components/home/PipelineFlow.jsx";
 import PolicyBuilderShowcase from "@/components/home/PolicyBuilderShowcase.jsx";
-import AiPolicy from "@/components/home/AiPolicy.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
 import RegulatoryOutputs from "@/components/home/RegulatoryOutputs.jsx";
-import Outcomes from "@/components/home/Outcomes.jsx";
 import Providers from "@/components/home/Providers.jsx";
 import GlobalCoverage from "@/components/home/GlobalCoverage.jsx";
 import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
@@ -32,15 +29,12 @@ export default function Home() {
       <StatsBand />
       <NoCodeSolution />
       <WorkflowSection />
-      <PipelineFlow />
       <Providers />
       <GlobalCoverage />
       <FormsFeature />
       <PolicyBuilderShowcase />
-      <AiPolicy />
       <Evidence />
       <RegulatoryOutputs />
-      <Outcomes />
       <Security />
       <CompetitiveComparison />
       <Faq />

@@ -1,7 +1,7 @@
 import React from "react";
 
 const STATS = [
-  { value: "6", label: "Markets supported", sub: "GB · US · NG · ZA · KE · GH" },
+  { value: "6+", label: "Markets supported", sub: "6 dedicated + Others (any country)" },
   { value: "5", label: "Risk dimensions", sub: "Credit · affordability · fraud · data · policy" },
   { value: "11", label: "Pipeline stages", sub: "Intake to decision, fully auditable" },
   { value: "1,000", label: "Free credits", sub: "Granted on signup — no card required" },
