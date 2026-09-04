@@ -18,6 +18,7 @@ import Faq from "@/components/home/Faq.jsx";
 import TeamBar from "@/components/home/TeamBar.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
+import Reveal from "@/components/home/Reveal.jsx";
 
 export default function Home() {
   return (
@@ -25,21 +26,21 @@ export default function Home() {
       <AnnouncementBanner />
       <HomeNav />
       <Hero />
-      <TrustBar />
-      <StatsBand />
-      <NoCodeSolution />
-      <WorkflowSection />
-      <Providers />
-      <GlobalCoverage />
-      <FormsFeature />
-      <PolicyBuilderShowcase />
-      <Evidence />
-      <RegulatoryOutputs />
-      <Security />
-      <CompetitiveComparison />
-      <Faq />
-      <TeamBar />
-      <FinalCta />
+      <Reveal><TrustBar /></Reveal>
+      <Reveal><StatsBand /></Reveal>
+      <Reveal><NoCodeSolution /></Reveal>
+      <Reveal><WorkflowSection /></Reveal>
+      <Reveal><Providers /></Reveal>
+      <Reveal><GlobalCoverage /></Reveal>
+      <Reveal><FormsFeature /></Reveal>
+      <Reveal><PolicyBuilderShowcase /></Reveal>
+      <Reveal><Evidence /></Reveal>
+      <Reveal><RegulatoryOutputs /></Reveal>
+      <Reveal><Security /></Reveal>
+      <Reveal><CompetitiveComparison /></Reveal>
+      <Reveal><Faq /></Reveal>
+      <Reveal><TeamBar /></Reveal>
+      <Reveal><FinalCta /></Reveal>
       <SiteFooter />
     </div>
   );

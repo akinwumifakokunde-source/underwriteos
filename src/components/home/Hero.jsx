@@ -13,7 +13,9 @@ export default function Hero() {
     <section className="relative overflow-hidden border-b border-[#eceef1]">
       {/* Mint gradient backdrop */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#f0f7f4] via-white to-white" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-[#0d9488]/[0.06] rounded-full blur-3xl" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#0d9488]/15 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute top-24 right-0 w-[420px] h-[420px] bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+      <div className="absolute -bottom-12 left-1/3 w-[440px] h-[440px] bg-amber-300/12 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "3s" }} />
 
       <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-center">
