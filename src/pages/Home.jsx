@@ -13,6 +13,7 @@ import Evidence from "@/components/home/Evidence.jsx";
 import RegulatoryOutputs from "@/components/home/RegulatoryOutputs.jsx";
 import Outcomes from "@/components/home/Outcomes.jsx";
 import Providers from "@/components/home/Providers.jsx";
+import GlobalCoverage from "@/components/home/GlobalCoverage.jsx";
 import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import Security from "@/components/home/Security.jsx";
@@ -33,6 +34,7 @@ export default function Home() {
       <WorkflowSection />
       <PipelineFlow />
       <Providers />
+      <GlobalCoverage />
       <FormsFeature />
       <PolicyBuilderShowcase />
       <AiPolicy />
