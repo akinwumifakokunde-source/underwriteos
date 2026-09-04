@@ -15,8 +15,8 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-[#f0f7f4] via-white to-white" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-[#0d9488]/[0.06] rounded-full blur-3xl" />
 
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-center">
           <div>
             <div className="inline-flex items-center gap-2 text-[11px] font-medium text-[#0a2e2a] mb-5 bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] animate-pulse" />
@@ -25,7 +25,7 @@ export default function Hero() {
             <h1 className="text-[2rem] sm:text-[3.5rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.12] sm:leading-[1.04]">
               Underwrite borrowers anywhere, in <span className="text-[#0d9488]">minutes.</span>
             </h1>
-            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[#525965] leading-relaxed max-w-md">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[#525965] leading-relaxed max-w-xl">
               AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure
               policies, and make smarter, explainable decisions.
             </p>

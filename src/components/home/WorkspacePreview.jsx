@@ -294,7 +294,7 @@ export default function WorkspacePreview() {
   const ActiveContent = TAB_CONTENT[TABS[active].id];
 
   return (
-    <div className="w-full max-w-[460px]">
+    <div className="w-full max-w-[560px]">
       <div
         className="rounded-2xl border border-[#e8eaee] bg-white overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_24px_60px_-24px_rgba(10,12,18,0.18)]"
         onMouseEnter={() => setPaused(true)}
