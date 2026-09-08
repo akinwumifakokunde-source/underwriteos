@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Brain, TrendingUp, TrendingDown, Sparkles, RefreshCw, Loader2, Gamepad2 } from "lucide-react";
 import CreditMemo from "./CreditMemo";
+import ModelRiskPanel from "./ModelRiskPanel";
 import NeonRun from "@/components/game/NeonRun";
 
-export default function AnalysisSection({ recommendation, running, lastUpdated, onRerun, borrower, app, fp, cp, evidence, fmtMoney }) {
+export default function AnalysisSection({ recommendation, running, lastUpdated, onRerun, borrower, app, fp, cp, evidence, fmtMoney, modelPrediction, modelRouting }) {
   const [showGame, setShowGame] = useState(false);
 
   if (running) {
@@ -48,6 +49,8 @@ export default function AnalysisSection({ recommendation, running, lastUpdated, 
           </button>
         </div>
       )}
+
+      <ModelRiskPanel prediction={modelPrediction} routing={modelRouting} />
 
       <div className="rounded-xl border border-violet-200 bg-violet-50/40 p-5">
         <div className="flex items-center gap-2 mb-4">
