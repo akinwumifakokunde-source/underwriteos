@@ -1,7 +1,7 @@
 {
   "name": "ModelRoutingDecision",
   "type": "object",
-  "description": "Audit record of the automatic credit risk model routing. Records the market/product/borrower context, the eligible validated models, their ranking, the selected model, the fallback chain, and per-model feature completeness. There is no model-selection UI; this record explains why a given model was chosen.",
+  "description": "Audit record of the automatic credit risk model routing. Records the market/product/borrower context, the eligible models, their ranking, the selected model, the fallback chain, and per-model feature completeness. There is no model-selection UI; this record explains why a given model was chosen. In production only real validated+production models are eligible; in sandbox, demo/mock models may be selected when no real model is registered yet.",
   "properties": {
     "organization_id": {
       "type": "string"
@@ -31,7 +31,7 @@
       "items": {
         "type": "string"
       },
-      "description": "Names of validated+production models compatible with this application's context and feature set."
+      "description": "Names of eligible models compatible with this application's context and feature set. In production these are real validated+production models only; in sandbox, demo/mock models may be included when no real model is registered."
     },
     "ranked_models": {
       "type": "array",
@@ -52,7 +52,8 @@
             "enum": [
               "champion",
               "challenger",
-              "benchmark"
+              "benchmark",
+              "demo"
             ]
           }
         }
@@ -60,7 +61,7 @@
     },
     "selected_model": {
       "type": "string",
-      "description": "Highest-ranked eligible validated model. Null/empty when no eligible model is available."
+      "description": "Highest-ranked eligible model. In production, a real validated+production model (never a mock). In sandbox, may be a demo/mock model when no real model is registered. Null/empty when no eligible model is available (production returns MODEL_UNAVAILABLE)."
     },
     "selection_reason": {
       "type": "string"

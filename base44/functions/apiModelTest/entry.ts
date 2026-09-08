@@ -54,6 +54,15 @@ export default async function(req: Request): Promise<Response> {
     const provider = routing.selected ? getProvider(routing.selected.name) : null;
     const prediction = provider ? provider.predict(fv) : null;
 
+    // Production routing: must NOT select a mock. With no real validated model
+    // registered, production returns no eligible model (MODEL_UNAVAILABLE).
+    const prodRouting = routeModel({
+      market: SAMPLE.application.market,
+      product_type: SAMPLE.application.product_type,
+      borrower_type: SAMPLE.application.borrower_type,
+      features: fv.features
+    }, "production");
+
     const { items } = generateRiskSignals({
       credit: SAMPLE.credit, financial: SAMPLE.financial, application: SAMPLE.application,
       credit_report_id: "cr_sample", bank_statement_id: "bs_sample"
@@ -84,43 +93,49 @@ export default async function(req: Request): Promise<Response> {
     const emptyRouting = routeModel({
       market: SAMPLE.application.market, product_type: SAMPLE.application.product_type,
       borrower_type: SAMPLE.application.borrower_type, features: emptyFv.features
-    });
-
-    // Production + mock guard: a mock provider must not fabricate a production score
-    const prodMockBlocked = !!routing.selected && routing.selected.is_mock;
+    }, "sandbox");
 
     const checks = [
       check("1. No user selects a model", !body.model_name && !body.selected_model && routing.selected !== null,
         "Router selected a model without any manual model_name input."),
-      check("2. Router auto-chooses an eligible validated model",
-        !!routing.selected && routing.selected.validation_status === "VALIDATED" && routing.selected.production_status === "PRODUCTION",
-        `Selected: ${routing.selected?.name} (${routing.selected?.validation_status}/${routing.selected?.production_status})`),
-      check("3. Model/version/routing decision recorded",
+      check("2. Sandbox selects a DEMO/MOCK model when no real validated model exists",
+        !!routing.selected && routing.selected.is_mock === true,
+        `Selected: ${routing.selected?.name} (is_mock=${routing.selected?.is_mock}) — DEMO/MOCK, not a real validated production model.`),
+      check("3. Production returns MODEL_UNAVAILABLE (no real validated production model)",
+        prodRouting.selected === null,
+        `Production routing selected=${prodRouting.selected}; reason=${prodRouting.selection_reason}`),
+      check("4. System never claims a mock is a validated production model",
+        !!routing.selected && routing.selected.validation_status === "DRAFT" && routing.selected.production_status === "DRAFT",
+        `Selected validation_status=${routing.selected?.validation_status}, production_status=${routing.selected?.production_status} (not VALIDATED/PRODUCTION).`),
+      check("5. Model/version/routing decision recorded",
         !!prediction && !!prediction.model_name && !!prediction.model_version && routing.ranked.length > 0,
-        `${prediction?.model_name} v${prediction?.model_version}; ranked: ${routing.ranked.map(r => r.model_name).join(", ")}`),
-      check("4. PD comes from the model provider",
+        `${prediction?.model_name} v${prediction?.model_version}; ranked: ${routing.ranked.map(r => `${r.model_name}(${r.role})`).join(", ")}`),
+      check("6. PD comes from the (demo) provider",
         !!prediction && provider && prediction.probability_of_default === provider.predictPD(fv),
-        `PD=${prediction?.probability_of_default}`),
-      check("5. Critical calculations are deterministic (not GPT)",
+        `PD=${prediction?.probability_of_default} (DEMO RISK RESULT)`),
+      check("7. Critical calculations are deterministic (not GPT)",
         fv.features.disposable_income === SAMPLE.financial.cashflow.disposable_income &&
         fv.features.debt_to_income === SAMPLE.financial.affordability.debt_to_income,
         `disposable_income=${fv.features.disposable_income} (formula: income_minus_expenses), dti=${fv.features.debt_to_income}`),
-      check("6. GPT does not invent scores or financial metrics",
+      check("8. GPT does not invent scores or financial metrics",
         !!prediction && recommendation.risk_score === prediction.credit_risk_score &&
         recommendation.probability_of_default === prediction.probability_of_default,
         `Recommendation risk_score=${recommendation.risk_score} matches model output, not AI.`),
-      check("7. Policy remains authoritative",
+      check("9. Policy remains authoritative",
         finalDecision.decision === policyOutcome.decision && finalDecision.decision_source === "policy_engine",
         `Policy=${policyOutcome.decision}, final=${finalDecision.decision} (no override)`),
-      check("8. Evidence traces the decision back to source",
+      check("10. Evidence traces the decision back to source",
         items.length > 0 && evidence.every(e => e.source_type && e.calculation_method),
         `${items.length} signal/evidence pairs, each with source_type + calculation_method`),
-      check("9. Human overrides are audited",
+      check("11. Human overrides are audited",
         overrideDecision.decision === "APPROVE" && overrideDecision.decision_source === "human_underwriter" && !!overrideDecision.override_reason,
         `Override to APPROVE recorded with reason: "${overrideDecision.override_reason}"`),
-      check("10. No production score fabricated when no validated model",
-        emptyRouting.selected === null && prodMockBlocked,
-        `Empty-feature routing selected=${emptyRouting.selected}; mock-in-production would be blocked=${prodMockBlocked}`)
+      check("12. No fabricated performance metrics shown as real",
+        !!routing.selected && routing.selected.performance.auc === null && routing.selected.calibration.brier === null,
+        `Selected performance.auc=${routing.selected?.performance.auc}, calibration.brier=${routing.selected?.calibration.brier} (null = not presented as real validation).`),
+      check("13. No production score fabricated when no model has complete features",
+        emptyRouting.selected === null,
+        `Empty-feature sandbox routing selected=${emptyRouting.selected} (no demo model eligible without features).`)
     ];
 
     const allPass = checks.every(c => c.pass);
@@ -160,7 +175,8 @@ export default async function(req: Request): Promise<Response> {
         is_mock: prediction.is_mock,
         top_contributions: prediction.feature_contributions.slice(0, 5)
       } : null,
-      routing: { selected: routing.selected?.name, eligible: routing.eligible.map(m => m.name), fallback_chain: routing.fallback_chain, selection_reason: routing.selection_reason },
+      routing: { selected: routing.selected?.name, is_mock: routing.selected?.is_mock ?? false, eligible: routing.eligible.map(m => m.name), fallback_chain: routing.fallback_chain, selection_reason: routing.selection_reason },
+      production_routing: { selected: prodRouting.selected?.name || null, selection_reason: prodRouting.selection_reason },
       policy_outcome: { decision: policyOutcome.decision, triggered: policyOutcome.triggered_rules.map(r => r.rule_id) },
       final_decision: { decision: finalDecision.decision, decision_source: finalDecision.decision_source },
       live_result: liveResult

@@ -26,7 +26,7 @@
 
 export type ModelType = "ebm" | "xgboost" | "lightgbm" | "catboost" | "logistic_woe" | "external";
 export type ValidationStatus = "DRAFT" | "VALIDATING" | "VALIDATED" | "PRODUCTION" | "RETIRED";
-export type ModelRole = "champion" | "challenger" | "benchmark";
+export type ModelRole = "champion" | "challenger" | "benchmark" | "demo";
 
 export interface ModelMetadata {
   name: string;
@@ -44,8 +44,8 @@ export interface ModelMetadata {
   benchmark: boolean;
   activation_date: string;
   retirement_date: string | null;
-  performance: { auc: number; gini: number };
-  calibration: { brier: number };
+  performance: { auc: number | null; gini: number | null };
+  calibration: { brier: number | null };
   validation_timestamp: string;
   is_mock: boolean;
 }
@@ -137,15 +137,15 @@ export const MODEL_CATALOG: ModelMetadata[] = [
     products: ["*"],
     borrower_types: ["*"],
     required_features: ["credit_score", "debt_to_income", "disposable_income", "credit_utilisation", "repayment_history", "monthly_income"],
-    validation_status: "VALIDATED",
-    production_status: "PRODUCTION",
-    champion: true,
+    validation_status: "DRAFT",
+    production_status: "DRAFT",
+    champion: false,
     challenger: false,
     benchmark: false,
     activation_date: "2026-01-15",
     retirement_date: null,
-    performance: { auc: 0.82, gini: 0.64 },
-    calibration: { brier: 0.09 },
+    performance: { auc: null, gini: null },
+    calibration: { brier: null },
     validation_timestamp: "2026-01-10",
     is_mock: true
   },
@@ -158,15 +158,15 @@ export const MODEL_CATALOG: ModelMetadata[] = [
     products: ["*"],
     borrower_types: ["*"],
     required_features: ["credit_score", "debt_to_income", "disposable_income", "credit_utilisation"],
-    validation_status: "VALIDATED",
-    production_status: "PRODUCTION",
+    validation_status: "DRAFT",
+    production_status: "DRAFT",
     champion: false,
-    challenger: true,
+    challenger: false,
     benchmark: false,
     activation_date: "2026-02-01",
     retirement_date: null,
-    performance: { auc: 0.81, gini: 0.62 },
-    calibration: { brier: 0.10 },
+    performance: { auc: null, gini: null },
+    calibration: { brier: null },
     validation_timestamp: "2026-01-28",
     is_mock: true
   },
@@ -179,15 +179,15 @@ export const MODEL_CATALOG: ModelMetadata[] = [
     products: ["*"],
     borrower_types: ["*"],
     required_features: ["credit_score", "debt_to_income", "disposable_income"],
-    validation_status: "VALIDATED",
-    production_status: "PRODUCTION",
+    validation_status: "DRAFT",
+    production_status: "DRAFT",
     champion: false,
-    challenger: true,
+    challenger: false,
     benchmark: false,
     activation_date: "2026-02-10",
     retirement_date: null,
-    performance: { auc: 0.80, gini: 0.60 },
-    calibration: { brier: 0.10 },
+    performance: { auc: null, gini: null },
+    calibration: { brier: null },
     validation_timestamp: "2026-02-05",
     is_mock: true
   },
@@ -200,15 +200,15 @@ export const MODEL_CATALOG: ModelMetadata[] = [
     products: ["*"],
     borrower_types: ["*"],
     required_features: ["credit_score", "debt_to_income", "disposable_income", "credit_utilisation"],
-    validation_status: "VALIDATING",
+    validation_status: "DRAFT",
     production_status: "DRAFT",
     champion: false,
-    challenger: true,
+    challenger: false,
     benchmark: false,
     activation_date: "2026-03-01",
     retirement_date: null,
-    performance: { auc: 0.80, gini: 0.60 },
-    calibration: { brier: 0.11 },
+    performance: { auc: null, gini: null },
+    calibration: { brier: null },
     validation_timestamp: "2026-02-25",
     is_mock: true
   },
@@ -221,15 +221,15 @@ export const MODEL_CATALOG: ModelMetadata[] = [
     products: ["*"],
     borrower_types: ["*"],
     required_features: ["credit_score", "debt_to_income"],
-    validation_status: "VALIDATED",
-    production_status: "PRODUCTION",
+    validation_status: "DRAFT",
+    production_status: "DRAFT",
     champion: false,
     challenger: false,
-    benchmark: true,
+    benchmark: false,
     activation_date: "2025-11-01",
     retirement_date: null,
-    performance: { auc: 0.76, gini: 0.52 },
-    calibration: { brier: 0.12 },
+    performance: { auc: null, gini: null },
+    calibration: { brier: null },
     validation_timestamp: "2025-10-28",
     is_mock: true
   }
@@ -407,7 +407,7 @@ function makeMockProvider(meta: ModelMetadata, intercept: number, coefOverrides:
         gini: meta.performance.gini,
         brier: meta.calibration.brier,
         validation_status: meta.validation_status,
-        role: meta.champion ? "champion" : meta.benchmark ? "benchmark" : "challenger",
+        role: meta.champion ? "champion" : meta.benchmark ? "benchmark" : meta.challenger ? "challenger" : "demo",
         is_mock: meta.is_mock
       },
       prediction_timestamp: new Date().toISOString(),
@@ -460,27 +460,38 @@ function featureCompleteness(m: ModelMetadata, features: Record<string, number |
   return { missing, complete: missing.length === 0 };
 }
 
-export function routeModel(ctx: RouteContext): RoutingResult {
+export function routeModel(ctx: RouteContext, environment: "sandbox" | "production" = "sandbox"): RoutingResult {
   const completeness: Record<string, { missing: string[]; complete: boolean }> = {};
 
-  const eligible = MODEL_CATALOG.filter(m => {
-    if (m.validation_status !== "VALIDATED") return false;
-    if (m.production_status !== "PRODUCTION") return false;
-    if (!compatible(m, ctx)) return false;
-    const fc = featureCompleteness(m, ctx.features);
-    completeness[m.name] = fc;
-    return fc.complete;
-  });
-
-  // Also record completeness for compatible-but-ineligible models (for audit).
+  // Record completeness for every compatible model (audit), regardless of eligibility.
   for (const m of MODEL_CATALOG) {
-    if (!completeness[m.name] && compatible(m, ctx)) {
-      completeness[m.name] = featureCompleteness(m, ctx.features);
-    }
+    if (compatible(m, ctx)) completeness[m.name] = featureCompleteness(m, ctx.features);
+  }
+
+  // A REAL eligible model: genuinely validated, in production, NOT a mock.
+  const isRealEligible = (m: ModelMetadata) =>
+    m.validation_status === "VALIDATED" &&
+    m.production_status === "PRODUCTION" &&
+    !m.is_mock &&
+    compatible(m, ctx) &&
+    completeness[m.name].complete;
+
+  // A DEMO eligible model: a mock placeholder, used only in sandbox for evaluation.
+  const isDemoEligible = (m: ModelMetadata) =>
+    m.is_mock && compatible(m, ctx) && completeness[m.name].complete;
+
+  let eligible: ModelMetadata[];
+  if (environment === "production") {
+    // Production NEVER selects a mock/demo model. Only real validated production models.
+    eligible = MODEL_CATALOG.filter(isRealEligible);
+  } else {
+    // Sandbox: prefer real validated models; fall back to demo/mock models for evaluation.
+    const real = MODEL_CATALOG.filter(isRealEligible);
+    eligible = real.length > 0 ? real : MODEL_CATALOG.filter(isDemoEligible);
   }
 
   const rankScore = (m: ModelMetadata): number => {
-    let s = m.performance.auc;
+    let s = m.performance.auc ?? 0.5;
     if (m.champion) s += 0.05;
     if (m.benchmark) s -= 0.05;
     return s;
@@ -491,15 +502,21 @@ export function routeModel(ctx: RouteContext): RoutingResult {
     model_name: m.name,
     rank: i + 1,
     score: Math.round(rankScore(m) * 100) / 100,
-    role: (m.champion ? "champion" : m.benchmark ? "benchmark" : "challenger") as ModelRole
+    role: (m.champion ? "champion" : m.benchmark ? "benchmark" : m.challenger ? "challenger" : "demo") as ModelRole
   }));
 
   const selected = sorted[0] || null;
   const fallback_chain = sorted.slice(1).map(m => m.name);
 
-  let selectionReason = "No eligible validated production model available for this application's context and feature set.";
+  let selectionReason = "No eligible model available for this application's context and feature set.";
   if (selected) {
-    selectionReason = `Auto-selected ${selected.name} (${selected.champion ? "champion" : selected.benchmark ? "benchmark" : "challenger"}) — highest-ranked VALIDATED+PRODUCTION model with complete required features for market=${ctx.market}, product=${ctx.product_type}, borrower=${ctx.borrower_type}.`;
+    if (selected.is_mock) {
+      selectionReason = `DEMO/MOCK model selected: ${selected.name}. No real validated production credit-risk model is registered yet — this output is a DEMO RISK RESULT, not a production CreditDecide score. (market=${ctx.market}, product=${ctx.product_type}, borrower=${ctx.borrower_type})`;
+    } else {
+      selectionReason = `Auto-selected ${selected.name} (${selected.champion ? "champion" : selected.benchmark ? "benchmark" : "challenger"}) — highest-ranked VALIDATED+PRODUCTION model with complete required features for market=${ctx.market}, product=${ctx.product_type}, borrower=${ctx.borrower_type}.`;
+    }
+  } else if (environment === "production") {
+    selectionReason = "MODEL_UNAVAILABLE: no real validated production credit-risk model is registered for this application. Connect a real model provider via the model interface to enable production scoring.";
   }
 
   return {
@@ -556,7 +573,7 @@ export async function runRiskModel(base44: any, input: RunRiskModelInput): Promi
     features: fv.features
   };
 
-  const routing = routeModel(ctx);
+  const routing = routeModel(ctx, environment);
   const now = new Date().toISOString();
 
   const routingRecord = await base44.asServiceRole.entities.ModelRoutingDecision.create({
