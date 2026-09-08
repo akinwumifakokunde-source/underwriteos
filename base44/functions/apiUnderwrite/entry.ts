@@ -61,7 +61,7 @@ export default async function(req: Request): Promise<Response> {
       policyOutcome
     });
 
-    // 5. Build the recommendation (advisory — AI-informed, never overrides policy).
+    // 5. Build the recommendation (advisory — AI-informed, never overrides policy)
     const recommendation = buildRecommendation({ application: app, signals, policyOutcome, ai });
 
     const recommendationRecord = await base44.asServiceRole.entities.UnderwritingRecommendation.create({
