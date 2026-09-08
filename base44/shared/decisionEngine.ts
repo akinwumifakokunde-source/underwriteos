@@ -12,7 +12,6 @@ export interface RecommendationInput {
   signals: GeneratedSignal[];
   policyOutcome: any;
   ai: any;
-  modelPrediction?: any; // from the CreditRiskModelProvider (ASSESS layer). When present, PD + risk score come from the model, not the heuristic.
 }
 
 export interface RecommendationResult {
@@ -26,15 +25,8 @@ export interface RecommendationResult {
 
 // Build the AI-informed recommendation. This is advisory only.
 export function buildRecommendation(input: RecommendationInput): RecommendationResult {
-  const mp = input.modelPrediction;
-  // PD + risk score come from the credit risk model (ASSESS layer) when available.
-  // The heuristic computeRiskScore is only a fallback when no validated model ran.
-  const riskScore = mp && typeof mp.credit_risk_score === "number"
-    ? mp.credit_risk_score
-    : computeRiskScore(input.signals);
-  const pd = mp && typeof mp.probability_of_default === "number"
-    ? mp.probability_of_default
-    : Math.round((0.02 + riskScore * 0.25) * 1000) / 1000;
+  const riskScore = computeRiskScore(input.signals);
+  const pd = Math.round((0.02 + riskScore * 0.25) * 1000) / 1000;
   const confidence = Math.round(((input.ai.confidence || 0.7) + (1 - Math.abs(riskScore - 0.5))) / 2 * 100) / 100;
 
   // The recommendation is the AI's suggested action based on risk score.

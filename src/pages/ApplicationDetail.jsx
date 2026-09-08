@@ -78,18 +78,6 @@ export default function ApplicationDetail() {
 
       const summaryRes = await base44.functions.invoke("apiRetrieve", { action: "summary", application_id: applicationId });
       const s = summaryRes.data;
-      let modelPrediction = null, modelRouting = null;
-      try {
-        const preds = await base44.entities.ModelPrediction.filter({ application_id: applicationId }, "-created_date", 1);
-        modelPrediction = preds[0] || null;
-        if (modelPrediction?.routing_decision_id) {
-          const routes = await base44.entities.ModelRoutingDecision.filter({ id: modelPrediction.routing_decision_id }, "-created_date", 1);
-          modelRouting = routes[0] || null;
-        } else if (modelPrediction) {
-          const routes = await base44.entities.ModelRoutingDecision.filter({ application_id: applicationId }, "-created_date", 1);
-          modelRouting = routes[0] || null;
-        }
-      } catch { /* model records optional */ }
       setResults({
         financialProfile: s?.financial_profile,
         creditProfile: s?.credit_profile,
@@ -98,8 +86,6 @@ export default function ApplicationDetail() {
         recommendation: s?.recommendation,
         decision: s?.decision,
         audit: s?.audit_events || [],
-        modelPrediction,
-        modelRouting,
       });
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load application.");
@@ -289,8 +275,6 @@ export default function ApplicationDetail() {
   const fp = results?.financialProfile;
   const cp = results?.creditProfile;
   const audit = results?.audit || [];
-  const modelPrediction = results?.modelPrediction;
-  const modelRouting = results?.modelRouting;
 
   const status = analyzing ? "analyzing"
     : (decision?.decision === "REVIEW" || decision?.human_review_required) ? "review"
@@ -446,7 +430,6 @@ export default function ApplicationDetail() {
                 onRerun={() => runPipeline()}
                 borrower={borrower} app={app} fp={fp} cp={cp}
                 evidence={evidence} fmtMoney={fmtMoney}
-                modelPrediction={modelPrediction} modelRouting={modelRouting}
               />
             </>
           )}

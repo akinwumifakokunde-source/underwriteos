@@ -3,7 +3,6 @@ import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, audi
 import { getPolicy, evaluatePolicy } from "../../shared/policyEngine.ts";
 import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
-import { runRiskModel } from "../../shared/modelRegistry.ts";
 
 // POST /v1/applications/{id}/underwrite — runs the full underwriting evaluation.
 // Pipeline: AI Analysis -> Risk Signals -> Evidence -> Policy Engine -> Recommendation -> Final Decision.
@@ -46,22 +45,6 @@ export default async function(req: Request): Promise<Response> {
     const creditProfiles = await base44.asServiceRole.entities.CreditProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const financialProfiles = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);
 
-    // 2b. Credit risk model (ASSESS layer). Auto-routed; deterministic features.
-    //     Produces PD + CreditDecide Risk Score + risk band. Mock in sandbox;
-    //     production requires a real validated model service (provider interface)
-    //     and never fabricates a score from a mock.
-    const modelRun = await runRiskModel(base44, {
-      organization_id, application_id,
-      environment: ctx.environment,
-      application: app,
-      borrower: borrowers[0] || {},
-      financial: financialProfiles[0] || null,
-      credit: creditProfiles[0] || null
-    });
-    if (!modelRun.available && ctx.environment === "production") {
-      return apiError("MODEL_UNAVAILABLE", "Credit risk model unavailable. No validated production credit risk model is available for this application.", 503);
-    }
-
     // 3. Policy evaluation (lender policy — AI cannot override)
     const orgPolicies = await base44.asServiceRole.entities.Policy.filter({ organization_id, status: "active" }, "-created_date", 50);
     const policy = getPolicy(policy_id || app.policy_id, orgPolicies, app.market);
@@ -79,8 +62,7 @@ export default async function(req: Request): Promise<Response> {
     });
 
     // 5. Build the recommendation (advisory — AI-informed, never overrides policy).
-    //    PD + risk score come from the credit risk model when it ran.
-    const recommendation = buildRecommendation({ application: app, signals, policyOutcome, ai, modelPrediction: modelRun.prediction || null });
+    const recommendation = buildRecommendation({ application: app, signals, policyOutcome, ai });
 
     const recommendationRecord = await base44.asServiceRole.entities.UnderwritingRecommendation.create({
       organization_id,
