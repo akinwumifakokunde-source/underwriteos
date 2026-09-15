@@ -12,7 +12,6 @@ import RegulatoryOutputs from "@/components/home/RegulatoryOutputs.jsx";
 import Providers from "@/components/home/Providers.jsx";
 import GlobalCoverage from "@/components/home/GlobalCoverage.jsx";
 import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
-import WhyWeWin from "@/components/home/WhyWeWin.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import Security from "@/components/home/Security.jsx";
 import Faq from "@/components/home/Faq.jsx";
@@ -39,7 +38,6 @@ export default function Home() {
       <Reveal><RegulatoryOutputs /></Reveal>
       <Reveal><Security /></Reveal>
       <Reveal><CompetitiveComparison /></Reveal>
-      <Reveal><WhyWeWin /></Reveal>
       <Reveal><Faq /></Reveal>
       <Reveal><TeamBar /></Reveal>
       <Reveal><FinalCta /></Reveal>
