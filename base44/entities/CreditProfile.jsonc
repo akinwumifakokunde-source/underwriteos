@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Normalized credit profile. All fields are nullable because different providers may not supply every field.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this credit profile."
+    },
     "organization_id": {
       "type": "string"
     },

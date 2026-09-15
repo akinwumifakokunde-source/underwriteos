@@ -2,6 +2,11 @@
   "name": "BankStatement",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this bank statement."
+    },
     "organization_id": {
       "type": "string"
     },

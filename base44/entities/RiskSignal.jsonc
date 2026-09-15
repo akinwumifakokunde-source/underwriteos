@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Structured risk signal. Linked to Evidence via evidence_id. Each signal carries a severity, direction, optional policy threshold and a human-readable explanation.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this risk signal."
+    },
     "organization_id": {
       "type": "string"
     },

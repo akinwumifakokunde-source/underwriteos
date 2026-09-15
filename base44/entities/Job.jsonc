@@ -2,6 +2,11 @@
   "name": "Job",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this job."
+    },
     "organization_id": {
       "type": "string"
     },

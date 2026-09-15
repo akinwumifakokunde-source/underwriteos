@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Canonical, provider-independent financial profile. Produced by the normalization layer from raw bank-statement and borrower data.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this financial profile."
+    },
     "organization_id": {
       "type": "string"
     },

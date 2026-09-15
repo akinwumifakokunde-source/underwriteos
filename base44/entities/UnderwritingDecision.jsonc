@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Final lender decision. Separate from the AI recommendation. The decision_source records who/what decided.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this underwriting decision."
+    },
     "organization_id": {
       "type": "string"
     },

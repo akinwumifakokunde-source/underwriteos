@@ -2,6 +2,11 @@
   "name": "Borrower",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this borrower."
+    },
     "organization_id": {
       "type": "string"
     },

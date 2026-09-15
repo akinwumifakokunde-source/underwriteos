@@ -2,6 +2,11 @@
   "name": "APIKey",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this API key."
+    },
     "organization_id": {
       "type": "string"
     },

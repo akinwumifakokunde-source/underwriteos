@@ -3,6 +3,11 @@
   "type": "object",
   "description": "A request from the lender to the borrower for missing information needed to complete underwriting. Tracks the request lifecycle from requested through resolved, and feeds application status.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this information request."
+    },
     "organization_id": {
       "type": "string"
     },

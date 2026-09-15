@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Observed outcome of an underwritten loan, recorded after the fact by the lender. Paired with the predicted probability of default snapshot at decision time to close the model-monitoring feedback loop (predicted vs actual default).",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this loan outcome."
+    },
     "organization_id": {
       "type": "string"
     },

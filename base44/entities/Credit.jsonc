@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Per-organization credit balance. Decremented on billable API calls; topped up via Stripe checkout or auto top-up. Tracks active subscription.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this credit balance."
+    },
     "organization_id": {
       "type": "string"
     },

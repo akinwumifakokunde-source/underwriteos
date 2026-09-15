@@ -2,6 +2,11 @@
   "name": "Application",
   "type": "object",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this application."
+    },
     "organization_id": {
       "type": "string"
     },

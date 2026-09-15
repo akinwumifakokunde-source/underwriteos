@@ -3,6 +3,11 @@
   "type": "object",
   "description": "AI-generated underwriting recommendation. Separate from the final lender decision. The AI never silently overrides lender policy.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this recommendation."
+    },
     "organization_id": {
       "type": "string"
     },

@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Evidence graph node. Every risk signal is traceable to its source through this record.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this evidence record."
+    },
     "organization_id": {
       "type": "string"
     },

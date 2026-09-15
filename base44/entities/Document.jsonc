@@ -3,6 +3,11 @@
   "type": "object",
   "description": "Uploaded document for an application. Documents are auto-classified, processed via AI extraction, and linked to evidence records for full provenance.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this document."
+    },
     "organization_id": {
       "type": "string"
     },

@@ -1,20 +1,17 @@
 User-agent: *
 Allow: /
 
-# Private, login-gated app screens — not for indexing
+# Private / authenticated workspace routes should not be indexed.
 Disallow: /workspace
 Disallow: /dashboard
 Disallow: /applications
-Disallow: /applications/
 Disallow: /batch
 Disallow: /forms
-Disallow: /forms/
 Disallow: /policies
 Disallow: /data-sources
 Disallow: /risk-signals
 Disallow: /decisions
 Disallow: /evidence
-Disallow: /evidence/
 Disallow: /reports
 Disallow: /sandbox
 Disallow: /underwrite

@@ -3,6 +3,11 @@
   "type": "object",
   "description": "White-label borrower application form. A public share link (/apply/:slug) lets borrowers submit their details, which create a Borrower + Application in data_collection status for the lender's organization.",
   "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this application form."
+    },
     "organization_id": {
       "type": "string"
     },
