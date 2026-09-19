@@ -55,6 +55,7 @@ import FeatureDetail from '@/pages/FeatureDetail';
 import Insights from '@/pages/Insights';
 import InsightDetail from '@/pages/InsightDetail';
 import OAuthConsent from '@/pages/OAuthConsent';
+import Connect from '@/pages/Connect';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -143,6 +144,7 @@ const AuthenticatedApp = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/architecture" element={<Architecture />} />
         <Route path="/docs" element={<Docs />} />
+        <Route path="/connect" element={<Connect />} />
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

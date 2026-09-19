@@ -33,6 +33,7 @@ const SECONDARY_ITEMS = [
   { to: "/billing", label: "Billing" },
   { to: "/settings", label: "Subscription" },
   { to: "/settings", label: "Settings" },
+  { to: "/connect", label: "Connect AI" },
 ];
 
 const DEVELOPER_ITEMS = [
