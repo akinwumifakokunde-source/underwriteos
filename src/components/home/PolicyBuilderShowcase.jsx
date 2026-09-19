@@ -17,7 +17,7 @@ export default function PolicyBuilderShowcase() {
           <div>
             <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">Policy builder</p>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] mb-4">
-              Configure your lending policy visually
+              Configure your consumer lending policy visually
             </h2>
             <p className="text-[#525965] leading-relaxed mb-6">
               Add rules, set thresholds, and define outcomes — all without writing code.

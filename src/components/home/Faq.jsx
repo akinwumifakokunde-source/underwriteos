@@ -10,7 +10,7 @@ import {
 const FAQS = [
   {
     q: "Do I need to write code to use CreditDecide?",
-    a: "No. Build lending policies visually, publish white-label intake forms, and run underwriting decisions from the workspace — no engineering required. A full REST API is available for teams that want to embed underwriting into their own product.",
+    a: "No. Build consumer lending policies visually, publish white-label intake forms, and run underwriting decisions from the workspace — no engineering required. A full REST API is available for teams that want to embed consumer underwriting into their own product.",
   },
   {
     q: "Which markets and currencies are supported?",
@@ -21,7 +21,7 @@ const FAQS = [
     a: "Yes. Connect credit bureaus and open banking providers per market, or simply upload documents (credit reports, bank statements, payslips, identity). Either path produces the same canonical financial and credit profiles.",
   },
   {
-    q: "Does the AI make the final lending decision?",
+    q: "Does the AI make the final consumer lending decision?",
     a: "No. The AI underwriter produces an advisory recommendation with risk factors, positive signals and an evidence-referenced memo. Your versioned policy engine remains authoritative and produces the final APPROVE, REVIEW or DECLINE decision.",
   },
   {

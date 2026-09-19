@@ -66,12 +66,12 @@ export default function CompetitiveComparison() {
             <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why CreditDecide
           </div>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
-            The AI underwriting layer for lenders everywhere
+            The AI underwriting layer for consumer lenders everywhere
           </h2>
           <p className="mt-3 text-[15px] text-[#525965] max-w-2xl mx-auto leading-relaxed">
             Legacy decision engines explain nothing. Loan management systems cover breadth but under-invest in
-            decision quality. CreditDecide is the evidence-native underwriting brain — no code, fully auditable,
-            live in hours — across the UK, US, Nigeria, South Africa, Kenya, Ghana and beyond.
+            decision quality. CreditDecide is the evidence-native underwriting brain for consumer credit — no code,
+            fully auditable, live in hours — across the UK, US, Nigeria, South Africa, Kenya, Ghana and beyond.
           </p>
         </div>
 

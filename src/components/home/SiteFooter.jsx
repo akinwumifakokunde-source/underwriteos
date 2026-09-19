@@ -45,7 +45,7 @@ export default function SiteFooter() {
               <Logo size={24} />
             </Link>
             <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
-              AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure policies, and make smarter, explainable decisions — anywhere in the world.
+              AI-native underwriting and credit decisioning for consumer lenders. Automate applications, configure policies, and make smarter, explainable decisions — for personal loans, instalment and point-of-sale.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["No-code", "AI-assisted", "Multi-market"].map((t) => (
@@ -95,7 +95,7 @@ export default function SiteFooter() {
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
           <span className="inline-flex items-center gap-1.5">
             <span className="text-base leading-none">🌍</span>
-            Built for modern lenders across the United States, United Kingdom &amp; Africa
+            Built for consumer lenders across the United States, United Kingdom &amp; Africa
           </span>
           <span className="hidden sm:inline text-[#d4d7dd]">·</span>
           <span className="font-medium text-[#525965]">The underwriting operating system — go.</span>
