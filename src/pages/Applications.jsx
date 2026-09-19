@@ -8,6 +8,7 @@ import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBa
 import ApplicationsStats from "@/components/applications/ApplicationsStats";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -20,9 +21,10 @@ export default function Applications() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [market, setMarket] = useState("All");
+  const [refreshing, setRefreshing] = useState(false);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const res = await base44.functions.invoke("apiApplications", { action: "list", limit: 100 });
@@ -41,8 +43,13 @@ export default function Applications() {
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load applications.");
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try { await load(true); } finally { setRefreshing(false); }
   };
 
   useEffect(() => { load(); }, []);
@@ -109,6 +116,7 @@ export default function Applications() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
+      <PullToRefresh onRefresh={handleRefresh} isRefreshing={refreshing}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -230,6 +238,7 @@ export default function Applications() {
           </div>
         )}
       </div>
+      </PullToRefresh>
     </div>
   );
 }

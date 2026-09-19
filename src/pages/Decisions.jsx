@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Search, Brain, ShieldCheck, GitBranch } from "lucide-react";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const DECISION_STYLES = {
   APPROVE: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -21,9 +22,10 @@ export default function Decisions() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const [refreshing, setRefreshing] = useState(false);
 
-  const load = async () => {
-    setLoading(true);
+  const load = async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const me = await base44.auth.me();
@@ -40,8 +42,13 @@ export default function Decisions() {
     } catch (e) {
       setError(e?.message || "Failed to load decisions.");
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try { await load(true); } finally { setRefreshing(false); }
   };
 
   useEffect(() => { load(); }, []);
@@ -64,6 +71,7 @@ export default function Decisions() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
+      <PullToRefresh onRefresh={handleRefresh} isRefreshing={refreshing}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Decisions</h1>
@@ -145,6 +153,7 @@ export default function Decisions() {
           </div>
         )}
       </div>
+      </PullToRefresh>
     </div>
   );
 }
