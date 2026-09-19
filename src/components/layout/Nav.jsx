@@ -2,6 +2,7 @@ import React from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { LogOut, ChevronDown, Terminal } from "lucide-react";
 import Logo from "@/components/Logo";
+import MobileTabBar from "@/components/layout/MobileTabBar.jsx";
 import { base44 } from "@/api/base44Client";
 import {
   DropdownMenu,
@@ -55,7 +56,8 @@ export default function Nav() {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0a0c12] border-b border-white/5">
+    <>
+    <header className="sticky top-0 z-40 bg-[#0a0c12] border-b border-white/5 hidden md:block">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
         <Link to="/workspace" className="flex items-center gap-2.5 shrink-0">
           <Logo size={28} textClassName="text-white hidden sm:inline" />
@@ -109,5 +111,7 @@ export default function Nav() {
         </button>
       </div>
     </header>
+    <MobileTabBar />
+    </>
   );
 }

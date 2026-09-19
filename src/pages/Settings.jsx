@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Settings as SettingsIcon, Loader2, AlertTriangle, Save, CheckCircle2, Building2, Users, Database, Brain, Shield, FileText, ArrowRight, CreditCard } from "lucide-react";
 import BillingSection from "@/components/settings/BillingSection.jsx";
+import DeleteAccountSection from "@/components/settings/DeleteAccountSection.jsx";
 
 const SECTIONS = [
   { id: "organization", label: "Organization", icon: Building2 },
@@ -256,6 +257,7 @@ export default function Settings() {
                         </div>
                       ))}
                     </div>
+                    <DeleteAccountSection />
                   </div>
                 )}
 

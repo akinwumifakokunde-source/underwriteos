@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0a0c12" />
 
@@ -150,6 +150,20 @@
         }
       ]
     }
+    </script>
+
+    <!-- Theme sync: follow OS light/dark preference -->
+    <script>
+      (function () {
+        var mql = window.matchMedia('(prefers-color-scheme: dark)');
+        var apply = function (dark) {
+          var el = document.documentElement;
+          if (dark) el.classList.add('dark'); else el.classList.remove('dark');
+        };
+        apply(mql.matches);
+        try { mql.addEventListener('change', function (e) { apply(e.matches); }); }
+        catch (e) { mql.addListener(function () { apply(mql.matches); }); }
+      })();
     </script>
   </head>
   <body>
