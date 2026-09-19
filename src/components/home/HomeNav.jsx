@@ -8,6 +8,7 @@ const NAV = [
   { to: "/insights", label: "Insights" },
   { to: "/pricing", label: "Pricing" },
   { to: "/security", label: "Security" },
+  { to: "/connect", label: "Connect AI" },
   { to: "/contact", label: "Contact" },
 ];
 
