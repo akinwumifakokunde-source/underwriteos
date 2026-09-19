@@ -9,7 +9,7 @@ export const SIGNUP_CREDIT_GRANT = 1000;
 export interface AuthContext {
   organization_id: string;
   actor: string;
-  actor_type: "user" | "api_key" | "system";
+  actor_type: "user" | "api_key" | "system" | "mcp";
   environment: "sandbox" | "production";
   scopes: string[];
   api_key_id?: string;
@@ -135,10 +135,13 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
       // signup grant must never block org creation
     }
   }
+  // MCP tool calls arrive server-side (no browser Sec-Fetch-Mode header);
+  // dashboard calls arrive from the browser via base44.functions.invoke.
+  const isMcp = !base44._req?.headers?.get?.("sec-fetch-mode");
   return {
     organization_id: organizationId,
     actor: user.id,
-    actor_type: "user",
+    actor_type: isMcp ? "mcp" : "user",
     environment: "sandbox",
     scopes: ["*"]
   };
@@ -173,7 +176,7 @@ export async function applySignupGrantIfNeeded(base44: any, organization_id: str
 
 // Scope enforcement. Dashboard (actor_type === "user") bypasses scope checks.
 export function requireScope(ctx: AuthContext, scope: string): void {
-  if (ctx.actor_type === "user") return;
+  if (ctx.actor_type === "user" || ctx.actor_type === "mcp") return;
   if (ctx.scopes.includes("*") || ctx.scopes.includes(scope)) return;
   throw { status: 403, code: "INSUFFICIENT_SCOPE", message: "This API key does not have permission to perform this operation." };
 }
@@ -208,7 +211,7 @@ export async function audit(base44: any, organization_id: string, event: string,
   // Billable usage: decrement the org's credit balance for API-key calls.
   // `credits` in opts selects the per-transaction cost from the pricing model
   // (default 0 — reads and non-billable events are free).
-  if (opts.actor_type === "api_key" && opts.credits && opts.credits > 0) {
+  if ((opts.actor_type === "api_key" || opts.actor_type === "mcp") && opts.credits && opts.credits > 0) {
     try {
       const credits = await base44.asServiceRole.entities.Credit.filter({ organization_id }, "-created_date", 1);
       if (credits.length > 0) {
