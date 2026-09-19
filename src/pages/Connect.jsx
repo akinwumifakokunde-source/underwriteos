@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Check, Copy, Plug, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ClientPicker from "@/components/connect/ClientPicker";
+import HomeNav from "@/components/home/HomeNav.jsx";
 
 const PLATFORMS = [
   {
@@ -276,6 +277,7 @@ export default function Connect() {
 
   return (
     <div className="min-h-screen bg-[#0a0c12] text-white">
+      <HomeNav />
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
         <Link to="/workspace" className="inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to workspace

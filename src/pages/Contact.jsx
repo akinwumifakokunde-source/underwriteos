@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import HomeNav from "@/components/layout/HomeNav.jsx";
+import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import { Mail, MessageSquare, ArrowRight, CheckCircle2, Loader2, AlertCircle, Blocks, Database, Sparkles, FileDown } from "lucide-react";
 import { Link } from "react-router-dom";

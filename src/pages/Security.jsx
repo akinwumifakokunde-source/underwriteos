@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
-import HomeNav from "@/components/layout/HomeNav.jsx";
+import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import ResponsibleAIGovernance from "@/components/security/ResponsibleAIGovernance.jsx";
 

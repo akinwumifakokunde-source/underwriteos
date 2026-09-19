@@ -1,5 +1,5 @@
 import React from "react";
-import HomeNav from "@/components/layout/HomeNav.jsx";
+import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 
 const SECTIONS = [
