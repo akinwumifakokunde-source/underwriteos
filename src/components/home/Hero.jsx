@@ -22,14 +22,17 @@ export default function Hero() {
           <div>
             <div className="inline-flex items-center gap-2 text-[11px] font-medium text-[#0a2e2a] mb-5 bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] animate-pulse" />
-              No-code underwriting platform
+              Underwriting infrastructure for consumer lenders
             </div>
             <h1 className="text-[2rem] sm:text-[3.5rem] font-semibold tracking-tight text-[#0a0c12] leading-[1.12] sm:leading-[1.04]">
-              Underwrite borrowers anywhere, in <span className="text-[#0d9488]">minutes.</span>
+              Explainable underwriting for <span className="text-[#0d9488]">consumer lenders.</span>
             </h1>
             <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[#525965] leading-relaxed max-w-xl">
-              AI-native underwriting and credit decisioning for modern lenders. Automate applications, configure
-              policies, and make smarter, explainable decisions.
+              Automate application intake, assess affordability, and return evidence-backed APPROVE / REVIEW / DECLINE
+              decisions under your own policies — no code.
+            </p>
+            <p className="mt-3 text-[13px] font-medium text-[#0a2e2a]">
+              Consumer credit first — <span className="text-[#525965] font-normal">mortgage-ready by design.</span>
             </p>
 
             <div className="mt-5 sm:mt-6 flex flex-wrap gap-2">
@@ -54,9 +57,9 @@ export default function Hero() {
             </div>
 
             <div className="mt-10 sm:mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-6 text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">
-              <span>Available worldwide</span>
+              <span>Consumer credit first</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
-              <span>5 risk dimensions</span>
+              <span>Mortgage-ready</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
               <span>Full evidence lineage</span>
             </div>
