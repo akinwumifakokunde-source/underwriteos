@@ -24,11 +24,7 @@ export default async function(req: Request): Promise<Response> {
       const borrower = await base44.asServiceRole.entities.Borrower.filter({ id: borrower_id, organization_id }, "-created_date", 1);
       if (borrower.length === 0) return apiError("BORROWER_NOT_FOUND", `Borrower ${borrower_id} was not found.`, 404);
 
-      const VALID_MARKETS = ["GB", "US", "NG", "ZA", "KE", "GH", "OT"];
       const resolvedMarket = (market || "GB").toUpperCase();
-      if (!VALID_MARKETS.includes(resolvedMarket)) return apiError("VALIDATION_ERROR", `market must be one of ${VALID_MARKETS.join(", ")}.`, 400);
-      const resolvedBorrowerType = borrower_type || "salaried";
-      if (!["salaried", "self_employed", "business"].includes(resolvedBorrowerType)) return apiError("VALIDATION_ERROR", "borrower_type must be salaried, self_employed, or business.", 400);
       const application = await base44.asServiceRole.entities.Application.create({
         organization_id,
         environment: "sandbox",
@@ -37,7 +33,7 @@ export default async function(req: Request): Promise<Response> {
         market: resolvedMarket,
         regulatory_profile: regulatory_profile || getRegulatoryProfile(resolvedMarket),
         state: state || null,
-        borrower_type: resolvedBorrowerType,
+        borrower_type: borrower_type || "salaried",
         product_type: product_type || "personal_loan",
         loan_amount: Number(loan_amount),
         loan_currency: loan_currency || getCurrency(resolvedMarket),
@@ -50,7 +46,7 @@ export default async function(req: Request): Promise<Response> {
         idempotency_key: idempotencyKey || null
       });
 
-      await audit(base44, organization_id, "application.created", { application_id: application.id, actor, actor_type, environment: ctx.environment, endpoint: "POST /v1/applications", details: { loan_amount, loan_purpose, market: resolvedMarket } });
+      await audit(base44, organization_id, "application.created", { application_id: application.id, actor, actor_type, endpoint: "POST /v1/applications", details: { loan_amount, loan_purpose } });
       return apiSuccess({ application_id: application.id, application }, 201);
     }
 
@@ -84,15 +80,13 @@ export default async function(req: Request): Promise<Response> {
       if (interest_rate !== undefined) updates.interest_rate = interest_rate;
       if (policy_id !== undefined) updates.policy_id = policy_id;
       if (product_type !== undefined) updates.product_type = product_type;
-      if (market !== undefined) updates.market = String(market).toUpperCase();
+      if (market !== undefined) updates.market = market;
       if (regulatory_profile !== undefined) updates.regulatory_profile = regulatory_profile;
       if (state !== undefined) updates.state = state;
       if (borrower_type !== undefined) updates.borrower_type = borrower_type;
       if (Object.keys(updates).length === 0) return apiError("VALIDATION_ERROR", "No fields to update.", 400);
-      if (updates.market && !["GB", "US", "NG", "ZA", "KE", "GH", "OT"].includes(String(updates.market).toUpperCase())) return apiError("VALIDATION_ERROR", "market is not valid.", 400);
-      if (updates.borrower_type && !["salaried", "self_employed", "business"].includes(updates.borrower_type)) return apiError("VALIDATION_ERROR", "borrower_type must be salaried, self_employed, or business.", 400);
       const updated = await base44.asServiceRole.entities.Application.update(application_id, updates);
-      await audit(base44, organization_id, "application.updated", { application_id, actor, actor_type, environment: ctx.environment, endpoint: "PATCH /v1/applications/{id}", details: updates });
+      await audit(base44, organization_id, "application.updated", { application_id, actor, actor_type, endpoint: "PATCH /v1/applications/{id}", details: updates });
       return apiSuccess({ application: updated }, 200);
     }
 

@@ -11,7 +11,6 @@ import GlobalCoverage from "@/components/home/GlobalCoverage.jsx";
 import CompetitiveComparison from "@/components/home/CompetitiveComparison.jsx";
 import FormsFeature from "@/components/home/FormsFeature.jsx";
 import AiConnectFeature from "@/components/home/AiConnectFeature.jsx";
-import McpPositioning from "@/components/home/McpPositioning.jsx";
 import Security from "@/components/home/Security.jsx";
 import Faq from "@/components/home/Faq.jsx";
 import FinalCta from "@/components/home/FinalCta.jsx";
@@ -29,7 +28,6 @@ export default function Home() {
       <Reveal><GlobalCoverage /></Reveal>
       <Reveal><FormsFeature /></Reveal>
       <Reveal><AiConnectFeature /></Reveal>
-      <Reveal><McpPositioning /></Reveal>
       <Reveal><PolicyBuilderShowcase /></Reveal>
       <Reveal><Evidence /></Reveal>
       <Reveal><RegulatoryOutputs /></Reveal>

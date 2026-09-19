@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, requireRole, requireConfirmation, audit, findIdempotent } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent } from "../../shared/utils.ts";
 import { getPolicy, evaluatePolicy } from "../../shared/policyEngine.ts";
 import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
@@ -14,22 +14,10 @@ export default async function(req: Request): Promise<Response> {
     const ctx = await resolveOrganization(base44, body);
     const { organization_id, actor, actor_type } = ctx;
     requireScope(ctx, "applications:write");
-    // Authoritative decisions via MCP require an authorised role and explicit
-    // confirmation — OAuth is never a blanket grant to decide. API keys and
-    // the dashboard retain their existing behaviour.
-    if (ctx.actor_type === "mcp") {
-      requireRole(ctx, "admin");
-      requireConfirmation(ctx, body, "run the underwriting decision");
-    }
     const { application_id, policy_id, decision_source, override_reason, override } = body;
     const overrideDecision = override?.decision;
     const overrideReason = override?.reason || override_reason;
-    // The deciding actor is always the authenticated principal — a client-
-    // supplied decided_by is never trusted for MCP actions.
-    const overrideActor = ctx.actor_type === "mcp" ? undefined : override?.decided_by;
-    if (overrideDecision && !overrideReason) {
-      return apiError("VALIDATION_ERROR", "A reason is required to override the policy decision.", 400);
-    }
+    const overrideActor = override?.decided_by;
 
     if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
 
@@ -100,7 +88,7 @@ export default async function(req: Request): Promise<Response> {
       application: app,
       policyOutcome,
       recommendation,
-      actor: overrideActor || (ctx.actor_type === "mcp" ? `mcp:${actor}` : (actor_type === "api_key" ? `api_key:${actor}` : actor)),
+      actor: overrideActor || (actor_type === "api_key" ? `api_key:${actor}` : actor),
       decisionSource: overrideDecision ? (decision_source || "human_underwriter") : (decision_source || "policy_engine"),
       overrideReason,
       overrideDecision
@@ -136,7 +124,7 @@ export default async function(req: Request): Promise<Response> {
       reasons: decision.reasons
     });
 
-    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, environment: ctx.environment, confirmed: ctx.actor_type === "mcp" ? true : undefined, authorised: true, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score, override: !!overrideDecision, has_reason: !!overrideReason } });
+    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score } });
 
     return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord }, 200);
   } catch (e) {

@@ -5,7 +5,7 @@
       {
         "name": "run_underwriting",
         "title": "Run underwriting decision",
-        "description": "Runs the full underwriting pipeline for an application — policy evaluation, AI underwriting memo, advisory recommendation, and the authoritative APPROVE / REVIEW / DECLINE decision. The application must already have been analyzed (analyze_application first). This is an authoritative, decision-changing action: it requires an authorised (admin) user and explicit confirmation (confirm: true). Overrides additionally require a reason. Call this when a user wants to underwrite or decide on a loan application.",
+        "description": "Runs the full underwriting pipeline for an application — policy evaluation, AI underwriting memo, advisory recommendation, and the authoritative APPROVE / REVIEW / DECLINE decision. The application must already have been analyzed (run_analyze_application first). Call this when a user wants to underwrite or decide on a loan application.",
         "input_schema": {
           "type": "object",
           "properties": {
@@ -21,7 +21,6 @@
                 "decided_by": { "type": "string", "description": "Identifier of the person or system making the override." }
               }
             },
-            "confirm": { "type": "boolean", "description": "Must be true to execute this decision-changing action. Obtain explicit confirmation from the authorised user before calling." },
             "idempotency_key": { "type": "string", "description": "Optional. Repeated calls with the same key replay the original decision." }
           },
           "required": ["application_id"]
@@ -32,7 +31,7 @@
       {
         "name": "analyze_application",
         "title": "Analyze application risk",
-        "description": "Runs the risk-signal and evidence pipeline for an application, producing structured risk signals across credit, affordability, fraud, data quality and policy — each linked to traceable evidence. The application must already have credit and/or financial data attached; when none is attached the result is flagged data_source: 'mock'. Call this before run_underwriting.",
+        "description": "Runs the risk-signal and evidence pipeline for an application, producing structured risk signals across credit, affordability, fraud, data quality and policy — each linked to traceable evidence. The application must already have credit and/or financial data attached. Call this before run_underwriting_decision.",
         "input_schema": {
           "type": "object",
           "properties": {

@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, redactRawData } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, requireScope } from "../../shared/utils.ts";
 import { listProviders } from "../../shared/creditProviders.ts";
 import { listOpenBankingProviders } from "../../shared/openBanking.ts";
 
@@ -12,7 +12,7 @@ export default async function(req: Request): Promise<Response> {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
     const ctx = await resolveOrganization(base44, body);
-    const { organization_id, actor_type } = ctx;
+    const { organization_id } = ctx;
     const action = body.action;
     const scopeFor = (a: string) => {
       if (a === "financial-profile" || a === "credit-profile") return "profiles:read";
@@ -107,7 +107,6 @@ export default async function(req: Request): Promise<Response> {
         base44.asServiceRole.entities.CreditReport.filter({ application_id, organization_id }, "-created_date", 10),
         base44.asServiceRole.entities.BankStatement.filter({ application_id, organization_id }, "-created_date", 10),
       ]);
-      const mcp = actor_type === "mcp";
       return apiSuccess({
         application_id,
         application: app[0] || null,
@@ -118,9 +117,8 @@ export default async function(req: Request): Promise<Response> {
         recommendation: recs[0] || null,
         decision: decisions[0] || null,
         audit_events: events,
-        // Data minimisation: MCP responses never include raw provider payloads.
-        credit_reports: mcp ? reports.map(redactRawData) : reports,
-        bank_statements: mcp ? statements.map(redactRawData) : statements,
+        credit_reports: reports,
+        bank_statements: statements,
       }, 200);
     }
 
