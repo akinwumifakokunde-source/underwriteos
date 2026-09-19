@@ -155,7 +155,7 @@ function StepList({ steps }) {
 }
 
 export default function Connect() {
-  const serverUrl = new URL("/api/mcp", window.location.origin).toString();
+  const serverUrl = "https://creditdecide.com/api/mcp";
   const [copied, setCopied] = useState(false);
   const [active, setActive] = useState("claude");
 
