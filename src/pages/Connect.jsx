@@ -4,6 +4,7 @@ import { Check, Copy, Plug, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ClientPicker from "@/components/connect/ClientPicker";
 import HomeNav from "@/components/home/HomeNav.jsx";
+import McpPositioning from "@/components/home/McpPositioning.jsx";
 
 const PLATFORMS = [
   {
@@ -355,6 +356,10 @@ export default function Connect() {
             AI clients cache the tool list. If we add or change tools, refresh or reconnect the connector in
             your client so it picks up the latest capabilities.
           </p>
+        </div>
+
+        <div className="mt-10">
+          <McpPositioning dark />
         </div>
       </div>
     </div>
