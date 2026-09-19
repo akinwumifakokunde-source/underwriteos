@@ -101,6 +101,7 @@ const AuthenticatedApp = () => {
       <Route path="/insights/:slug" element={<InsightDetail />} />
       <Route path="/apply/:slug" element={<Apply />} />
       <Route path="/oauth/consent" element={<OAuthConsent />} />
+      <Route path="/connect" element={<Connect />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/workspace" element={<WorkspaceHome />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -134,7 +135,6 @@ const AuthenticatedApp = () => {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/architecture" element={<Architecture />} />
         <Route path="/docs" element={<Docs />} />
-        <Route path="/connect" element={<Connect />} />
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
