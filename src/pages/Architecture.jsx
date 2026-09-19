@@ -3,7 +3,7 @@ import Nav from "@/components/layout/Nav.jsx";
 import { ChevronDown } from "lucide-react";
 
 const PIPELINE = [
-  { id: "client", label: "Client", desc: "Your application — a lender, fintech, or credit provider — sends borrower data and financial documents to the CreditDecide API. You own the customer experience; CreditDecide provides the intelligence." },
+  { id: "client", label: "Client", desc: "Your application — a consumer lender or fintech — sends borrower data and financial documents to the CreditDecide API. You own the customer experience; CreditDecide provides the intelligence." },
   { id: "api", label: "CreditDecide API", desc: "Versioned REST API under /v1. Authenticated with organization-scoped API keys. Idempotent writes, async jobs, and stable response schemas." },
   { id: "ingestion", label: "Ingestion", desc: "Raw credit reports and bank statements are accepted in provider-specific formats and validated on entry." },
   { id: "normalization", label: "Normalization", desc: "A canonical layer transforms raw data into provider-independent FinancialProfile and CreditProfile models. No provider-specific fields reach the engine." },

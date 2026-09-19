@@ -91,7 +91,7 @@ const STEPS = [
 
 const FAQ = [
   { q: "Do I get free credits to try it out?", a: "Yes — every new account gets 1,000 free credits on signup, no card required. That's enough to run roughly six full underwriting decisions end-to-end (credit pull, bank pull, document processing, AI analysis, decision, and export). Use them to explore the platform before subscribing." },
-  { q: "What's included in a subscription?", a: "Each plan includes a monthly credit allowance — Starter (20,000), Growth (100,000), Scale (300,000) — that refreshes every billing cycle. All plans include access to all markets worldwide — six dedicated jurisdictions plus \"Others\" for any country — with data sources, AI analysis, policy decisions, and exports." },
+  { q: "What's included in a subscription?", a: "Each plan includes a monthly credit allowance — Starter (20,000), Growth (100,000), Scale (300,000) — that refreshes every billing cycle. All plans include access to all markets worldwide — any country, any currency — with data sources, AI analysis, policy decisions, and exports." },
   { q: "What counts as a billable transaction?", a: "Credit report pull (50 credits), bank statement pull (40), document processing (15 per document), AI analysis (30), underwriting decision (20), and report exports (5 per PDF, CSV, or Word). Retrieving (reading) applications, profiles, and decisions is always free." },
   { q: "How is a full application priced?", a: "A complete decision — credit pull (50), bank pull (40), document processing (15), analysis (30), the underwriting decision (20), and a report export (5) — is 160 credits. On Growth that's about $0.64 per decision in CreditDecide credits, well below the cost of pulling the raw data separately." },
   { q: "Do credits expire?", a: "No. Both your subscription credits and any one-time pack credits carry over until consumed." },
@@ -170,7 +170,7 @@ export default function Pricing() {
           ))}
         </div>
         <p className="mt-4 text-xs text-[#8a909c]">
-          All plans include access to all markets worldwide — six dedicated jurisdictions (GB, US, NG, ZA, KE, GH) plus "Others" for any country. Subscribe from Settings → Billing & Subscription. Cancel anytime — your plan stays active until the end of the current period.
+          All plans include access to all markets worldwide — any country, any currency, with configurable policies and data sources per market. Subscribe from Settings → Billing & Subscription. Cancel anytime — your plan stays active until the end of the current period.
         </p>
       </section>
 

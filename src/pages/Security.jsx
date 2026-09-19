@@ -94,7 +94,7 @@ export default function Security() {
           <div className="rounded-2xl border border-[#eceef1] bg-white p-6 flex flex-col">
             <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965] mb-4">Need a security review?</h2>
             <p className="text-sm text-[#525965] leading-relaxed">
-              We work with lenders and fintechs on data processing agreements, penetration testing, and onboarding
+              We work with consumer lenders on data processing agreements, penetration testing, and onboarding
               reviews. Start building in the sandbox, then request a security package when you're ready for production.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">

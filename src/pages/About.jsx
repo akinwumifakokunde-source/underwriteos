@@ -16,10 +16,10 @@ export default function About() {
             <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> About CreditDecide
           </div>
           <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight text-[#0a0c12] leading-[1.08]">
-            CreditDecide is an AI-native underwriting and credit decisioning platform for modern lenders and fintechs.
+            CreditDecide is an AI-native underwriting and credit decisioning platform for consumer lenders.
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-            CreditDecide helps lending teams automate application intake, analyze borrower documents, apply
+            CreditDecide helps consumer lending teams automate application intake, analyze borrower documents, apply
             configurable underwriting policies, assess credit risk, and produce explainable lending decisions —
             without writing code.
           </p>
@@ -39,16 +39,15 @@ export default function About() {
 
           <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">Who CreditDecide is for</h2>
           <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
-            CreditDecide is built for lenders and fintechs — from consumer credit providers and digital banks
-            to microfinance institutions and cross-border lenders — who need to underwrite borrowers faster,
-            more consistently, and with decisions they can explain to auditors, regulators, and borrowers.
+            CreditDecide is built for consumer lenders — from personal loan and instalment providers to point-of-sale
+            and microfinance lenders — who need to underwrite borrowers faster, more consistently, and with
+            decisions they can explain to auditors, regulators, and borrowers.
           </p>
 
           <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">Where CreditDecide operates</h2>
           <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
-            CreditDecide supports lenders everywhere — with dedicated, market-specific policies, KYC
-            requirements, and data sources for the United Kingdom, United States, Nigeria, South Africa,
-            Kenya and Ghana out of the box, and an "Others" option for any other country.
+            CreditDecide supports consumer lenders everywhere — with configurable policies, KYC requirements,
+            and data sources for any market worldwide, out of the box.
           </p>
         </div>
 
@@ -56,7 +55,7 @@ export default function About() {
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <Globe className="w-5 h-5 text-teal-600 mb-3" />
             <h3 className="text-sm font-semibold text-slate-900 mb-1">Available worldwide</h3>
-            <p className="text-xs text-slate-500">6 dedicated markets + "Others" for any country — with local data sources and KYC.</p>
+            <p className="text-xs text-slate-500">Any country, any currency — with local data sources and KYC configurable per market.</p>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <Layers className="w-5 h-5 text-teal-600 mb-3" />

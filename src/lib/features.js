@@ -3,7 +3,7 @@ export const FEATURES = [
     slug: "ai-underwriting",
     title: "AI Underwriting",
     tagline: "An AI-native underwriting engine",
-    h1: "AI underwriting for modern lenders",
+    h1: "AI underwriting for consumer lenders",
     intro:
       "CreditDecide's AI underwriting engine reads borrower documents, normalizes financial and credit data, evaluates your lending policy, and produces a recommendation with a probability of default and confidence score — in minutes, not days.",
     sections: [
@@ -16,7 +16,7 @@ export const FEATURES = [
         body: "The AI underwriter combines normalized financial profiles, credit profiles, and structured risk signals with your configured lending policy. It evaluates each policy rule, scores the application across five risk dimensions, and returns a recommendation alongside a human-readable memo that references the exact evidence behind every signal.",
       },
       {
-        heading: "Why lenders choose AI underwriting",
+        heading: "Why consumer lenders choose AI underwriting",
         body: "Manual underwriting is slow, inconsistent, and hard to audit. CreditDecide's AI underwriter applies your policy consistently across every application, flags cases that need human review, and explains every decision with full evidence lineage — so you can underwrite faster without sacrificing control or compliance.",
       },
     ],
