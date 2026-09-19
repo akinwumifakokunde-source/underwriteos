@@ -1,61 +1,148 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from "framer-motion";
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
-import Home from '@/pages/Home';
-import Sandbox from '@/pages/Sandbox';
-import ApiReference from '@/pages/ApiReference';
-import Architecture from '@/pages/Architecture';
-import Docs from '@/pages/Docs';
-import Playground from '@/pages/Playground';
-import Onboarding from '@/pages/Onboarding';
-import Underwrite from '@/pages/Underwrite';
-import EvidenceGraph from '@/pages/EvidenceGraph';
-import Monitoring from '@/pages/Monitoring';
-import Dashboard from '@/pages/Dashboard';
-import ApiKeys from '@/pages/ApiKeys';
-import Providers from '@/pages/Providers';
-import Usage from '@/pages/Usage';
-import Members from '@/pages/Members';
-import SettingsPage from '@/pages/Settings';
-import Webhooks from '@/pages/Webhooks';
-import Billing from '@/pages/Billing';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import Pricing from '@/pages/Pricing';
-import Security from '@/pages/Security';
-import Privacy from '@/pages/Privacy';
-import Terms from '@/pages/Terms';
-import Contact from '@/pages/Contact';
-import Applications from '@/pages/Applications';
-import ApplicationDetail from '@/pages/ApplicationDetail';
-import ApplicationCreate from '@/pages/ApplicationCreate';
-import BatchUnderwrite from '@/pages/BatchUnderwrite';
-import Policies from '@/pages/Policies';
-import Decisions from '@/pages/Decisions';
-import RiskSignals from '@/pages/RiskSignals';
-import Reports from '@/pages/Reports';
-import WorkspaceHome from '@/pages/WorkspaceHome';
-import Forms from '@/pages/Forms';
-import FormEditor from '@/pages/FormEditor';
-import Apply from '@/pages/Apply';
-import FormSubmissions from '@/pages/FormSubmissions';
-import LinkedInAds from '@/pages/LinkedInAds';
-import About from '@/pages/About';
-import Features from '@/pages/Features';
-import FeatureDetail from '@/pages/FeatureDetail';
-import Insights from '@/pages/Insights';
-import InsightDetail from '@/pages/InsightDetail';
-import OAuthConsent from '@/pages/OAuthConsent';
-import Connect from '@/pages/Connect';
+
+// Route pages are code-split (lazy-loaded) for a faster initial load.
+const Login = lazy(() => import("@/pages/Login"));
+const Register = lazy(() => import("@/pages/Register"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const Home = lazy(() => import("@/pages/Home"));
+const Sandbox = lazy(() => import("@/pages/Sandbox"));
+const ApiReference = lazy(() => import("@/pages/ApiReference"));
+const Architecture = lazy(() => import("@/pages/Architecture"));
+const Docs = lazy(() => import("@/pages/Docs"));
+const Playground = lazy(() => import("@/pages/Playground"));
+const Onboarding = lazy(() => import("@/pages/Onboarding"));
+const Underwrite = lazy(() => import("@/pages/Underwrite"));
+const EvidenceGraph = lazy(() => import("@/pages/EvidenceGraph"));
+const Monitoring = lazy(() => import("@/pages/Monitoring"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const ApiKeys = lazy(() => import("@/pages/ApiKeys"));
+const Providers = lazy(() => import("@/pages/Providers"));
+const Usage = lazy(() => import("@/pages/Usage"));
+const Members = lazy(() => import("@/pages/Members"));
+const SettingsPage = lazy(() => import("@/pages/Settings"));
+const Webhooks = lazy(() => import("@/pages/Webhooks"));
+const Billing = lazy(() => import("@/pages/Billing"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const Security = lazy(() => import("@/pages/Security"));
+const Privacy = lazy(() => import("@/pages/Privacy"));
+const Terms = lazy(() => import("@/pages/Terms"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Applications = lazy(() => import("@/pages/Applications"));
+const ApplicationDetail = lazy(() => import("@/pages/ApplicationDetail"));
+const ApplicationCreate = lazy(() => import("@/pages/ApplicationCreate"));
+const BatchUnderwrite = lazy(() => import("@/pages/BatchUnderwrite"));
+const Policies = lazy(() => import("@/pages/Policies"));
+const Decisions = lazy(() => import("@/pages/Decisions"));
+const RiskSignals = lazy(() => import("@/pages/RiskSignals"));
+const Reports = lazy(() => import("@/pages/Reports"));
+const WorkspaceHome = lazy(() => import("@/pages/WorkspaceHome"));
+const Forms = lazy(() => import("@/pages/Forms"));
+const FormEditor = lazy(() => import("@/pages/FormEditor"));
+const Apply = lazy(() => import("@/pages/Apply"));
+const FormSubmissions = lazy(() => import("@/pages/FormSubmissions"));
+const LinkedInAds = lazy(() => import("@/pages/LinkedInAds"));
+const About = lazy(() => import("@/pages/About"));
+const Features = lazy(() => import("@/pages/Features"));
+const FeatureDetail = lazy(() => import("@/pages/FeatureDetail"));
+const Insights = lazy(() => import("@/pages/Insights"));
+const InsightDetail = lazy(() => import("@/pages/InsightDetail"));
+const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
+const Connect = lazy(() => import("@/pages/Connect"));
 // Add page imports here
+
+const PageLoader = () => (
+  <div className="fixed inset-0 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+  </div>
+);
+
+// Code-split routes with a cross-fade/slide page transition (framer-motion).
+// popLayout keeps the exiting page in place (absolute) so the new page fades in
+// over it without a blank flash.
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="popLayout">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+      >
+        <Suspense fallback={<PageLoader />}>
+          <Routes location={location}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/security" element={<Security />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/features/:slug" element={<FeatureDetail />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/insights/:slug" element={<InsightDetail />} />
+            <Route path="/apply/:slug" element={<Apply />} />
+            <Route path="/oauth/consent" element={<OAuthConsent />} />
+            <Route path="/connect" element={<Connect />} />
+            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+              <Route path="/workspace" element={<WorkspaceHome />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/applications" element={<Applications />} />
+              <Route path="/applications/new" element={<ApplicationCreate />} />
+              <Route path="/batch" element={<BatchUnderwrite />} />
+              <Route path="/applications/:applicationId" element={<ApplicationDetail />} />
+              <Route path="/forms" element={<Forms />} />
+              <Route path="/forms/new" element={<FormEditor />} />
+              <Route path="/forms/:formId/edit" element={<FormEditor />} />
+              <Route path="/forms/:formId/submissions" element={<FormSubmissions />} />
+              <Route path="/linkedin-ads" element={<LinkedInAds />} />
+              <Route path="/policies" element={<Policies />} />
+              <Route path="/data-sources" element={<Providers />} />
+              <Route path="/risk-signals" element={<RiskSignals />} />
+              <Route path="/decisions" element={<Decisions />} />
+              <Route path="/evidence" element={<EvidenceGraph />} />
+              <Route path="/evidence/:applicationId" element={<EvidenceGraph />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/sandbox" element={<Sandbox />} />
+              <Route path="/underwrite" element={<Underwrite />} />
+              <Route path="/monitoring" element={<Monitoring />} />
+              <Route path="/playground" element={<Playground />} />
+              <Route path="/api-reference" element={<ApiReference />} />
+              <Route path="/api-keys" element={<ApiKeys />} />
+              <Route path="/providers" element={<Providers />} />
+              <Route path="/usage" element={<Usage />} />
+              <Route path="/billing" element={<Billing />} />
+              <Route path="/webhooks" element={<Webhooks />} />
+              <Route path="/members" element={<Members />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/architecture" element={<Architecture />} />
+              <Route path="/docs" element={<Docs />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+            </Route>
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Suspense>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -82,63 +169,8 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <div className="pt-safe">
-      <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/" element={<Home />} />
-      <Route path="/pricing" element={<Pricing />} />
-      <Route path="/security" element={<Security />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/features" element={<Features />} />
-      <Route path="/features/:slug" element={<FeatureDetail />} />
-      <Route path="/insights" element={<Insights />} />
-      <Route path="/insights/:slug" element={<InsightDetail />} />
-      <Route path="/apply/:slug" element={<Apply />} />
-      <Route path="/oauth/consent" element={<OAuthConsent />} />
-      <Route path="/connect" element={<Connect />} />
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/workspace" element={<WorkspaceHome />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/applications" element={<Applications />} />
-        <Route path="/applications/new" element={<ApplicationCreate />} />
-        <Route path="/batch" element={<BatchUnderwrite />} />
-        <Route path="/applications/:applicationId" element={<ApplicationDetail />} />
-        <Route path="/forms" element={<Forms />} />
-        <Route path="/forms/new" element={<FormEditor />} />
-        <Route path="/forms/:formId/edit" element={<FormEditor />} />
-        <Route path="/forms/:formId/submissions" element={<FormSubmissions />} />
-        <Route path="/linkedin-ads" element={<LinkedInAds />} />
-        <Route path="/policies" element={<Policies />} />
-        <Route path="/data-sources" element={<Providers />} />
-        <Route path="/risk-signals" element={<RiskSignals />} />
-        <Route path="/decisions" element={<Decisions />} />
-        <Route path="/evidence" element={<EvidenceGraph />} />
-        <Route path="/evidence/:applicationId" element={<EvidenceGraph />} />
-        <Route path="/reports" element={<Reports />} />
-        <Route path="/sandbox" element={<Sandbox />} />
-        <Route path="/underwrite" element={<Underwrite />} />
-        <Route path="/monitoring" element={<Monitoring />} />
-        <Route path="/playground" element={<Playground />} />
-        <Route path="/api-reference" element={<ApiReference />} />
-        <Route path="/api-keys" element={<ApiKeys />} />
-        <Route path="/providers" element={<Providers />} />
-        <Route path="/usage" element={<Usage />} />
-        <Route path="/billing" element={<Billing />} />
-        <Route path="/webhooks" element={<Webhooks />} />
-        <Route path="/members" element={<Members />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/architecture" element={<Architecture />} />
-        <Route path="/docs" element={<Docs />} />
-        <Route path="/onboarding" element={<Onboarding />} />
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-        </Routes>
+    <div className="pt-safe relative">
+      <AnimatedRoutes />
     </div>
   );
 };
