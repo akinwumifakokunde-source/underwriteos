@@ -36,36 +36,50 @@ const COLS = [
 export default function SiteFooter() {
   return (
     <footer className="relative overflow-hidden bg-white">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0d9488] to-transparent" />
-      <div className="absolute -top-20 left-1/4 w-[360px] h-[360px] bg-[#0d9488]/8 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute -bottom-16 right-1/4 w-[300px] h-[300px] bg-indigo-400/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+      {/* subtle top hairline */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0d9488]/40 to-transparent" />
+      {/* subtle static radial lighting */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 20% 0%, rgba(13,148,136,0.05), transparent 70%), radial-gradient(50% 50% at 90% 100%, rgba(99,102,241,0.04), transparent 70%)",
+        }}
+      />
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-12 pb-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 gap-y-10">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2.5">
               <Logo size={24} />
             </Link>
-            <p className="mt-3 text-sm text-[#8a909c] leading-relaxed">
+            <p className="mt-3 text-sm text-[#777] leading-relaxed">
               AI-native underwriting and credit decisioning for consumer lenders. Automate applications, configure policies, and make smarter, explainable decisions — for personal loans, instalment and point-of-sale.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["No-code", "AI-assisted", "Multi-market"].map((t) => (
-                <span key={t} className="text-[10px] font-medium text-[#0d9488] bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-2 py-0.5">{t}</span>
+                <span
+                  key={t}
+                  className="text-[10px] font-medium text-[#0d9488] bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-2 py-0.5"
+                >
+                  {t}
+                </span>
               ))}
             </div>
           </div>
 
           {COLS.map((c) => (
             <div key={c.title}>
-              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-3 flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-gradient-to-br from-teal-400 to-indigo-500" /> {c.title}
+              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#777] mb-3 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-[#0d9488]" /> {c.title}
               </h4>
               <ul className="space-y-2">
                 {c.links.map((l) => (
                   <li key={l.to}>
-                    <Link to={l.to} className="group relative text-sm text-[#525965] transition-all duration-200 hover:text-[#0a0c12] hover:translate-x-0.5 inline-block">
+                    <Link
+                      to={l.to}
+                      className="text-sm text-[#333] hover:text-[#0d9488] transition-colors"
+                    >
                       {l.label}
-                      <span className="absolute -bottom-0.5 left-0 h-px w-0 bg-gradient-to-r from-teal-500 to-indigo-500 transition-all duration-300 group-hover:w-full" />
                     </Link>
                   </li>
                 ))}
@@ -76,42 +90,42 @@ export default function SiteFooter() {
 
         <div className="mt-12 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <p className="text-xs text-[#8a909c]">© {new Date().getFullYear()} CreditDecide</p>
+            <p className="text-xs text-[#777]">© {new Date().getFullYear()} CreditDecide</p>
             <a
               href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="CreditDecide on LinkedIn"
-              className="text-[#8a909c] hover:text-[#0a76b1] hover:scale-125 transition-all duration-300"
+              className="text-[#777] hover:text-[#0a76b1] transition-colors"
             >
               <Linkedin className="w-4 h-4" />
             </a>
           </div>
-          <p className="text-xs text-[#8a909c] text-center sm:text-right max-w-md">
-            <span className="bg-gradient-to-r from-teal-600 to-indigo-600 bg-clip-text text-transparent font-medium">No-code underwriting</span>
+          <p className="text-xs text-[#777] text-center sm:text-right max-w-md">
+            <span className="text-[#0d9488] font-medium">No-code underwriting</span>
             {" · "}AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
           <span className="inline-flex items-center gap-1.5">
             <span className="text-base leading-none">🌍</span>
             Built for consumer lenders worldwide — any market, no limits
           </span>
           <span className="hidden sm:inline text-[#d4d7dd]">·</span>
-          <span className="font-medium text-[#525965]">The underwriting operating system — go.</span>
+          <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-[#8a909c] sm:justify-start sm:text-left">
-          <span className="font-mono uppercase tracking-wider text-[#8a909c]">Our HQ</span>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-[#777] sm:justify-start sm:text-left">
+          <span className="font-mono uppercase tracking-wider text-[#777]">Our HQ</span>
           <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#525965]">San Francisco</span>
+          <span className="text-[#333]">San Francisco</span>
           <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#525965]">London</span>
+          <span className="text-[#333]">London</span>
           <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#525965]">Lagos</span>
+          <span className="text-[#333]">Lagos</span>
           <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#525965]">Nairobi</span>
+          <span className="text-[#333]">Nairobi</span>
         </div>
       </div>
     </footer>
