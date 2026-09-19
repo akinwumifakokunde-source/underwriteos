@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, RefreshCw } from "lucide-react";
 
@@ -88,12 +89,12 @@ export default function RecordOutcome({ applicationId, decision }) {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-[12px] font-medium text-slate-700 mb-1">Status</label>
-              <select
+              <DrawerSelect
                 value={status} onChange={(e) => setStatus(e.target.value)}
                 className="w-full rounded-lg border border-slate-200 px-3 py-2 text-[13px] outline-none focus:border-teal-500 bg-white"
               >
                 {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
+              </DrawerSelect>
             </div>
             <div>
               <label className="block text-[12px] font-medium text-slate-700 mb-1">Days past due</label>

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { X, GitCompare, ArrowRight } from "lucide-react";
 import { evaluateRules, FIELD_DEFAULTS } from "./PolicySimulator";
 
@@ -46,13 +47,13 @@ export default function ComparePolicies({ policies, onClose }) {
 
         <div className="p-5 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <select value={aId} onChange={(e) => setAId(e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+            <DrawerSelect value={aId} onChange={(e) => setAId(e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm">
               {policies.map((p) => <option key={p.id} value={p.id}>{p.name} v{p.version}</option>)}
-            </select>
+            </DrawerSelect>
             <ArrowRight className="w-4 h-4 text-slate-300 mx-auto" />
-            <select value={bId} onChange={(e) => setBId(e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm">
+            <DrawerSelect value={bId} onChange={(e) => setBId(e.target.value)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm">
               {policies.map((p) => <option key={p.id} value={p.id}>{p.name} v{p.version}</option>)}
-            </select>
+            </DrawerSelect>
           </div>
 
           <div className="grid grid-cols-3 gap-3">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { withApiKey, hasApiKey } from "@/lib/apiKey";
@@ -118,7 +119,7 @@ export default function EvidenceGraph() {
           <>
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-3">
               <label className="text-xs font-medium text-slate-500 shrink-0">Application</label>
-              <select
+              <DrawerSelect
                 value={selected}
                 onChange={(e) => pick(e.target.value)}
                 className="flex-1 max-w-md rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200"
@@ -129,7 +130,7 @@ export default function EvidenceGraph() {
                     {a.application_number || a.id.slice(-8)} · {a.decision || a.status} · {Number(a.loan_amount || 0).toLocaleString()} {a.loan_currency || ""}
                   </option>
                 ))}
-              </select>
+              </DrawerSelect>
               {hasPortableProfile && (
                 <button
                   onClick={() => { setPortErr(null); setPortOpen(true); }}
@@ -202,13 +203,13 @@ function PortDialog({ form, setForm, porting, err, onConfirm, onClose }) {
           </p>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Target currency">
-              <select value={form.currency} onChange={(e) => set("currency", e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+              <DrawerSelect value={form.currency} onChange={(e) => set("currency", e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
                 <option value="GBP">GBP (UK)</option>
                 <option value="USD">USD (US)</option>
                 <option value="NGN">NGN (Nigeria)</option>
                 <option value="GHS">GHS (Ghana)</option>
                 <option value="KES">KES (Kenya)</option>
-              </select>
+              </DrawerSelect>
             </Field>
             <Field label="Loan amount">
               <input type="number" min="1" value={form.loan_amount} onChange={(e) => set("loan_amount", e.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" />

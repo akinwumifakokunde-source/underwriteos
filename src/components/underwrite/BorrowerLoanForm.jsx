@@ -1,4 +1,5 @@
 import React from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -35,9 +36,9 @@ export default function BorrowerLoanForm({ form, set }) {
             <Input className={inputCls} type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="alex@example.com" />
           </Field>
           <Field label="Employment status">
-            <select className={selectCls} value={form.employment_status} onChange={(e) => set("employment_status", e.target.value)}>
+            <DrawerSelect className={selectCls} value={form.employment_status} onChange={(e) => set("employment_status", e.target.value)}>
               {EMPLOYMENT.map((s) => <option key={s} value={s}>{s.replace("_", " ")}</option>)}
-            </select>
+            </DrawerSelect>
           </Field>
           <Field label="Employer name">
             <Input className={inputCls} value={form.employer_name} onChange={(e) => set("employer_name", e.target.value)} placeholder="Helix Digital Ltd" />
@@ -61,9 +62,9 @@ export default function BorrowerLoanForm({ form, set }) {
             <Input className={inputCls} value={form.loan_purpose} onChange={(e) => set("loan_purpose", e.target.value)} placeholder="debt_consolidation" />
           </Field>
           <Field label="Product type">
-            <select className={selectCls} value={form.product_type} onChange={(e) => set("product_type", e.target.value)}>
+            <DrawerSelect className={selectCls} value={form.product_type} onChange={(e) => set("product_type", e.target.value)}>
               {PRODUCTS.map((p) => <option key={p} value={p}>{p.replace("_", " ")}</option>)}
-            </select>
+            </DrawerSelect>
           </Field>
         </div>
       </div>

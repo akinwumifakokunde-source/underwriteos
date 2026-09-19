@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare, Globe } from "lucide-react";
@@ -199,7 +200,7 @@ export default function Policies() {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5">
                 <Globe className="w-4 h-4 text-[#0d9488]" />
-                <select
+                <DrawerSelect
                   value={market}
                   onChange={(e) => setMarket(e.target.value)}
                   className="text-sm rounded-lg border border-slate-200 px-3 py-2.5 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
@@ -207,7 +208,7 @@ export default function Policies() {
                   {Object.values(JURISDICTIONS).map((j) => (
                     <option key={j.code} value={j.code}>{j.name}</option>
                   ))}
-                </select>
+                </DrawerSelect>
               </div>
               <button onClick={() => setCompareOpen(true)} disabled={policies.length < 2} className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 px-4 py-2.5 rounded-lg hover:bg-slate-50 disabled:opacity-50">
                 <GitCompare className="w-4 h-4" /> Compare
@@ -319,15 +320,15 @@ export default function Policies() {
                               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
                                 <div>
                                   <label className="text-[10px] text-slate-400 font-medium">Field</label>
-                                  <select value={r.field} onChange={(e) => updateRule(idx, "field", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
+                                  <DrawerSelect value={r.field} onChange={(e) => updateRule(idx, "field", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
                                     {FIELDS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-                                  </select>
+                                  </DrawerSelect>
                                 </div>
                                 <div>
                                   <label className="text-[10px] text-slate-400 font-medium">Operator</label>
-                                  <select value={r.operator} onChange={(e) => updateRule(idx, "operator", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
+                                  <DrawerSelect value={r.operator} onChange={(e) => updateRule(idx, "operator", e.target.value)} className="w-full rounded-md border border-slate-200 px-2 py-1.5 text-[12px] bg-white">
                                     {OPERATORS.map((o) => <option key={o} value={o}>{o}</option>)}
-                                  </select>
+                                  </DrawerSelect>
                                 </div>
                                 <div>
                                   <label className="text-[10px] text-slate-400 font-medium">Threshold</label>
@@ -335,9 +336,9 @@ export default function Policies() {
                                 </div>
                                 <div>
                                   <label className="text-[10px] text-slate-400 font-medium">Then</label>
-                                  <select value={r.decision} onChange={(e) => updateRule(idx, "decision", e.target.value)} className={`w-full rounded-md border px-2 py-1.5 text-[12px] font-medium ${r.decision === "APPROVE" ? "bg-emerald-50 border-emerald-200 text-emerald-700" : r.decision === "DECLINE" ? "bg-rose-50 border-rose-200 text-rose-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
+                                  <DrawerSelect value={r.decision} onChange={(e) => updateRule(idx, "decision", e.target.value)} className={`w-full rounded-md border px-2 py-1.5 text-[12px] font-medium ${r.decision === "APPROVE" ? "bg-emerald-50 border-emerald-200 text-emerald-700" : r.decision === "DECLINE" ? "bg-rose-50 border-rose-200 text-rose-700" : "bg-amber-50 border-amber-200 text-amber-700"}`}>
                                     {OUTCOMES.map((o) => <option key={o} value={o}>{o}</option>)}
-                                  </select>
+                                  </DrawerSelect>
                                 </div>
                                 <div>
                                   <label className="text-[10px] text-slate-400 font-medium">Reason</label>

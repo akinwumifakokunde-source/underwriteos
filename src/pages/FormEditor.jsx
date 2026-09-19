@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
@@ -234,26 +235,26 @@ export default function FormEditor() {
           <Section title="Application defaults">
             <div className="grid grid-cols-2 gap-3">
               <Field label="Market">
-                <select value={form.market} onChange={(e) => onMarketChange(e.target.value)} className="ui-input">
+                <DrawerSelect value={form.market} onChange={(e) => onMarketChange(e.target.value)} className="ui-input">
                   {Object.values(JURISDICTIONS).map((j) => <option key={j.code} value={j.code}>{j.name}</option>)}
-                </select>
+                </DrawerSelect>
               </Field>
               <Field label="Borrower type">
-                <select value={form.borrower_type} onChange={(e) => onBorrowerTypeChange(e.target.value)} className="ui-input">
+                <DrawerSelect value={form.borrower_type} onChange={(e) => onBorrowerTypeChange(e.target.value)} className="ui-input">
                   <option value="salaried">Salaried</option>
                   <option value="self_employed">Self-employed</option>
                   <option value="business">Business</option>
-                </select>
+                </DrawerSelect>
               </Field>
               <Field label="Product type">
-                <select value={form.product_type} onChange={(e) => set("product_type", e.target.value)} className="ui-input">
+                <DrawerSelect value={form.product_type} onChange={(e) => set("product_type", e.target.value)} className="ui-input">
                   {getProducts(form.market).map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
-                </select>
+                </DrawerSelect>
               </Field>
               <Field label="Policy">
-                <select value={form.policy_id} onChange={(e) => onPolicyChange(e.target.value)} className="ui-input">
+                <DrawerSelect value={form.policy_id} onChange={(e) => onPolicyChange(e.target.value)} className="ui-input">
                   {getPolicies(form.market).map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
-                </select>
+                </DrawerSelect>
               </Field>
             </div>
           </Section>

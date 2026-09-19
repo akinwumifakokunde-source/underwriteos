@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
@@ -6,28 +6,21 @@ import { Loader2, AlertTriangle, Plus, ArrowRight, CheckCircle2, Clock, Activity
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
+import { useQuery } from "@tanstack/react-query";
+import PullToRefresh from "@/components/PullToRefresh";
 
 const PRIORITY = { underwriting: 0, data_collection: 1, analyzing: 2, draft: 3, failed: 4, completed: 5 };
 
 export default function Dashboard() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, error, isLoading, isFetching, refetch } = useQuery({
+    queryKey: ["dashboardOverview"],
+    queryFn: async () => {
       const res = await base44.functions.invoke("apiDashboard", { action: "overview" });
-      setData(res.data);
-    } catch (e) {
-      setError(e?.response?.data?.error?.message || e.message || "Failed to load dashboard.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      return res.data;
+    },
+  });
 
-  useEffect(() => { load(); }, []);
+  const load = () => refetch();
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
 
@@ -60,9 +53,10 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
-
-        {loading ? (
+        <PullToRefresh onRefresh={() => refetch()} isRefreshing={isFetching}>
+        {error ? (
+          <div className="mb-4"><ErrorState message={error.message || "Failed to load dashboard."} onRetry={load} /></div>
+        ) : isLoading ? (
           <div className="rounded-xl border border-slate-200 bg-white p-10 flex items-center justify-center gap-3">
             <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
             <span className="text-sm text-slate-500">Loading dashboard…</span>
@@ -142,6 +136,7 @@ export default function Dashboard() {
             </div>
           </div>
         ) : null}
+        </PullToRefresh>
       </div>
     </div>
   );

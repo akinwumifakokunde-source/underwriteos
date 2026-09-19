@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2 } from "lucide-react";
@@ -161,7 +162,7 @@ export default function Apply() {
                           {f.required && <span className="text-rose-500 ml-0.5">*</span>}
                         </label>
                         {meta.type === "select" ? (
-                          <select
+                          <DrawerSelect
                             value={values[f.key] || ""}
                             onChange={(e) => set(f.key, e.target.value)}
                             required={f.required}
@@ -169,7 +170,7 @@ export default function Apply() {
                           >
                             <option value="">Select…</option>
                             {meta.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                          </select>
+                          </DrawerSelect>
                         ) : (
                           <input
                             type={meta.type}

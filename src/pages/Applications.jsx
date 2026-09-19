@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
@@ -149,7 +150,7 @@ export default function Applications() {
             ))}
           </div>
           <div className="flex items-center gap-2 sm:ml-auto">
-            <select
+            <DrawerSelect
               value={market}
               onChange={(e) => setMarket(e.target.value)}
               className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
@@ -161,7 +162,7 @@ export default function Applications() {
               <option value="ZA">South Africa</option>
               <option value="KE">Kenya</option>
               <option value="GH">Ghana</option>
-            </select>
+            </DrawerSelect>
             <div className="relative w-56">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input

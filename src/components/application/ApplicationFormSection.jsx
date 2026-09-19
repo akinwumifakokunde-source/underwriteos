@@ -1,4 +1,5 @@
 import React from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { Sparkles, Save, Loader2, Globe } from "lucide-react";
 import { JURISDICTIONS, getJurisdiction, getProducts, getPolicies, getCurrency } from "@/lib/jurisdictions";
 import { suggestPolicyForProduct } from "@/lib/policyTemplates";
@@ -145,13 +146,13 @@ function FormSelect({ label, value, onChange, options }) {
   return (
     <div>
       <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">{label}</label>
-      <select
+      <DrawerSelect
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10"
       >
         {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
+      </DrawerSelect>
     </div>
   );
 }

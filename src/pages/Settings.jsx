@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
@@ -146,9 +147,9 @@ export default function Settings() {
                         </div>
                         <div>
                           <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Default currency</label>
-                          <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10">
+                          <DrawerSelect value={currency} onChange={(e) => setCurrency(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10">
                             {["GBP", "USD", "EUR"].map((c) => <option key={c} value={c}>{c}</option>)}
-                          </select>
+                          </DrawerSelect>
                         </div>
                       </div>
                       <button onClick={save} disabled={saving} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800 disabled:opacity-50">

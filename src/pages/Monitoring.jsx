@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav";
 import CalibrationChart from "@/components/monitoring/CalibrationChart";
@@ -146,7 +147,7 @@ export default function Monitoring() {
                   {decidedApps.length === 0 ? (
                     <p className="text-[12px] text-[#8a909c] py-2">No decided applications yet. Underwrite an application first.</p>
                   ) : (
-                    <select
+                    <DrawerSelect
                       value={appId} onChange={(e) => setAppId(e.target.value)}
                       className="w-full rounded-lg border border-[#eceef1] px-3 py-2 text-[13px] outline-none focus:border-[#0d9488] bg-white"
                     >
@@ -156,17 +157,17 @@ export default function Monitoring() {
                           {a.application_number || a.id.slice(-8)} · {a.decision} · {(a.loan_currency || "GBP")} {(a.loan_amount || 0).toLocaleString()}
                         </option>
                       ))}
-                    </select>
+                    </DrawerSelect>
                   )}
                 </div>
                 <div>
                   <label className="block text-[12px] font-medium text-[#0a0c12] mb-1">Status</label>
-                  <select
+                  <DrawerSelect
                     value={status} onChange={(e) => setStatus(e.target.value)}
                     className="w-full rounded-lg border border-[#eceef1] px-3 py-2 text-[13px] outline-none focus:border-[#0d9488] bg-white"
                   >
                     {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
+                  </DrawerSelect>
                 </div>
                 <div>
                   <label className="block text-[12px] font-medium text-[#0a0c12] mb-1">Days past due</label>

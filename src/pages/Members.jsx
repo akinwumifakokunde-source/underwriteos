@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Users, Loader2, AlertTriangle, UserPlus, ShieldCheck, Trash2, CheckCircle2 } from "lucide-react";
@@ -99,11 +100,11 @@ export default function Members() {
           <div className="flex flex-col sm:flex-row gap-2">
             <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="teammate@company.com"
               className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10" />
-            <select value={role} onChange={(e) => setRole(e.target.value)}
+            <DrawerSelect value={role} onChange={(e) => setRole(e.target.value)}
               className="rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10">
               <option value="user">User</option>
               <option value="admin">Admin</option>
-            </select>
+            </DrawerSelect>
             <button onClick={invite} disabled={busy || !email} className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800 disabled:opacity-50">
               {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />} Invite
             </button>

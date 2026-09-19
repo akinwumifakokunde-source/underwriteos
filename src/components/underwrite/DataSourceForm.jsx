@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DrawerSelect from "@/components/ui/drawer-select";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { withApiKey } from "@/lib/apiKey";
@@ -90,14 +91,14 @@ export default function DataSourceForm({ form, set }) {
       {form.dataMode === "auto" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Credit bureau" hint={activeBureaus.length ? `${activeBureaus.length} live credential(s) connected` : "No live credential — mock data"}>
-            <select className={selectCls} value={form.creditProvider} onChange={(e) => set("creditProvider", e.target.value)}>
+            <DrawerSelect className={selectCls} value={form.creditProvider} onChange={(e) => set("creditProvider", e.target.value)}>
               {BUREAUS.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
+            </DrawerSelect>
           </Field>
           <Field label="Open banking provider" hint={activeBanks.length ? `${activeBanks.length} live credential(s) connected` : "No live credential — mock data"}>
-            <select className={selectCls} value={form.bankProvider} onChange={(e) => set("bankProvider", e.target.value)}>
+            <DrawerSelect className={selectCls} value={form.bankProvider} onChange={(e) => set("bankProvider", e.target.value)}>
               {BANKS.map((b) => <option key={b} value={b}>{b}</option>)}
-            </select>
+            </DrawerSelect>
           </Field>
         </div>
       ) : (
