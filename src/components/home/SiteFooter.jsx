@@ -47,8 +47,8 @@ export default function SiteFooter() {
         }}
       />
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-12 pb-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 gap-y-10">
-          <div className="col-span-2 md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-10">
+          <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
               <Logo size={24} />
             </Link>
@@ -107,15 +107,6 @@ export default function SiteFooter() {
           </p>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
-          <span className="inline-flex items-center gap-1.5">
-            <span className="text-base leading-none">🌍</span>
-            Built for consumer lenders worldwide — any market, no limits
-          </span>
-          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
-          <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
-        </div>
-
         <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-[#777] sm:justify-start sm:text-left">
           <span className="font-mono uppercase tracking-wider text-[#777]">Our HQ</span>
           <span className="text-[#d4d7dd]">·</span>
@@ -126,6 +117,15 @@ export default function SiteFooter() {
           <span className="text-[#333]">Lagos</span>
           <span className="text-[#d4d7dd]">·</span>
           <span className="text-[#333]">Nairobi</span>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="text-base leading-none">🌍</span>
+            Built for consumer lenders worldwide — any market, no limits
+          </span>
+          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
+          <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
         </div>
       </div>
     </footer>
