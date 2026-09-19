@@ -83,7 +83,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <div className="pt-safe">
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0 }}
