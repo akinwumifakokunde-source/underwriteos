@@ -32,7 +32,7 @@ export default function Hero() {
               decisions under your own policies — no code.
             </p>
             <p className="mt-3 text-[13px] font-medium text-[#0a2e2a]">
-              Consumer credit first — <span className="text-[#525965] font-normal">mortgage-ready by design.</span>
+              Consumer credit first — <span className="text-[#525965] font-normal">personal loans, instalment &amp; point-of-sale.</span>
             </p>
 
             <div className="mt-5 sm:mt-6 flex flex-wrap gap-2">
@@ -59,7 +59,7 @@ export default function Hero() {
             <div className="mt-10 sm:mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-6 text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">
               <span>Consumer credit first</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
-              <span>Mortgage-ready</span>
+              <span>Instalment &amp; POS</span>
               <span className="hidden sm:inline text-[#d0d3d8]">·</span>
               <span>Full evidence lineage</span>
             </div>
