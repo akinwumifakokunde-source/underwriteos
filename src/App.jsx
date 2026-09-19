@@ -54,6 +54,7 @@ import Features from '@/pages/Features';
 import FeatureDetail from '@/pages/FeatureDetail';
 import Insights from '@/pages/Insights';
 import InsightDetail from '@/pages/InsightDetail';
+import OAuthConsent from '@/pages/OAuthConsent';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -108,6 +109,7 @@ const AuthenticatedApp = () => {
       <Route path="/insights" element={<Insights />} />
       <Route path="/insights/:slug" element={<InsightDetail />} />
       <Route path="/apply/:slug" element={<Apply />} />
+      <Route path="/oauth/consent" element={<OAuthConsent />} />
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route path="/workspace" element={<WorkspaceHome />} />
         <Route path="/dashboard" element={<Dashboard />} />

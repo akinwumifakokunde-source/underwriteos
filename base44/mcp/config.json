@@ -1,0 +1,116 @@
+{
+  "auth": "oauth",
+  "tools": {
+    "functions": [
+      {
+        "name": "run_underwriting",
+        "title": "Run underwriting decision",
+        "description": "Runs the full underwriting pipeline for an application — policy evaluation, AI underwriting memo, advisory recommendation, and the authoritative APPROVE / REVIEW / DECLINE decision. The application must already have been analyzed (run_analyze_application first). Call this when a user wants to underwrite or decide on a loan application.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "application_id": { "type": "string", "description": "The application to underwrite." },
+            "policy_id": { "type": "string", "description": "Optional policy id to evaluate against. Defaults to the application's own policy." },
+            "decision_source": { "type": "string", "description": "Who is deciding: policy_engine, human_underwriter, or automated_workflow." },
+            "override": {
+              "type": "object",
+              "description": "Optional manual override of the policy decision.",
+              "properties": {
+                "decision": { "type": "string", "description": "APPROVE, REVIEW, or DECLINE." },
+                "reason": { "type": "string", "description": "Why the decision was overridden. Required when overriding." },
+                "decided_by": { "type": "string", "description": "Identifier of the person or system making the override." }
+              }
+            },
+            "idempotency_key": { "type": "string", "description": "Optional. Repeated calls with the same key replay the original decision." }
+          },
+          "required": ["application_id"]
+        },
+        "handler": "apiUnderwrite",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "analyze_application",
+        "title": "Analyze application risk",
+        "description": "Runs the risk-signal and evidence pipeline for an application, producing structured risk signals across credit, affordability, fraud, data quality and policy — each linked to traceable evidence. The application must already have credit and/or financial data attached. Call this before run_underwriting_decision.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "application_id": { "type": "string", "description": "The application to analyze." }
+          },
+          "required": ["application_id"]
+        },
+        "handler": "apiAnalyze",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "retrieve_application_data",
+        "title": "Retrieve application data",
+        "description": "Reads underwriting data for an application: the full summary, financial profile, credit profile, risk signals, evidence, policy outcome, AI recommendation, final decision, or audit trail. Also lists configured webhooks and available data providers. Use this to look up the status, risk signals, evidence lineage, or decision for a loan application.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": { "type": "string", "description": "What to retrieve: summary, financial-profile, credit-profile, risk, evidence, policy, recommendation, decision, audit, webhooks, providers, or job." },
+            "application_id": { "type": "string", "description": "The application id. Required for all actions except webhooks, providers, and job." },
+            "job_id": { "type": "string", "description": "Required only when action is job." }
+          },
+          "required": ["action"]
+        },
+        "handler": "apiRetrieve",
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "ask_underwriting_assistant",
+        "title": "Ask underwriting assistant",
+        "description": "Asks the CreditDecide AI underwriting assistant a question about a specific application — its borrower, financial profile, credit profile, risk signals, recommendation, or decision. Returns a concise, evidence-grounded answer. Use this when a user wants to understand or interrogate an application's underwriting outcome.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "application_id": { "type": "string", "description": "The application to ask about." },
+            "message": { "type": "string", "description": "The question for the underwriting assistant." },
+            "history": {
+              "type": "array",
+              "description": "Optional prior conversation turns for context.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "role": { "type": "string", "description": "user or assistant" },
+                  "content": { "type": "string", "description": "The message content." }
+                }
+              }
+            }
+          },
+          "required": ["application_id", "message"]
+        },
+        "handler": "apiChat",
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "manage_application",
+        "title": "Manage loan applications",
+        "description": "Create, get, list, or update a loan application. Create requires a borrower_id and a positive loan_amount, and resolves the market, currency, regulatory profile, and default policy. Call this to start a new loan application before attaching data and underwriting.",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": { "type": "string", "description": "create, get, list, or update." },
+            "application_id": { "type": "string", "description": "Required for get and update. The application id." },
+            "borrower_id": { "type": "string", "description": "Required for create. The borrower applying for the loan." },
+            "loan_amount": { "type": "number", "description": "Required for create. Positive loan amount." },
+            "loan_currency": { "type": "string", "description": "ISO currency code, e.g. GBP, USD, NGN. Defaults to the market currency." },
+            "loan_purpose": { "type": "string", "description": "Purpose of the loan." },
+            "loan_term_months": { "type": "number", "description": "Loan term in months. Defaults to 12." },
+            "interest_rate": { "type": "number", "description": "Optional interest rate." },
+            "policy_id": { "type": "string", "description": "Policy to apply. Defaults to the market default policy." },
+            "market": { "type": "string", "description": "Market code: GB, US, NG, ZA, KE, GH, or OT. Defaults to GB." },
+            "product_type": { "type": "string", "description": "Loan product, e.g. personal_loan. Defaults to personal_loan." },
+            "borrower_type": { "type": "string", "description": "salaried, self_employed, or business. Defaults to salaried." },
+            "limit": { "type": "number", "description": "For list only. Max applications to return, 1–100. Defaults to 50." },
+            "idempotency_key": { "type": "string", "description": "Optional. Repeated create calls with the same key replay the original application." }
+          },
+          "required": ["action"]
+        },
+        "handler": "apiApplications",
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      }
+    ]
+  }
+}
