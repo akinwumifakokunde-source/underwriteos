@@ -134,6 +134,13 @@ export default function Onboarding() {
                   <div>
                     <div className="text-xs text-slate-400">Plan</div>
                     <div className="font-medium text-slate-900 capitalize">{org.plan}</div>
+                    {org.plan === "sandbox" && (
+                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                        Free evaluation environment — you get 1,000 credits to try the full pipeline.
+                        Ready to go live?{" "}
+                        <Link to="/billing" className="text-[#0d9488] font-medium hover:underline">Upgrade to production</Link>.
+                      </p>
+                    )}
                   </div>
                   <div>
                     <div className="text-xs text-slate-400">Default policy</div>
