@@ -1,12 +1,16 @@
+# CreditDecide — AI-native underwriting for consumer lenders
+# Allow all crawlers full access
 User-agent: *
 Allow: /
 
-# Private / authenticated workspace routes should not be indexed.
+# Block authenticated workspace routes from indexing
 Disallow: /workspace
 Disallow: /dashboard
 Disallow: /applications
 Disallow: /batch
 Disallow: /forms
+Disallow: /forms/new
+Disallow: /linkedin-ads
 Disallow: /policies
 Disallow: /data-sources
 Disallow: /risk-signals
@@ -28,6 +32,5 @@ Disallow: /settings
 Disallow: /architecture
 Disallow: /docs
 Disallow: /onboarding
-Disallow: /linkedin-ads
 
 Sitemap: https://creditdecide.com/sitemap.xml

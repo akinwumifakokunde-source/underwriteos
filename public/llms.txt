@@ -1,25 +1,39 @@
 # CreditDecide
 
-> CreditDecide is an AI-native underwriting and credit decisioning operating system for modern lenders and fintechs. Lenders build underwriting policies visually (no code), collect borrower applications through white-label intake forms with market-specific KYC, connect live credit bureau and open banking data (or upload documents), normalize financial and credit data into canonical profiles, generate structured risk signals with full evidence lineage, apply lender policy, and return an explainable APPROVE / REVIEW / DECLINE decision. Dedicated configurations for the United Kingdom, United States, Nigeria, South Africa, Kenya and Ghana, plus a flexible "Others" option for any country.
+> CreditDecide is an AI-native, no-code underwriting operating system for consumer lenders — personal loans, instalment lending, and point-of-sale finance. It automates application intake, assesses affordability, and returns evidence-backed APPROVE / REVIEW / DECLINE decisions under each lender's own policies, for any market worldwide.
 
-## Links
+## What CreditDecide does
 
-- [Home](https://creditdecide.com/): AI-native underwriting and credit decisioning for modern lenders
-- [Pricing](https://creditdecide.com/pricing): Starter, Growth and Scale plans with usage-based credits
-- [Features](https://creditdecide.com/features): Overview of the underwriting operating system
-- [AI Underwriting](https://creditdecide.com/features/ai-underwriting): AI underwriting engine with probability of default and confidence
-- [Credit Decisioning](https://creditdecide.com/features/credit-decisioning): Explainable APPROVE / REVIEW / DECLINE outcomes
-- [Document Intelligence](https://creditdecide.com/features/document-intelligence): Classify, extract and verify borrower documents
-- [Risk Assessment](https://creditdecide.com/features/risk-assessment): Five dimensions of borrower risk
-- [Lending Policies](https://creditdecide.com/features/lending-policies): Visual no-code policy builder with versioning and simulation
-- [Explainable Decisions](https://creditdecide.com/features/explainable-decisions): Evidence graph from signal to source field
-- [Insights](https://creditdecide.com/insights): Editorial articles on underwriting, risk and markets
-- [Security](https://creditdecide.com/security): Security and responsible AI governance
-- [About](https://creditdecide.com/about): Company overview
-- [Contact](https://creditdecide.com/contact): Contact the team
-- [Privacy](https://creditdecide.com/privacy): Privacy policy
-- [Terms](https://creditdecide.com/terms): Terms of service
+CreditDecide helps consumer lending teams automate the full underwriting pipeline without writing code:
 
-## Optional
+- **Intake** — white-label borrower application forms with market-specific KYC, or API-created applications.
+- **Data collection** — live credit bureau and open banking data sources, or document upload.
+- **Document intelligence** — AI classification and extraction of bank statements, payslips, credit reports and identity documents, with confidence scores.
+- **Normalization** — raw, provider-specific data is transformed into canonical financial and credit profiles.
+- **Risk signals** — structured signals across five dimensions: credit, affordability, fraud, data quality, and policy — each with severity, direction, and a human-readable explanation.
+- **Evidence lineage** — every signal traces through an evidence graph to its exact source field, making decisions auditable by construction.
+- **Policy engine** — a visual, no-code rule builder with versioned, never-overwrite policies and APPROVE / REVIEW / DECLINE outcomes per rule.
+- **AI underwriter** — an advisory recommendation with probability of default and confidence, plus an evidence-referenced memo. The AI recommends; it never silently overrides lender policy.
+- **Decisions** — the lender (or an automated workflow) makes the final call, with an override reason required when it differs from the recommendation.
+- **Exports** — decisions export as PDF, CSV, and Word for audit trails, adverse-action notices, and portfolio reporting.
+- **Monitoring** — record loan outcomes and compare against predicted default to close the model-calibration feedback loop.
 
-- @/api/base44Client: pre-initialized Base44 SDK for entity and integration access
+## Who it is for
+
+CreditDecide is built for consumer lenders — personal loan providers, instalment lenders, point-of-sale finance providers, and microfinance lenders — who need to underwrite borrowers faster, more consistently, and with decisions they can explain to auditors, regulators, and borrowers.
+
+## Markets
+
+CreditDecide is borderless. Policies, KYC requirements, currencies, and data sources are configurable per market — any country, any currency — with live credit bureau and open banking connections or document upload. There are no geographic limits.
+
+## Key links
+
+- [Home](https://creditdecide.com/)
+- [Pricing](https://creditdecide.com/pricing)
+- [Product capabilities](https://creditdecide.com/features)
+- [Insights](https://creditdecide.com/insights)
+- [Security](https://creditdecide.com/security)
+- [About](https://creditdecide.com/about)
+- [Contact](https://creditdecide.com/contact)
+- [Privacy policy](https://creditdecide.com/privacy)
+- [Terms of service](https://creditdecide.com/terms)
