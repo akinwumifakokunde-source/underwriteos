@@ -14,20 +14,20 @@ const CLIENTS = [
 const POINTS = [
   {
     icon: MessageSquare,
-    title: "Ask in plain language",
-    desc: "Your assistant underwrites, reads risk signals and evidence, and explains decisions — all through a secure MCP server.",
+    title: "Work with your data",
+    desc: "Retrieve authorised lending data, analyse applications and explore supporting evidence — all through a secure MCP server.",
     grad: "from-teal-400 to-emerald-500",
   },
   {
     icon: ShieldCheck,
-    title: "Scoped to your data",
-    desc: "Each client connects as you and only ever sees your organization's applications, borrowers and decisions.",
+    title: "Permissions & policy controls",
+    desc: "CreditDecide enforces your lender policies, roles and decision controls. The assistant works within them — never around them.",
     grad: "from-sky-400 to-indigo-500",
   },
   {
     icon: Sparkles,
-    title: "Works with your stack",
-    desc: "Point any MCP-compatible client at one URL. No SDK to install, no tokens to manage by hand.",
+    title: "Auditable by design",
+    desc: "Every action is org-scoped, role-checked and recorded in the audit trail. Point any MCP-compatible client at one URL.",
     grad: "from-violet-400 to-purple-500",
   },
 ];
@@ -40,21 +40,22 @@ export default function AiConnectFeature() {
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">AI-native by design</p>
+            <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">CreditDecide MCP</p>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] mb-4">
-              Bring your own AI assistant
+              Bring credit underwriting into your AI workflow
             </h2>
             <p className="text-[#525965] leading-relaxed mb-6">
-              CreditDecide speaks MCP. Point Claude, ChatGPT, Cursor, Windsurf, Cline, Zed or any compatible
-              client at a single URL and your assistant becomes an underwriter — running decisions,
-              interrogating risk signals and evidence, and managing loan applications on your behalf.
-              OAuth-secured, scoped to your data.
+              Connect compatible AI assistants to CreditDecide to retrieve authorised lending data, analyse
+              applications, explore supporting evidence and interact with underwriting workflows — with
+              permissions, policy controls and auditability. CreditDecide keeps enforcing your lender
+              policies, permissions and decision controls; the assistant works within them, never around them.
             </p>
             <ul className="space-y-2.5 text-sm text-[#525965]">
               {[
                 "One URL — no SDK, no manual token handling",
-                "Runs underwriting, analysis and retrieval tools",
-                "Sign in once per client; access stays scoped to your org",
+                "Read-first: retrieve data, analyse risk, explore evidence",
+                "Authoritative decisions need admin role + explicit confirmation",
+                "Every action is org-scoped and fully audited",
               ].map((p) => (
                 <li key={p} className="flex items-start gap-2.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] mt-2 shrink-0" />
@@ -107,10 +108,10 @@ export default function AiConnectFeature() {
 
               <div className="rounded-xl border border-[#0d9488]/30 bg-gradient-to-b from-[#e6f7f3] to-[#d9f2ec] px-3.5 py-3">
                 <div className="text-[11px] text-[#0a0c12] leading-relaxed">
-                  <span className="font-medium">Assistant:</span> "Underwrite application #2041 and explain the decision."
+                  <span className="font-medium">Assistant:</span> "Analyse application #2041 and summarise the risk."
                 </div>
                 <div className="text-[11px] text-[#525965] leading-relaxed mt-1.5">
-                  <span className="font-medium text-[#0d9488]">CreditDecide:</span> Decision: APPROVE. 6 risk signals, 14 evidence records, DTI 0.31.
+                  <span className="font-medium text-[#0d9488]">CreditDecide:</span> 6 risk signals, 14 evidence records, DTI 0.31 — data_source: live. No decision made: underwriting needs your confirmation.
                 </div>
               </div>
             </div>

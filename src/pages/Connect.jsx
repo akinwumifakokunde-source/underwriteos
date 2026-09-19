@@ -290,9 +290,10 @@ export default function Connect() {
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">Connect your AI client</h1>
         </div>
         <p className="text-[15px] text-[#a0a4ab] leading-relaxed max-w-2xl mb-8">
-          Point any popular AI assistant at CreditDecide. Your assistant can then run underwriting, read risk
-          signals and evidence, and manage loan applications on your behalf — scoped to your own organization's
-          data. Works with every MCP-compatible client.
+          Bring credit underwriting into your AI workflow. Point any compatible AI assistant at CreditDecide
+          to retrieve authorised lending data, analyse applications, explore supporting evidence and
+          interact with underwriting workflows — while CreditDecide keeps enforcing your lender policies,
+          permissions and decision controls. Scoped to your organization's data, audited end-to-end.
         </p>
 
         {/* Server URL */}
@@ -344,7 +345,8 @@ export default function Connect() {
             <span className="font-medium text-teal-300">Sign-in required.</span> Because CreditDecide handles
             sensitive financial data, each AI client acts as you. The first time it connects, it opens the
             CreditDecide consent page — sign in with your own account and approve. The assistant only ever
-            sees and acts on your organization's data.
+            sees and acts on your organization's data, within your lender policies, permissions and decision
+            controls — every action is audited.
           </p>
         </div>
 
