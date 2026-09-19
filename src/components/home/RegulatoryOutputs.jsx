@@ -2,15 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ScrollText, FileSpreadsheet, FileJson, ShieldCheck } from "lucide-react";
 
-const JURISDICTIONS = [
-  { code: "US", label: "United States", framework: "ECOA · FCRA §615" },
-  { code: "GB", label: "United Kingdom", framework: "CONC 11" },
-  { code: "NG", label: "Nigeria", framework: "CBN Consumer Protection" },
-  { code: "ZA", label: "South Africa", framework: "NCA §62" },
-  { code: "KE", label: "Kenya", framework: "CBK Prudential" },
-  { code: "GH", label: "Ghana", framework: "BoG Consumer Credit" },
-];
-
 const OUTPUTS = [
   {
     icon: ScrollText,
@@ -64,21 +55,14 @@ export default function RegulatoryOutputs() {
         </div>
 
         <div className="mt-10 rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-2 mb-5">
+          <div className="flex items-center gap-2 mb-3">
             <ShieldCheck className="w-4 h-4 text-[#0d9488]" />
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">Supported frameworks</p>
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">Built for any jurisdiction</p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4">
-            {JURISDICTIONS.map((j) => (
-              <div key={j.code} className="flex items-center gap-3">
-                <span className="text-xs font-mono font-semibold text-white bg-[#0a0c12] rounded px-1.5 py-0.5">{j.code}</span>
-                <div>
-                  <div className="text-sm font-medium text-[#0a0c12]">{j.label}</div>
-                  <div className="text-[11px] text-[#8a909c]">{j.framework}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="text-sm text-[#525965] leading-relaxed">
+            Adverse-action notices, reason codes and audit exports are generated from the evidence graph —
+            configurable to whatever consumer-credit framework your regulators require, in any country.
+          </p>
         </div>
 
         <div className="mt-10">

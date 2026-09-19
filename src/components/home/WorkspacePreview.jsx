@@ -84,7 +84,7 @@ function ApplicationTab() {
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-base font-semibold text-[#0a0c12]">John Smith</div>
-          <div className="text-[11px] text-[#8a909c] mt-0.5">Personal Loan · United Kingdom</div>
+          <div className="text-[11px] text-[#8a909c] mt-0.5">Personal Loan</div>
         </div>
         <div className="text-right shrink-0">
           <div className="text-base font-semibold text-[#0a0c12]">£25,000</div>

@@ -95,7 +95,7 @@ export default function SiteFooter() {
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#8a909c] sm:flex-row sm:gap-2 sm:text-left">
           <span className="inline-flex items-center gap-1.5">
             <span className="text-base leading-none">🌍</span>
-            Built for consumer lenders across the United States, United Kingdom &amp; Africa
+            Built for consumer lenders worldwide — any market, no limits
           </span>
           <span className="hidden sm:inline text-[#d4d7dd]">·</span>
           <span className="font-medium text-[#525965]">The underwriting operating system — go.</span>

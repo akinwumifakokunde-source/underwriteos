@@ -8,29 +8,10 @@ const COMPETITORS = [
   { key: "us", name: "CreditDecide", tag: "This platform", tone: "teal" },
   { key: "legacy", name: "FICO / Experian", tag: "Legacy decisioning", tone: "slate" },
   { key: "lms", name: "TurnKey Lender", tag: "Modern LMS + decisioning", tone: "slate" },
-  { key: "loanpro", name: "LoanPro", tag: "US API-first LMS", tone: "slate" },
+  { key: "loanpro", name: "LoanPro", tag: "API-first LMS", tone: "slate" },
   { key: "mambu", name: "Mambu", tag: "Enterprise cloud lending", tone: "slate" },
-  { key: "africa", name: "Lendsqr", tag: "Africa-focused LMS", tone: "slate" },
+  { key: "africa", name: "Lendsqr", tag: "Emerging-markets LMS", tone: "slate" },
 ];
-
-const MARKETS = [
-  { code: "GB", label: "United Kingdom" },
-  { code: "US", label: "United States" },
-  { code: "NG", label: "Nigeria" },
-  { code: "ZA", label: "South Africa" },
-  { code: "KE", label: "Kenya" },
-  { code: "GH", label: "Ghana" },
-];
-
-// market coverage: true = native, "partial" = limited/bureau-dependent, false = not supported
-const COVERAGE = {
-  us: { GB: true, US: true, NG: true, ZA: true, KE: true, GH: true },
-  legacy: { GB: true, US: true, NG: "partial", ZA: "partial", KE: false, GH: false },
-  lms: { GB: true, US: true, NG: true, ZA: true, KE: true, GH: true },
-  loanpro: { GB: "partial", US: true, NG: "partial", ZA: "partial", KE: false, GH: false },
-  mambu: { GB: true, US: true, NG: "partial", ZA: "partial", KE: "partial", GH: "partial" },
-  africa: { GB: "partial", US: "partial", NG: true, ZA: true, KE: true, GH: true },
-};
 
 const FEATURES = [
   { label: "No-code policy builder", us: true, legacy: "partial", lms: "partial", loanpro: "partial", mambu: "partial", africa: "partial" },
@@ -39,7 +20,7 @@ const FEATURES = [
   { label: "Automated adverse-action & reason codes", us: true, legacy: true, lms: "partial", loanpro: "partial", mambu: "partial", africa: false },
   { label: "Closed-loop outcome calibration", us: true, legacy: "partial", lms: "partial", loanpro: false, mambu: false, africa: false },
   { label: "Batch / portfolio underwriting (CSV)", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: false },
-  { label: "Multi-jurisdiction policies (6+ markets)", us: true, legacy: "partial", lms: true, loanpro: "partial", mambu: true, africa: "partial" },
+  { label: "Multi-jurisdiction policies (any market)", us: true, legacy: "partial", lms: true, loanpro: "partial", mambu: true, africa: "partial" },
   { label: "White-label borrower application forms", us: true, legacy: false, lms: true, loanpro: true, mambu: "partial", africa: true },
   { label: "REST API + webhooks from day one", us: true, legacy: true, lms: true, loanpro: true, mambu: true, africa: true },
   { label: "Setup in hours, not quarters", us: true, legacy: false, lms: "partial", loanpro: "partial", mambu: false, africa: true },
@@ -71,48 +52,8 @@ export default function CompetitiveComparison() {
           <p className="mt-3 text-[15px] text-[#525965] max-w-2xl mx-auto leading-relaxed">
             Legacy decision engines explain nothing. Loan management systems cover breadth but under-invest in
             decision quality. CreditDecide is the evidence-native underwriting brain for consumer credit — no code,
-            fully auditable, live in hours — across the UK, US, Nigeria, South Africa, Kenya, Ghana and beyond.
+            fully auditable, live in hours — in any market, worldwide.
           </p>
-        </div>
-
-        {/* Market coverage map */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-5 mb-8">
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-            <h3 className="text-sm font-semibold text-slate-800">Market coverage</h3>
-            <div className="flex items-center gap-4 text-[11px] text-slate-500">
-              <span className="inline-flex items-center gap-1"><Check className="w-3.5 h-3.5 text-teal-600" /> Native</span>
-              <span className="inline-flex items-center gap-1"><Minus className="w-3.5 h-3.5 text-slate-400" /> Limited</span>
-              <span className="inline-flex items-center gap-1"><X className="w-3.5 h-3.5 text-slate-300" /> Not supported</span>
-            </div>
-          </div>
-          <div className="overflow-x-auto no-scrollbar">
-            <table className="w-full text-sm min-w-[640px]">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left font-medium text-slate-500 py-2 px-2 w-[24%]">Market</th>
-                  {COMPETITORS.map((c) => (
-                    <th key={c.key} className={`py-2 px-2 text-center ${c.tone === "teal" ? "bg-teal-50/60" : ""}`}>
-                      <span className={`text-[12px] font-semibold ${c.tone === "teal" ? "text-teal-700" : "text-slate-700"}`}>{c.name}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {MARKETS.map((m, i) => (
-                  <tr key={m.code} className={i % 2 ? "bg-white/60" : ""}>
-                    <td className="py-2 px-2 text-slate-700">
-                      <span className="font-mono text-[11px] text-slate-400 mr-2">{m.code}</span>{m.label}
-                    </td>
-                    {COMPETITORS.map((c) => (
-                      <td key={c.key} className={`py-2 px-2 text-center ${c.tone === "teal" ? "bg-teal-50/30" : ""}`}>
-                        <Cell value={COVERAGE[c.key][m.code]} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
 
         {/* Mobile: stacked cards */}
