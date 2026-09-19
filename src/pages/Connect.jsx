@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Copy, Plug, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ClientPicker from "@/components/connect/ClientPicker";
 
 const PLATFORMS = [
   {
     id: "claude",
     name: "Claude",
+    category: "assistants",
     blurb: "Anthropic's Claude (desktop & web)",
-    grad: "from-amber-400 to-orange-500",
+    color: "bg-[#f39c12]",
     steps: [
       "Open Claude and go to your profile menu (top right).",
       "Choose Settings → Connectors → \"Add custom connector\".",
@@ -19,8 +21,9 @@ const PLATFORMS = [
   {
     id: "chatgpt",
     name: "ChatGPT",
+    category: "assistants",
     blurb: "OpenAI's ChatGPT (desktop & web)",
-    grad: "from-teal-400 to-emerald-500",
+    color: "bg-[#1abc9c]",
     steps: [
       "Open ChatGPT and go to Apps.",
       "Enable Developer mode (and accept the risk prompt ChatGPT shows).",
@@ -32,8 +35,9 @@ const PLATFORMS = [
   {
     id: "cursor",
     name: "Cursor",
+    category: "editors",
     blurb: "The AI code editor",
-    grad: "from-sky-400 to-indigo-500",
+    color: "bg-gradient-to-br from-[#3498db] to-[#9b59b6]",
     steps: [
       "Open Cursor and go to Settings → Tools & Integrations.",
       "Click \"New MCP Server\" — this opens your mcp.json file.",
@@ -44,8 +48,9 @@ const PLATFORMS = [
   {
     id: "windsurf",
     name: "Windsurf",
+    category: "editors",
     blurb: "Codeium's AI IDE",
-    grad: "from-cyan-400 to-blue-500",
+    color: "bg-[#3498db]",
     steps: [
       "Open Windsurf and go to Settings → MCP Servers.",
       "Click \"Add MCP server\" and choose the \"Remote (URL)\" type.",
@@ -56,8 +61,9 @@ const PLATFORMS = [
   {
     id: "cline",
     name: "Cline",
+    category: "editors",
     blurb: "Autonomous coding agent for VS Code",
-    grad: "from-violet-400 to-purple-500",
+    color: "bg-[#9b59b6]",
     steps: [
       "Open VS Code with the Cline extension installed.",
       "Open the Cline panel and go to Settings → MCP Servers.",
@@ -68,8 +74,9 @@ const PLATFORMS = [
   {
     id: "zed",
     name: "Zed",
+    category: "editors",
     blurb: "The fast AI code editor",
-    grad: "from-fuchsia-400 to-pink-500",
+    color: "bg-[#e91e63]",
     steps: [
       "Open Zed and run the command \"mcp: open configuration\".",
       "Add a server entry whose \"url\" is the server URL above in the settings file.",
@@ -80,8 +87,9 @@ const PLATFORMS = [
   {
     id: "vscode",
     name: "VS Code",
+    category: "editors",
     blurb: "GitHub Copilot Chat (MCP support)",
-    grad: "from-blue-400 to-indigo-500",
+    color: "bg-[#2196f3]",
     steps: [
       "Open VS Code with GitHub Copilot Chat.",
       "Run the command \"MCP: Add Server\" and choose \"HTTP\".",
@@ -92,8 +100,9 @@ const PLATFORMS = [
   {
     id: "continue",
     name: "Continue",
+    category: "editors",
     blurb: "Open-source AI assistant for VS Code & JetBrains",
-    grad: "from-emerald-400 to-teal-500",
+    color: "bg-[#2ecc71]",
     steps: [
       "Open Continue's config (config.json / config.yaml).",
       "Add an MCP server entry with the \"url\" set to the server URL above.",
@@ -104,8 +113,9 @@ const PLATFORMS = [
   {
     id: "librechat",
     name: "LibreChat",
+    category: "selfhosted",
     blurb: "Self-hostable AI chat UI",
-    grad: "from-rose-400 to-red-500",
+    color: "bg-[#e74c3c]",
     steps: [
       "Open LibreChat's MCP config (mcp_servers in librechat.yaml).",
       "Add a server entry with the \"url\" set to the server URL above.",
@@ -116,8 +126,9 @@ const PLATFORMS = [
   {
     id: "openwebui",
     name: "Open WebUI",
+    category: "selfhosted",
     blurb: "Self-hosted AI interface",
-    grad: "from-orange-400 to-amber-500",
+    color: "bg-[#e67e22]",
     steps: [
       "Open Open WebUI and go to Settings → Tools.",
       "Add a remote MCP server and paste the server URL above.",
@@ -128,8 +139,9 @@ const PLATFORMS = [
   {
     id: "custom",
     name: "Custom",
+    category: "custom",
     blurb: "Any MCP-compatible client",
-    grad: "from-slate-400 to-slate-600",
+    color: "bg-[#7f8c8d]",
     steps: [
       "Copy the server URL above.",
       "Add it as a streamable HTTP MCP server in your client.",
@@ -209,33 +221,20 @@ export default function Connect() {
         </div>
 
         {/* Platform grid */}
-        <p className="text-[11px] font-mono uppercase tracking-wider text-[#6b6f76] mb-3">Choose your client</p>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
-          {PLATFORMS.map((p) => {
-            const isActive = p.id === active;
-            return (
-              <button
-                key={p.id}
-                onClick={() => setActive(p.id)}
-                className={`group flex flex-col items-center gap-2 rounded-xl border p-3 transition-all duration-200 ${
-                  isActive
-                    ? "border-teal-400/40 bg-teal-500/10"
-                    : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
-                }`}
-              >
-                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${p.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
-                  <span className="text-white text-sm font-bold">{p.name[0]}</span>
-                </div>
-                <span className={`text-[12px] font-medium ${isActive ? "text-white" : "text-[#a0a4ab]"}`}>{p.name}</span>
-              </button>
-            );
-          })}
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[11px] font-mono uppercase tracking-wider text-[#7f8c8d]">Choose your client</p>
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-[#7f8c8d]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#1abc9c]" /> Available worldwide
+          </span>
+        </div>
+        <div className="mb-6">
+          <ClientPicker platforms={PLATFORMS} active={active} onSelect={setActive} />
         </div>
 
         {/* Active platform steps */}
         <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mb-8">
           <div className="flex items-center gap-2.5 mb-4">
-            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${current.grad} flex items-center justify-center shadow-sm`}>
+            <div className={`w-8 h-8 rounded-lg ${current.color} flex items-center justify-center shadow-sm`}>
               <span className="text-white text-xs font-bold">{current.name[0]}</span>
             </div>
             <div>
