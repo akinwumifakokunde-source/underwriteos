@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 const CATEGORIES = [
   { id: "assistants", label: "AI Assistants" },
   { id: "editors", label: "Code Editors" },
+  { id: "builders", label: "App Builders" },
   { id: "selfhosted", label: "Self-hosted" },
   { id: "custom", label: "Custom" },
 ];
