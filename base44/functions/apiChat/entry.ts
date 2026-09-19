@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
-import { apiError, apiSuccess, readBody, resolveOrganization } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, resolveOrganization, requireScope } from "../../shared/utils.ts";
 
 // POST — AI underwriting assistant chat.
 // Receives a user message + application_id, fetches full application context,
@@ -10,6 +10,7 @@ export default async function(req: Request): Promise<Response> {
     const body = await readBody(req);
     const ctx = await resolveOrganization(base44, body);
     const { organization_id } = ctx;
+    requireScope(ctx, "applications:read");
 
     const { application_id, message, history } = body;
     if (!application_id || !message) {

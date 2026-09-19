@@ -11,6 +11,7 @@ export interface AuthContext {
   actor: string;
   actor_type: "user" | "api_key" | "system" | "mcp";
   environment: "sandbox" | "production";
+  role?: string;
   scopes: string[];
   api_key_id?: string;
 }
@@ -138,12 +139,17 @@ export async function resolveOrganization(base44: any, body: any = {}): Promise<
   // MCP tool calls arrive server-side (no browser Sec-Fetch-Mode header);
   // dashboard calls arrive from the browser via base44.functions.invoke.
   const isMcp = !base44._req?.headers?.get?.("sec-fetch-mode");
+  const role = (user.role as string) || "user";
+  // MCP never trusts client-supplied organisation, role, or environment.
+  // It is always sandbox-scoped and receives a least-privilege scope set
+  // derived from the authenticated user's role — OAuth is not a blanket grant.
   return {
     organization_id: organizationId,
     actor: user.id,
     actor_type: isMcp ? "mcp" : "user",
     environment: "sandbox",
-    scopes: ["*"]
+    role,
+    scopes: isMcp ? (role === "admin" ? MCP_ADMIN_SCOPES : MCP_USER_SCOPES) : ["*"]
   };
 }
 
@@ -174,11 +180,41 @@ export async function applySignupGrantIfNeeded(base44: any, organization_id: str
   }
 }
 
-// Scope enforcement. Dashboard (actor_type === "user") bypasses scope checks.
+// Least-privilege scope grants for MCP tool calls, derived from the
+// authenticated user's role. OAuth alone never grants every action —
+// a regular user's assistant can read and analyse but not decide.
+export const MCP_USER_SCOPES = [
+  "applications:read", "applications:write",
+  "borrowers:read",
+  "profiles:read", "risk:read", "risk:write",
+  "decisions:read", "audit:read", "webhooks:read"
+];
+export const MCP_ADMIN_SCOPES = [...MCP_USER_SCOPES, "decisions:write"];
+
+// Scope enforcement. Dashboard (actor_type === "user") bypasses scope
+// checks — it is the lender's own authenticated UI session. MCP and API
+// keys are enforced against their granted scopes.
 export function requireScope(ctx: AuthContext, scope: string): void {
-  if (ctx.actor_type === "user" || ctx.actor_type === "mcp") return;
+  if (ctx.actor_type === "user") return;
   if (ctx.scopes.includes("*") || ctx.scopes.includes(scope)) return;
-  throw { status: 403, code: "INSUFFICIENT_SCOPE", message: "This API key does not have permission to perform this operation." };
+  throw { status: 403, code: "INSUFFICIENT_SCOPE", message: "This action is not permitted for the authenticated principal." };
+}
+
+// Role enforcement for authoritative actions. MCP requires the
+// authenticated user to hold the required role; dashboard bypasses.
+export function requireRole(ctx: AuthContext, role: string): void {
+  if (ctx.actor_type === "user") return;
+  if ((ctx.role || "user") === role) return;
+  throw { status: 403, code: "INSUFFICIENT_ROLE", message: "This action requires an authorised role." };
+}
+
+// Decision-changing MCP actions require explicit confirmation from the
+// authorised user. The assistant must present confirm:true; authentication
+// alone is never inferred as consent. Dashboard confirms via its own UI.
+export function requireConfirmation(ctx: AuthContext, body: any, action: string): void {
+  if (ctx.actor_type === "user" || ctx.actor_type === "api_key") return;
+  if (body && body.confirm === true) return;
+  throw { status: 409, code: "CONFIRMATION_REQUIRED", message: `Explicit confirmation is required to ${action}. Set confirm: true.` };
 }
 
 export async function sha256(input: string): Promise<string> {
@@ -194,7 +230,7 @@ export async function hmacSha256(key: string, message: string): Promise<string> 
   return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function audit(base44: any, organization_id: string, event: string, opts: { application_id?: string; actor?: string; actor_type?: string; endpoint?: string; details?: any; credits?: number } = {}): Promise<void> {
+export async function audit(base44: any, organization_id: string, event: string, opts: { application_id?: string; actor?: string; actor_type?: string; endpoint?: string; environment?: string; request_id?: string; confirmed?: boolean; authorised?: boolean; details?: any; credits?: number } = {}): Promise<void> {
   try {
     await base44.asServiceRole.entities.AuditEvent.create({
       organization_id,
@@ -203,7 +239,13 @@ export async function audit(base44: any, organization_id: string, event: string,
       actor: opts.actor || "system",
       actor_type: opts.actor_type || "system",
       endpoint: opts.endpoint,
-      details: opts.details || {}
+      details: {
+        ...(opts.details || {}),
+        ...(opts.environment ? { environment: opts.environment } : {}),
+        ...(opts.request_id ? { request_id: opts.request_id } : {}),
+        ...(typeof opts.confirmed === "boolean" ? { confirmed: opts.confirmed } : {}),
+        ...(typeof opts.authorised === "boolean" ? { authorised: opts.authorised } : {})
+      }
     });
   } catch {
     // audit must never break the request
@@ -245,3 +287,41 @@ export const DEFAULT_SANDBOX_SCOPES = [
   "webhooks:read", "webhooks:write", "audit:read",
   "outcomes:read", "outcomes:write"
 ];
+
+// --- Data minimisation helpers ---
+// MCP tool responses return only what the operation needs and the role
+// permits. Sensitive borrower identity fields are masked; secrets and
+// provider credentials are never returned by any tool.
+
+export function maskEmail(email?: string): string | undefined {
+  if (!email) return email;
+  const [u, d] = email.split("@");
+  if (!d) return "••••";
+  return `${(u || "").slice(0, 1)}••••@${d}`;
+}
+
+export function maskTail(v?: string): string | undefined {
+  if (!v) return v;
+  return v.length <= 4 ? "••••" : "••••" + v.slice(-4);
+}
+
+// Redact sensitive identity fields from a borrower record for MCP responses.
+export function redactBorrower(b: any): any {
+  if (!b) return b;
+  return {
+    ...b,
+    email: maskEmail(b.email),
+    phone: b.phone ? "••••" + String(b.phone).slice(-4) : b.phone,
+    date_of_birth: b.date_of_birth ? "****-**-**" : b.date_of_birth,
+    national_id_hash: maskTail(b.national_id_hash),
+    address: b.address ? { ...b.address, line1: b.address.line1 ? "••••" : b.address.line1 } : b.address,
+  };
+}
+
+// Strip raw provider payloads (credit report / bank statement raw_data) and
+// any credential-like fields from a record before returning it to MCP.
+export function redactRawData(r: any): any {
+  if (!r) return r;
+  const { raw_data, client_secret, secret, ...rest } = r;
+  return rest;
+}

@@ -34,8 +34,14 @@ export default async function(req: Request): Promise<Response> {
     const creditProfiles = await base44.asServiceRole.entities.CreditProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const financialProfiles = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const bankStatements = await base44.asServiceRole.entities.BankStatement.filter({ application_id, organization_id }, "-created_date", 1);
+    const hasLiveCredit = creditProfiles.length > 0;
+    const hasLiveFinancial = financialProfiles.length > 0;
     const credit = creditProfiles[0] || defaultCredit(app.loan_currency);
     const financial = financialProfiles[0] || defaultFinancial(app.loan_currency);
+    // Clearly identify demo/mock versus genuine production results: when no
+    // real credit or financial profile is attached, the engine falls back to
+    // synthetic defaults and the result is flagged as mock.
+    const dataSource = (hasLiveCredit || hasLiveFinancial) ? "live" : "mock";
 
     const { items } = generateRiskSignals({
       credit,
@@ -98,9 +104,9 @@ export default async function(req: Request): Promise<Response> {
       result: { signal_count: signalCount, evidence_count: evidenceCount }
     });
 
-    await audit(base44, organization_id, "application.analyzed", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/analyze", credits: 30, details: { job_id: job.id, signal_count: signalCount, evidence_count: evidenceCount } });
+    await audit(base44, organization_id, "application.analyzed", { application_id, actor, actor_type, environment: ctx.environment, endpoint: "POST /v1/applications/{id}/analyze", credits: 30, details: { job_id: job.id, signal_count: signalCount, evidence_count: evidenceCount, data_source: dataSource } });
 
-    return apiSuccess({ job_id: job.id, status: "completed", signal_count: signalCount, evidence_count: evidenceCount }, 202);
+    return apiSuccess({ job_id: job.id, status: "completed", signal_count: signalCount, evidence_count: evidenceCount, data_source: dataSource, ...(dataSource === "mock" ? { note: "No live credit or financial profile was attached — risk signals were generated from synthetic default data." } : {}) }, 202);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
