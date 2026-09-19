@@ -1,5 +1,5 @@
 {
-  "description": "Generates and publishes two SEO/GEO-optimized Insights articles per weekday (9am and 2pm, Mon-Fri), rotating across the six supported markets (UK, US, Nigeria, South Africa, Kenya, Ghana), then shares each new article \u2014 with an AI-generated cover image \u2014 to the CreditDecide LinkedIn company page.",
+  "description": "Generates and publishes one borderless, consumer-lending-focused Insights article per weekday (9am, Mon-Fri), rotating across feature/innovation/strategy topics, then shares the new article \u2014 with an AI-generated cover image \u2014 to the CreditDecide LinkedIn company page.",
   "name": "Daily Insights",
   "trigger": {
     "condition": null,
@@ -7,7 +7,7 @@
       "trigger_type": "scheduled",
       "events": [],
       "schedule_mode": "recurring",
-      "cron_expression": "0 9,14 * * 1-5",
+      "cron_expression": "0 9 * * 1-5",
       "one_time_date": null,
       "timezone": "Europe/London",
       "interval_value": null,
@@ -22,7 +22,7 @@
     "document": {
       "dsl": "1.0.0",
       "name": "daily_insights",
-      "version": "1.0",
+      "version": "1.1",
       "namespace": "base44"
     },
     "do": [
@@ -38,7 +38,7 @@
           "then": "post_linkedin",
           "x-base44": {
             "title": "Generate insight article",
-            "description": "AI-generate and publish one market-targeted article"
+            "description": "AI-generate and publish one borderless consumer-lending article"
           }
         }
       },

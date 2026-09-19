@@ -1,8 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
-import { MARKETS, TOPICS, FEATURE_SLUGS, AUTHOR, slugify, buildPrompt, normalizeMarkdown } from '../../shared/insights.ts';
+import { TOPICS, FEATURE_SLUGS, AUTHOR, slugify, buildPrompt, normalizeMarkdown } from '../../shared/insights.ts';
 
-// Generates and publishes one SEO/GEO-optimized Insights article.
-// Invoked by the "Daily Insights" workflow (twice daily, Mon-Fri) and by admins.
+// Generates and publishes one borderless, consumer-lending-focused Insights article.
+// Invoked by the "Daily Insights" workflow (once daily, Mon-Fri) and by admins.
 // Workflow invocations carry no user token; the function runs under the service role.
 // Direct user invocations are allowed only for admins (prevents credit-burn abuse).
 export default async function(req) {
@@ -18,7 +18,7 @@ export default async function(req) {
       }
     }
 
-    // Determine the next market/topic pair via the rotation counter on the latest record.
+    // Determine the next topic via the rotation counter on the latest record.
     const latest = await base44.asServiceRole.entities.Insight.filter(
       { status: 'published' },
       '-published_at',
@@ -28,11 +28,10 @@ export default async function(req) {
       ? latest[0].rotation_index
       : -1;
     const nextIndex = lastIndex + 1;
-    const market = MARKETS[nextIndex % MARKETS.length];
     const topic = TOPICS[nextIndex % TOPICS.length];
 
     // Generate the article via the LLM.
-    const prompt = buildPrompt(market, topic);
+    const prompt = buildPrompt(topic);
     const generated = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt,
       response_json_schema: {
@@ -51,7 +50,7 @@ export default async function(req) {
     });
 
     // Build a unique slug.
-    let slug = slugify(generated.title) + '-' + market.code.toLowerCase();
+    let slug = slugify(generated.title);
     const existing = await base44.asServiceRole.entities.Insight.filter({ slug }, null, 1);
     if (existing && existing.length > 0) {
       slug = `${slug}-${nextIndex}`;
@@ -67,8 +66,8 @@ export default async function(req) {
       excerpt: generated.excerpt,
       content: normalizeMarkdown(generated.content),
       category: generated.category || topic.category,
-      market: market.code,
-      market_name: market.geo,
+      market: 'GLOBAL',
+      market_name: 'Global',
       author_name: AUTHOR.name,
       author_role: AUTHOR.role,
       published_at: new Date().toISOString(),
@@ -85,7 +84,7 @@ export default async function(req) {
       slug: record.slug,
       title: record.title,
       excerpt: record.excerpt,
-      market: market.code,
+      market: 'GLOBAL',
       rotation_index: nextIndex,
     });
   } catch (error) {

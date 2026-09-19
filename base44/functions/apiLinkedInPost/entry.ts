@@ -6,14 +6,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 // Invoked by the "Daily Insights" workflow after an article is generated, and by admins.
 const SITE_BASE = 'https://creditdecide.com';
 
-const MARKET_NAMES = {
-  GB: 'the United Kingdom', US: 'the United States', NG: 'Nigeria',
-  ZA: 'South Africa', KE: 'Kenya', GH: 'Ghana', GLOBAL: 'global markets',
-};
-
-function buildImagePrompt(title, market) {
-  const place = MARKET_NAMES[market] || 'global markets';
-  return `A clean, modern editorial cover illustration for a fintech article titled "${title}", themed around AI underwriting and credit decisioning in ${place}. Abstract financial data visualizations, subtle technology motifs, professional teal (#0d9488) and deep navy palette, soft gradient background, minimal, no text, no words, no logos. Wide 16:9 composition.`;
+function buildImagePrompt(title) {
+  return `A clean, modern editorial cover illustration for a fintech article titled "${title}", themed around AI underwriting and credit decisioning for consumer lenders worldwide. Abstract financial data visualizations, subtle technology motifs, professional teal (#0d9488) and deep navy palette, soft gradient background, minimal, no text, no words, no logos. Wide 16:9 composition.`;
 }
 
 // Builds a short, clean prose preview from the article body to tease the post
@@ -195,7 +189,7 @@ export default async function(req) {
     let imageError = null;
     try {
       const gen = await base44.asServiceRole.integrations.Core.GenerateImage({
-        prompt: buildImagePrompt(title, market),
+        prompt: buildImagePrompt(title),
       });
       imageUrl = gen && gen.url;
       if (imageUrl) {
