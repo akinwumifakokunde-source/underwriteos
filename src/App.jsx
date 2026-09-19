@@ -1,8 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from "framer-motion";
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -60,7 +59,6 @@ import Connect from '@/pages/Connect';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-  const location = useLocation();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -85,15 +83,7 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <div className="pt-safe">
-      <AnimatePresence>
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-        >
-        <Routes location={location}>
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -149,8 +139,6 @@ const AuthenticatedApp = () => {
       </Route>
       <Route path="*" element={<PageNotFound />} />
         </Routes>
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 };
