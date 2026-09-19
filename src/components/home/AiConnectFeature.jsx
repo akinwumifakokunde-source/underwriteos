@@ -6,6 +6,9 @@ const CLIENTS = [
   { name: "Claude", tint: "from-amber-400 to-orange-500" },
   { name: "ChatGPT", tint: "from-teal-400 to-emerald-500" },
   { name: "Cursor", tint: "from-sky-400 to-indigo-500" },
+  { name: "Windsurf", tint: "from-cyan-400 to-blue-500" },
+  { name: "Cline", tint: "from-violet-400 to-purple-500" },
+  { name: "Zed", tint: "from-fuchsia-400 to-pink-500" },
 ];
 
 const POINTS = [
@@ -42,9 +45,10 @@ export default function AiConnectFeature() {
               Bring your own AI assistant
             </h2>
             <p className="text-[#525965] leading-relaxed mb-6">
-              CreditDecide speaks MCP. Point Claude, ChatGPT, Cursor or any compatible client at a single URL
-              and your assistant becomes an underwriter — running decisions, interrogating risk signals and
-              evidence, and managing loan applications on your behalf. OAuth-secured, scoped to your data.
+              CreditDecide speaks MCP. Point Claude, ChatGPT, Cursor, Windsurf, Cline, Zed or any compatible
+              client at a single URL and your assistant becomes an underwriter — running decisions,
+              interrogating risk signals and evidence, and managing loan applications on your behalf.
+              OAuth-secured, scoped to your data.
             </p>
             <ul className="space-y-2.5 text-sm text-[#525965]">
               {[

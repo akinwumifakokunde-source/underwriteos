@@ -2,35 +2,142 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Copy, Plug, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const STEPS = {
-  claude: [
-    "Open Claude and go to your profile menu (top right).",
-    "Choose Settings → Connectors → \"Add custom connector\".",
-    "Name the connector (e.g. \"CreditDecide\") and paste the server URL above.",
-    "Click Add. Claude will open the CreditDecide consent page — sign in and approve to grant access.",
-  ],
-  chatgpt: [
-    "Open ChatGPT and go to Apps.",
-    "Enable Developer mode (and accept the risk prompt ChatGPT shows).",
-    "Click \"Create app\", name it, and paste the server URL above.",
-    "Click Create, then enable the app from the chat composer before prompting it.",
-    "The first call opens the CreditDecide consent page — sign in and approve to grant access.",
-  ],
-  cursor: [
-    "Open Cursor and go to Settings → Tools & Integrations.",
-    "Click \"New MCP Server\" — this opens your mcp.json file.",
-    "Add an entry whose \"url\" is the server URL above, then save.",
-    "Toggle the server on. On first use, Cursor opens the CreditDecide consent page — sign in and approve.",
-  ],
-  custom: [
-    "Copy the server URL above.",
-    "Add it as a streamable HTTP MCP server in your client.",
-    "A name and the URL is all most clients need — then reload the client.",
-    "On first call, your client opens the CreditDecide consent page — sign in and approve.",
-  ],
-};
+const PLATFORMS = [
+  {
+    id: "claude",
+    name: "Claude",
+    blurb: "Anthropic's Claude (desktop & web)",
+    grad: "from-amber-400 to-orange-500",
+    steps: [
+      "Open Claude and go to your profile menu (top right).",
+      "Choose Settings → Connectors → \"Add custom connector\".",
+      "Name the connector (e.g. \"CreditDecide\") and paste the server URL above.",
+      "Click Add. Claude opens the CreditDecide consent page — sign in and approve to grant access.",
+    ],
+  },
+  {
+    id: "chatgpt",
+    name: "ChatGPT",
+    blurb: "OpenAI's ChatGPT (desktop & web)",
+    grad: "from-teal-400 to-emerald-500",
+    steps: [
+      "Open ChatGPT and go to Apps.",
+      "Enable Developer mode (and accept the risk prompt ChatGPT shows).",
+      "Click \"Create app\", name it, and paste the server URL above.",
+      "Click Create, then enable the app from the chat composer before prompting it.",
+      "The first call opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "cursor",
+    name: "Cursor",
+    blurb: "The AI code editor",
+    grad: "from-sky-400 to-indigo-500",
+    steps: [
+      "Open Cursor and go to Settings → Tools & Integrations.",
+      "Click \"New MCP Server\" — this opens your mcp.json file.",
+      "Add an entry whose \"url\" is the server URL above, then save.",
+      "Toggle the server on. On first use, Cursor opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "windsurf",
+    name: "Windsurf",
+    blurb: "Codeium's AI IDE",
+    grad: "from-cyan-400 to-blue-500",
+    steps: [
+      "Open Windsurf and go to Settings → MCP Servers.",
+      "Click \"Add MCP server\" and choose the \"Remote (URL)\" type.",
+      "Paste the server URL above and save.",
+      "On first use, Windsurf opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "cline",
+    name: "Cline",
+    blurb: "Autonomous coding agent for VS Code",
+    grad: "from-violet-400 to-purple-500",
+    steps: [
+      "Open VS Code with the Cline extension installed.",
+      "Open the Cline panel and go to Settings → MCP Servers.",
+      "Click \"Edit MCP Settings\" and add a server with the \"url\" set to the server URL above.",
+      "Save and reload. On first use, Cline opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "zed",
+    name: "Zed",
+    blurb: "The fast AI code editor",
+    grad: "from-fuchsia-400 to-pink-500",
+    steps: [
+      "Open Zed and run the command \"mcp: open configuration\".",
+      "Add a server entry whose \"url\" is the server URL above in the settings file.",
+      "Save the file. Zed discovers the tools automatically.",
+      "On first use, Zed opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "vscode",
+    name: "VS Code",
+    blurb: "GitHub Copilot Chat (MCP support)",
+    grad: "from-blue-400 to-indigo-500",
+    steps: [
+      "Open VS Code with GitHub Copilot Chat.",
+      "Run the command \"MCP: Add Server\" and choose \"HTTP\".",
+      "Paste the server URL above and give the server a name.",
+      "On first use, VS Code opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "continue",
+    name: "Continue",
+    blurb: "Open-source AI assistant for VS Code & JetBrains",
+    grad: "from-emerald-400 to-teal-500",
+    steps: [
+      "Open Continue's config (config.json / config.yaml).",
+      "Add an MCP server entry with the \"url\" set to the server URL above.",
+      "Save and reload the window.",
+      "On first use, Continue opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "librechat",
+    name: "LibreChat",
+    blurb: "Self-hostable AI chat UI",
+    grad: "from-rose-400 to-red-500",
+    steps: [
+      "Open LibreChat's MCP config (mcp_servers in librechat.yaml).",
+      "Add a server entry with the \"url\" set to the server URL above.",
+      "Restart LibreChat to load the server.",
+      "On first use, LibreChat opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "openwebui",
+    name: "Open WebUI",
+    blurb: "Self-hosted AI interface",
+    grad: "from-orange-400 to-amber-500",
+    steps: [
+      "Open Open WebUI and go to Settings → Tools.",
+      "Add a remote MCP server and paste the server URL above.",
+      "Save and the tools appear in your workspace.",
+      "On first use, Open WebUI opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+  {
+    id: "custom",
+    name: "Custom",
+    blurb: "Any MCP-compatible client",
+    grad: "from-slate-400 to-slate-600",
+    steps: [
+      "Copy the server URL above.",
+      "Add it as a streamable HTTP MCP server in your client.",
+      "A name and the URL is all most clients need — then reload the client.",
+      "On first call, your client opens the CreditDecide consent page — sign in and approve.",
+    ],
+  },
+];
 
 function StepList({ steps }) {
   return (
@@ -50,6 +157,7 @@ function StepList({ steps }) {
 export default function Connect() {
   const serverUrl = new URL("/api/mcp", window.location.origin).toString();
   const [copied, setCopied] = useState(false);
+  const [active, setActive] = useState("claude");
 
   const copy = async () => {
     try {
@@ -60,6 +168,8 @@ export default function Connect() {
       /* ignore */
     }
   };
+
+  const current = PLATFORMS.find((p) => p.id === active);
 
   return (
     <div className="min-h-screen bg-[#0a0c12] text-white">
@@ -75,9 +185,9 @@ export default function Connect() {
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">Connect your AI client</h1>
         </div>
         <p className="text-[15px] text-[#a0a4ab] leading-relaxed max-w-2xl mb-8">
-          Point Claude, ChatGPT, Cursor, or any MCP-compatible client at CreditDecide. Your assistant can then
-          run underwriting, read risk signals and evidence, and manage loan applications on your behalf —
-          scoped to your own organization's data.
+          Point any popular AI assistant at CreditDecide. Your assistant can then run underwriting, read risk
+          signals and evidence, and manage loan applications on your behalf — scoped to your own organization's
+          data. Works with every MCP-compatible client.
         </p>
 
         {/* Server URL */}
@@ -98,20 +208,43 @@ export default function Connect() {
           </div>
         </div>
 
-        {/* Client tabs */}
-        <Tabs defaultValue="claude" className="mb-8">
-          <TabsList className="bg-white/[0.03] border border-white/10 p-1 h-auto flex-wrap">
-            <TabsTrigger value="claude" className="data-[state=active]:bg-teal-500/15 data-[state=active]:text-teal-300 text-[#a0a4ab] text-sm px-4 py-2">Claude</TabsTrigger>
-            <TabsTrigger value="chatgpt" className="data-[state=active]:bg-teal-500/15 data-[state=active]:text-teal-300 text-[#a0a4ab] text-sm px-4 py-2">ChatGPT</TabsTrigger>
-            <TabsTrigger value="cursor" className="data-[state=active]:bg-teal-500/15 data-[state=active]:text-teal-300 text-[#a0a4ab] text-sm px-4 py-2">Cursor</TabsTrigger>
-            <TabsTrigger value="custom" className="data-[state=active]:bg-teal-500/15 data-[state=active]:text-teal-300 text-[#a0a4ab] text-sm px-4 py-2">Custom</TabsTrigger>
-          </TabsList>
+        {/* Platform grid */}
+        <p className="text-[11px] font-mono uppercase tracking-wider text-[#6b6f76] mb-3">Choose your client</p>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
+          {PLATFORMS.map((p) => {
+            const isActive = p.id === active;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setActive(p.id)}
+                className={`group flex flex-col items-center gap-2 rounded-xl border p-3 transition-all duration-200 ${
+                  isActive
+                    ? "border-teal-400/40 bg-teal-500/10"
+                    : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20"
+                }`}
+              >
+                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${p.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
+                  <span className="text-white text-sm font-bold">{p.name[0]}</span>
+                </div>
+                <span className={`text-[12px] font-medium ${isActive ? "text-white" : "text-[#a0a4ab]"}`}>{p.name}</span>
+              </button>
+            );
+          })}
+        </div>
 
-          <TabsContent value="claude" className="mt-5"><StepList steps={STEPS.claude} /></TabsContent>
-          <TabsContent value="chatgpt" className="mt-5"><StepList steps={STEPS.chatgpt} /></TabsContent>
-          <TabsContent value="cursor" className="mt-5"><StepList steps={STEPS.cursor} /></TabsContent>
-          <TabsContent value="custom" className="mt-5"><StepList steps={STEPS.custom} /></TabsContent>
-        </Tabs>
+        {/* Active platform steps */}
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mb-8">
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${current.grad} flex items-center justify-center shadow-sm`}>
+              <span className="text-white text-xs font-bold">{current.name[0]}</span>
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-white">{current.name}</div>
+              <div className="text-[12px] text-[#6b6f76]">{current.blurb}</div>
+            </div>
+          </div>
+          <StepList steps={current.steps} />
+        </div>
 
         {/* OAuth note */}
         <div className="rounded-xl border border-teal-500/20 bg-teal-500/[0.06] p-4 mb-4">
