@@ -44,7 +44,7 @@ export default function SiteFooter() {
             "radial-gradient(60% 50% at 20% 0%, rgba(13,148,136,0.05), transparent 70%), radial-gradient(50% 50% at 90% 100%, rgba(99,102,241,0.04), transparent 70%)",
         }}
       />
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-10">
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-10 pb-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-10">
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
