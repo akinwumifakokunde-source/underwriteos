@@ -31,10 +31,10 @@ export default function FinalCta() {
             Start building <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <Link
-            to="/pricing"
+            to="/features"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-white border border-white/20 px-5 py-3 rounded-lg hover:bg-white/5 transition-colors"
           >
-            View pricing <ArrowRight className="w-4 h-4" />
+            Explore features <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
