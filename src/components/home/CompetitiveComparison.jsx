@@ -87,8 +87,8 @@ export default function CompetitiveComparison() {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link to="/pricing" className="inline-flex items-center gap-1.5 rounded-lg bg-[#0a0c12] text-white text-sm font-medium px-5 py-2.5 hover:bg-[#1c1f26]">
-            See pricing <ArrowRight className="w-4 h-4" />
+          <Link to="/features" className="inline-flex items-center gap-1.5 rounded-lg bg-[#0a0c12] text-white text-sm font-medium px-5 py-2.5 hover:bg-[#1c1f26]">
+            Explore features <ArrowRight className="w-4 h-4" />
           </Link>
           <Link to="/architecture" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-medium px-5 py-2.5 hover:bg-slate-50">
             Explore the architecture
