@@ -25,6 +25,14 @@ const FAQS = [
     a: "No. The AI underwriter produces an advisory recommendation with risk factors, positive signals and an evidence-referenced memo. Your versioned policy engine remains authoritative and produces the final APPROVE, REVIEW or DECLINE decision.",
   },
   {
+    q: "Can I use CreditDecide from my AI assistant?",
+    a: "Yes. CreditDecide speaks the Model Context Protocol (MCP), so any compatible assistant — Claude, ChatGPT, Gemini, Cursor and more — can retrieve your authorized lending data, analyse applications and explore the evidence behind a decision. Every call runs as you, scoped to your organization's data and within your lender policies — decision-changing actions require explicit confirmation and the whole session is audited.",
+  },
+  {
+    q: "Does CreditDecide cover the whole underwriting flow end to end?",
+    a: "Yes. Every application moves through one governed pipeline — borrower intake, document intelligence, data normalization, risk assessment across five dimensions, policy evaluation, an explainable APPROVE / REVIEW / DECLINE decision, and post-decision monitoring that compares predicted default against observed outcomes. Each step is traceable to the next, and every decision is explainable back to its source evidence.",
+  },
+  {
     q: "How is my data secured and isolated?",
     a: "Every record is organization-scoped with row-level security. Policies are versioned, provider credentials are isolated, and every action is captured in an immutable audit log. Sandbox and production environments are kept strictly separate.",
   },
