@@ -10,15 +10,14 @@ const COLS = [
       { to: "/features/lending-policies", label: "Policy Builder" },
       { to: "/features/ai-underwriting", label: "Applications" },
       { to: "/features/document-intelligence", label: "Data Sources" },
-      { to: "/features", label: "Capabilities" },
-      { to: "/insights", label: "Insights" },
-      { to: "/about", label: "About" },
-      { to: "/connect", label: "Connect AI" },
     ],
   },
   {
     title: "Company",
     links: [
+      { to: "/about", label: "About" },
+      { to: "/insights", label: "Insights" },
+      { to: "/connect", label: "Connect AI" },
       { to: "/security", label: "Security" },
       { to: "/contact", label: "Contact" },
     ],
