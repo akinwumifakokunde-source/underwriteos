@@ -49,10 +49,10 @@ export default function Hero() {
                 Start underwriting <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
-                to="/pricing"
+                to="/features"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-5 py-3 rounded-full hover:bg-[#f7f8fa] hover:border-[#d0d3d8] transition-all"
               >
-                View pricing <ArrowRight className="w-4 h-4" />
+                See how it works <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
