@@ -44,8 +44,8 @@ export default function SiteFooter() {
             "radial-gradient(60% 50% at 20% 0%, rgba(13,148,136,0.05), transparent 70%), radial-gradient(50% 50% at 90% 100%, rgba(99,102,241,0.04), transparent 70%)",
         }}
       />
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-10 pb-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-10">
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-10 pb-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-6">
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
               <Logo size={24} />
@@ -86,7 +86,7 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-8 pt-5 border-t border-[#eceef1] flex flex-col gap-3">
+        <div className="mt-6 pt-4 border-t border-[#eceef1] flex flex-col gap-2.5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
               <p className="text-xs text-[#777]">© {new Date().getFullYear()} CreditDecide</p>
