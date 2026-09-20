@@ -173,6 +173,35 @@ export const FEATURES = [
     ],
     related: ["ai-underwriting", "risk-assessment", "credit-decisioning"],
   },
+  {
+    slug: "connect-ai",
+    title: "Connect AI (MCP)",
+    tagline: "Bring underwriting into your AI assistant",
+    h1: "AI-assisted access to underwriting workflows",
+    intro:
+      "CreditDecide speaks the Model Context Protocol, so any compatible AI assistant — Claude, ChatGPT, Gemini, Cursor and more — can retrieve authorised lending data, analyse applications, and interact with underwriting workflows. Your lender policies, permissions, and decision controls stay enforced end-to-end.",
+    sections: [
+      {
+        heading: "What MCP brings to underwriting",
+        body: "The Model Context Protocol is an open standard that lets AI assistants securely reach external tools and data. CreditDecide exposes a scoped MCP server, so your assistant can pull application data, explore risk signals and evidence, and trigger analysis — without copying data into a chat window or leaving your governed environment.",
+      },
+      {
+        heading: "Governed, audited, never autonomous",
+        body: "Every MCP call runs as you, scoped to your organization's data and within your lender policies. Decision-changing actions require explicit confirmation, access is role-based, and sensitive fields are redacted. The assistant assists — it never silently overrides your policy or decides on its own.",
+      },
+      {
+        heading: "Works with the tools you already use",
+        body: "Point any MCP-compatible client at the CreditDecide server URL and approve once. From there you can ask your assistant to summarise a case, explain a decision, or surface the evidence behind a risk signal — all from the same chat where you're working.",
+      },
+    ],
+    benefits: [
+      "Open standard — works with Claude, ChatGPT, Gemini & more",
+      "Scoped to your organization's data and policies",
+      "Role-based access with full audit trail",
+      "Decision-changing actions require confirmation",
+    ],
+    related: ["ai-underwriting", "explainable-decisions", "credit-decisioning"],
+  },
 ];
 
 export function getFeature(slug) {

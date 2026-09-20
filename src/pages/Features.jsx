@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { FEATURES } from "@/lib/features";
 import SiteFooter from "@/components/home/SiteFooter";
 import HomeNav from "@/components/home/HomeNav";
+import EndToEndFlow from "@/components/features/EndToEndFlow";
 
 export default function Features() {
   return (
@@ -43,6 +44,8 @@ export default function Features() {
           ))}
         </div>
       </section>
+
+      <EndToEndFlow />
 
       <SiteFooter />
     </div>
