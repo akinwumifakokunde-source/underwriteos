@@ -10,7 +10,7 @@ import {
 const FAQS = [
   {
     q: "Do I need to write code to use CreditDecide?",
-    a: "No. Build consumer lending policies visually, publish white-label intake forms, and run underwriting decisions from the workspace — no engineering required. A full REST API is available for teams that want to embed consumer underwriting into their own product.",
+    a: "No. Build consumer lending policies visually, publish white-label intake forms, and run underwriting decisions from the workspace — no engineering required. Prefer natural language? CreditDecide speaks MCP, so you can analyse applications, explore the evidence behind a decision and surface risk signals straight from your AI assistant — no code, no copy-paste. A full REST API is also available for teams that want to embed consumer underwriting into their own product.",
   },
   {
     q: "Which markets and currencies are supported?",
