@@ -130,4 +130,6 @@
   body.has-mobile-tabbar {
     padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
+  /* Enforce a minimum legible font size (12px) on mobile for informational text */
+  .text-\[10px\], .text-\[11px\] { font-size: 12px !important; }
 }

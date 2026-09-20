@@ -9,6 +9,7 @@ import ApplicationsStats from "@/components/applications/ApplicationsStats";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
 import PullToRefresh from "@/components/PullToRefresh";
+import ResponsiveTable from "@/components/shared/ResponsiveTable";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -113,6 +114,40 @@ export default function Applications() {
     URL.revokeObjectURL(url);
   };
 
+  const columns = [
+    {
+      key: "applicant", header: "Applicant", mobileTitle: true,
+      render: (a) => {
+        const b = borrowers[a.borrower_id];
+        return (
+          <>
+            <div className="text-sm font-medium text-slate-900">{b ? `${b.first_name} ${b.last_name}` : "—"}</div>
+            <div className="text-[11px] text-slate-400">{a.application_number || a.id.slice(-8)}</div>
+          </>
+        );
+      },
+    },
+    { key: "loan", header: "Loan", render: (a) => <span className="text-sm text-slate-600 capitalize">{(a.product_type || "personal_loan").replace(/_/g, " ")}</span> },
+    { key: "amount", header: "Amount", render: (a) => <span className="text-sm font-medium text-slate-900">{fmtMoney(a.loan_amount, a.loan_currency)}</span> },
+    {
+      key: "risk", header: "Risk",
+      render: (a) => a.risk_score != null ? (
+        <span className={`text-xs font-medium tabular-nums ${a.risk_score < 30 ? "text-emerald-600" : a.risk_score < 60 ? "text-amber-600" : "text-rose-600"}`}>{a.risk_score.toFixed(1)}</span>
+      ) : "—",
+    },
+    { key: "policy", header: "Policy", render: (a) => <span className="text-[11px] font-mono text-slate-500">{a.policy_id || "—"}</span> },
+    {
+      key: "status", header: "Status",
+      render: (a) => (
+        <span className="inline-flex items-center gap-1.5">
+          <AppStatusBadge status={a.status} />
+          <DecisionBadge decision={a.decision} />
+        </span>
+      ),
+    },
+    { key: "updated", header: "Updated", render: (a) => <span className="text-[11px] text-slate-400">{a.updated_date ? new Date(a.updated_date).toLocaleDateString() : a.created_date ? new Date(a.created_date).toLocaleDateString() : ""}</span> },
+  ];
+
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
@@ -191,51 +226,12 @@ export default function Applications() {
         ) : filtered.length === 0 ? (
           <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionTo="/applications/new" actionIcon={Plus} />
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Applicant</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Loan</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Amount</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Risk</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Policy</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Status</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Updated</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filtered.map((a) => {
-                  const b = borrowers[a.borrower_id];
-                  return (
-                    <tr key={a.id} className="hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => navigate(`/applications/${a.id}`)}>
-                      <td className="px-5 py-3">
-                        <div className="text-sm font-medium text-slate-900">{b ? `${b.first_name} ${b.last_name}` : "—"}</div>
-                        <div className="text-[11px] text-slate-400">{a.application_number || a.id.slice(-8)}</div>
-                      </td>
-                      <td className="px-5 py-3 text-sm text-slate-600 capitalize">{(a.product_type || "personal_loan").replace(/_/g, " ")}</td>
-                      <td className="px-5 py-3 text-sm font-medium text-slate-900">{fmtMoney(a.loan_amount, a.loan_currency)}</td>
-                      <td className="px-5 py-3">
-                        {a.risk_score != null ? (
-                          <span className={`text-xs font-medium tabular-nums ${a.risk_score < 30 ? "text-emerald-600" : a.risk_score < 60 ? "text-amber-600" : "text-rose-600"}`}>
-                            {a.risk_score.toFixed(1)}
-                          </span>
-                        ) : "—"}
-                      </td>
-                      <td className="px-5 py-3 text-[11px] font-mono text-slate-500">{a.policy_id || "—"}</td>
-                      <td className="px-5 py-3">
-                        <div className="flex items-center gap-1.5">
-                          <AppStatusBadge status={a.status} />
-                          <DecisionBadge decision={a.decision} />
-                        </div>
-                      </td>
-                      <td className="px-5 py-3 text-[11px] text-slate-400">{a.updated_date ? new Date(a.updated_date).toLocaleDateString() : a.created_date ? new Date(a.created_date).toLocaleDateString() : ""}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveTable
+            columns={columns}
+            data={filtered}
+            rowKey={(a) => a.id}
+            onRowClick={(a) => navigate(`/applications/${a.id}`)}
+          />
         )}
       </div>
       </PullToRefresh>

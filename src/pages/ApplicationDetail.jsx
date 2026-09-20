@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader";
 import { Loader2, AlertTriangle, ArrowLeft, FileText } from "lucide-react";
 import StatusIndicator from "@/components/application/StatusIndicator";
 import OverviewTab from "@/components/application/OverviewTab";
@@ -317,8 +318,9 @@ export default function ApplicationDetail() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
+      <MobilePageHeader title={app?.application_number || "Application"} backTo="/applications" />
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8">
-        <Link to="/applications" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-4">
+        <Link to="/applications" className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-4">
           <ArrowLeft className="w-4 h-4" /> Applications
         </Link>
 

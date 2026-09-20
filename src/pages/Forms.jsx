@@ -32,10 +32,13 @@ export default function Forms() {
 
   const toggleStatus = async (form) => {
     const next = form.status === "active" ? "paused" : "active";
+    const prevStatus = form.status;
+    // Optimistic UI update — reflect the toggle immediately, revert on failure.
+    setForms((prev) => prev.map((f) => (f.id === form.id ? { ...f, status: next } : f)));
     try {
       await base44.functions.invoke("apiForms", { action: "update", form_id: form.id, status: next });
-      setForms((prev) => prev.map((f) => (f.id === form.id ? { ...f, status: next } : f)));
     } catch (e) {
+      setForms((prev) => prev.map((f) => (f.id === form.id ? { ...f, status: prevStatus } : f)));
       setError(e?.response?.data?.error?.message || e.message);
     }
   };

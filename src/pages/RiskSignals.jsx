@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Search, ShieldAlert } from "lucide-react";
+import ResponsiveTable from "@/components/shared/ResponsiveTable";
 
 const FLAG_STYLES = {
   positive: "text-emerald-700 bg-emerald-50 border-emerald-200",
@@ -62,6 +63,23 @@ export default function RiskSignals() {
     return result;
   }, [signals, filter, search]);
 
+  const columns = [
+    {
+      key: "signal", header: "Signal", mobileTitle: true,
+      render: (s) => (
+        <>
+          <div className="text-sm font-medium text-slate-900">{s.signal}</div>
+          {s.explanation && <div className="text-[11px] text-slate-400">{s.explanation}</div>}
+        </>
+      ),
+    },
+    { key: "category", header: "Category", render: (s) => <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${CATEGORY_STYLES[s.category] || CATEGORY_STYLES.neutral}`}>{s.category}</span> },
+    { key: "value", header: "Value", render: (s) => <span className="text-sm font-mono text-slate-700">{String(s.value ?? "—")}</span> },
+    { key: "flag", header: "Flag", render: (s) => <span className={`text-[10px] font-bold border rounded px-1.5 py-0.5 ${FLAG_STYLES[s.flag] || FLAG_STYLES.neutral}`}>{(s.flag || "neutral").toUpperCase()}</span> },
+    { key: "source", header: "Source", render: (s) => <span className="text-[11px] text-slate-500">{s.source?.replace(/_/g, " ")}</span> },
+    { key: "application", header: "Application", render: (s) => apps[s.application_id] ? <Link to={`/applications/${s.application_id}`} className="text-sm text-[#0d9488] hover:underline">{apps[s.application_id].application_number || s.application_id?.slice(-8)}</Link> : null },
+  ];
+
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
@@ -103,44 +121,11 @@ export default function RiskSignals() {
             <p className="text-sm text-slate-400">No risk signals found. Run analysis on an application to generate signals.</p>
           </div>
         ) : (
-          <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50">
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Signal</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Category</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Value</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Flag</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Source</th>
-                  <th className="text-left text-[11px] uppercase tracking-wider text-slate-400 font-semibold px-5 py-3">Application</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {filtered.map((s) => {
-                  const app = apps[s.application_id];
-                  return (
-                    <tr key={s.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-5 py-3">
-                        <div className="text-sm font-medium text-slate-900">{s.signal}</div>
-                        {s.explanation && <div className="text-[11px] text-slate-400 truncate max-w-xs">{s.explanation}</div>}
-                      </td>
-                      <td className="px-5 py-3">
-                        <span className={`text-[10px] font-medium border rounded px-1.5 py-0.5 ${CATEGORY_STYLES[s.category] || CATEGORY_STYLES.neutral}`}>{s.category}</span>
-                      </td>
-                      <td className="px-5 py-3 text-sm font-mono text-slate-700">{String(s.value ?? "—")}</td>
-                      <td className="px-5 py-3">
-                        <span className={`text-[10px] font-bold border rounded px-1.5 py-0.5 ${FLAG_STYLES[s.flag] || FLAG_STYLES.neutral}`}>{(s.flag || "neutral").toUpperCase()}</span>
-                      </td>
-                      <td className="px-5 py-3 text-[11px] text-slate-500">{s.source?.replace(/_/g, " ")}</td>
-                      <td className="px-5 py-3">
-                        {app && <Link to={`/applications/${s.application_id}`} className="text-sm text-[#0d9488] hover:underline">{app.application_number || s.application_id?.slice(-8)}</Link>}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ResponsiveTable
+            columns={columns}
+            data={filtered}
+            rowKey={(s) => s.id}
+          />
         )}
       </div>
     </div>
