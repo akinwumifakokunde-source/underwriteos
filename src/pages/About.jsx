@@ -38,7 +38,7 @@ const PILLARS = [
 ];
 
 const STATS = [
-  { value: "6+", label: "Markets supported out of the box" },
+  { value: "Global", label: "Any market, any currency — no limits" },
   { value: "7", label: "Specialist AI agents per application" },
   { value: "100%", label: "Decisions traceable to source evidence" },
   { value: "0", label: "Lines of code to launch a policy" },
@@ -103,31 +103,33 @@ export default function About() {
       {/* Story */}
       <section className="max-w-3xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="prose prose-slate max-w-none">
-          <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">What we do</h2>
+          <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">One end-to-end flow</h2>
           <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
-            CreditDecide is an AI-native underwriting and credit decisioning platform. Lenders build policies visually
-            in a no-code rule builder, collect borrower applications through white-label intake forms with
-            market-specific KYC, connect live credit bureau and open banking data — or upload documents — and the
-            platform normalizes the data, generates structured risk signals with full evidence lineage, applies
-            lender policy, and returns an explainable APPROVE, REVIEW or DECLINE. One connected flow, from intake
-            to decision, with nothing lost in between.
+            CreditDecide runs the entire underwriting journey in a single connected system — from the moment a
+            borrower applies to the moment a lender decides. White-label intake forms collect applications with
+            market-aware KYC. Live credit bureau and open banking data — or uploaded documents — flow in and are
+            normalized into a single financial profile. Specialist AI agents read, extract and reason over the
+            evidence, generating structured risk signals with full lineage. The policy engine applies your rules,
+            and the platform returns an explainable APPROVE, REVIEW or DECLINE — every step traceable, nothing
+            lost in between.
+          </p>
+
+          <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">What makes it the best</h2>
+          <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
+            A no-code policy builder lets lending teams launch and change underwriting rules without engineering.
+            AI-native document intelligence turns payslips, bank statements and credit reports into structured,
+            verified data. An evidence graph ties every risk signal back to its source — so every decision is
+            defensible to auditors, regulators and borrowers. And because policies, KYC and data sources are
+            configurable per market, CreditDecide works anywhere consumer lenders operate — any country, any
+            currency, with no limits.
           </p>
 
           <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">Who it's for</h2>
           <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
             CreditDecide is built for consumer lenders — personal loan and instalment providers, point-of-sale and
             microfinance lenders — who need to underwrite borrowers faster and more consistently, with decisions
-            they can stand behind in front of auditors, regulators and borrowers. Whether you're scaling a modern
-            lending operation or replacing a patchwork of spreadsheets and legacy tools, CreditDecide is the system
-            to run underwriting on.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-[#0a0c12] mb-3">Where we operate</h2>
-          <p className="text-[15px] text-[#525965] leading-relaxed mb-8">
-            CreditDecide supports consumer lenders everywhere — with configurable policies, KYC requirements and
-            data sources for any market worldwide, out of the box. From the UK and US to Nigeria, South Africa,
-            Kenya and Ghana, and any market beyond, the platform adapts to your regulatory profile, currency and
-            local data providers — so you can launch in one market and expand to many without rebuilding.
+            they can stand behind. Whether you're scaling a modern lending operation or replacing a patchwork of
+            spreadsheets and legacy tools, CreditDecide is the system to run underwriting on.
           </p>
         </div>
 
