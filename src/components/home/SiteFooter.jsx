@@ -44,7 +44,7 @@ export default function SiteFooter() {
             "radial-gradient(60% 50% at 20% 0%, rgba(13,148,136,0.05), transparent 70%), radial-gradient(50% 50% at 90% 100%, rgba(99,102,241,0.04), transparent 70%)",
         }}
       />
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-12 pb-16">
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-10">
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
@@ -86,44 +86,37 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 pt-6 border-t border-[#eceef1] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <p className="text-xs text-[#777]">© {new Date().getFullYear()} CreditDecide</p>
-            <a
-              href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="CreditDecide on LinkedIn"
-              className="text-[#777] hover:text-[#0a76b1] transition-colors"
-            >
-              <Linkedin className="w-4 h-4" />
-            </a>
+        <div className="mt-8 pt-5 border-t border-[#eceef1] flex flex-col gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
+              <p className="text-xs text-[#777]">© {new Date().getFullYear()} CreditDecide</p>
+              <a
+                href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="CreditDecide on LinkedIn"
+                className="text-[#777] hover:text-[#0a76b1] transition-colors"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+              <span className="hidden sm:inline text-[#d4d7dd]">·</span>
+              <span className="font-mono uppercase tracking-wider text-[11px] text-[#777]">Our HQ</span>
+              <span className="text-[11px] text-[#333]">San Francisco · London · Lagos · Nairobi</span>
+            </div>
+            <p className="text-xs text-[#777] text-center sm:text-right max-w-md">
+              <span className="text-[#0d9488] font-medium">No-code underwriting</span>
+              {" · "}AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports
+            </p>
           </div>
-          <p className="text-xs text-[#777] text-center sm:text-right max-w-md">
-            <span className="text-[#0d9488] font-medium">No-code underwriting</span>
-            {" · "}AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports
-          </p>
-        </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-[11px] text-[#777] sm:justify-start sm:text-left">
-          <span className="font-mono uppercase tracking-wider text-[#777]">Our HQ</span>
-          <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#333]">San Francisco</span>
-          <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#333]">London</span>
-          <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#333]">Lagos</span>
-          <span className="text-[#d4d7dd]">·</span>
-          <span className="text-[#333]">Nairobi</span>
-        </div>
-
-        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
-          <span className="inline-flex items-center gap-1.5">
-            <span className="text-base leading-none">🌍</span>
-            Built for consumer lenders worldwide — any market, no limits
-          </span>
-          <span className="hidden sm:inline text-[#d4d7dd]">·</span>
-          <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
+          <div className="flex flex-col items-center justify-center gap-1 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="text-base leading-none">🌍</span>
+              Built for consumer lenders worldwide — any market, no limits
+            </span>
+            <span className="hidden sm:inline text-[#d4d7dd]">·</span>
+            <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
+          </div>
         </div>
       </div>
     </footer>
