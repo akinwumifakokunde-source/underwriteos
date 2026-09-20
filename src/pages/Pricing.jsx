@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, Zap, Wallet, RefreshCw, Building2, Sparkles } from "lucide-react";
-import HomeNav from "@/components/home/HomeNav.jsx";
+import Nav from "@/components/layout/Nav.jsx";
 import AfricaPricing from "@/components/pricing/AfricaPricing.jsx";
 
 const TIERS = [
@@ -103,7 +103,7 @@ const FAQ = [
 export default function Pricing() {
   return (
     <div className="min-h-screen bg-white text-[#0a0c12]">
-      <HomeNav />
+      <Nav />
 
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-12">
         <div className="max-w-2xl">

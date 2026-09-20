@@ -31,6 +31,7 @@ const SECONDARY_ITEMS = [
   { to: "/monitoring", label: "Calibration" },
   { to: "/members", label: "Members" },
   { to: "/billing", label: "Billing" },
+  { to: "/pricing", label: "Pricing" },
   { to: "/settings", label: "Subscription" },
   { to: "/settings", label: "Settings" },
   { to: "/connect", label: "Connect AI" },

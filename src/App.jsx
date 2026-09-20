@@ -88,7 +88,6 @@ const AnimatedRoutes = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/" element={<Home />} />
-            <Route path="/pricing" element={<Pricing />} />
             <Route path="/security" element={<Security />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
@@ -129,6 +128,7 @@ const AnimatedRoutes = () => {
               <Route path="/providers" element={<Providers />} />
               <Route path="/usage" element={<Usage />} />
               <Route path="/billing" element={<Billing />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/webhooks" element={<Webhooks />} />
               <Route path="/members" element={<Members />} />
               <Route path="/settings" element={<SettingsPage />} />

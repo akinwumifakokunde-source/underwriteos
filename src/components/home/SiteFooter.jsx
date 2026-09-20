@@ -13,7 +13,6 @@ const COLS = [
       { to: "/features", label: "Capabilities" },
       { to: "/insights", label: "Insights" },
       { to: "/about", label: "About" },
-      { to: "/pricing", label: "Pricing" },
       { to: "/connect", label: "Connect AI" },
     ],
   },
