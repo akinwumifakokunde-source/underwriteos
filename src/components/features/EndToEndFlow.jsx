@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  ClipboardList,
+  UserCheck,
   FileScan,
-  Workflow,
+  TrendingUp,
   ShieldAlert,
   SlidersHorizontal,
   Gavel,
@@ -13,27 +13,27 @@ import {
 
 const STAGES = [
   {
-    icon: ClipboardList,
-    title: "Borrower Intake",
-    detail: "White-label forms & API create applications in seconds.",
+    icon: UserCheck,
+    title: "Borrower Intake & KYC",
+    detail: "White-label forms & API collect KYC, verify identity and ingest documents in seconds.",
     to: "/features/lending-policies",
   },
   {
     icon: FileScan,
     title: "Document Intelligence",
-    detail: "Classify, extract and verify borrower documents.",
+    detail: "Classify, extract and verify borrower documents with confidence scores.",
     to: "/features/document-intelligence",
   },
   {
-    icon: Workflow,
-    title: "Data Normalization",
-    detail: "Canonical financial & credit profiles, provider-independent.",
+    icon: TrendingUp,
+    title: "Income & Cashflow Insights",
+    detail: "Turn bank statements into income, cashflow and affordability in minutes.",
     to: "/features/ai-underwriting",
   },
   {
     icon: ShieldAlert,
-    title: "Risk Assessment",
-    detail: "Five dimensions of structured, explainable signals.",
+    title: "Risk & Fraud Detection",
+    detail: "Structured signals across credit, affordability, fraud and loan-stacking.",
     to: "/features/risk-assessment",
   },
   {
@@ -50,8 +50,8 @@ const STAGES = [
   },
   {
     icon: Activity,
-    title: "Monitoring",
-    detail: "Track outcomes against predicted default over time.",
+    title: "Monitoring & Calibration",
+    detail: "Track outcomes against predicted default to keep models honest over time.",
     to: "/features/explainable-decisions",
   },
 ];
