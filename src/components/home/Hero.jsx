@@ -53,9 +53,9 @@ export default function Hero() {
           animate="show"
           className="mt-5 sm:mt-6 text-base sm:text-lg text-[#455a64] dark:text-slate-300 leading-relaxed max-w-2xl"
         >
-          Automate borrower intake and document processing, assess income and affordability, and generate
-          evidence-backed credit recommendations under your own policies. Keep decisions traceable, reviewable
-          and under your control — without writing code.
+          Automate borrower intake and document processing. Assess income, affordability and credit risk, then
+          generate evidence-backed recommendations under your own policies. Every decision stays traceable and
+          reviewable — without writing code.
         </motion.p>
 
         {/* Feature cards */}

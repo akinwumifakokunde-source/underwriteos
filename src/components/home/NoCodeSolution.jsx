@@ -4,7 +4,7 @@ import { ArrowRight, Shield, Plug, MessageSquare, FileDown } from "lucide-react"
 
 const PROBLEMS = [
   { num: "01", title: "Data stays trapped in documents", desc: "Raw figures and risk signals sit locked inside messy documents legacy tools can't read." },
-  { num: "02", title: "Files stay incomplete", desc: "Wrong documents, missing pages, round after round of messaging the borrower to chase what's missing." },
+  { num: "02", title: "Applications remain incomplete", desc: "Wrong documents, missing pages, round after round of messaging the borrower to chase what's missing." },
   { num: "03", title: "Underwriting stays manual", desc: "Reconciliation and memos written by hand. Hours per file before a single decision." },
 ];
 

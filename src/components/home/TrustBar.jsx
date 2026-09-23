@@ -22,7 +22,7 @@ export default function TrustBar() {
     <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
         <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] dark:text-slate-500 mb-8">
-          Built for every kind of consumer lender
+          Underwriting infrastructure for consumer lenders
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {LENDERS.map((l) => {
