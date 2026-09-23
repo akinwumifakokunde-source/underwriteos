@@ -10,8 +10,8 @@
     <!-- Primary SEO -->
     <title>CreditDecide — Explainable underwriting for consumer lenders</title>
     <meta name="title" content="CreditDecide — Explainable underwriting for consumer lenders" />
-    <meta name="description" content="CreditDecide is the AI-native underwriting and credit decisioning platform for consumer lenders — personal loans, instalment lending and point-of-sale finance. Automate application intake, assess affordability, and return evidence-backed APPROVE / REVIEW / DECLINE decisions under your own policies — no code required. Any country, any currency, with configurable policies and data sources per market." />
-    <meta name="keywords" content="CreditDecide, no-code underwriting, AI underwriting, underwriting operating system, no-code underwriting platform, visual policy builder, credit decisioning, consumer lending, consumer credit, personal loan underwriting, instalment lending, point-of-sale finance, lending infrastructure, policy engine, white-label application forms, KYC verification, credit bureau integration, open banking underwriting, AI underwriter, explainable AI underwriting, risk assessment, affordability assessment, probability of default, risk signals, evidence graph, evidence lineage, decision exports, multi-market lending, borderless underwriting, any country any currency, evidence-native underwriting" />
+    <meta name="description" content="CreditDecide is the AI-native underwriting and credit decisioning platform for consumer lenders — personal loans, instalment lending and point-of-sale finance. Automate borrower intake and KYC, assess income and affordability, apply your own lending policies, and return evidence-backed APPROVE / REVIEW / DECLINE decisions — then close the loop with collections and outcome calibration. From application to collections, no code required. Any country, any currency, with configurable policies and data sources per market." />
+    <meta name="keywords" content="CreditDecide, no-code underwriting, AI underwriting, underwriting operating system, no-code underwriting platform, visual policy builder, credit decisioning, consumer lending, consumer credit, personal loan underwriting, instalment lending, point-of-sale finance, lending infrastructure, policy engine, white-label application forms, KYC verification, credit bureau integration, open banking underwriting, AI underwriter, explainable AI underwriting, risk assessment, affordability assessment, probability of default, risk signals, evidence graph, evidence lineage, decision exports, multi-market lending, borderless underwriting, any country any currency, evidence-native underwriting, collections management, outcome calibration, batch underwriting, Model Context Protocol, MCP, AI assistant underwriting, loan-stacking detection" />
     <meta name="author" content="CreditDecide" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://creditdecide.com/" />
@@ -87,7 +87,7 @@
           "url": "https://creditdecide.com/",
           "applicationCategory": "FinanceApplication",
           "operatingSystem": "Web",
-          "description": "CreditDecide is a no-code, AI-native underwriting operating system that lets consumer lenders build policies visually, collect borrower applications through white-label forms with KYC, connect live credit bureau and open banking data (or upload documents), normalize financial data, assess affordability, generate structured risk signals with evidence lineage, apply lender policy, and return an explainable APPROVE / REVIEW / DECLINE decision — without writing code.",
+          "description": "CreditDecide is a no-code, AI-native underwriting operating system that lets consumer lenders build policies visually, collect borrower applications through white-label forms with KYC, connect live credit bureau and open banking data (or upload documents), normalize financial data, assess affordability, generate structured risk signals with evidence lineage, apply lender policy, and return an explainable APPROVE / REVIEW / DECLINE decision — then track loan outcomes and manage collections to close the credit lifecycle. It also speaks the Model Context Protocol (MCP), so compatible AI assistants can retrieve authorized lending data and explore evidence within lender controls. No code required.",
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -105,9 +105,12 @@
             "Five risk dimensions: credit, affordability, fraud, data quality, policy",
             "Explainable decisions (APPROVE / REVIEW / DECLINE) with audit trail",
             "Decision exports as PDF, CSV, and Word",
+            "Batch and portfolio underwriting from a CSV of applicants",
+            "Collections management to extend the credit lifecycle past the decision",
+            "Post-decision monitoring and outcome calibration feedback loop",
+            "Model Context Protocol (MCP) server for AI-assisted, auditable access",
             "Work-queue dashboard for underwriting operations",
-            "Sandbox and production environment isolation",
-            "Post-decision monitoring and model calibration feedback loop"
+            "Sandbox and production environment isolation"
           ]
         },
         {
@@ -143,6 +146,30 @@
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Yes. Every risk signal links back to its source record through an evidence graph, so a decision can be traced from the policy rule that fired to the exact source field in the credit report or bank statement. Decisions can also be exported as PDF, CSV, or Word."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does the AI make the final lending decision?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The AI underwriter produces an advisory recommendation with risk factors, positive signals and an evidence-referenced memo. Your versioned policy engine remains authoritative and produces the final APPROVE, REVIEW or DECLINE decision. The AI assists; your rules decide."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use CreditDecide from my AI assistant?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. CreditDecide speaks the Model Context Protocol (MCP), so any compatible assistant — Claude, ChatGPT, Gemini, Cursor and more — can retrieve your authorized lending data, analyse applications and explore the evidence behind a decision. Every call is org-scoped and runs within your lender policies; decision-changing actions require explicit confirmation and the whole session is audited."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does CreditDecide cover the whole underwriting flow end to end?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Every application moves through one governed pipeline — borrower intake and KYC, document intelligence, data normalization, risk assessment across five dimensions, policy evaluation, an explainable APPROVE / REVIEW / DECLINE decision, and post-decision monitoring that compares predicted default against observed outcomes. Collections management extends the lifecycle past the decision, closing the credit supply chain."
               }
             }
           ]
