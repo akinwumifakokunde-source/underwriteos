@@ -87,7 +87,7 @@ export default function AiConnectFeature() {
 
               <div className="rounded-xl border border-[#eceef1] dark:border-slate-800 bg-[#fafbfc] dark:bg-slate-800 px-3.5 py-3 mb-4">
                 <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500 mb-1">Server URL</div>
-                <code className="text-[12px] text-teal-600 dark:text-teal-400 select-text">https://creditdecide.app/api/mcp</code>
+                <code className="text-[12px] text-teal-600 dark:text-teal-400 select-text">https://creditdecide.com/api/mcp</code>
               </div>
 
               <div className="space-y-2 mb-4">
