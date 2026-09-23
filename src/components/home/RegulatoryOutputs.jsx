@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ScrollText, FileSpreadsheet, FileJson, ShieldCheck } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const OUTPUTS = [
   {
@@ -28,11 +29,19 @@ const OUTPUTS = [
 
 export default function RegulatoryOutputs() {
   return (
-    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fcfcfd] to-white dark:from-slate-950 dark:to-slate-950">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
-        <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Compliance, automated</p>
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+        <p className="text-xs font-mono uppercase tracking-wider mb-4">
+          <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+            Compliance, automated
+          </span>
+        </p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
-          Decision records, reason codes &amp; <span className="text-[#0d9488]">configurable disclosures.</span>
+          Decision records, reason codes &amp;{" "}
+          <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+            configurable disclosures.
+          </span>
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
           Generate decision records, reason codes, and configurable disclosures from the evidence behind each
@@ -41,7 +50,8 @@ export default function RegulatoryOutputs() {
 
         <div className="mt-10 grid md:grid-cols-3 gap-5">
           {OUTPUTS.map((o) => (
-            <div key={o.title} className="group rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+            <div key={o.title} className="group relative rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+              <span className={`absolute top-0 left-6 right-6 h-px bg-gradient-to-r ${o.grad} opacity-0 group-hover:opacity-100 transition-opacity`} />
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${o.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                   <o.icon className="w-5 h-5 text-white" />
@@ -54,7 +64,8 @@ export default function RegulatoryOutputs() {
           ))}
         </div>
 
-        <div className="mt-10 rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+        <div className="mt-10 group relative rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-6 shadow-sm transition-all duration-300 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.2)]">
+          <span className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-teal-400 to-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="flex items-center gap-2 mb-3">
             <ShieldCheck className="w-4 h-4 text-[#0d9488]" />
             <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500">Built for any jurisdiction</p>

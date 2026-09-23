@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const FAQS = [
   {
@@ -44,12 +45,20 @@ const FAQS = [
 
 export default function Faq() {
   return (
-    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fafbfc] to-white dark:from-slate-950 dark:to-slate-950">
-      <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-[#f8fafc] dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-3xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <div className="text-center mb-10">
-          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">FAQ</p>
+          <p className="text-xs font-mono uppercase tracking-wider mb-3">
+            <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+              FAQ
+            </span>
+          </p>
           <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
-            Questions, answered.
+            Questions,{" "}
+            <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+              answered.
+            </span>
           </h2>
           <p className="mt-3 text-sm sm:text-base text-[#525965] dark:text-slate-300 max-w-xl mx-auto">
             Everything you need to evaluate CreditDecide before you start building.
@@ -61,8 +70,9 @@ export default function Faq() {
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/40"
+              className="group relative bg-white/80 dark:bg-slate-900/80 backdrop-blur rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border border-[#eceef1] dark:border-slate-800 transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/40"
             >
+              <span className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-teal-400 via-indigo-400 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-[#0a0c12] dark:text-slate-50 hover:no-underline py-5">
                 {f.q}
               </AccordionTrigger>

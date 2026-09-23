@@ -1,5 +1,6 @@
 import React from "react";
 import { CreditCard, Wallet, ShoppingBag, Building2, Smartphone, Landmark, Car, Store, Users, PiggyBank, BadgePercent, Coins } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 // Consumer lending company types CreditDecide serves — no brand names.
 const LENDERS = [
@@ -19,10 +20,13 @@ const LENDERS = [
 
 export default function TrustBar() {
   return (
-    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
-        <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] dark:text-slate-500 mb-8">
-          Underwriting infrastructure for consumer lenders
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-12">
+        <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] mb-8">
+          <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+            Underwriting infrastructure for consumer lenders
+          </span>
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {LENDERS.map((l) => {
@@ -30,8 +34,9 @@ export default function TrustBar() {
             return (
               <div
                 key={l.label}
-                className="group flex items-center gap-2.5 rounded-xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
+                className="group relative flex items-center gap-2.5 rounded-xl border border-[#eceef1] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur px-3.5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
               >
+                <span className={`absolute top-0 left-3 right-3 h-px bg-gradient-to-r ${l.grad} opacity-0 group-hover:opacity-100 transition-opacity`} />
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${l.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 shrink-0`}>
                   <Icon className="w-4 h-4 text-white" />
                 </div>

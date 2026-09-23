@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight, UserCheck, TrendingUp, ShieldAlert, Gavel, Activity, CheckCircle2 } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const STEPS = [
   { icon: UserCheck, label: "Intake & KYC", desc: "White-label forms collect KYC, verify identity & documents", grad: "from-teal-400 to-emerald-500" },
@@ -11,12 +12,20 @@ const STEPS = [
 
 export default function WorkflowSection() {
   return (
-    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fafbfc] to-white dark:from-slate-950 dark:to-slate-950">
-      <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="text-center mb-12">
-          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The credit supply chain</p>
+          <p className="text-xs font-mono uppercase tracking-wider mb-3">
+            <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+              The credit supply chain
+            </span>
+          </p>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
-            From intake to collections — one continuous credit lifecycle
+            From intake to collections — one continuous{" "}
+            <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+              credit lifecycle
+            </span>
           </h2>
         </div>
 
@@ -25,7 +34,8 @@ export default function WorkflowSection() {
             const Icon = s.icon;
             return (
               <React.Fragment key={s.label}>
-                <div className="group flex-1 rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+                <div className="group relative flex-1 rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+                  <span className={`absolute top-0 left-5 right-5 h-px bg-gradient-to-r ${s.grad} opacity-0 group-hover:opacity-100 transition-opacity`} />
                   <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${s.grad} flex items-center justify-center mx-auto mb-3 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>

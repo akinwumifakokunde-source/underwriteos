@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const FEATURES = [
   {
@@ -57,14 +58,21 @@ const FEATURES = [
 
 export default function CompetitiveComparison() {
   return (
-    <section className="bg-white dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
+    <section className="relative overflow-hidden bg-white dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why CreditDecide
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500" />
+            <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+              Why CreditDecide
+            </span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
-            Everything you need to underwrite consumer credit
+            Everything you need to{" "}
+            <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+              underwrite consumer credit
+            </span>
           </h2>
           <p className="mt-3 text-[15px] text-[#525965] dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
             One evidence-native platform — no code, fully auditable, live in hours — for consumer lenders in any market, worldwide.
@@ -75,8 +83,9 @@ export default function CompetitiveComparison() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-teal-300 dark:hover:border-teal-500/40"
+              className="group relative rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-teal-300 dark:hover:border-teal-500/40"
             >
+              <span className={`absolute top-0 left-5 right-5 h-px bg-gradient-to-r ${f.grad} opacity-0 group-hover:opacity-100 transition-opacity`} />
               <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${f.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                 <Check className="w-4 h-4 text-white" strokeWidth={3} />
               </div>
@@ -87,10 +96,10 @@ export default function CompetitiveComparison() {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link to="/features" className="inline-flex items-center gap-1.5 rounded-lg bg-[#0a0c12] dark:bg-white text-white dark:text-slate-900 text-sm font-medium px-5 py-2.5 hover:bg-[#1c1f26] dark:hover:bg-slate-100">
-            Explore features <ArrowRight className="w-4 h-4" />
+          <Link to="/features" className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-[#0f172a] to-[#1e293b] dark:from-white dark:to-slate-200 dark:text-slate-900 text-white text-sm font-medium px-5 py-2.5 hover:shadow-[0_12px_30px_-8px_rgba(13,148,136,0.5)] transition-all hover:-translate-y-0.5">
+            Explore features <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
-          <Link to="/architecture" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-5 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800">
+          <Link to="/architecture" className="group inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-5 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-0.5">
             Explore the architecture
           </Link>
         </div>

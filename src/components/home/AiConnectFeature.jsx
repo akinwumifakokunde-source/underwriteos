@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Plug, MessageSquare, ShieldCheck, Sparkles } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const CLIENTS = [
   { name: "Claude", tint: "from-amber-400 to-orange-500" },
@@ -34,15 +35,21 @@ const POINTS = [
 
 export default function AiConnectFeature() {
   return (
-    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-white to-[#fafbfc] dark:from-slate-950 dark:to-slate-950">
-      <div className="absolute top-1/3 left-0 w-[320px] h-[320px] bg-[#0d9488]/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-0 right-1/4 w-[280px] h-[280px] bg-indigo-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-[#f8fafc] dark:bg-slate-950">
+      <SectionBackdrop />
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">CreditDecide MCP</p>
+            <p className="text-xs font-mono uppercase tracking-wider mb-3">
+              <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+                CreditDecide MCP
+              </span>
+            </p>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 mb-4">
-              Bring credit underwriting into your AI workflow
+              Bring credit underwriting into your{" "}
+              <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+                AI workflow
+              </span>
             </h2>
             <p className="text-[#525965] dark:text-slate-300 leading-relaxed mb-6">
               Connect compatible AI assistants to CreditDecide to retrieve authorised lending data, analyse
@@ -58,7 +65,7 @@ export default function AiConnectFeature() {
                 "Every action is org-scoped and fully audited",
               ].map((p) => (
                 <li key={p} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] mt-2 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 mt-2 shrink-0" />
                   {p}
                 </li>
               ))}
@@ -68,7 +75,8 @@ export default function AiConnectFeature() {
             </Link>
           </div>
 
-          <div className="group rounded-2xl border border-[#e8eaee] dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)] transition-all duration-500 hover:shadow-[0_24px_70px_-24px_rgba(13,148,136,0.3)] hover:-translate-y-1">
+          <div className="group relative rounded-2xl border border-[#e8eaee] dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)] transition-all duration-500 hover:shadow-[0_24px_70px_-24px_rgba(13,148,136,0.3)] hover:-translate-y-1">
+            <span className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-teal-400 via-indigo-400 to-violet-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="px-4 py-3 border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fafbfc] to-white dark:from-slate-900 dark:to-slate-900 flex items-center gap-2">
               <div className="flex gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#e0e2e6] dark:bg-slate-700" />
@@ -122,7 +130,8 @@ export default function AiConnectFeature() {
           {POINTS.map((p) => {
             const Icon = p.icon;
             return (
-              <div key={p.title} className="group rounded-xl border border-[#eceef1] dark:border-slate-800 bg-gradient-to-br from-[#f7f8fa] to-white dark:from-slate-900 dark:to-slate-900 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+              <div key={p.title} className="group relative rounded-xl border border-[#eceef1] dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+                <span className={`absolute top-0 left-5 right-5 h-px bg-gradient-to-r ${p.grad} opacity-0 group-hover:opacity-100 transition-opacity`} />
                 <div className="flex items-start gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${p.grad} flex items-center justify-center shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                     <Icon className="w-5 h-5 text-white" />

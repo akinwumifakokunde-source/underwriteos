@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Plus, GripVertical } from "lucide-react";
+import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const RULES = [
   { field: "Annual income", op: "≥", value: "£40,000", outcome: "APPROVE", pass: true },
@@ -11,13 +12,21 @@ const RULES = [
 
 export default function PolicyBuilderShowcase() {
   return (
-    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+    <section className="relative overflow-hidden border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
+      <SectionBackdrop />
+      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">Policy builder</p>
+            <p className="text-xs font-mono uppercase tracking-wider mb-3">
+              <span className="bg-gradient-to-r from-teal-500 to-emerald-500 dark:from-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
+                Policy builder
+              </span>
+            </p>
             <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 mb-4">
-              Configure your consumer lending policy visually
+              Configure your consumer lending policy{" "}
+              <span className="bg-gradient-to-r from-teal-500 via-emerald-500 to-teal-600 dark:from-teal-300 dark:via-emerald-400 dark:to-teal-300 bg-clip-text text-transparent">
+                visually
+              </span>
             </h2>
             <p className="text-[#525965] dark:text-slate-300 leading-relaxed mb-6">
               Add rules, set thresholds, and define outcomes — all without writing code.
@@ -31,7 +40,7 @@ export default function PolicyBuilderShowcase() {
                 "Versioned policies — never overwrite an active version",
               ].map((p) => (
                 <li key={p} className="flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488] mt-2 shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-teal-400 to-emerald-500 mt-2 shrink-0" />
                   {p}
                 </li>
               ))}
@@ -41,7 +50,8 @@ export default function PolicyBuilderShowcase() {
             </Link>
           </div>
 
-          <div className="group rounded-2xl border border-[#e8eaee] dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)] transition-all duration-500 hover:shadow-[0_24px_70px_-24px_rgba(13,148,136,0.3)] hover:-translate-y-1">
+          <div className="group relative rounded-2xl border border-[#e8eaee] dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur overflow-hidden shadow-[0_1px_2px_rgba(10,12,18,0.04),0_12px_40px_-12px_rgba(10,12,18,0.12)] transition-all duration-500 hover:shadow-[0_24px_70px_-24px_rgba(13,148,136,0.3)] hover:-translate-y-1">
+            <span className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-teal-400 via-indigo-400 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             <div className="px-5 py-4 border-b border-[#eceef1] dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-teal-50 via-white to-indigo-50 dark:from-teal-500/10 dark:via-slate-900 dark:to-indigo-500/10">
               <div>
                 <div className="text-sm font-semibold text-[#0a0c12] dark:text-slate-50">Consumer Lending v1</div>
