@@ -11,11 +11,11 @@ const STEPS = [
 
 export default function WorkflowSection() {
   return (
-    <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fafbfc] to-white dark:from-slate-950 dark:to-slate-950">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="text-center mb-12">
           <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The credit supply chain</p>
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
             From intake to collections — one continuous credit lifecycle
           </h2>
         </div>
@@ -25,13 +25,13 @@ export default function WorkflowSection() {
             const Icon = s.icon;
             return (
               <React.Fragment key={s.label}>
-                <div className="group flex-1 rounded-2xl border border-[#eceef1] bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+                <div className="group flex-1 rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
                   <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${s.grad} flex items-center justify-center mx-auto mb-3 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] mb-1">Step {i + 1}</div>
-                  <div className="text-sm font-semibold text-[#0a0c12] mb-1">{s.label}</div>
-                  <div className="text-[11px] text-[#8a909c] leading-snug">{s.desc}</div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500 mb-1">Step {i + 1}</div>
+                  <div className="text-sm font-semibold text-[#0a0c12] dark:text-slate-50 mb-1">{s.label}</div>
+                  <div className="text-[11px] text-[#8a909c] dark:text-slate-400 leading-snug">{s.desc}</div>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className="hidden sm:flex items-center justify-center text-[#0d9488] shrink-0">
@@ -43,7 +43,7 @@ export default function WorkflowSection() {
           })}
         </div>
 
-        <div className="mt-10 flex items-center justify-center gap-2 text-sm text-[#525965]">
+        <div className="mt-10 flex items-center justify-center gap-2 text-sm text-[#525965] dark:text-slate-300">
           <CheckCircle2 className="w-4 h-4 text-[#0d9488]" />
           Every step is auditable, traceable to source — and the loop closes back on itself
         </div>

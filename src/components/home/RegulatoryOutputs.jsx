@@ -28,45 +28,45 @@ const OUTPUTS = [
 
 export default function RegulatoryOutputs() {
   return (
-    <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fcfcfd] to-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fcfcfd] to-white dark:from-slate-950 dark:to-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Compliance, automated</p>
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
           Regulatory outputs, <span className="text-[#0d9488]">straight from the evidence graph.</span>
         </h2>
-        <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
+        <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
           Every decline or review automatically generates the disclosures and audit trail your regulators
           expect — derived from the same evidence that informed the decision, not bolted on afterwards.
         </p>
 
         <div className="mt-10 grid md:grid-cols-3 gap-5">
           {OUTPUTS.map((o) => (
-            <div key={o.title} className="group rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
+            <div key={o.title} className="group rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30">
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${o.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                   <o.icon className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] border border-[#eceef1] rounded px-1.5 py-0.5">{o.tag}</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500 border border-[#eceef1] dark:border-slate-800 rounded px-1.5 py-0.5">{o.tag}</span>
               </div>
-              <h3 className="text-base font-semibold text-[#0a0c12]">{o.title}</h3>
-              <p className="mt-2 text-sm text-[#525965] leading-relaxed">{o.desc}</p>
+              <h3 className="text-base font-semibold text-[#0a0c12] dark:text-slate-50">{o.title}</h3>
+              <p className="mt-2 text-sm text-[#525965] dark:text-slate-300 leading-relaxed">{o.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-10 rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm">
+        <div className="mt-10 rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-3">
             <ShieldCheck className="w-4 h-4 text-[#0d9488]" />
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c]">Built for any jurisdiction</p>
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500">Built for any jurisdiction</p>
           </div>
-          <p className="text-sm text-[#525965] leading-relaxed">
+          <p className="text-sm text-[#525965] dark:text-slate-300 leading-relaxed">
             Adverse-action notices, reason codes and audit exports are generated from the evidence graph —
             configurable to whatever consumer-credit framework your regulators require, in any country.
           </p>
         </div>
 
         <div className="mt-10">
-          <Link to="/applications" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
+          <Link to="/applications" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] dark:text-slate-50 hover:text-[#0d9488] transition-colors">
             See it in a decision <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>

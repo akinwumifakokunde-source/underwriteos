@@ -31,13 +31,13 @@ const CAPABILITIES = [
 
 export default function GlobalCoverage() {
   return (
-    <section className="border-b border-[#eceef1] bg-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Global coverage</p>
-        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
           One platform. Any market. No geographic limits.
         </h2>
-        <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
+        <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
           CreditDecide works for consumer lenders anywhere in the world. Upload documents in any format,
           connect the data providers you already use, and apply your own underwriting policy — with the same
           structured risk signals, evidence lineage and explainable decision in every currency.
@@ -49,15 +49,15 @@ export default function GlobalCoverage() {
             return (
               <div
                 key={c.title}
-                className="group rounded-xl border border-[#eceef1] bg-gradient-to-br from-[#f7f8fa] to-white p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
+                className="group rounded-xl border border-[#eceef1] dark:border-slate-800 bg-gradient-to-br from-[#f7f8fa] to-white dark:from-slate-900 dark:to-slate-900 p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
               >
                 <div className="flex items-start gap-3">
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${c.grad} flex items-center justify-center shrink-0 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                     <Icon className="w-5 h-5 text-white" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-[#0a0c12]">{c.title}</h3>
-                    <p className="mt-1 text-[13px] text-[#525965] leading-relaxed">{c.desc}</p>
+                    <h3 className="text-sm font-semibold text-[#0a0c12] dark:text-slate-50">{c.title}</h3>
+                    <p className="mt-1 text-[13px] text-[#525965] dark:text-slate-300 leading-relaxed">{c.desc}</p>
                   </div>
                 </div>
               </div>
@@ -68,7 +68,7 @@ export default function GlobalCoverage() {
         <div className="mt-6">
           <Link
             to="/pricing"
-            className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors"
+            className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] dark:text-slate-50 hover:text-[#0d9488] transition-colors"
           >
             See pricing
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />

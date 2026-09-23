@@ -19,7 +19,7 @@ import Reveal from "@/components/home/Reveal.jsx";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white text-[#0a0c12]">
+    <div className="min-h-screen bg-white text-[#0a0c12] dark:bg-slate-950 dark:text-slate-50">
       <HomeNav />
       <Hero />
       <Reveal><TrustBar /></Reveal>

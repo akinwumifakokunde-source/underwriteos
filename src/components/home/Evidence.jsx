@@ -13,20 +13,20 @@ const NODE_GRADS = [
 
 export default function Evidence() {
   return (
-    <section className="border-b border-[#eceef1] bg-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Explainable by design</p>
-        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] max-w-2xl">
+        <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
           Every decision has a <span className="text-[#0d9488]">traceable reason.</span>
         </h2>
-        <p className="mt-5 text-base sm:text-lg text-[#525965] leading-relaxed max-w-2xl">
+        <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
           Every underwriting decision is linked to the policy, risk signals, evidence and source data
           behind it — and cross-document reconciliation flags inconsistencies automatically.
         </p>
 
         <div className="mt-10 grid md:grid-cols-2 gap-6">
-          <div className="rounded-2xl border border-[#eceef1] bg-gradient-to-b from-white to-[#fcfcfd] p-6 shadow-sm">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-5">Decision lineage</p>
+          <div className="rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-white to-[#fcfcfd] dark:from-slate-900 dark:to-slate-900 p-6 shadow-sm">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500 mb-5">Decision lineage</p>
             <div className="space-y-2">
               {LINEAGE.map((l, i) => (
                 <React.Fragment key={l}>
@@ -37,35 +37,35 @@ export default function Evidence() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#eceef1] bg-white p-6 shadow-sm">
-            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] mb-5">Example</p>
+          <div className="rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+            <p className="text-[11px] font-mono uppercase tracking-wider text-[#8a909c] dark:text-slate-500 mb-5">Example</p>
             <div className="space-y-3.5">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[#525965]">Decision</span>
-                <span className="text-sm font-mono font-semibold text-[#b45309] bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">REVIEW</span>
+                <span className="text-sm text-[#525965] dark:text-slate-300">Decision</span>
+                <span className="text-sm font-mono font-semibold text-[#b45309] dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 rounded-full px-2.5 py-0.5">REVIEW</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[#525965]">Risk signal</span>
-                <span className="text-sm text-[#0a0c12]">High debt-to-income</span>
+                <span className="text-sm text-[#525965] dark:text-slate-300">Risk signal</span>
+                <span className="text-sm text-[#0a0c12] dark:text-slate-50">High debt-to-income</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[#525965]">Metric</span>
-                <span className="text-sm font-mono text-[#0a0c12]">DTI 48.2%</span>
+                <span className="text-sm text-[#525965] dark:text-slate-300">Metric</span>
+                <span className="text-sm font-mono text-[#0a0c12] dark:text-slate-50">DTI 48.2%</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[#525965]">Source</span>
-                <span className="text-sm text-[#0a0c12]">Bank statement</span>
+                <span className="text-sm text-[#525965] dark:text-slate-300">Source</span>
+                <span className="text-sm text-[#0a0c12] dark:text-slate-50">Bank statement</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-[#525965]">Evidence</span>
-                <span className="text-sm font-mono text-[#0a0c12]">Transactions · May 1 – Jul 31</span>
+                <span className="text-sm text-[#525965] dark:text-slate-300">Evidence</span>
+                <span className="text-sm font-mono text-[#0a0c12] dark:text-slate-50">Transactions · May 1 – Jul 31</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="mt-10">
-          <Link to="/evidence" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] hover:text-[#0d9488] transition-colors">
+          <Link to="/evidence" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] dark:text-slate-50 hover:text-[#0d9488] transition-colors">
             Open evidence explorer <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>

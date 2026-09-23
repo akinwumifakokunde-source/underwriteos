@@ -19,9 +19,9 @@ const LENDERS = [
 
 export default function TrustBar() {
   return (
-    <section className="border-b border-[#eceef1] bg-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12">
-        <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] mb-8">
+        <p className="text-center text-[11px] font-mono uppercase tracking-[0.18em] text-[#8a909c] dark:text-slate-500 mb-8">
           Built for every kind of consumer lender
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -30,12 +30,12 @@ export default function TrustBar() {
             return (
               <div
                 key={l.label}
-                className="group flex items-center gap-2.5 rounded-xl border border-[#eceef1] bg-white px-3.5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
+                className="group flex items-center gap-2.5 rounded-xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-3 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_-14px_rgba(13,148,136,0.25)] hover:border-[#0d9488]/30"
               >
                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${l.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 shrink-0`}>
                   <Icon className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-[13px] font-medium text-[#525965] group-hover:text-[#0a0c12] transition-colors leading-tight">
+                <span className="text-[13px] font-medium text-[#525965] dark:text-slate-300 group-hover:text-[#0a0c12] dark:group-hover:text-slate-50 transition-colors leading-tight">
                   {l.label}
                 </span>
               </div>

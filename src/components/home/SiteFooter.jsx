@@ -33,7 +33,7 @@ const COLS = [
 
 export default function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-white">
+    <footer className="relative overflow-hidden bg-white dark:bg-slate-950">
       {/* subtle top hairline */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0d9488]/40 to-transparent" />
       {/* subtle static radial lighting */}
@@ -50,14 +50,14 @@ export default function SiteFooter() {
             <Link to="/" className="flex items-center gap-2.5">
               <Logo size={24} />
             </Link>
-            <p className="mt-3 text-sm text-[#777] leading-relaxed">
+            <p className="mt-3 text-sm text-[#777] dark:text-slate-400 leading-relaxed">
               AI-native underwriting and credit decisioning for consumer lenders. Automate applications, configure policies, and make smarter, explainable decisions — for personal loans, instalment and point-of-sale.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["No-code", "AI-assisted", "Multi-market"].map((t) => (
                 <span
                   key={t}
-                  className="text-[10px] font-medium text-[#0d9488] bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-2 py-0.5"
+                  className="text-[10px] font-medium text-[#0d9488] dark:text-teal-400 bg-[#0d9488]/10 dark:bg-teal-500/10 border border-[#0d9488]/20 dark:border-teal-500/20 rounded-full px-2 py-0.5"
                 >
                   {t}
                 </span>
@@ -67,7 +67,7 @@ export default function SiteFooter() {
 
           {COLS.map((c) => (
             <div key={c.title}>
-              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#777] mb-3 flex items-center gap-1.5">
+              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#777] dark:text-slate-500 mb-3 flex items-center gap-1.5">
                 <span className="w-1 h-1 rounded-full bg-[#0d9488]" /> {c.title}
               </h4>
               <ul className="space-y-2">
@@ -75,7 +75,7 @@ export default function SiteFooter() {
                   <li key={l.to}>
                     <Link
                       to={l.to}
-                      className="text-sm text-[#333] hover:text-[#0d9488] transition-colors"
+                      className="text-sm text-[#333] dark:text-slate-300 hover:text-[#0d9488] dark:hover:text-teal-400 transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -86,36 +86,36 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-[#eceef1] flex flex-col gap-2.5">
+        <div className="mt-6 pt-4 border-t border-[#eceef1] dark:border-slate-800 flex flex-col gap-2.5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
-              <p className="text-xs text-[#777]">© {new Date().getFullYear()} CreditDecide</p>
+              <p className="text-xs text-[#777] dark:text-slate-500">© {new Date().getFullYear()} CreditDecide</p>
               <a
                 href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="CreditDecide on LinkedIn"
-                className="text-[#777] hover:text-[#0a76b1] transition-colors"
+                className="text-[#777] dark:text-slate-500 hover:text-[#0a76b1] dark:hover:text-sky-400 transition-colors"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
-              <span className="hidden sm:inline text-[#d4d7dd]">·</span>
-              <span className="font-mono uppercase tracking-wider text-[11px] text-[#777]">Our HQ</span>
-              <span className="text-[11px] text-[#333]">San Francisco · London · Lagos · Nairobi</span>
+              <span className="hidden sm:inline text-[#d4d7dd] dark:text-slate-700">·</span>
+              <span className="font-mono uppercase tracking-wider text-[11px] text-[#777] dark:text-slate-500">Our HQ</span>
+              <span className="text-[11px] text-[#333] dark:text-slate-300">San Francisco · London · Lagos · Nairobi</span>
             </div>
-            <p className="text-xs text-[#777] text-center sm:text-right max-w-md">
-              <span className="text-[#0d9488] font-medium">No-code underwriting</span>
+            <p className="text-xs text-[#777] dark:text-slate-500 text-center sm:text-right max-w-md">
+              <span className="text-[#0d9488] dark:text-teal-400 font-medium">No-code underwriting</span>
               {" · "}AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center gap-1 text-center text-[11px] text-[#777] sm:flex-row sm:gap-2 sm:text-left">
+          <div className="flex flex-col items-center justify-center gap-1 text-center text-[11px] text-[#777] dark:text-slate-500 sm:flex-row sm:gap-2 sm:text-left">
             <span className="inline-flex items-center gap-1.5">
               <span className="text-base leading-none">🌍</span>
               Built for consumer lenders worldwide — any market, no limits
             </span>
-            <span className="hidden sm:inline text-[#d4d7dd]">·</span>
-            <span className="font-medium text-[#333]">The underwriting operating system — go.</span>
+            <span className="hidden sm:inline text-[#d4d7dd] dark:text-slate-700">·</span>
+            <span className="font-medium text-[#333] dark:text-slate-300">The underwriting operating system — go.</span>
           </div>
         </div>
       </div>

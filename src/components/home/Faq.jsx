@@ -44,14 +44,14 @@ const FAQS = [
 
 export default function Faq() {
   return (
-    <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
+    <section className="border-b border-[#eceef1] dark:border-slate-800 bg-gradient-to-b from-[#fafbfc] to-white dark:from-slate-950 dark:to-slate-950">
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <div className="text-center mb-10">
           <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">FAQ</p>
-          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
+          <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
             Questions, answered.
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-[#525965] max-w-xl mx-auto">
+          <p className="mt-3 text-sm sm:text-base text-[#525965] dark:text-slate-300 max-w-xl mx-auto">
             Everything you need to evaluate CreditDecide before you start building.
           </p>
         </div>
@@ -61,19 +61,19 @@ export default function Faq() {
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="border-[#eceef1] bg-white rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/40"
+              className="border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 rounded-2xl mb-3 px-5 sm:px-6 shadow-sm border transition-all duration-300 hover:shadow-md hover:border-[#0d9488]/40"
             >
-              <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-[#0a0c12] hover:no-underline py-5">
+              <AccordionTrigger className="text-left text-sm sm:text-base font-semibold text-[#0a0c12] dark:text-slate-50 hover:no-underline py-5">
                 {f.q}
               </AccordionTrigger>
-              <AccordionContent className="text-sm text-[#525965] leading-relaxed pb-5">
+              <AccordionContent className="text-sm text-[#525965] dark:text-slate-300 leading-relaxed pb-5">
                 {f.a}
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
-        <p className="mt-8 text-center text-sm text-[#8a909c]">
+        <p className="mt-8 text-center text-sm text-[#8a909c] dark:text-slate-500">
           Still have questions?{" "}
           <Link to="/contact" className="font-medium text-[#0d9488] hover:text-[#0b7d72] transition-colors">
             Talk to our team

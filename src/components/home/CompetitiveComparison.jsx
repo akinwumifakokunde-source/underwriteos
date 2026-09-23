@@ -57,16 +57,16 @@ const FEATURES = [
 
 export default function CompetitiveComparison() {
   return (
-    <section className="bg-white">
+    <section className="bg-white dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 mb-3">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-teal-600 dark:text-teal-400 mb-3">
             <span className="w-1.5 h-1.5 rounded-full bg-teal-500" /> Why CreditDecide
           </div>
-          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12]">
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50">
             Everything you need to underwrite consumer credit
           </h2>
-          <p className="mt-3 text-[15px] text-[#525965] max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-3 text-[15px] text-[#525965] dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
             One evidence-native platform — no code, fully auditable, live in hours — for consumer lenders in any market, worldwide.
           </p>
         </div>
@@ -75,22 +75,22 @@ export default function CompetitiveComparison() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-teal-300"
+              className="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-16px_rgba(13,148,136,0.25)] hover:border-teal-300 dark:hover:border-teal-500/40"
             >
               <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${f.grad} flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110`}>
                 <Check className="w-4 h-4 text-white" strokeWidth={3} />
               </div>
-              <h3 className="mt-3.5 text-sm font-semibold text-[#0a0c12]">{f.title}</h3>
-              <p className="mt-1.5 text-[13px] text-[#525965] leading-relaxed">{f.desc}</p>
+              <h3 className="mt-3.5 text-sm font-semibold text-[#0a0c12] dark:text-slate-50">{f.title}</h3>
+              <p className="mt-1.5 text-[13px] text-[#525965] dark:text-slate-300 leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link to="/features" className="inline-flex items-center gap-1.5 rounded-lg bg-[#0a0c12] text-white text-sm font-medium px-5 py-2.5 hover:bg-[#1c1f26]">
+          <Link to="/features" className="inline-flex items-center gap-1.5 rounded-lg bg-[#0a0c12] dark:bg-white text-white dark:text-slate-900 text-sm font-medium px-5 py-2.5 hover:bg-[#1c1f26] dark:hover:bg-slate-100">
             Explore features <ArrowRight className="w-4 h-4" />
           </Link>
-          <Link to="/architecture" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-medium px-5 py-2.5 hover:bg-slate-50">
+          <Link to="/architecture" className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-5 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800">
             Explore the architecture
           </Link>
         </div>
