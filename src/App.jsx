@@ -25,6 +25,7 @@ const Onboarding = lazy(() => import("@/pages/Onboarding"));
 const Underwrite = lazy(() => import("@/pages/Underwrite"));
 const EvidenceGraph = lazy(() => import("@/pages/EvidenceGraph"));
 const Monitoring = lazy(() => import("@/pages/Monitoring"));
+const Collections = lazy(() => import("@/pages/Collections"));
 const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const ApiKeys = lazy(() => import("@/pages/ApiKeys"));
 const Providers = lazy(() => import("@/pages/Providers"));
@@ -122,6 +123,7 @@ const AnimatedRoutes = () => {
               <Route path="/sandbox" element={<Sandbox />} />
               <Route path="/underwrite" element={<Underwrite />} />
               <Route path="/monitoring" element={<Monitoring />} />
+              <Route path="/collections" element={<Collections />} />
               <Route path="/playground" element={<Playground />} />
               <Route path="/api-reference" element={<ApiReference />} />
               <Route path="/api-keys" element={<ApiKeys />} />
