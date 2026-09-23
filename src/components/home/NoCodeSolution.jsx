@@ -11,7 +11,7 @@ const PROBLEMS = [
 const SOLUTION_POINTS = [
   { icon: Plug, title: "Live data sources", desc: "Connect credit bureaus and open banking per market — or upload documents. Either way works.", grad: "from-teal-400 to-emerald-500" },
   { icon: Shield, title: "Continuous assessment", desc: "Five risk dimensions — credit, affordability, fraud, data quality, policy — assessed as data arrives, not in batches.", grad: "from-sky-400 to-indigo-500" },
-  { icon: MessageSquare, title: "AI underwriter + chat", desc: "Advisory AI recommendations and an in-context assistant. Your policy stays authoritative.", grad: "from-violet-400 to-purple-500" },
+  { icon: MessageSquare, title: "AI underwriter + chat", desc: "AI assists with analysis and explanations. Your policies govern outcomes, and authorised people handle exceptions.", grad: "from-violet-400 to-purple-500" },
   { icon: FileDown, title: "Exports & audit trail", desc: "Download decisions as PDF, CSV, or Word. Every step is traceable to its source evidence.", grad: "from-amber-400 to-orange-500" },
 ];
 

@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 const VALUE_PROPS = [
-  { title: "Intake to decision", desc: "One connected workflow" },
-  { title: "Explainable risk", desc: "Evidence-backed insights" },
   { title: "No-code policies", desc: "Lender-controlled rules" },
+  { title: "AI-assisted analysis", desc: "Evidence-backed insights" },
+  { title: "Evidence-linked decisions", desc: "Reviewable and traceable" },
 ];
 
 const fadeUp = {
@@ -40,9 +40,9 @@ export default function Hero() {
           animate="show"
           className="text-[2.1rem] sm:text-[3.4rem] font-semibold tracking-tight text-black dark:text-slate-50 leading-[1.1] sm:leading-[1.05]"
         >
-          Explainable underwriting, on your terms.
+          Explainable credit decisions.
           <br />
-          <span className="text-[#00796b] dark:text-teal-400">From application to decision.</span>
+          <span className="text-[#00796b] dark:text-teal-400">From application to collections.</span>
         </motion.h1>
 
         {/* Body */}
@@ -53,9 +53,8 @@ export default function Hero() {
           animate="show"
           className="mt-5 sm:mt-6 text-base sm:text-lg text-[#455a64] dark:text-slate-300 leading-relaxed max-w-2xl"
         >
-          Automate borrower intake and document processing. Assess income, affordability and credit risk, then
-          generate evidence-backed recommendations under your own policies. Every decision stays traceable and
-          reviewable — without writing code.
+          Automate borrower intake, assess income and affordability, and apply your own lending policies —
+          with evidence-backed recommendations and decisions your team can review and control.
         </motion.p>
 
         {/* Feature cards */}
@@ -86,7 +85,7 @@ export default function Hero() {
             to="/onboarding"
             className="group inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#101828] dark:bg-white dark:text-slate-900 px-5 py-3 rounded-lg hover:bg-[#1c2536] dark:hover:bg-slate-100 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
           >
-            Start underwriting <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            Start building <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
           <Link
             to="/features"

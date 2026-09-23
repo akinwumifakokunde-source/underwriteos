@@ -32,11 +32,11 @@ export default function RegulatoryOutputs() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Compliance, automated</p>
         <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
-          Regulatory outputs, <span className="text-[#0d9488]">straight from the evidence graph.</span>
+          Decision records, reason codes &amp; <span className="text-[#0d9488]">configurable disclosures.</span>
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
-          Every decline or review automatically generates the disclosures and audit trail your regulators
-          expect — derived from the same evidence that informed the decision, not bolted on afterwards.
+          Generate decision records, reason codes, and configurable disclosures from the evidence behind each
+          assessment — derived from the same data that informed the decision, not bolted on afterwards.
         </p>
 
         <div className="mt-10 grid md:grid-cols-3 gap-5">

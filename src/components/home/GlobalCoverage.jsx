@@ -35,12 +35,11 @@ export default function GlobalCoverage() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
         <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-4">Global coverage</p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12] dark:text-slate-50 max-w-2xl">
-          One platform. Any market. No geographic limits.
+          Designed for multiple markets.
         </h2>
         <p className="mt-5 text-base sm:text-lg text-[#525965] dark:text-slate-300 leading-relaxed max-w-2xl">
-          CreditDecide works for consumer lenders anywhere in the world. Upload documents in any format,
-          connect the data providers you already use, and apply your own underwriting policy — with the same
-          structured risk signals, evidence lineage and explainable decision in every currency.
+          Configure your own lending policies, identity requirements, currencies, and data providers — with
+          the same structured risk signals, evidence lineage and explainable decision in every currency.
         </p>
 
         <div className="mt-8 grid sm:grid-cols-2 gap-3">
