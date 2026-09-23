@@ -66,10 +66,10 @@ export default function GlobalCoverage() {
 
         <div className="mt-6">
           <Link
-            to="/pricing"
+            to="/onboarding"
             className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] dark:text-slate-50 hover:text-[#0d9488] transition-colors"
           >
-            See pricing
+            Start building
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
