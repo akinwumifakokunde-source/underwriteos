@@ -5,8 +5,8 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import WorkspacePreview from "@/components/home/WorkspacePreview";
 
 const VALUE_PROPS = [
-  { title: "No-code policies", desc: "Build lending rules visually" },
-  { title: "Explainable AI", desc: "Evidence-backed recommendations" },
+  { title: "Intake to collections", desc: "The full credit lifecycle" },
+  { title: "Explainable AI", desc: "Evidence-backed decisions" },
   { title: "Any market", desc: "Multi-currency, global reach" },
 ];
 
@@ -53,7 +53,7 @@ export default function Hero() {
               <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#0d9488]/15">
                 <Sparkles className="w-2.5 h-2.5 text-[#0d9488]" />
               </span>
-              Underwriting infrastructure for consumer lenders
+              Credit infrastructure for consumer lenders
             </motion.div>
 
             <motion.h1
@@ -77,8 +77,8 @@ export default function Hero() {
               animate="show"
               className="mt-5 sm:mt-6 text-base sm:text-lg text-[#525965] leading-relaxed max-w-xl"
             >
-              Automate application intake, assess affordability, and return evidence-backed APPROVE / REVIEW / DECLINE
-              decisions under your own policies — no code.
+              Automate intake and KYC, assess income and affordability, and return evidence-backed APPROVE / REVIEW / DECLINE
+              decisions under your own policies — then track collections and calibrate the loop. No code.
             </motion.p>
 
             <motion.div

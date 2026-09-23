@@ -1,12 +1,12 @@
 import React from "react";
-import { ArrowRight, Database, FileSearch, Brain, Shield, GitBranch, CheckCircle2 } from "lucide-react";
+import { ArrowRight, UserCheck, TrendingUp, ShieldAlert, Gavel, Activity, CheckCircle2 } from "lucide-react";
 
 const STEPS = [
-  { icon: Database, label: "Data sources", desc: "Connect live credit & bank data, or upload documents", grad: "from-teal-400 to-emerald-500" },
-  { icon: FileSearch, label: "Normalization", desc: "Canonical financial profile per market", grad: "from-sky-400 to-indigo-500" },
-  { icon: Brain, label: "5 risk dimensions", desc: "Credit · Affordability · Fraud · Data quality · Policy", grad: "from-violet-400 to-purple-500" },
-  { icon: Shield, label: "Policy evaluation", desc: "Your rules produce the authoritative decision", grad: "from-amber-400 to-orange-500" },
-  { icon: GitBranch, label: "Decision + export", desc: "APPROVE / REVIEW / DECLINE — export as PDF, CSV, Word", grad: "from-rose-400 to-pink-500" },
+  { icon: UserCheck, label: "Intake & KYC", desc: "White-label forms collect KYC, verify identity & documents", grad: "from-teal-400 to-emerald-500" },
+  { icon: TrendingUp, label: "Income insights", desc: "Bank statements → cashflow, income & affordability in minutes", grad: "from-sky-400 to-indigo-500" },
+  { icon: ShieldAlert, label: "Risk & fraud", desc: "5 dimensions · credit · affordability · fraud · loan-stacking", grad: "from-violet-400 to-purple-500" },
+  { icon: Gavel, label: "Policy & decision", desc: "Your versioned rules → APPROVE / REVIEW / DECLINE, explained", grad: "from-amber-400 to-orange-500" },
+  { icon: Activity, label: "Collections & calibration", desc: "Track outcomes, close the loop, keep models honest", grad: "from-rose-400 to-pink-500" },
 ];
 
 export default function WorkflowSection() {
@@ -14,9 +14,9 @@ export default function WorkflowSection() {
     <section className="border-b border-[#eceef1] bg-gradient-to-b from-[#fafbfc] to-white">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
         <div className="text-center mb-12">
-          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The continuous underwriting loop</p>
+          <p className="text-xs font-mono uppercase tracking-wider text-[#0d9488] mb-3">The credit supply chain</p>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
-            From live data to decision — in one continuous workspace
+            From intake to collections — one continuous credit lifecycle
           </h2>
         </div>
 
@@ -45,7 +45,7 @@ export default function WorkflowSection() {
 
         <div className="mt-10 flex items-center justify-center gap-2 text-sm text-[#525965]">
           <CheckCircle2 className="w-4 h-4 text-[#0d9488]" />
-          Every step is auditable and traceable to source data
+          Every step is auditable, traceable to source — and the loop closes back on itself
         </div>
       </div>
     </section>
