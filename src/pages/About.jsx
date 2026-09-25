@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Globe, Layers, Shield, Sparkles, Gauge, Network } from "lucide-react";
+import { ArrowRight, Globe, Layers, Shield, Sparkles, Gauge, Network, Plug, Terminal, MessageSquareText, FileSearch, Workflow } from "lucide-react";
 import SiteFooter from "@/components/home/SiteFooter";
 import HomeNav from "@/components/home/HomeNav";
 import { FEATURES } from "@/lib/features";
@@ -166,6 +166,53 @@ export default function About() {
               </span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* MCP — Bring your own AI assistant */}
+      <section className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+        <div className="rounded-2xl border border-[#e5e7eb] bg-gradient-to-br from-[#f0f7f4] to-white p-6 sm:p-8">
+          <div className="inline-flex items-center gap-2 text-[11px] font-medium text-[#0a2e2a] mb-4 bg-[#0d9488]/10 border border-[#0d9488]/20 rounded-full px-3 py-1">
+            <Plug className="w-3.5 h-3.5" /> Model Context Protocol
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#0a0c12]">
+            Drive underwriting from the AI assistant you already use.
+          </h2>
+          <p className="mt-4 text-[15px] text-[#525965] leading-relaxed max-w-2xl">
+            CreditDecide speaks MCP — the open standard that lets AI clients like ChatGPT and Claude call
+            your underwriting tools directly. Connect once and your assistant can create applications,
+            analyze risk, run decisions, retrieve evidence and ask the underwriting assistant — all from
+            the same conversation, with every action traceable to source.
+          </p>
+
+          <div className="mt-7 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              { icon: Workflow, title: "Run underwriting", body: "Execute the full pipeline — policy, AI memo and the authoritative decision." },
+              { icon: FileSearch, title: "Analyze risk", body: "Generate structured risk signals, each linked to traceable evidence." },
+              { icon: Terminal, title: "Retrieve anything", body: "Pull the summary, financial profile, signals, evidence, decision or audit trail." },
+              { icon: MessageSquareText, title: "Ask the assistant", body: "Question an application's outcome and get an evidence-grounded answer." },
+              { icon: Plug, title: "Manage applications", body: "Create, list and update loan applications from your assistant." },
+              { icon: Shield, title: "Governed by default", body: "OAuth-secured, scoped to your organization — your policies stay in control." },
+            ].map((t) => {
+              const Icon = t.icon;
+              return (
+                <div key={t.title} className="rounded-xl border border-[#e5e7eb] bg-white p-4">
+                  <Icon className="w-4 h-4 text-[#0d9488] mb-2.5" />
+                  <div className="text-sm font-semibold text-[#0a0c12]">{t.title}</div>
+                  <p className="mt-0.5 text-[13px] text-[#525965] leading-relaxed">{t.body}</p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <Link to="/api-reference" className="group inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-3 rounded-full hover:bg-[#1c1f26] transition-all shadow-sm">
+              Read the API & MCP docs <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <Link to="/demo" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-5 py-3 rounded-full hover:bg-[#f7f8fa] transition-all">
+              See it live <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

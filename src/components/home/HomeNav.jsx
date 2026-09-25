@@ -5,7 +5,6 @@ import Logo from "@/components/Logo";
 
 const NAV = [
   { to: "/features", label: "Platform" },
-  { to: "/mcp", label: "MCP" },
   { to: "/security", label: "Security" },
   { to: "/connect", label: "Connect AI" },
   { to: "/contact", label: "Contact" },
