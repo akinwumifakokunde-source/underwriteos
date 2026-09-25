@@ -1,55 +1,62 @@
 import React from "react";
-import { FileText, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 
-// Floating glassmorphism "underwriting slip" for the active market. Remounts
-// (via key) on market change so the slipIn animation replays each time.
+// Floating "underwriting slip" for the active market. Amount-first layout:
+// the loan amount is the hero number, the decision sits as a compact pill,
+// and DSCR / FILES / FORMATS demote to a single quiet metrics row.
+// Remounts (via key) on market change so the slipIn animation replays.
+const DECISION_STYLES = {
+  APPROVE: "bg-[#b7f0d6] text-[#103527]",
+  REVIEW: "bg-[#fde68a] text-[#78350f]",
+  DECLINE: "bg-[#fca5a5] text-[#7f1d1d]",
+};
+
 export default function DecisionCard({ market }) {
   const pass = market.status === "PASS";
   return (
     <div
       key={market.code}
-      className="animate-slipIn absolute bottom-3 right-1 sm:right-5 w-[268px] rounded-2xl p-4 backdrop-blur-md border border-emerald-400/20 bg-[#0e261a]/70 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.6)]"
+      className="animate-slipIn absolute bottom-3 right-1 sm:right-5 w-[268px] rounded-[18px] p-[17px] border border-[#344356] bg-[#111b29] text-[#f3f6fb] shadow-[0_18px_40px_-18px_rgba(14,26,43,0.55)]"
     >
-      <div className="flex items-center justify-between mb-1">
+      {/* top: country + timer */}
+      <div className="flex items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <span className="text-xl leading-none">{market.flag}</span>
-          <span className="text-[13px] font-semibold text-white tracking-tight">{market.name}</span>
+          <span className="text-[13px] font-semibold tracking-tight text-white">{market.name}</span>
         </div>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full">
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#bbd4ef] bg-[#202d3e] border border-[#3a4b60] px-2 py-1 rounded-full whitespace-nowrap">
           <Clock className="w-3 h-3" /> {market.timer}
         </span>
       </div>
-      <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-emerald-300/45 mb-3.5">
-        Underwriting slip
+
+      {/* amount row — hero number + decision pill */}
+      <div className="flex items-center justify-between gap-2 pb-[13px] border-b border-[#2a394b]">
+        <div>
+          <div className="mb-[3px] text-[9px] font-mono uppercase tracking-[0.17em] text-[#8295aa]">LOAN</div>
+          <div className="text-[25px] leading-[1.15] font-bold tracking-[-0.055em] text-[#f8fbff]">{market.amount}</div>
+        </div>
+        <span className={`px-2.5 py-1.5 rounded-full text-[9px] font-extrabold tracking-[0.07em] whitespace-nowrap ${DECISION_STYLES[market.decision] || DECISION_STYLES.REVIEW}`}>
+          {market.decision}
+        </span>
       </div>
 
-      <div className="flex items-center gap-3 mb-3">
-        <div className="flex -space-x-1.5">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <div key={i} className="w-7 h-9 rounded-md bg-emerald-900/60 border border-emerald-400/30 flex items-center justify-center">
-              <FileText className="w-3.5 h-3.5 text-emerald-300/70" />
-            </div>
-          ))}
-        </div>
-        <div className="text-[10px] leading-tight">
-          <div className="font-semibold text-white">{market.files} FILES</div>
-          <div className="text-emerald-300/70">{market.formats} FORMATS</div>
-        </div>
+      {/* quiet metrics row */}
+      <div className="flex justify-between gap-2 pt-[11px] text-[10px] text-[#a2b1c2]">
+        <span>DSCR <strong className="font-semibold text-[#e0e8f1]">{market.dscr}</strong></span>
+        <span><strong className="font-semibold text-[#e0e8f1]">{market.files} FILES</strong></span>
+        <span><strong className="font-semibold text-[#e0e8f1]">{market.formats} FORMATS</strong></span>
       </div>
 
-      <p className="text-[11px] text-emerald-100/70 leading-relaxed mb-3">{market.desc}</p>
+      {/* description */}
+      <p className="mt-2.5 text-[11px] leading-[1.5] text-[#b7c2cf]">{market.desc}</p>
 
-      <div className="flex items-end justify-between border-t border-emerald-400/15 pt-2.5">
-        <div className="text-[10px] text-emerald-100/55 leading-snug">
-          <div>{market.decision}</div>
-          <div className="text-white font-bold text-sm tracking-tight">{market.amount}</div>
-          <div>DSCR {market.dscr}</div>
-        </div>
+      {/* status pill */}
+      <div className="mt-3 flex items-center justify-end">
         <span
           className={
             pass
-              ? "text-[10px] font-bold text-[#0e261a] bg-emerald-400 px-2.5 py-1 rounded-full shadow-[0_0_12px_rgba(52,211,153,0.5)]"
-              : "text-[10px] font-bold text-amber-900 bg-amber-300 px-2.5 py-1 rounded-full shadow-[0_0_12px_rgba(251,191,36,0.5)]"
+              ? "px-2.5 py-[5px] rounded-full bg-[#b7f0d6] text-[#103527] text-[10px] font-extrabold tracking-[0.06em]"
+              : "px-2.5 py-[5px] rounded-full bg-[#fde68a] text-[#78350f] text-[10px] font-extrabold tracking-[0.06em]"
           }
         >
           {market.status}
