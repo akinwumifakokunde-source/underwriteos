@@ -146,18 +146,18 @@ export default function GlobeGraphic({ market }) {
     <div className="relative w-full h-full flex items-center justify-center">
       <div className="absolute inset-0 flex items-center justify-center" aria-hidden>
         <div
-          className="w-[330px] h-[330px] rounded-full"
+          className="w-[420px] h-[420px] sm:w-[520px] sm:h-[520px] lg:w-[600px] lg:h-[600px] rounded-full"
           style={{
             background:
-              "radial-gradient(circle, rgba(46,204,113,0.22) 0%, rgba(46,204,113,0.06) 45%, transparent 70%)",
-            filter: "blur(18px)",
+              "radial-gradient(circle, rgba(46,204,113,0.28) 0%, rgba(46,204,113,0.08) 45%, transparent 70%)",
+            filter: "blur(24px)",
           }}
         />
       </div>
       <canvas
         ref={canvasRef}
         aria-hidden
-        style={{ width: "100%", maxWidth: 480, aspectRatio: "1 / 1", height: "auto" }}
+        style={{ width: "100%", maxWidth: 600, aspectRatio: "1 / 1", height: "auto" }}
       />
     </div>
   );

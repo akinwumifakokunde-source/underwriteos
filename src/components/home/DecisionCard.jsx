@@ -8,13 +8,19 @@ export default function DecisionCard({ market }) {
   return (
     <div
       key={market.code}
-      className="animate-slipIn absolute bottom-3 right-1 sm:right-5 w-[248px] rounded-2xl p-4 backdrop-blur-md border border-emerald-400/20 bg-[#0e261a]/70 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.6)]"
+      className="animate-slipIn absolute bottom-3 right-1 sm:right-5 w-[268px] rounded-2xl p-4 backdrop-blur-md border border-emerald-400/20 bg-[#0e261a]/70 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.6)]"
     >
-      <div className="flex items-center justify-between mb-3.5">
-        <span className="text-lg leading-none">{market.flag}</span>
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <span className="text-xl leading-none">{market.flag}</span>
+          <span className="text-[13px] font-semibold text-white tracking-tight">{market.name}</span>
+        </div>
         <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full">
           <Clock className="w-3 h-3" /> {market.timer}
         </span>
+      </div>
+      <div className="text-[10px] font-mono uppercase tracking-[0.16em] text-emerald-300/45 mb-3.5">
+        Underwriting slip
       </div>
 
       <div className="flex items-center gap-3 mb-3">
