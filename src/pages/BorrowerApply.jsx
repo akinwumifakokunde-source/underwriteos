@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Hero from "@/components/home/Hero.jsx";
 import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
+import LenderSimulator from "@/components/try/LenderSimulator.jsx";
 import {
   Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2,
   ArrowRight, ArrowLeft, Sparkles, FileText, Wallet, Briefcase, ClipboardList, Send,
@@ -77,10 +78,21 @@ export default function BorrowerApply() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
   const [error, setError] = useState(null);
+  const [mode, setMode] = useState("landing");
 
   const set = (k, v) => setValues((prev) => ({ ...prev, [k]: v }));
 
   const loadSample = () => { setValues(SAMPLE); setError(null); };
+
+  const startLender = () => setMode("lender");
+  const startBorrower = () => {
+    setValues(SAMPLE);
+    setDocuments([]);
+    setStep(0);
+    setSubmitted(null);
+    setError(null);
+    setMode("borrower");
+  };
 
   const onFileChange = async (type, file) => {
     if (!file) return;
@@ -123,6 +135,28 @@ export default function BorrowerApply() {
     }
   };
 
+  if (mode === "landing") {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur">
+          <div className="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-50">
+              <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">C</span>
+              CreditDecide
+            </Link>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Try CreditDecide · no sign-up</span>
+          </div>
+        </div>
+        <Hero onStart={startLender} />
+        <BorrowerExperience onStart={startBorrower} />
+      </div>
+    );
+  }
+
+  if (mode === "lender") {
+    return <LenderSimulator onBack={() => setMode("landing")} />;
+  }
+
   if (submitted) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-5">
@@ -136,7 +170,8 @@ export default function BorrowerApply() {
             <p className="mt-4 text-xs text-slate-400">Reference: <span className="font-mono text-slate-600 dark:text-slate-300">{submitted.application_number}</span></p>
           )}
           <div className="mt-6 flex flex-col gap-2">
-            <Link to="/" className="text-sm font-medium text-teal-700 dark:text-teal-400 hover:underline">Back to home</Link>
+            <button onClick={() => { setSubmitted(null); setMode("landing"); }} className="text-sm font-medium text-teal-700 dark:text-teal-400 hover:underline">Try another flow</button>
+            <Link to="/" className="text-sm font-medium text-slate-400 hover:underline">Back to home</Link>
             {!slug && <p className="text-[11px] text-slate-400">Demo mode — no data was saved. Publish a form to collect real applications.</p>}
           </div>
         </div>
@@ -156,7 +191,9 @@ export default function BorrowerApply() {
             <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">C</span>
             CreditDecide
           </Link>
-          <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Borrower application</span>
+          <button onClick={() => setMode("landing")} className="inline-flex items-center gap-1.5 text-[12px] font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to overview
+          </button>
         </div>
       </div>
 

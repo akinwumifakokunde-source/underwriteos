@@ -5,7 +5,7 @@ import { ArrowRight, FileText, ShieldCheck, Check } from "lucide-react";
 const FOREST = "#0B3D21";
 const OFFWHITE = "#F9F9F8";
 
-export default function BorrowerExperience() {
+export default function BorrowerExperience({ onStart }) {
   return (
     <section className="bg-white dark:bg-slate-950 border-b border-[#eceef1] dark:border-slate-800">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
@@ -20,14 +20,25 @@ export default function BorrowerExperience() {
                 follow-ups pull more information and keep borrowers informed — so fewer drop off.
               </p>
             </div>
-            <Link
-              to="/start/borrower"
-              className="group inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full border border-[#0B3D21]/30 bg-white hover:shadow-md transition-all self-start sm:self-auto"
-              style={{ color: FOREST }}
-            >
-              Start as the borrower
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </Link>
+            {onStart ? (
+              <button
+                onClick={onStart}
+                className="group inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full border border-[#0B3D21]/30 bg-white hover:shadow-md transition-all self-start sm:self-auto"
+                style={{ color: FOREST }}
+              >
+                Start as the borrower
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            ) : (
+              <Link
+                to="/start/borrower"
+                className="group inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full border border-[#0B3D21]/30 bg-white hover:shadow-md transition-all self-start sm:self-auto"
+                style={{ color: FOREST }}
+              >
+                Start as the borrower
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">

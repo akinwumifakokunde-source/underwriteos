@@ -92,7 +92,7 @@ const fadeUp = {
   show: (i) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.5, ease: [0.22, 1, 0.36, 1] } }),
 };
 
-export default function Hero() {
+export default function Hero({ onStart }) {
   return (
     <section className="relative overflow-hidden bg-white dark:bg-slate-950">
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-10 text-center">
@@ -115,14 +115,25 @@ export default function Hero() {
           animate="show"
           className="mt-7 flex justify-center"
         >
-          <Link
-            to="/applications"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-white px-6 py-3 rounded-full shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ backgroundColor: FOREST }}
-          >
-            Start as the lender
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+          {onStart ? (
+            <button
+              onClick={onStart}
+              className="group inline-flex items-center gap-2 text-sm font-medium text-white px-6 py-3 rounded-full shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ backgroundColor: FOREST }}
+            >
+              Start as the lender
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          ) : (
+            <Link
+              to="/applications"
+              className="group inline-flex items-center gap-2 text-sm font-medium text-white px-6 py-3 rounded-full shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
+              style={{ backgroundColor: FOREST }}
+            >
+              Start as the lender
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          )}
         </motion.div>
 
         <motion.p
