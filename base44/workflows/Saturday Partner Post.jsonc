@@ -1,0 +1,45 @@
+{
+  "description": "Posts a fresh, AI-varied CreditDecide Partner Program announcement to the company LinkedIn page every Saturday (9am, Europe/London), with an AI-generated cover image and a call to action to the /partners page.",
+  "name": "Saturday Partner Post",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 6",
+      "one_time_date": null,
+      "timezone": "Europe/London",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "saturday_partner_post",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "post_partner": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "apiLinkedInPartnerPost",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Post partner program update",
+            "description": "Share a fresh Partner Program post to the LinkedIn company page"
+          }
+        }
+      }
+    ]
+  }
+}

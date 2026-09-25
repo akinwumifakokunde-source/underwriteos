@@ -1,4 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import {
+  linkedinHeaders,
+  resolveOrganization,
+  uploadLinkedInImage,
+  publishPost,
+} from '../../shared/linkedin.ts';
 
 // Posts a published Insights article to the CreditDecide LinkedIn company page,
 // with an AI-generated cover image attached.
@@ -29,71 +35,7 @@ function buildPreview(content, maxLen = 450) {
   return (lastSpace > 120 ? cut.slice(0, lastSpace) : cut).trim() + '…';
 }
 
-// Register a LinkedIn image upload, upload the bytes, and poll until the asset is ready.
-// Returns the asset URN, or throws if processing fails/times out (caller falls back to text-only).
-async function uploadLinkedInImage(accessToken, headers, orgUrn, imageBytes, contentType) {
-  const registerRes = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
-    method: 'POST',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      registerUploadRequest: {
-        recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
-        owner: orgUrn,
-      },
-    }),
-  });
-  if (!registerRes.ok) {
-    const detail = await registerRes.text();
-    throw new Error(`LinkedIn registerUpload failed: ${detail}`);
-  }
-  const regData = await registerRes.json();
-  const value = regData.value || regData;
-  const assetUrn = value.asset;
-  let uploadUrl = value.uploadUrl;
-  let uploadHeaders = {};
-  if (value.uploadMechanism) {
-    const mech = value.uploadMechanism['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest'];
-    if (mech) {
-      if (mech.uploadUrl) uploadUrl = mech.uploadUrl;
-      if (mech.headers) uploadHeaders = mech.headers;
-    }
-  }
-  if (!assetUrn || !uploadUrl) {
-    throw new Error('LinkedIn registerUpload did not return asset/uploadUrl');
-  }
-
-  const uploadRes = await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': contentType || 'image/jpeg', ...uploadHeaders },
-    body: imageBytes,
-  });
-  const uploadStatus = uploadRes.status;
-  if (!uploadRes.ok) {
-    const detail = await uploadRes.text();
-    throw new Error(`LinkedIn image upload failed (${uploadStatus}): ${detail}`);
-  }
-
-  // Poll until the asset is processed (LinkedIn needs this before the post can reference it).
-  const assetId = assetUrn.split(':').pop();
-  let lastPoll = null;
-  for (let i = 0; i < 6; i++) {
-    await new Promise((r) => setTimeout(r, 2000));
-    const stRes = await fetch(`https://api.linkedin.com/v2/assets/${assetId}`, { headers });
-    if (stRes.ok) {
-      const stData = await stRes.json();
-      lastPoll = stData;
-      const recipes = stData.recipes || [];
-      const recipe = recipes.find((r) => r.recipe === 'urn:li:digitalmediaRecipe:feedshare-image');
-      if (recipe && (recipe.status === 'AVAILABLE' || recipe.status === 'ALLOWED')) return assetUrn;
-      if (recipe && recipe.status === 'FAILED') throw new Error('LinkedIn image processing failed');
-    } else {
-      lastPoll = { httpStatus: stRes.status, body: await stRes.text().catch(() => '') };
-    }
-  }
-  throw new Error('LinkedIn image processing timed out');
-}
-
-export default async function(req) {
+export default async function (req) {
   try {
     const base44 = createClientFromRequest(req);
 
@@ -137,44 +79,8 @@ export default async function(req) {
       return Response.json({ error: 'LinkedIn connector not connected' }, { status: 502 });
     }
 
-    const headers = {
-      Authorization: `Bearer ${accessToken}`,
-      'X-Restli-Protocol-Version': '2.0.0',
-    };
-
-    // Discover organizations the connected user administers.
-    const aclRes = await fetch(
-      'https://api.linkedin.com/v2/organizationAcls?q=roleAssignee&role=ADMINISTRATOR&state=APPROVED',
-      { headers }
-    );
-    if (!aclRes.ok) {
-      const detail = await aclRes.text();
-      return Response.json({ error: 'Failed to list LinkedIn organizations', detail }, { status: 502 });
-    }
-    const aclData = await aclRes.json();
-    const elements = (aclData.elements || []).filter((e) => e.organization);
-    if (!elements.length) {
-      return Response.json({ error: 'No administered LinkedIn organization found for this account' }, { status: 404 });
-    }
-
-    // Resolve each admin org's name (usually one or two) to prefer the CreditDecide page.
-    const orgUrns = elements.map((e) => e.organization);
-    const orgNames = {};
-    await Promise.all(orgUrns.map(async (urn) => {
-      const numericId = urn.split(':').pop();
-      try {
-        const r = await fetch(`https://api.linkedin.com/v2/organizations/${numericId}`, { headers });
-        if (r.ok) {
-          const d = await r.json();
-          orgNames[urn] = d.localizedName || (d.name && d.name.localized && d.name.localized.en_US) || '';
-        }
-      } catch (_) { /* ignore individual lookup failures */ }
-    }));
-
-    let orgUrn = orgUrns[0];
-    const matchUrn = orgUrns.find((urn) => (orgNames[urn] || '').toLowerCase().includes('creditdecide'));
-    if (matchUrn) orgUrn = matchUrn;
-    const orgName = orgNames[orgUrn] || '';
+    const headers = linkedinHeaders(accessToken);
+    const { orgUrn, orgName } = await resolveOrganization(accessToken, headers);
 
     const link = `${SITE_BASE}/insights/${slug}`;
     const parts = [title, ''];
@@ -206,42 +112,32 @@ export default async function(req) {
     }
 
     if (dryRun) {
-      return Response.json({ ok: true, dry_run: true, organization_urn: orgUrn, organization_name: orgName, link, text, image_url: imageUrl, asset_urn: assetUrn, has_image: !!assetUrn, image_error: imageError });
+      return Response.json({
+        ok: true,
+        dry_run: true,
+        organization_urn: orgUrn,
+        organization_name: orgName,
+        link,
+        text,
+        image_url: imageUrl,
+        asset_urn: assetUrn,
+        has_image: !!assetUrn,
+        image_error: imageError,
+      });
     }
 
-    const shareContent = {
-      shareCommentary: { attributes: [], text },
-      shareMediaCategory: assetUrn ? 'IMAGE' : 'NONE',
-    };
-    if (assetUrn) {
-      shareContent.media = [{
-        status: 'READY',
-        media: assetUrn,
-        title: { attributes: [], text: title.slice(0, 120) },
-        description: { attributes: [], text: (excerpt || title).slice(0, 200) },
-      }];
-    }
-
-    const postRes = await fetch('https://api.linkedin.com/v2/ugcPosts', {
-      method: 'POST',
-      headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        author: orgUrn,
-        lifecycleState: 'PUBLISHED',
-        specificContent: { 'com.linkedin.ugc.ShareContent': shareContent },
-        visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' },
-      }),
+    const postUrn = await publishPost(accessToken, headers, orgUrn, {
+      text,
+      assetUrn,
+      title: title.slice(0, 120),
+      description: (excerpt || title).slice(0, 200),
     });
-    if (!postRes.ok) {
-      const detail = await postRes.text();
-      return Response.json({ error: 'LinkedIn post failed', detail }, { status: 502 });
-    }
-    const postData = await postRes.json();
+
     return Response.json({
       ok: true,
       organization_urn: orgUrn,
       organization_name: orgName,
-      post_urn: postData.id || postData.activity || null,
+      post_urn: postUrn,
       link,
       image_url: imageUrl,
       asset_urn: assetUrn,
