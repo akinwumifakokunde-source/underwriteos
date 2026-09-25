@@ -3,7 +3,7 @@
 // relative to the base (e.g. "/borrowers"), never "/v1/borrowers".
 export const ENVIRONMENT_CONFIG = {
   API_VERSION: "v1",
-  SANDBOX_API_BASE_URL: "https://api.underwriteos.dev/v1",
+  SANDBOX_API_BASE_URL: "https://api.creditdecide.com/v1",
   PRODUCTION_API_BASE_URL: "https://api.creditdecide.com/v1", // production is live
 };
 
