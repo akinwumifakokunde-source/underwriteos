@@ -279,8 +279,8 @@ export default function Connect() {
     <div className="min-h-screen bg-[#0a0c12] text-white">
       <HomeNav />
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-        <Link to="/workspace" className="inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white transition-colors mb-6">
-          <ArrowLeft className="w-4 h-4" /> Back to workspace
+        <Link to="/" className="inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white transition-colors mb-6">
+          <ArrowLeft className="w-4 h-4" /> Back to home
         </Link>
 
         <div className="flex items-center gap-3 mb-2">
