@@ -34,7 +34,6 @@ const COLS = [
       { to: "/about", label: "About" },
       { to: "/partners", label: "Partners" },
       { to: "/insights", label: "Insights" },
-      { to: "/connect", label: "Connect AI" },
       { to: "/contact", label: "Contact" },
     ],
   },
@@ -42,6 +41,7 @@ const COLS = [
     title: "Resources",
     links: [
       { to: "/api-reference", label: "Documentation" },
+      { to: "/connect", label: "Connect your AI" },
       { to: "/security", label: "Security" },
       { to: "/privacy", label: "Privacy" },
       { to: "/terms", label: "Terms" },
