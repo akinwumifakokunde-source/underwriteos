@@ -99,7 +99,7 @@ export default function FeatureDetail() {
 
         <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-3">
           <Link
-            to="/onboarding"
+            to="/demo"
             className="group inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-3 rounded-full hover:bg-[#1c1f26] transition-all"
           >
             Start underwriting <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

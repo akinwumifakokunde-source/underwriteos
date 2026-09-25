@@ -138,7 +138,7 @@ export default function Contact() {
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm text-[#525965] hover:text-[#0a0c12]">
+                <Link to="/demo" className="inline-flex items-center gap-1.5 text-sm text-[#525965] hover:text-[#0a0c12]">
                   Or start building <ArrowRight className="w-4 h-4" />
                 </Link>
                 <button type="submit" disabled={sending} className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors disabled:opacity-60">

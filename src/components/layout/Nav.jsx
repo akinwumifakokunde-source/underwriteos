@@ -24,10 +24,6 @@ const NAV_ITEMS = [
 const SECONDARY_ITEMS = [
   { to: "/forms", label: "Forms" },
   { to: "/batch", label: "Batch" },
-  { to: "/risk-signals", label: "Risk Signals" },
-  { to: "/decisions", label: "Decisions" },
-  { to: "/evidence", label: "Evidence" },
-  { to: "/dashboard", label: "Dashboard" },
   { to: "/collections", label: "Collections" },
   { to: "/monitoring", label: "Calibration" },
   { to: "/members", label: "Members" },
@@ -39,10 +35,8 @@ const SECONDARY_ITEMS = [
 const DEVELOPER_ITEMS = [
   { to: "/api-reference", label: "API Reference" },
   { to: "/playground", label: "Playground" },
-  { to: "/sandbox", label: "Sandbox" },
   { to: "/api-keys", label: "API Keys" },
   { to: "/webhooks", label: "Webhooks" },
-  { to: "/docs", label: "Docs" },
 ];
 
 export default function Nav() {
@@ -66,7 +60,7 @@ export default function Nav() {
 
         <nav className="flex-1 flex items-center gap-0.5 overflow-x-auto no-scrollbar">
           {NAV_ITEMS.map((item) => {
-            const active = location.pathname === item.to || (item.to !== "/dashboard" && location.pathname.startsWith(item.to));
+            const active = location.pathname === item.to || location.pathname.startsWith(item.to + "/");
             return (
               <NavLink
                 key={item.to}

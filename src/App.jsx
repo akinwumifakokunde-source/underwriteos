@@ -16,17 +16,12 @@ const Register = lazy(() => import("@/pages/Register"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const Home = lazy(() => import("@/pages/Home"));
-const Sandbox = lazy(() => import("@/pages/Sandbox"));
 const ApiReference = lazy(() => import("@/pages/ApiReference"));
 const Architecture = lazy(() => import("@/pages/Architecture"));
-const Docs = lazy(() => import("@/pages/Docs"));
 const Playground = lazy(() => import("@/pages/Playground"));
-const Onboarding = lazy(() => import("@/pages/Onboarding"));
-const Underwrite = lazy(() => import("@/pages/Underwrite"));
 const EvidenceGraph = lazy(() => import("@/pages/EvidenceGraph"));
 const Monitoring = lazy(() => import("@/pages/Monitoring"));
 const Collections = lazy(() => import("@/pages/Collections"));
-const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const ApiKeys = lazy(() => import("@/pages/ApiKeys"));
 const Providers = lazy(() => import("@/pages/Providers"));
 const Usage = lazy(() => import("@/pages/Usage"));
@@ -108,7 +103,6 @@ const AnimatedRoutes = () => {
             <Route path="/demo" element={<BookDemo />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/workspace" element={<WorkspaceHome />} />
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/applications" element={<Applications />} />
               <Route path="/applications/new" element={<ApplicationCreate />} />
               <Route path="/batch" element={<BatchUnderwrite />} />
@@ -125,8 +119,6 @@ const AnimatedRoutes = () => {
               <Route path="/evidence" element={<EvidenceGraph />} />
               <Route path="/evidence/:applicationId" element={<EvidenceGraph />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/sandbox" element={<Sandbox />} />
-              <Route path="/underwrite" element={<Underwrite />} />
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/playground" element={<Playground />} />
@@ -140,8 +132,6 @@ const AnimatedRoutes = () => {
               <Route path="/members" element={<Members />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/architecture" element={<Architecture />} />
-              <Route path="/docs" element={<Docs />} />
-              <Route path="/onboarding" element={<Onboarding />} />
             </Route>
             <Route path="*" element={<PageNotFound />} />
           </Routes>

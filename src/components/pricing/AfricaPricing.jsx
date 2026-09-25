@@ -117,7 +117,7 @@ export default function AfricaPricing() {
               ))}
             </div>
             <Link
-              to="/onboarding"
+              to="/demo"
               className={`mt-7 inline-flex items-center justify-center gap-1.5 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors ${
                 t.highlight ? "text-white bg-[#0a0c12] hover:bg-[#1c1f26]" : "text-[#0a0c12] border border-[#e5e7eb] hover:bg-[#f2f3f5]"
               }`}

@@ -208,7 +208,7 @@ export default function Providers() {
             <div className="rounded-xl border border-slate-200 bg-white p-5">
               <h3 className="text-sm font-semibold text-slate-900 mb-3">Next steps</h3>
               <div className="space-y-2">
-                <Link to="/sandbox" className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50">
+                <Link to="/playground" className="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50">
                   <span className="text-sm font-medium text-slate-900">Run the sandbox flow with live data</span>
                   <ArrowRight className="w-4 h-4 text-slate-400" />
                 </Link>
