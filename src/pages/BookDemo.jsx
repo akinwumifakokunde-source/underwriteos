@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import { base44 } from "@/api/base44Client";
-import { Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Loader2, CheckCircle2, AlertTriangle, CalendarDays } from "lucide-react";
+import BookingModal from "@/components/booking/BookingModal.jsx";
 
 const FOREST = "#0B3D21";
 const VOLUMES = ["< $1M / month", "$1M – $5M / month", "$5M – $25M / month", "$25M+ / month"];
@@ -14,6 +15,7 @@ export default function BookDemo() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
@@ -68,6 +70,15 @@ export default function BookDemo() {
                 on a document you send, and a working session if it makes sense.
               </p>
 
+              <button
+                onClick={() => setBookingOpen(true)}
+                className="inline-flex items-center gap-2.5 text-sm font-medium text-white px-5 py-3 rounded-full transition-all"
+                style={{ backgroundColor: FOREST }}
+              >
+                <CalendarDays className="w-4 h-4" /> Book a time
+              </button>
+              <p className="mt-3 text-[12px] text-[#999]">Live availability from our calendar · 30 min · Google Meet · 9am–6pm UK.</p>
+
               <hr className="my-8 border-[#eceef1] dark:border-slate-800" />
             </div>
 
@@ -121,6 +132,7 @@ export default function BookDemo() {
         )}
       </div>
 
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
       <SiteFooter />
     </div>
   );
