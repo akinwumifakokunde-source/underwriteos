@@ -92,7 +92,7 @@ const fadeUp = {
   show: (i) => ({ opacity: 1, y: 0, transition: { delay: 0.08 * i, duration: 0.5, ease: [0.22, 1, 0.36, 1] } }),
 };
 
-export default function Hero({ onStart }) {
+export default function Hero({ onStart, tagline }) {
   return (
     <section className="relative overflow-hidden bg-white dark:bg-slate-950">
       <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-10 text-center">
@@ -143,7 +143,7 @@ export default function Hero({ onStart }) {
           animate="show"
           className="mt-4 text-[11px] font-mono uppercase tracking-[0.2em] text-[#9ca3af] dark:text-slate-500"
         >
-          No sign-up · 4 minutes
+          {tagline || "No sign-up · 4 minutes"}
         </motion.p>
       </div>
 
