@@ -50,7 +50,7 @@ export default function MarketingHero() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
-              From borrower files to credit decisions — in minutes, across markets.
+              From borrower applications to credit decisions — in minutes, across markets.
             </h1>
 
             <p className="mt-7 max-w-xl text-base sm:text-lg text-emerald-100/55 leading-relaxed">
