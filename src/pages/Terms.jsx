@@ -41,7 +41,7 @@ const SECTIONS = [
   },
   {
     title: "Contact",
-    body: "Questions about these terms? Contact us at akinfaks@yahoo.com.",
+    body: "Questions about these terms? Contact us through the Contact page.",
   },
 ];
 

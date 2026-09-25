@@ -33,7 +33,7 @@ const SECTIONS = [
   },
   {
     title: "Contact",
-    body: "Questions about this policy or a data request? Contact us at akinfaks@yahoo.com.",
+    body: "Questions about this policy or a data request? Contact us through the Contact page.",
   },
 ];
 
