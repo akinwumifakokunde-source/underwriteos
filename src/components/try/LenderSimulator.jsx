@@ -4,6 +4,7 @@ import GuidedOverlay from "@/components/lender/GuidedOverlay";
 import ApplicationsPipeline from "@/components/lender/ApplicationsPipeline";
 import ApplicationDetail from "@/components/lender/ApplicationDetail";
 import PortfolioInsights from "@/components/lender/PortfolioInsights";
+import BookingModal from "@/components/booking/BookingModal";
 import { PIPELINE_ROWS, GREEN } from "@/components/lender/data";
 
 const STEPS = [
@@ -73,6 +74,7 @@ export default function LenderSimulator({ onBack }) {
   const [tab, setTab] = useState("details");
   const [step, setStep] = useState(0);
   const [guided, setGuided] = useState(true);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const openRow = () => {
     setView("detail");
@@ -196,10 +198,12 @@ export default function LenderSimulator({ onBack }) {
           bullets={["The top drivers behind each decision type", "Policy changes to lift approvals, cut defaults"]}
           cta="Finish the walkthrough"
           onBack={() => { setView("detail"); setTab("creditmemo"); setStep(7); }}
-          onNext={() => setGuided(false)}
+          onNext={() => { setGuided(false); setBookingOpen(true); }}
           onClose={closeGuided}
         />
       )}
+
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </div>
   );
 }
