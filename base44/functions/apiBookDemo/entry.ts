@@ -5,6 +5,9 @@ const TZ = "Europe/London";
 const SLOT_MINUTES = 30;
 const START_HOUR = 9;
 const END_HOUR = 18;
+// Ignore events longer than this — they're placeholders/junk (e.g. a 5-year "intake"),
+// not real meetings a demo would conflict with.
+const MAX_MEETING_HOURS = 24;
 
 // Europe/London is UTC+0 (GMT) except BST (last Sun March -> last Sun Oct), UTC+1.
 function londonOffsetHours(year, month, day) {
@@ -18,18 +21,27 @@ function londonOffsetHours(year, month, day) {
   return (t >= bstStart && t < bstEnd) ? 1 : 0;
 }
 
-async function freeBusy(auth, timeMin, timeMax) {
-  const res = await fetch("https://www.googleapis.com/calendar/v3/freeBusy", {
-    method: "POST",
-    headers: auth,
-    body: JSON.stringify({ timeMin, timeMax, items: [{ id: ORGANIZER }] }),
-  });
+// Real busy intervals from the events list, filtering out all-day events,
+// "Free" (transparent) events, and junk multi-day placeholders.
+async function fetchBusy(auth, timeMin, timeMax) {
+  const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(ORGANIZER)}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime`;
+  const res = await fetch(url, { headers: auth });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || "Free/busy query failed");
+    throw new Error(err?.error?.message || "Calendar query failed");
   }
   const data = await res.json();
-  return (data.calendars?.[ORGANIZER]?.busy) || [];
+  const busy = [];
+  for (const e of data.items || []) {
+    if (!e.start?.dateTime || !e.end?.dateTime) continue; // skip all-day
+    if (e.transparency === "transparent") continue; // marked Free
+    const s = new Date(e.start.dateTime).getTime();
+    const en = new Date(e.end.dateTime).getTime();
+    if (!isFinite(s) || !isFinite(en)) continue;
+    if ((en - s) > MAX_MEETING_HOURS * 3600 * 1000) continue; // skip junk long events
+    busy.push({ start: s, end: en });
+  }
+  return busy;
 }
 
 export default async function(req) {
@@ -51,18 +63,14 @@ export default async function(req) {
       const dayStart = Date.UTC(y, m - 1, d, START_HOUR - offset, 0, 0);
       const dayEnd = Date.UTC(y, m - 1, d, END_HOUR - offset, 0, 0);
 
-      const busy = await freeBusy(auth, new Date(dayStart).toISOString(), new Date(dayEnd).toISOString());
-      const busyRanges = busy.map((b) => ({
-        start: new Date(b.start).getTime(),
-        end: new Date(b.end).getTime(),
-      }));
+      const busy = await fetchBusy(auth, new Date(dayStart).toISOString(), new Date(dayEnd).toISOString());
 
       const slots = [];
       const now = Date.now();
       for (let t = dayStart; t + SLOT_MINUTES * 60000 <= dayEnd; t += SLOT_MINUTES * 60000) {
         const sEnd = t + SLOT_MINUTES * 60000;
         if (sEnd <= now) continue;
-        const overlap = busyRanges.some((r) => t < r.end && sEnd > r.start);
+        const overlap = busy.some((r) => t < r.end && sEnd > r.start);
         if (!overlap) slots.push(new Date(t).toISOString());
       }
       return Response.json({ slots, tz: TZ });
@@ -85,12 +93,8 @@ export default async function(req) {
 
       // Realtime conflict re-check before creating
       try {
-        const busy = await freeBusy(auth, new Date(startMs).toISOString(), new Date(endMs).toISOString());
-        const conflict = busy.some((b) => {
-          const bs = new Date(b.start).getTime();
-          const be = new Date(b.end).getTime();
-          return startMs < be && endMs > bs;
-        });
+        const busy = await fetchBusy(auth, new Date(startMs).toISOString(), new Date(endMs).toISOString());
+        const conflict = busy.some((r) => startMs < r.end && endMs > r.start);
         if (conflict) {
           return Response.json({ error: "That time was just taken. Please pick another slot." }, { status: 409 });
         }
