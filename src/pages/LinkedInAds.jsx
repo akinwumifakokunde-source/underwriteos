@@ -102,7 +102,7 @@ function AdCard({ ad }) {
       <h3 className="text-[15px] font-semibold text-slate-900 mb-1.5">{ad.headline}</h3>
       <p className="text-sm text-slate-600 leading-relaxed">{ad.description}</p>
       <div className="mt-4 flex items-center gap-2">
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-[#0a0c12] px-3 py-1.5 rounded-full">Start underwriting →</span>
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-white bg-[#0a0c12] px-3 py-1.5 rounded-full">Try CreditDecide →</span>
         <span className="text-[11px] text-slate-400">creditdecide.com</span>
       </div>
     </div>
@@ -313,8 +313,8 @@ export default function LinkedInAds() {
             Base44 has a built-in Google Ads runner (Marketing → Google Ads) that can launch and fund real campaigns for creditdecide.com
             directly — no manual setup. LinkedIn Ads must be run manually in Campaign Manager.
           </p>
-          <Link to="/pricing" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-teal-600 px-4 py-2 rounded-full hover:bg-teal-700 transition-colors">
-            View pricing <ExternalLink className="w-3.5 h-3.5" />
+          <Link to="/demo" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-teal-600 px-4 py-2 rounded-full hover:bg-teal-700 transition-colors">
+            Book a demo <ExternalLink className="w-3.5 h-3.5" />
           </Link>
         </div>
       </div>
