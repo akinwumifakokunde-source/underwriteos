@@ -25,6 +25,7 @@ const COLS = [
       { to: "/features", label: "South Africa" },
       { to: "/features", label: "Kenya" },
       { to: "/features", label: "Ghana" },
+      { to: "/features", label: "Others" },
     ],
   },
   {
