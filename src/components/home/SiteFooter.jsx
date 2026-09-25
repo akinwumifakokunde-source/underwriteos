@@ -98,9 +98,6 @@ export default function SiteFooter() {
         <div className="mt-14 pt-6 border-t border-[#1A1A1A] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#808080]">
           <p>© {new Date().getFullYear()} CreditDecide. All rights reserved.</p>
           <p className="font-mono uppercase tracking-wider">Built for consumer lenders worldwide</p>
-          <a href="mailto:hello@creditdecide.com" className="hover:text-white transition-colors">
-            hello@creditdecide.com
-          </a>
         </div>
       </div>
     </footer>
