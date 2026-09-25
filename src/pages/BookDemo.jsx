@@ -69,9 +69,6 @@ export default function BookDemo() {
               </p>
 
               <hr className="my-8 border-[#eceef1] dark:border-slate-800" />
-
-              <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#9ca3af]">Prefer email?</p>
-              <a href="mailto:hello@creditdecide.com" className="text-sm text-[#666] dark:text-slate-400 hover:text-[#0B3D21] transition-colors">hello@creditdecide.com</a>
             </div>
 
             {/* Right column — form */}
