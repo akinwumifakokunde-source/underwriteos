@@ -59,6 +59,7 @@ const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
 const Connect = lazy(() => import("@/pages/Connect"));
 const BookDemo = lazy(() => import("@/pages/BookDemo"));
 const Partners = lazy(() => import("@/pages/Partners"));
+const Mcp = lazy(() => import("@/pages/Mcp"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -106,6 +107,7 @@ const AnimatedRoutes = () => {
             <Route path="/demo" element={<BookDemo />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/api-reference" element={<ApiReference />} />
+            <Route path="/mcp" element={<Mcp />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/workspace" element={<WorkspaceHome />} />
               <Route path="/applications" element={<Applications />} />

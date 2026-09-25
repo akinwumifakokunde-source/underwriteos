@@ -42,6 +42,7 @@ const COLS = [
     title: "Resources",
     links: [
       { to: "/api-reference", label: "Documentation" },
+      { to: "/mcp", label: "MCP" },
       { to: "/security", label: "Security" },
       { to: "/privacy", label: "Privacy" },
       { to: "/terms", label: "Terms" },
