@@ -45,12 +45,12 @@ export default function MarketingHero() {
                 C
               </span>
               <span className="text-[12px] font-medium text-emerald-100/80">
-                AI-native underwriting infrastructure
+                AI-native credit underwriting infrastructure
               </span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
-              Turn borrower files into decisions — in minutes, in any market.
+              Turn borrower files into decisions — in minutes, across markets.
             </h1>
 
             <p className="mt-7 max-w-xl text-base sm:text-lg text-emerald-100/55 leading-relaxed">
@@ -62,17 +62,17 @@ export default function MarketingHero() {
 
             <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link
-                to="/demo"
+                to="/start/borrower"
                 className="group inline-flex items-center gap-2 text-sm font-medium text-[#0e261a] bg-white pl-4 pr-5 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
               >
                 <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
-                Book a demo
+                Try CreditDecide →
               </Link>
               <Link
-                to="/start/borrower"
-                className="text-sm font-medium text-white hover:text-emerald-300 transition-colors"
+                to="/demo"
+                className="text-sm font-medium text-white/80 hover:text-emerald-300 transition-colors"
               >
-                Try CreditDecide →
+                Book a demo
               </Link>
             </div>
 
