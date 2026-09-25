@@ -29,6 +29,7 @@ const Members = lazy(() => import("@/pages/Members"));
 const SettingsPage = lazy(() => import("@/pages/Settings"));
 const Webhooks = lazy(() => import("@/pages/Webhooks"));
 const Billing = lazy(() => import("@/pages/Billing"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
 const Security = lazy(() => import("@/pages/Security"));
 const Privacy = lazy(() => import("@/pages/Privacy"));
 const Terms = lazy(() => import("@/pages/Terms"));
@@ -126,7 +127,7 @@ const AnimatedRoutes = () => {
               <Route path="/providers" element={<Providers />} />
               <Route path="/usage" element={<Usage />} />
               <Route path="/billing" element={<Billing />} />
-              <Route path="/pricing" element={<Navigate to="/demo" replace />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/webhooks" element={<Webhooks />} />
               <Route path="/members" element={<Members />} />
               <Route path="/settings" element={<SettingsPage />} />
