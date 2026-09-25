@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import Hero from "@/components/home/Hero.jsx";
+import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
 import {
   Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2,
   ArrowRight, ArrowLeft, Sparkles, FileText, Wallet, Briefcase, ClipboardList, Send,
@@ -157,6 +159,9 @@ export default function BorrowerApply() {
           <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Borrower application</span>
         </div>
       </div>
+
+      <Hero />
+      <BorrowerExperience />
 
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
         <div className="grid md:grid-cols-[220px_1fr] gap-8">
