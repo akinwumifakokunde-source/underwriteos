@@ -103,13 +103,28 @@ export default function Nav() {
           </DropdownMenu>
         </nav>
 
-        <button
-          onClick={logout}
-          className="shrink-0 inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white px-2.5 py-1.5 rounded-md hover:bg-white/5 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          <span className="hidden sm:inline">Log out</span>
-        </button>
+        <div className="shrink-0 flex items-center gap-3">
+          <Link
+            to="/start/borrower"
+            className="hidden sm:inline-block text-[13px] font-medium text-white hover:text-teal-300 transition-colors"
+          >
+            Try CreditDecide
+          </Link>
+          <Link
+            to="/demo"
+            className="group inline-flex items-center gap-2 text-[13px] font-medium text-[#0a0c12] bg-white pl-3 pr-4 py-2 rounded-full hover:bg-slate-100 transition-all shadow-sm"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
+            Book a demo
+          </Link>
+          <button
+            onClick={logout}
+            className="inline-flex items-center gap-1.5 text-[13px] text-[#a0a4ab] hover:text-white px-2.5 py-1.5 rounded-md hover:bg-white/5 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Log out</span>
+          </button>
+        </div>
       </div>
     </header>
     <MobileTabBar />
