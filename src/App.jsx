@@ -51,6 +51,7 @@ const WorkspaceHome = lazy(() => import("@/pages/WorkspaceHome"));
 const Forms = lazy(() => import("@/pages/Forms"));
 const FormEditor = lazy(() => import("@/pages/FormEditor"));
 const Apply = lazy(() => import("@/pages/Apply"));
+const BorrowerApply = lazy(() => import("@/pages/BorrowerApply"));
 const FormSubmissions = lazy(() => import("@/pages/FormSubmissions"));
 const LinkedInAds = lazy(() => import("@/pages/LinkedInAds"));
 const About = lazy(() => import("@/pages/About"));
@@ -99,6 +100,8 @@ const AnimatedRoutes = () => {
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/apply/:slug" element={<Apply />} />
+            <Route path="/start/borrower" element={<BorrowerApply />} />
+            <Route path="/start/borrower/:slug" element={<BorrowerApply />} />
             <Route path="/oauth/consent" element={<OAuthConsent />} />
             <Route path="/connect" element={<Connect />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
