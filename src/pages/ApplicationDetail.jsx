@@ -18,6 +18,7 @@ import ApplicationHeader from "@/components/application/ApplicationHeader";
 import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
+import CreditMemoTab from "@/components/application/CreditMemoTab";
 import ApplicationTabBar from "@/components/application/ApplicationTabBar";
 import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
@@ -45,7 +46,7 @@ const STATUS_LABELS = {
   failed: "FAILED",
 };
 
-const TABS = ["Overview", "Documents", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence", "Activity"];
+const TABS = ["Overview", "Documents", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Credit Memo", "Policy", "Decision", "Evidence", "Activity"];
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
@@ -434,6 +435,16 @@ export default function ApplicationDetail() {
                 evidence={evidence} fmtMoney={fmtMoney}
               />
             </>
+          )}
+
+          {tab === "Credit Memo" && (
+            <CreditMemoTab
+              recommendation={recommendation} decision={decision}
+              evidence={evidence} riskSignals={riskSignals}
+              fp={fp} cp={cp} app={app} borrower={borrower} documents={documents}
+              fmtMoney={fmtMoney} onOverride={overrideDecision} overriding={overriding}
+              analyzing={analyzing}
+            />
           )}
 
           {tab === "Policy" && (

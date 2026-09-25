@@ -13,6 +13,7 @@ const TAB_ICONS = {
   Reconciliation: GitCompare,
   Risk: ShieldAlert,
   "AI Underwriter": Brain,
+  "Credit Memo": FileText,
   Policy: ScrollText,
   Decision: Gavel,
   Evidence: Network,
