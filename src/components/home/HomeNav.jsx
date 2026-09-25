@@ -4,12 +4,10 @@ import { Menu, X, ChevronDown, Globe } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const NAV = [
-  { to: "/features", label: "Solutions" },
-  { to: "/insights", label: "Markets" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/about", label: "Company" },
-  { to: "/insights", label: "Blog" },
-  { to: "/docs", label: "Docs" },
+  { to: "/insights", label: "Insights" },
+  { to: "/security", label: "Security" },
+  { to: "/connect", label: "Connect AI" },
+  { to: "/contact", label: "Contact" },
 ];
 
 export default function HomeNav() {
