@@ -13,7 +13,7 @@ import {
 const SITE_BASE = 'https://creditdecide.com';
 
 function buildImagePrompt(title) {
-  return `A clean, modern editorial cover illustration for a fintech article titled "${title}", themed around AI underwriting and credit decisioning for consumer lenders worldwide. Abstract financial data visualizations, subtle technology motifs, professional teal (#0d9488) and deep navy palette, soft gradient background, minimal, no text, no words, no logos. Wide 16:9 composition.`;
+  return `Editorial cover art for a CreditDecide article titled "${title}". On-brand visual identity: a dark deep-green-to-teal background (gradient from #0d1a12 to #0f2219), a faint dotted world map made of small glowing teal dots (#2ecc71 / #a1f0c1) with one brighter pulsing node, subtle isometric document and policy-card motifs floating in the lower third, soft volumetric light from the upper right. Premium fintech-magazine aesthetic, crisp geometry, depth of field, refined and distinctive — not generic. No text, no words, no logos, no human faces. Wide 16:9 composition.`;
 }
 
 // Builds a short, clean prose preview from the article body to tease the post

@@ -13,7 +13,7 @@ const SITE_BASE = 'https://creditdecide.com';
 const PARTNER_URL = `${SITE_BASE}/partners`;
 
 function buildImagePrompt() {
-  return `A clean, modern editorial cover illustration for a fintech partner program announcement, themed around partnerships, global deployment and reseller networks for an AI underwriting platform. Abstract handshake, network and world motifs, professional teal (#0d9488) and deep navy palette, soft gradient background, minimal, no text, no words, no logos. Wide 16:9 composition.`;
+  return `Editorial cover art for the CreditDecide Partner Program. On-brand visual identity: a dark deep-green-to-teal background (gradient from #0d1a12 to #0f2219), a dotted world map of small glowing teal dots (#2ecc71 / #a1f0c1) with two brighter nodes — one in an African market, one in Europe — joined by a glowing arc line, suggesting deployment across regions. Subtle isometric partner-network motifs in the lower third. Premium fintech-magazine aesthetic, crisp geometry, volumetric light, refined and distinctive — not generic. No text, no words, no logos, no human faces. Wide 16:9 composition.`;
 }
 
 export default async function (req) {
