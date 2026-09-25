@@ -1,94 +1,78 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, ShieldCheck, FileText, ArrowRight } from "lucide-react";
+import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
+import DecisionCard from "@/components/home/DecisionCard.jsx";
 
-const TEAL = "#007f5f";
-
-const FEATURES = [
-  { icon: ShieldCheck, title: "No-code policies", sub: "Lender-controlled rules", color: TEAL },
-  { icon: Sparkles, title: "AI-assisted analysis", sub: "Evidence-backed insights", color: "#7c3aed" },
-  { icon: FileText, title: "Evidence-linked decisions", sub: "Reviewable and traceable", color: "#ea580c" },
-];
-
-const TRUST = [
-  { label: "CONSUMER CREDIT FIRST", dot: TEAL },
-  { label: "INSTALMENT & POS", dot: "#7c3aed" },
-  { label: "EVIDENCE-LED DECISIONS", dot: "#ea580c" },
-];
-
+// Kita-inspired forest-green hero: global underwriting headline on the left,
+// a dotted globe with a flight path on the right, and a floating decision card.
 export default function MarketingHero() {
   return (
-    <section className="relative overflow-hidden bg-white dark:bg-slate-950 border-b border-[#eceef1] dark:border-slate-800">
-      {/* faint gradient backdrop */}
+    <section className="relative overflow-hidden" style={{ backgroundColor: "#0d1a12" }}>
+      {/* radial gradient backdrop — glowing center fading to deep forest edges */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(60% 50% at 15% 0%, rgba(13,148,136,0.10), transparent 70%), radial-gradient(40% 40% at 90% 10%, rgba(124,58,237,0.06), transparent 70%)",
+            "radial-gradient(85% 70% at 62% 38%, #1c382a 0%, #0f2219 55%, #0d1a12 100%)",
         }}
       />
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-14 sm:pb-20 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 mb-6" style={{ backgroundColor: "rgba(0,127,95,0.10)" }}>
-          <Sparkles className="w-3.5 h-3.5" style={{ color: TEAL }} />
-          <span className="text-[12px] font-medium" style={{ color: TEAL }}>Credit infrastructure for consumer lenders</span>
-        </div>
 
-        {/* Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.05] text-black dark:text-slate-50">
-          Explainable credit decisions.
-          <br />
-          <span style={{ color: TEAL }}>From application to collections.</span>
-        </h1>
+      <div className="relative max-w-6xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-20 sm:pb-28">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-6 items-center">
+          {/* Left — copy */}
+          <div className="relative z-10">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-white/5 border border-white/10">
+              <span className="w-4 h-4 rounded-sm bg-[#ff5d00] flex items-center justify-center text-white text-[10px] font-bold">
+                C
+              </span>
+              <span className="text-[12px] font-medium text-emerald-100/80">
+                AI-native underwriting infrastructure
+              </span>
+            </div>
 
-        {/* Sub-headline */}
-        <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg text-[#4a4a4a] dark:text-slate-300 leading-relaxed">
-          Automate borrower intake, assess income and affordability, and apply your own lending policies —
-          with evidence-backed recommendations and decisions your team can review and control.
-        </p>
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
+              Underwrite borrowers anywhere in the world, in minutes.
+            </h1>
 
-        {/* Feature cards */}
-        <div className="mt-10 grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
-          {FEATURES.map((f) => {
-            const Icon = f.icon;
-            return (
-              <div key={f.title} className="rounded-xl border border-[#dcdcdc] dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-left shadow-[0_1px_2px_rgba(10,12,18,0.04),0_8px_24px_-12px_rgba(10,12,18,0.10)]">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style={{ backgroundColor: `${f.color}14` }}>
-                  <Icon className="w-5 h-5" style={{ color: f.color }} />
-                </div>
-                <h3 className="text-sm font-semibold text-black dark:text-slate-50">{f.title}</h3>
-                <p className="text-[12px] text-[#777] dark:text-slate-400 mt-0.5">{f.sub}</p>
-              </div>
-            );
-          })}
-        </div>
+            {/* Body */}
+            <p className="mt-6 max-w-xl text-base sm:text-lg text-emerald-100/60 leading-relaxed">
+              CreditDecide turns messy borrower applications into decision-ready
+              credit files, in any market you lend in. Your team makes every final
+              call.
+            </p>
 
-        {/* CTAs */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            to="/start/borrower"
-            className="text-sm font-medium text-black dark:text-slate-50 hover:opacity-70 transition-opacity"
-          >
-            Try CreditDecide
-          </Link>
-          <Link
-            to="/demo"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-white px-5 py-2.5 rounded-full transition-all shadow-sm hover:bg-[#1a1a1a]"
-            style={{ backgroundColor: "#111111" }}
-          >
-            <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
-            Book a demo
-          </Link>
-        </div>
+            {/* CTAs */}
+            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <Link
+                to="/demo"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-[#0e261a] bg-white pl-4 pr-5 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
+              >
+                <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
+                Book a demo
+              </Link>
+              <Link
+                to="/start/borrower"
+                className="text-sm font-medium text-white hover:text-emerald-300 transition-colors"
+              >
+                Try CreditDecide →
+              </Link>
+            </div>
 
-        {/* Trust bar */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          {TRUST.map((t) => (
-            <span key={t.label} className="inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-wider text-[#555] dark:text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: t.dot }} />
-              {t.label}
-            </span>
-          ))}
+            {/* Footer metrics */}
+            <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em] text-white/40">
+              <span>Underwriting OS</span>
+              <span className="text-white/20">·</span>
+              <span>Live in UK · US · Africa</span>
+            </div>
+          </div>
+
+          {/* Right — globe + floating decision card */}
+          <div className="relative h-[340px] sm:h-[440px] lg:h-[500px]">
+            <GlobeGraphic />
+            <DecisionCard />
+          </div>
         </div>
       </div>
     </section>
