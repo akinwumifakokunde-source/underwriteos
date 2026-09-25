@@ -71,14 +71,15 @@ const inputCls = "w-full text-sm rounded-lg border border-slate-200 dark:border-
 
 export default function BorrowerApply() {
   const { slug } = useParams();
+  const deepBorrower = new URLSearchParams(window.location.search).get("mode") === "borrower";
+  const [mode, setMode] = useState(deepBorrower ? "borrower" : "landing");
   const [step, setStep] = useState(0);
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState(deepBorrower ? SAMPLE : {});
   const [documents, setDocuments] = useState([]);
   const [uploading, setUploading] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
   const [error, setError] = useState(null);
-  const [mode, setMode] = useState("landing");
 
   const set = (k, v) => setValues((prev) => ({ ...prev, [k]: v }));
 

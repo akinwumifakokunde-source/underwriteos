@@ -12,7 +12,7 @@ export default function WorkspaceHome() {
   }, [navigate]);
 
   const startBorrower = useCallback(() => {
-    navigate("/start/borrower");
+    navigate("/start/borrower?mode=borrower");
   }, [navigate]);
 
   return (
