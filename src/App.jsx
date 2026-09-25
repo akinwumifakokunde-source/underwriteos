@@ -52,6 +52,7 @@ const LinkedInAds = lazy(() => import("@/pages/LinkedInAds"));
 const About = lazy(() => import("@/pages/About"));
 const Features = lazy(() => import("@/pages/Features"));
 const FeatureDetail = lazy(() => import("@/pages/FeatureDetail"));
+const MarketDetail = lazy(() => import("@/pages/MarketDetail"));
 const Insights = lazy(() => import("@/pages/Insights"));
 const InsightDetail = lazy(() => import("@/pages/InsightDetail"));
 const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
@@ -93,6 +94,7 @@ const AnimatedRoutes = () => {
             <Route path="/about" element={<About />} />
             <Route path="/features" element={<Features />} />
             <Route path="/features/:slug" element={<FeatureDetail />} />
+            <Route path="/markets/:code" element={<MarketDetail />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/apply/:slug" element={<Apply />} />

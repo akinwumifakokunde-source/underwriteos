@@ -19,13 +19,13 @@ const COLS = [
   {
     title: "Markets",
     links: [
-      { to: "/features", label: "United Kingdom" },
-      { to: "/features", label: "United States" },
-      { to: "/features", label: "Nigeria" },
-      { to: "/features", label: "South Africa" },
-      { to: "/features", label: "Kenya" },
-      { to: "/features", label: "Ghana" },
-      { to: "/features", label: "Others" },
+      { to: "/markets/GB", label: "United Kingdom" },
+      { to: "/markets/US", label: "United States" },
+      { to: "/markets/NG", label: "Nigeria" },
+      { to: "/markets/ZA", label: "South Africa" },
+      { to: "/markets/KE", label: "Kenya" },
+      { to: "/markets/GH", label: "Ghana" },
+      { to: "/markets/OT", label: "Others" },
     ],
   },
   {
