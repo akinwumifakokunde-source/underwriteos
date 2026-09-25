@@ -1,14 +1,33 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
 import DecisionCard from "@/components/home/DecisionCard.jsx";
 
-// Kita-inspired forest-green hero: global underwriting headline on the left,
-// a dotted globe with a flight path on the right, and a floating decision card.
+// Markets in rolling order (longitude descending so the globe rolls forward
+// smoothly). GB sits at index 4 — the cycle starts there, the brand's home
+// market, then rolls through the US and back across Africa.
+const MARKETS = [
+  { code: "KE", flag: "🇰🇪", lat: -1, lon: 38, timer: "1m 47s", files: 8, formats: 4, desc: "M-Pesa statements, payslips, KRA PIN, proof of address", decision: "APPROVE", amount: "KES 18M", dscr: "1.38x", status: "PASS" },
+  { code: "ZA", flag: "🇿🇦", lat: -29, lon: 24, timer: "2m 12s", files: 11, formats: 5, desc: "Bank statements, payslips, SARS IT3, proof of address", decision: "APPROVE", amount: "ZAR 6.5M", dscr: "1.30x", status: "PASS" },
+  { code: "NG", flag: "🇳🇬", lat: 9, lon: 7, timer: "1m 58s", files: 9, formats: 4, desc: "Bank statements, BVN, payslips, proof of address", decision: "APPROVE", amount: "NGN 320M", dscr: "1.42x", status: "PASS" },
+  { code: "GH", flag: "🇬🇭", lat: 7, lon: -1, timer: "2m 04s", files: 10, formats: 5, desc: "Bank statements, payslips, Ghana Card, proof of address", decision: "REVIEW", amount: "GHS 1.1M", dscr: "1.12x", status: "WATCH" },
+  { code: "GB", flag: "🇬🇧", lat: 54, lon: -2, timer: "2m 31s", files: 12, formats: 5, desc: "Bank statements, payslips, credit report, proof of address", decision: "APPROVE", amount: "GBP 1.2M", dscr: "1.35x", status: "PASS" },
+  { code: "US", flag: "🇺🇸", lat: 40, lon: -98, timer: "3m 41s", files: 16, formats: 6, desc: "Form 1120, Schedule C, K-1, 1065, commercial bank statements", decision: "APPROVE", amount: "USD 750K", dscr: "1.27x", status: "PASS" },
+];
+const START = 4; // GB
+
 export default function MarketingHero() {
+  const [idx, setIdx] = useState(START);
+
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % MARKETS.length), 4500);
+    return () => clearInterval(id);
+  }, []);
+
+  const active = MARKETS[idx];
+
   return (
     <section className="relative overflow-hidden" style={{ backgroundColor: "#0d1a12" }}>
-      {/* radial gradient backdrop — glowing center fading to deep forest edges */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -21,7 +40,6 @@ export default function MarketingHero() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-6 items-center">
           {/* Left — copy */}
           <div className="relative z-10">
-            {/* Badge */}
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-white/5 border border-white/10">
               <span className="w-4 h-4 rounded-sm bg-[#ff5d00] flex items-center justify-center text-white text-[10px] font-bold">
                 C
@@ -31,19 +49,16 @@ export default function MarketingHero() {
               </span>
             </div>
 
-            {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
               Underwrite borrowers anywhere in the world, in minutes.
             </h1>
 
-            {/* Body */}
             <p className="mt-6 max-w-xl text-base sm:text-lg text-emerald-100/60 leading-relaxed">
               CreditDecide turns messy borrower applications into decision-ready
               credit files, in any market you lend in. Your team makes every final
               call.
             </p>
 
-            {/* CTAs */}
             <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Link
                 to="/demo"
@@ -60,7 +75,6 @@ export default function MarketingHero() {
               </Link>
             </div>
 
-            {/* Footer metrics */}
             <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em] text-white/40">
               <span>Underwriting OS</span>
               <span className="text-white/20">·</span>
@@ -68,10 +82,10 @@ export default function MarketingHero() {
             </div>
           </div>
 
-          {/* Right — globe + floating decision card */}
+          {/* Right — rolling globe + cycling underwriting slip */}
           <div className="relative h-[340px] sm:h-[440px] lg:h-[500px]">
-            <GlobeGraphic />
-            <DecisionCard />
+            <GlobeGraphic market={active} />
+            <DecisionCard market={active} />
           </div>
         </div>
       </div>

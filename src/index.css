@@ -133,3 +133,9 @@
   /* Enforce a minimum legible font size (12px) on mobile for informational text */
   .text-\[10px\], .text-\[11px\] { font-size: 12px !important; }
 }
+
+@keyframes slipIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-slipIn { animation: slipIn 0.5s cubic-bezier(0.22, 1, 0.36, 1); }

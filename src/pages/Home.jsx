@@ -3,6 +3,7 @@ import HomeNav from "@/components/home/HomeNav.jsx";
 import MarketingHero from "@/components/home/MarketingHero.jsx";
 import TrustBar from "@/components/home/TrustBar.jsx";
 import NoCodeSolution from "@/components/home/NoCodeSolution.jsx";
+import AiModules from "@/components/home/AiModules.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
 import PolicyBuilderShowcase from "@/components/home/PolicyBuilderShowcase.jsx";
 import Evidence from "@/components/home/Evidence.jsx";
@@ -24,6 +25,7 @@ export default function Home() {
       <Reveal><MarketingHero /></Reveal>
       <Reveal><TrustBar /></Reveal>
       <Reveal><NoCodeSolution /></Reveal>
+      <Reveal><AiModules /></Reveal>
       <Reveal><WorkflowSection /></Reveal>
       <Reveal><GlobalCoverage /></Reveal>
       <Reveal><FormsFeature /></Reveal>
