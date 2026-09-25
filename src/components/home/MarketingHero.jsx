@@ -49,7 +49,7 @@ export default function MarketingHero() {
               </span>
             </div>
 
-            <h1 className="max-w-[460px] text-4xl sm:text-5xl lg:text-[3.75rem] font-semibold tracking-tight leading-[1.03] text-white">
+            <h1 className="max-w-[560px] text-4xl sm:text-5xl lg:text-[3.25rem] font-semibold tracking-tight leading-[1.04] text-white">
               Decide any borrower in minutes, across every market you lend in.
             </h1>
 
