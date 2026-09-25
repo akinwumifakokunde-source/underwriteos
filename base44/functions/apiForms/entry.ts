@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit } from "../../shared/utils.ts";
+import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, getOrgDefaults } from "../../shared/utils.ts";
 
 export default async function(req: Request): Promise<Response> {
   try {
@@ -36,8 +36,9 @@ export default async function(req: Request): Promise<Response> {
       if (!v.loan_amount || Number(v.loan_amount) <= 0) return apiError("VALIDATION_ERROR", "loan_amount must be a positive number.", 400);
 
       const organization_id = form.organization_id;
+      const orgDefaults = await getOrgDefaults(base44, organization_id);
       const market = form.market || "GB";
-      const currency = currencyFor(market);
+      const currency = orgDefaults.default_currency || currencyFor(market);
       const kyc = kycFor(market);
       for (const f of kyc) {
         if (!v[f.key] || !String(v[f.key]).trim()) return apiError("VALIDATION_ERROR", `${f.label} is required.`, 400);
@@ -89,7 +90,7 @@ export default async function(req: Request): Promise<Response> {
         loan_purpose: v.loan_purpose || "general",
         loan_term_months: Number(v.loan_term_months) || 12,
         interest_rate: null,
-        policy_id: form.policy_id || "consumer-v1",
+        policy_id: form.policy_id || orgDefaults.default_policy_id || "consumer-v1",
         status: "data_collection",
         decision: "null",
         idempotency_key: null,

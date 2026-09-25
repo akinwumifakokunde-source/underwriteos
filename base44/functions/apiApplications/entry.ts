@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent } from "../../shared/utils.ts";
+import { genId, apiError, apiSuccess, readBody, resolveOrganization, requireScope, audit, findIdempotent, getOrgDefaults } from "../../shared/utils.ts";
 import { getCurrency, getDefaultPolicyId, getRegulatoryProfile } from "../../shared/markets.ts";
 
 export default async function(req: Request): Promise<Response> {
@@ -24,6 +24,7 @@ export default async function(req: Request): Promise<Response> {
       const borrower = await base44.asServiceRole.entities.Borrower.filter({ id: borrower_id, organization_id }, "-created_date", 1);
       if (borrower.length === 0) return apiError("BORROWER_NOT_FOUND", `Borrower ${borrower_id} was not found.`, 404);
 
+      const orgDefaults = await getOrgDefaults(base44, organization_id);
       const resolvedMarket = (market || "GB").toUpperCase();
       const application = await base44.asServiceRole.entities.Application.create({
         organization_id,
@@ -36,11 +37,11 @@ export default async function(req: Request): Promise<Response> {
         borrower_type: borrower_type || "salaried",
         product_type: product_type || "personal_loan",
         loan_amount: Number(loan_amount),
-        loan_currency: loan_currency || getCurrency(resolvedMarket),
+        loan_currency: loan_currency || orgDefaults.default_currency || getCurrency(resolvedMarket),
         loan_purpose: loan_purpose || "general",
         loan_term_months: Number(loan_term_months) || 12,
         interest_rate: interest_rate ?? null,
-        policy_id: policy_id || getDefaultPolicyId(resolvedMarket),
+        policy_id: policy_id || orgDefaults.default_policy_id || getDefaultPolicyId(resolvedMarket),
         status: "draft",
         decision: "null",
         idempotency_key: idempotencyKey || null

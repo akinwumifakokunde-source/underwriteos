@@ -237,6 +237,21 @@ export async function findIdempotent(base44: any, entity: string, organization_i
   return existing.length > 0 ? existing[0] : null;
 }
 
+// Load the org's configured defaults (default policy, default currency).
+// Returns nulls when unset or on error so callers can fall back to market defaults.
+export async function getOrgDefaults(base44: any, organization_id: string): Promise<{ default_policy_id: string | null; default_currency: string | null }> {
+  try {
+    const orgs = await base44.asServiceRole.entities.Organization.filter({ id: organization_id }, "-created_date", 1);
+    const s = orgs[0]?.settings || {};
+    return {
+      default_policy_id: s.default_policy_id || null,
+      default_currency: s.default_currency || null,
+    };
+  } catch {
+    return { default_policy_id: null, default_currency: null };
+  }
+}
+
 // Default sandbox scopes granted to a new API key.
 export const DEFAULT_SANDBOX_SCOPES = [
   "applications:read", "applications:write",
