@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Loader2, CheckCircle2, AlertTriangle, Handshake, Globe2, Percent, Rocket, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Loader2, CheckCircle2, AlertTriangle, Handshake, Globe2, Percent, Rocket, ShieldCheck, Users, CalendarDays } from "lucide-react";
 import HomeNav from "@/components/home/HomeNav";
 import SiteFooter from "@/components/home/SiteFooter";
+import BookingModal from "@/components/booking/BookingModal";
 import { base44 } from "@/api/base44Client";
 
 const PARTNER_TYPES = ["Reseller", "Implementation partner", "Referral partner", "Technology partner"];
@@ -31,6 +32,7 @@ export default function Partners() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
@@ -71,9 +73,12 @@ export default function Partners() {
             <a href="#apply" className="group inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-5 py-3 rounded-full hover:bg-[#1c1f26] transition-all shadow-sm">
               Apply to partner <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </a>
-            <Link to="/demo" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-5 py-3 rounded-full hover:bg-[#f7f8fa] transition-all">
-              Book a demo <ArrowRight className="w-4 h-4" />
-            </Link>
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white border border-[#e6e8eb] px-5 py-3 rounded-full hover:bg-[#f7f8fa] transition-all"
+            >
+              <CalendarDays className="w-4 h-4" /> Book a partner intro <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </section>
@@ -135,9 +140,15 @@ export default function Partners() {
         ) : (
           <div>
             <h2 className="text-2xl font-semibold text-[#0a0c12] mb-1">Apply to become a partner</h2>
-            <p className="text-sm text-[#525965] mb-8">
+            <p className="text-sm text-[#525965] mb-4">
               Tell us about your business and the region you'd deploy CreditDecide into. We'll be in touch.
             </p>
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-[#0d9488] hover:text-[#0a2e2a] transition-colors"
+            >
+              <CalendarDays className="w-4 h-4" /> Prefer to talk first? Book a partner intro
+            </button>
             <form onSubmit={submit} className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4">
               {error && (
                 <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 flex items-start gap-2">
@@ -210,6 +221,16 @@ export default function Partners() {
           </div>
         )}
       </section>
+
+      <BookingModal
+        open={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        title="Let's talk partnerships."
+        subtitle="Book a 30-minute intro with the CreditDecide partnerships team."
+        eventTitle="Partner Intro"
+        eventDescription="A 30-minute intro call to explore fit, your region and the lenders you'd deploy CreditDecide to. We'll walk through the program, economics and what a deployment looks like."
+        meetingType="partner"
+      />
 
       <SiteFooter />
     </div>

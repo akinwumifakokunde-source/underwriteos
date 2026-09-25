@@ -77,13 +77,14 @@ export default async function(req) {
     }
 
     if (action === "book") {
-      const { start, name, email, company, use_case } = body;
+      const { start, name, email, company, use_case, meeting_type } = body;
       if (!start || !email || !name) {
         return Response.json({ error: "Name, email and a time are required." }, { status: 400 });
       }
       if (String(name).length > 120 || String(email).length > 200) {
         return Response.json({ error: "Invalid input." }, { status: 400 });
       }
+      const isPartner = meeting_type === "partner";
       const startMs = new Date(start).getTime();
       if (isNaN(startMs)) return Response.json({ error: "Invalid time." }, { status: 400 });
       const endMs = startMs + SLOT_MINUTES * 60000;
@@ -109,9 +110,13 @@ export default async function(req) {
           method: "POST",
           headers: auth,
           body: JSON.stringify({
-            summary: `CreditDecide Demo — ${company || name}`,
+            summary: isPartner
+              ? `CreditDecide Partner Intro — ${company || name}`
+              : `CreditDecide Demo — ${company || name}`,
             description: [
-              "Booked via the CreditDecide demo page.",
+              isPartner
+                ? "Booked via the CreditDecide partner page."
+                : "Booked via the CreditDecide demo page.",
               "",
               `Name: ${name}`,
               `Email: ${email}`,

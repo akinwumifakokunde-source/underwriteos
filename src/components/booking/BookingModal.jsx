@@ -14,7 +14,15 @@ const ordinal = (n) => {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
 
-export default function BookingModal({ open, onClose }) {
+export default function BookingModal({
+  open,
+  onClose,
+  title = "From documents to decision-ready memo.",
+  subtitle = "See it run on one of your files.",
+  eventTitle = "Product Demo",
+  eventDescription = "Book a 30-minute walkthrough. We'll run CreditDecide on one of your files and walk you through the memo, evidence and decision.",
+  meetingType = "demo",
+}) {
   const [viewYear, setViewYear] = useState(() => {
     const t = new Date();
     return new Date(t.getFullYear(), t.getMonth(), 1);
@@ -130,6 +138,7 @@ export default function BookingModal({ open, onClose }) {
         email: form.email,
         company: form.company,
         use_case: form.use_case,
+        meeting_type: meetingType,
       });
       setBooked(res.data);
       setStage("done");
@@ -151,8 +160,8 @@ export default function BookingModal({ open, onClose }) {
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-[#f0f0f0]">
           <div>
-            <h2 className="text-xl font-semibold text-[#111]">From documents to decision-ready memo.</h2>
-            <p className="mt-1 text-sm text-[#666]">See it run on one of your files.</p>
+            <h2 className="text-xl font-semibold text-[#111]">{title}</h2>
+            <p className="mt-1 text-sm text-[#666]">{subtitle}</p>
           </div>
           <button onClick={onClose} className="text-[#999] hover:text-[#111] -mt-1" aria-label="Close">
             <X className="w-5 h-5" />
@@ -196,9 +205,9 @@ export default function BookingModal({ open, onClose }) {
                 ))}
               </div>
               <div className="text-sm font-semibold text-[#111]">CreditDecide</div>
-              <h3 className="mt-1 text-lg font-semibold text-[#111]">Product Demo</h3>
+              <h3 className="mt-1 text-lg font-semibold text-[#111]">{eventTitle}</h3>
               <p className="mt-2 text-[13px] text-[#666] leading-relaxed">
-                Book a 30-minute walkthrough. We'll run CreditDecide on one of your files and walk you through the memo, evidence and decision.
+                {eventDescription}
               </p>
               <ul className="mt-4 space-y-2.5 text-[13px] text-[#444]">
                 <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#999]" /> 30m</li>
