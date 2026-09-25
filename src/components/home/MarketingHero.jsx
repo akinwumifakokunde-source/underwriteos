@@ -49,34 +49,33 @@ export default function MarketingHero() {
               </span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
-              From borrower applications to credit decisions — in minutes, across markets.
+            <h1 className="text-4xl sm:text-5xl lg:text-[3.75rem] font-semibold tracking-tight leading-[1.03] text-white">
+              Underwrite borrowers anywhere, in minutes.
             </h1>
 
-            <p className="mt-7 max-w-xl text-base sm:text-lg text-emerald-100/55 leading-relaxed">
-              CreditDecide reads messy documents, normalizes the data, scores the
-              risk, and writes an explainable credit memo — with every signal
-              traced to its source. Your policies govern every outcome. Your team
-              makes the final call.
+            <p className="mt-7 max-w-xl text-base sm:text-lg text-[#a0b2a9] leading-relaxed">
+              CreditDecide turns messy borrower applications into decision-ready
+              credit files, in any market you lend in. Your team makes every final
+              call.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Link
-                to="/start/borrower"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-[#0e261a] bg-white pl-4 pr-5 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
-              >
-                <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
-                Try CreditDecide →
-              </Link>
+            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-5">
               <Link
                 to="/demo"
-                className="text-sm font-medium text-white/80 hover:text-emerald-300 transition-colors"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-black bg-white pl-4 pr-5 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
               >
+                <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
                 Book a demo
+              </Link>
+              <Link
+                to="/start/borrower"
+                className="text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
+              >
+                Try CreditDecide →
               </Link>
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em] text-white/40">
+            <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8f9f97]">
               <span>Underwriting OS</span>
               <span className="text-white/20">·</span>
               <span>Live in UK · US · Africa</span>
