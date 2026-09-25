@@ -1,6 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import CtaPair from "@/components/home/CtaPair.jsx";
 
 export default function FinalCta() {
   return (
@@ -25,20 +24,7 @@ export default function FinalCta() {
           for personal loans, instalment and point-of-sale, with full evidence lineage.
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            to="/onboarding"
-            className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] bg-white px-5 py-3 rounded-full hover:bg-[#e8eaee] transition-all shadow-lg hover:-translate-y-0.5"
-          >
-            Start building <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-          <Link
-            to="/features"
-            className="group inline-flex items-center gap-1.5 text-sm font-medium text-white border border-white/20 px-5 py-3 rounded-full hover:bg-white/5 transition-all hover:-translate-y-0.5"
-          >
-            Explore features <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </div>
+        <CtaPair dark className="mt-10" />
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
+import { ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
+import CtaPair from "@/components/home/CtaPair.jsx";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import ResponsibleAIGovernance from "@/components/security/ResponsibleAIGovernance.jsx";
@@ -97,13 +97,8 @@ export default function Security() {
               We work with consumer lenders on data processing agreements, penetration testing, and onboarding
               reviews. Start building in the sandbox, then request a security package when you're ready for production.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/onboarding" className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors">
-                Start building <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link to="/architecture" className="inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] border border-[#e5e7eb] px-4 py-2.5 rounded-lg hover:bg-[#f2f3f5] transition-colors">
-                View architecture
-              </Link>
+            <div className="mt-6">
+              <CtaPair />
             </div>
           </div>
         </div>

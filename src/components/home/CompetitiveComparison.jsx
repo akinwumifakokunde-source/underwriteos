@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import CtaPair from "@/components/home/CtaPair.jsx";
 import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const FEATURES = [
@@ -95,14 +95,7 @@ export default function CompetitiveComparison() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link to="/features" className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-to-br from-[#0f172a] to-[#1e293b] dark:from-white dark:to-slate-200 dark:text-slate-900 text-white text-sm font-medium px-5 py-2.5 hover:shadow-[0_12px_30px_-8px_rgba(13,148,136,0.5)] transition-all hover:-translate-y-0.5">
-            Explore features <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-          <Link to="/architecture" className="group inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-5 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all hover:-translate-y-0.5">
-            Explore the architecture
-          </Link>
-        </div>
+        <CtaPair className="mt-8" />
       </div>
     </section>
   );

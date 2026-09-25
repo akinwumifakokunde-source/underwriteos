@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { ArrowRight, Shield, Plug, MessageSquare, FileDown } from "lucide-react";
+import { Shield, Plug, MessageSquare, FileDown } from "lucide-react";
+import CtaPair from "@/components/home/CtaPair.jsx";
 import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const PROBLEMS = [
@@ -78,11 +78,7 @@ export default function NoCodeSolution() {
           })}
         </div>
 
-        <div className="mt-10 text-center">
-          <Link to="/onboarding" className="group inline-flex items-center gap-1.5 text-sm font-medium text-[#0a0c12] dark:text-slate-50 hover:text-[#0d9488] transition-colors">
-            See how it works <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        </div>
+        <CtaPair className="mt-10" />
       </div>
     </section>
   );
