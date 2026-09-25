@@ -27,7 +27,6 @@ const SECONDARY_ITEMS = [
   { to: "/collections", label: "Collections" },
   { to: "/monitoring", label: "Calibration" },
   { to: "/members", label: "Members" },
-  { to: "/pricing", label: "Pricing" },
   { to: "/settings", label: "Settings" },
   { to: "/connect", label: "Connect AI" },
 ];
