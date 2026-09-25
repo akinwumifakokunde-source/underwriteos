@@ -5,11 +5,26 @@ import Logo from "@/components/Logo";
 
 const COLS = [
   {
-    title: "Product",
+    title: "Platform",
     links: [
+      { to: "/features/ai-underwriting", label: "AI Underwriter" },
+      { to: "/features/document-intelligence", label: "AI Credit Officer" },
       { to: "/features/lending-policies", label: "Policy Builder" },
-      { to: "/features/ai-underwriting", label: "Applications" },
-      { to: "/features/document-intelligence", label: "Data Sources" },
+      { to: "/features/document-intelligence", label: "Capture" },
+      { to: "/features/lending-policies", label: "Risk Score" },
+      { to: "/features/ai-underwriting", label: "Application Forms" },
+      { to: "/start/borrower", label: "Borrower Portal" },
+    ],
+  },
+  {
+    title: "Markets",
+    links: [
+      { to: "/features", label: "United Kingdom" },
+      { to: "/features", label: "United States" },
+      { to: "/features", label: "Nigeria" },
+      { to: "/features", label: "South Africa" },
+      { to: "/features", label: "Kenya" },
+      { to: "/features", label: "Ghana" },
     ],
   },
   {
@@ -18,13 +33,14 @@ const COLS = [
       { to: "/about", label: "About" },
       { to: "/insights", label: "Insights" },
       { to: "/connect", label: "Connect AI" },
-      { to: "/security", label: "Security" },
       { to: "/contact", label: "Contact" },
     ],
   },
   {
-    title: "Legal",
+    title: "Resources",
     links: [
+      { to: "/api-reference", label: "Documentation" },
+      { to: "/security", label: "Security" },
       { to: "/privacy", label: "Privacy" },
       { to: "/terms", label: "Terms" },
     ],
@@ -33,49 +49,41 @@ const COLS = [
 
 export default function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-white dark:bg-slate-950">
-      {/* subtle top hairline */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#0d9488]/40 to-transparent" />
-      {/* subtle static radial lighting */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 20% 0%, rgba(13,148,136,0.05), transparent 70%), radial-gradient(50% 50% at 90% 100%, rgba(99,102,241,0.04), transparent 70%)",
-        }}
-      />
-      <div className="relative max-w-5xl mx-auto px-5 sm:px-8 pt-10 pb-4">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 gap-y-6">
+    <footer className="bg-[#0A0A0A] text-white">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 gap-y-12">
+          {/* Brand block */}
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
-              <Logo size={24} />
+              <Logo size={26} />
             </Link>
-            <p className="mt-3 text-sm text-[#777] dark:text-slate-400 leading-relaxed">
-              AI-native underwriting and credit decisioning for consumer lenders. Automate applications, configure policies, and make smarter, explainable decisions — for personal loans, instalment and point-of-sale.
+            <p className="mt-4 text-sm text-[#808080] leading-relaxed max-w-xs">
+              The AI-native underwriting operating system for consumer lenders.
+              Built for personal loans, instalment and point-of-sale — deployed across markets.
             </p>
-            <div className="mt-4 flex flex-wrap gap-1.5">
-              {["No-code", "AI-assisted", "Multi-market"].map((t) => (
-                <span
-                  key={t}
-                  className="text-[10px] font-medium text-[#0d9488] dark:text-teal-400 bg-[#0d9488]/10 dark:bg-teal-500/10 border border-[#0d9488]/20 dark:border-teal-500/20 rounded-full px-2 py-0.5"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
+            <a
+              href="https://www.linkedin.com/company/creditdecide/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="CreditDecide on LinkedIn"
+              className="mt-5 inline-flex items-center justify-center w-9 h-9 rounded-lg border border-[#1A1A1A] text-[#808080] hover:text-white hover:border-[#333] transition-colors"
+            >
+              <Linkedin className="w-4 h-4" />
+            </a>
           </div>
 
+          {/* Link columns */}
           {COLS.map((c) => (
             <div key={c.title}>
-              <h4 className="text-[11px] font-mono uppercase tracking-wider text-[#777] dark:text-slate-500 mb-3 flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-[#0d9488]" /> {c.title}
+              <h4 className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#808080] mb-4">
+                {c.title}
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l.to}>
+                  <li key={l.label + l.to}>
                     <Link
                       to={l.to}
-                      className="text-sm text-[#333] dark:text-slate-300 hover:text-[#0d9488] dark:hover:text-teal-400 transition-colors"
+                      className="text-sm text-white/90 hover:text-[#34d399] transition-colors"
                     >
                       {l.label}
                     </Link>
@@ -86,37 +94,13 @@ export default function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-6 pt-4 border-t border-[#eceef1] dark:border-slate-800 flex flex-col gap-2.5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
-              <p className="text-xs text-[#777] dark:text-slate-500">© {new Date().getFullYear()} CreditDecide</p>
-              <a
-                href="https://www.linkedin.com/company/creditdecide/?viewAsMember=true"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="CreditDecide on LinkedIn"
-                className="text-[#777] dark:text-slate-500 hover:text-[#0a76b1] dark:hover:text-sky-400 transition-colors"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-              <span className="hidden sm:inline text-[#d4d7dd] dark:text-slate-700">·</span>
-              <span className="font-mono uppercase tracking-wider text-[11px] text-[#777] dark:text-slate-500">Our HQ</span>
-              <span className="text-[11px] text-[#333] dark:text-slate-300">San Francisco · London · Lagos · Nairobi</span>
-            </div>
-            <p className="text-xs text-[#777] dark:text-slate-500 text-center sm:text-right max-w-md">
-              <span className="text-[#0d9488] dark:text-teal-400 font-medium">No-code underwriting</span>
-              {" · "}AI-assisted risk analysis · Policy engine · Evidence lineage · Reporting &amp; exports
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center gap-1 text-center text-[11px] text-[#777] dark:text-slate-500 sm:flex-row sm:gap-2 sm:text-left">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="text-base leading-none">🌍</span>
-              Built for consumer lenders worldwide — any market, no limits
-            </span>
-            <span className="hidden sm:inline text-[#d4d7dd] dark:text-slate-700">·</span>
-            <span className="font-medium text-[#333] dark:text-slate-300">The underwriting operating system — go.</span>
-          </div>
+        {/* separator + bottom row */}
+        <div className="mt-14 pt-6 border-t border-[#1A1A1A] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#808080]">
+          <p>© {new Date().getFullYear()} CreditDecide. All rights reserved.</p>
+          <p className="font-mono uppercase tracking-wider">Built for consumer lenders worldwide</p>
+          <a href="mailto:hello@creditdecide.com" className="hover:text-white transition-colors">
+            hello@creditdecide.com
+          </a>
         </div>
       </div>
     </footer>
