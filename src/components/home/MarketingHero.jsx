@@ -41,7 +41,7 @@ export default function MarketingHero() {
           {/* Left — copy */}
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-white/5 border border-white/10">
-              <span className="w-4 h-4 rounded-sm bg-[#ff5d00] flex items-center justify-center text-white text-[10px] font-bold">
+              <span className="w-4 h-4 rounded-sm bg-[#008e8b] flex items-center justify-center text-white text-[10px] font-bold">
                 C
               </span>
               <span className="text-[12px] font-medium text-emerald-100/80">

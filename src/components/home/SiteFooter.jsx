@@ -56,7 +56,7 @@ export default function SiteFooter() {
           {/* Brand block */}
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2.5">
-              <Logo size={26} />
+              <Logo size={26} tone="dark" />
             </Link>
             <p className="mt-4 text-sm text-[#808080] leading-relaxed max-w-xs">
               The AI-native underwriting operating system for consumer lenders.
