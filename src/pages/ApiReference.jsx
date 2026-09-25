@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Nav from "@/components/layout/Nav.jsx";
+import HomeNav from "@/components/home/HomeNav.jsx";
+import SiteFooter from "@/components/home/SiteFooter.jsx";
 import { Search, ChevronDown, ChevronRight, Play } from "lucide-react";
 import CodeBlock from "@/components/sandbox/CodeBlock.jsx";
 import JsonView from "@/components/sandbox/JsonView.jsx";
@@ -101,7 +102,7 @@ export default function ApiReference() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
-      <Nav />
+      <HomeNav />
       <div className="border-b border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-6">
           <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -216,6 +217,8 @@ export default function ApiReference() {
           </div>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }
