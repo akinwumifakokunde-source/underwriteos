@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import HomeNav from "@/components/home/HomeNav.jsx";
+import Hero from "@/components/home/Hero.jsx";
+import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import { base44 } from "@/api/base44Client";
 import { Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
@@ -40,6 +42,9 @@ export default function BookDemo() {
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 text-[#111] dark:text-slate-50">
       <HomeNav />
+
+      <Hero />
+      <BorrowerExperience />
 
       {/* Soft gradient light */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">

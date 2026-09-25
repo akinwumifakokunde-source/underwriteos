@@ -1,7 +1,5 @@
 import React from "react";
 import HomeNav from "@/components/home/HomeNav.jsx";
-import Hero from "@/components/home/Hero.jsx";
-import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
 import TrustBar from "@/components/home/TrustBar.jsx";
 import NoCodeSolution from "@/components/home/NoCodeSolution.jsx";
 import WorkflowSection from "@/components/home/WorkflowSection.jsx";
@@ -22,8 +20,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-[#0a0c12] dark:bg-slate-950 dark:text-slate-50">
       <HomeNav />
-      <Hero />
-      <Reveal><BorrowerExperience /></Reveal>
       <Reveal><TrustBar /></Reveal>
       <Reveal><NoCodeSolution /></Reveal>
       <Reveal><WorkflowSection /></Reveal>
