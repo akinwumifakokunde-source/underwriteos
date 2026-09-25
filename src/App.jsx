@@ -61,6 +61,7 @@ const Insights = lazy(() => import("@/pages/Insights"));
 const InsightDetail = lazy(() => import("@/pages/InsightDetail"));
 const OAuthConsent = lazy(() => import("@/pages/OAuthConsent"));
 const Connect = lazy(() => import("@/pages/Connect"));
+const BookDemo = lazy(() => import("@/pages/BookDemo"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -104,6 +105,7 @@ const AnimatedRoutes = () => {
             <Route path="/start/borrower/:slug" element={<BorrowerApply />} />
             <Route path="/oauth/consent" element={<OAuthConsent />} />
             <Route path="/connect" element={<Connect />} />
+            <Route path="/demo" element={<BookDemo />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/workspace" element={<WorkspaceHome />} />
               <Route path="/dashboard" element={<Dashboard />} />
