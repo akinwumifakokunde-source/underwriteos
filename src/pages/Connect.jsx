@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Check, Copy, Plug, ArrowLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -259,7 +259,7 @@ function StepList({ steps }) {
 }
 
 export default function Connect() {
-  const serverUrl = "https://creditdecide.com/api/mcp";
+  const serverUrl = useMemo(() => new URL("/api/mcp", window.location.origin).toString(), []);
   const [copied, setCopied] = useState(false);
   const [active, setActive] = useState("claude");
 
