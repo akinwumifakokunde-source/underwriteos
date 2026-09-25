@@ -105,6 +105,7 @@ const AnimatedRoutes = () => {
             <Route path="/connect" element={<Connect />} />
             <Route path="/demo" element={<BookDemo />} />
             <Route path="/partners" element={<Partners />} />
+            <Route path="/api-reference" element={<ApiReference />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/workspace" element={<WorkspaceHome />} />
               <Route path="/applications" element={<Applications />} />
@@ -126,7 +127,6 @@ const AnimatedRoutes = () => {
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/playground" element={<Playground />} />
-              <Route path="/api-reference" element={<ApiReference />} />
               <Route path="/api-keys" element={<ApiKeys />} />
               <Route path="/providers" element={<Providers />} />
               <Route path="/usage" element={<Usage />} />
