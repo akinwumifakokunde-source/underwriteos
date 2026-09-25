@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Hero from "@/components/home/Hero.jsx";
@@ -80,6 +80,13 @@ export default function BorrowerApply() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(null);
   const [error, setError] = useState(null);
+  const formRef = useRef(null);
+
+  useEffect(() => {
+    if (mode === "borrower" && formRef.current) {
+      formRef.current.scrollIntoView({ block: "start" });
+    }
+  }, [mode]);
 
   const set = (k, v) => setValues((prev) => ({ ...prev, [k]: v }));
 
@@ -201,7 +208,7 @@ export default function BorrowerApply() {
       <Hero />
       <BorrowerExperience />
 
-      <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
+      <div ref={formRef} className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
         <div className="grid md:grid-cols-[220px_1fr] gap-8">
           {/* Stepper */}
           <aside className="md:sticky md:top-8 self-start">
