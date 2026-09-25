@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Globe, Phone } from "lucide-react";
 import GuidedOverlay from "@/components/lender/GuidedOverlay";
 import ApplicationsPipeline from "@/components/lender/ApplicationsPipeline";
@@ -75,6 +75,7 @@ export default function LenderSimulator({ onBack }) {
   const [step, setStep] = useState(0);
   const [guided, setGuided] = useState(true);
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [autoplay, setAutoplay] = useState(false);
 
   const openRow = () => {
     setView("detail");
@@ -83,6 +84,7 @@ export default function LenderSimulator({ onBack }) {
   };
 
   const next = () => {
+    setAutoplay(false);
     const cur = STEPS[step - 1];
     if (!cur) return;
     const nx = cur.next;
@@ -92,6 +94,7 @@ export default function LenderSimulator({ onBack }) {
   };
 
   const back = () => {
+    setAutoplay(false);
     const prev = STEPS[step - 2];
     if (prev) {
       if (prev.view) setView(prev.view);
@@ -102,11 +105,34 @@ export default function LenderSimulator({ onBack }) {
     }
   };
 
-  const closeGuided = () => setGuided(false);
+  const closeGuided = () => {
+    setAutoplay(false);
+    setGuided(false);
+  };
   const resumeGuided = () => {
     setGuided(true);
     if (step === 0) setStep(1);
   };
+
+  useEffect(() => {
+    if (!autoplay) return;
+    if (step < 1 || step > 7) {
+      setAutoplay(false);
+      return;
+    }
+    const t = setTimeout(() => {
+      const cur = STEPS[step - 1];
+      if (!cur) {
+        setAutoplay(false);
+        return;
+      }
+      const nx = cur.next;
+      if (nx.view) setView(nx.view);
+      if (nx.tab) setTab(nx.tab);
+      setStep(nx.step);
+    }, 4000);
+    return () => clearTimeout(t);
+  }, [autoplay, step]);
 
   const showIntro = view === "pipeline" && step === 0 && guided;
   const activeStep = STEPS[step - 1];
@@ -163,7 +189,7 @@ export default function LenderSimulator({ onBack }) {
               <h2 className="text-xl font-semibold text-slate-900 leading-snug">Watch one loan file go from documents to decision-ready.</h2>
               <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">{BORROWER.applicant} wants {BORROWER.amount} for {BORROWER.name}. CreditDecide reads her file, chases what is missing, and drafts the memo. Your team makes the call.</p>
               <div className="mt-5 flex items-center justify-between">
-                <button className="text-[13px] text-slate-500 hover:text-slate-700">▶ or autoplay it</button>
+                <button onClick={() => { setStep(1); setAutoplay(true); }} className="text-[13px] text-slate-500 hover:text-slate-700">▶ or autoplay it</button>
                 <button onClick={() => setStep(1)} className="text-sm font-medium text-white px-5 py-2.5 rounded-full" style={{ backgroundColor: GREEN }}>Start demo</button>
               </div>
             </div>
