@@ -50,13 +50,14 @@ export default function MarketingHero() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-semibold tracking-tight leading-[1.05] text-white">
-              Underwrite borrowers anywhere in the world, in minutes.
+              Turn borrower files into decisions — in minutes, in any market.
             </h1>
 
-            <p className="mt-6 max-w-xl text-base sm:text-lg text-emerald-100/60 leading-relaxed">
-              CreditDecide turns messy borrower applications into decision-ready
-              credit files, in any market you lend in. Your team makes every final
-              call.
+            <p className="mt-7 max-w-xl text-base sm:text-lg text-emerald-100/55 leading-relaxed">
+              CreditDecide reads messy documents, normalizes the data, scores the
+              risk, and writes an explainable credit memo — with every signal
+              traced to its source. Your policies govern every outcome. Your team
+              makes the final call.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
