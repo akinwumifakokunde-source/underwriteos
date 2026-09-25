@@ -64,21 +64,20 @@ export default function MarketingHero() {
         </div>
 
         {/* CTAs */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
-            to="/onboarding"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-white px-6 py-3 rounded-full shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg"
-            style={{ backgroundColor: "#111111" }}
+            to="/start/borrower"
+            className="text-sm font-medium text-black dark:text-slate-50 hover:opacity-70 transition-opacity"
           >
-            Start building
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            Try CreditDecide
           </Link>
           <Link
-            to="/features"
-            className="group inline-flex items-center gap-2 text-sm font-medium text-black dark:text-slate-50 px-6 py-3 rounded-full border border-[#dcdcdc] dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+            to="/demo"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-white px-5 py-2.5 rounded-full transition-all shadow-sm hover:bg-[#1a1a1a]"
+            style={{ backgroundColor: "#111111" }}
           >
-            See how it works
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
+            Book a demo
           </Link>
         </div>
 
