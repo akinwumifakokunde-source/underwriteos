@@ -2,10 +2,10 @@ export const GREEN = "#2e633d";
 export const GREEN_DARK = "#0B3D21";
 
 export const BORROWER = {
-  name: "Casa Verde Catering LLC",
-  applicant: "Maria E. Delgado",
+  name: "Brightleaf Catering Co.",
+  applicant: "Elena R. Mendoza",
   loanType: "Small Business Term Loan",
-  appId: "DEMO-CASA-B53B",
+  appId: "DEMO-BL-7741",
   officer: "Jordan Avila",
   lastActivity: "8d ago",
   amount: "$175,000",
@@ -14,35 +14,35 @@ export const BORROWER = {
 };
 
 export const PIPELINE_ROWS = [
-  { id: "r1", borrower: "Ridgeline Machining LLC", applicant: "Daniel Cho", status: "COLLECTING", loanType: "Equipment Term Loan", officer: "Jordan Avila", activity: "8d ago", progress: 80 },
-  { id: "r2", borrower: "Casa Verde Catering LLC", applicant: "Maria E. Delgado", status: "FOR REVIEW", loanType: "Small Business Term Loan", officer: "Jordan Avila", activity: "8d ago", progress: 100, appId: "DEMO-CASA-B53B" },
-  { id: "r3", borrower: "Northgate Dental Group", applicant: "Priya Nair", status: "COLLECTING", loanType: "Microloan / Personal Loan", officer: "Jordan Avila", activity: "5d ago", progress: 50 },
-  { id: "r4", borrower: "Bluebird Logistics LLC", applicant: "Samuel Okafor", status: "FOR REVIEW", loanType: "Commercial Real Estate", officer: "Jordan Avila", activity: "2d ago", progress: 87 },
+  { id: "r1", borrower: "Northpeak Machining LLC", applicant: "David Chen", status: "COLLECTING", loanType: "Equipment Term Loan", officer: "Jordan Avila", activity: "8d ago", progress: 80 },
+  { id: "r2", borrower: "Brightleaf Catering Co.", applicant: "Elena R. Mendoza", status: "FOR REVIEW", loanType: "Small Business Term Loan", officer: "Jordan Avila", activity: "8d ago", progress: 100, appId: "DEMO-BL-7741" },
+  { id: "r3", borrower: "Cedar Park Dental Group", applicant: "Ananya Rao", status: "COLLECTING", loanType: "Microloan / Personal Loan", officer: "Jordan Avila", activity: "5d ago", progress: 50 },
+  { id: "r4", borrower: "Greypine Logistics LLC", applicant: "Michael Adeyemi", status: "FOR REVIEW", loanType: "Commercial Real Estate", officer: "Jordan Avila", activity: "2d ago", progress: 87 },
 ];
 
 export const DOCUMENTS_ANALYZING = [
-  "Casa Verde Form 1120S 2024 2025.pdf",
-  "Delgado Form 1040 2024 2025.pdf",
-  "Casa Verde PL YTD May 2026.pdf",
-  "Casa Verde Balance Sheet May 2026.pdf",
+  "Brightleaf Form 1120S 2024 2025.pdf",
+  "Mendoza Form 1040 2024 2025.pdf",
+  "Brightleaf PL YTD May 2026.pdf",
+  "Brightleaf Balance Sheet May 2026.pdf",
   "bank statements apr-may.pdf",
   "BankofAmerica Statement March 2026.png",
-  "Casa Verde Debt Schedule.pdf",
-  "Delgado Personal Financial Statement.pdf",
+  "Brightleaf Debt Schedule.pdf",
+  "Mendoza Personal Financial Statement.pdf",
 ];
 
 export const DOCUMENTS_ACCEPTED = [
-  "Articles of Incorporation (CasaVerde Formation Certificate.png)",
-  "Operating Agreement (CasaVerde OA signed.pdf)",
+  "Articles of Incorporation (Brightleaf Formation Certificate.png)",
+  "Operating Agreement (Brightleaf OA signed.pdf)",
   "EIN Letter (IRS CP575.pdf)",
 ];
 
 export const CONVERSATION = [
   { type: "system", text: "Cross-document check: Chase deposits run $72,400 in March, $72,584 in April and $73,305 in May against $386,200 of January–May 2026 P&L revenue. Each month opens with a dip after the Sysco payment, to $39,652 on March 4 and $68,869 on April 3, then recovers as institutional receipts arrive. The closed Bank of America account is excluded from this comparison." },
-  { type: "ai", time: "10:04 AM", text: "Hi Maria, the Chase statement you sent covers April and May only. We need the last three months for Casa Verde's current operating account, so March is missing. Please send the complete March-May statement through your secure borrower portal." },
+  { type: "ai", time: "10:04 AM", text: "Hi Elena, the Chase statement you sent covers April and May only. We need the last three months for Brightleaf's current operating account, so March is missing. Please send the complete March-May statement through your secure borrower portal." },
   { type: "ai", time: "10:13 AM", text: "One more question: I noticed some large transactions and a cash dip on April 3. Can you provide context on the cash flow during that period?" },
-  { type: "note", text: "No one on your team wrote those. CreditDecide cross-checked the documents, caught the evidence gap and the underwriting question, and asked Maria itself. Your team can read or step into this thread at any time." },
-  { type: "borrower", time: "10:15 AM", text: "Sorry, I exported the wrong date range. Attached is the full March through May statement for our Chase operating account.", attachment: { name: "Casa Verde Bank Statement Mar-May.pdf", kind: "PDF" } },
+  { type: "note", text: "No one on your team wrote those. CreditDecide cross-checked the documents, caught the evidence gap and the underwriting question, and asked Elena itself. Your team can read or step into this thread at any time." },
+  { type: "borrower", time: "10:15 AM", text: "Sorry, I exported the wrong date range. Attached is the full March through May statement for our Chase operating account.", attachment: { name: "Brightleaf Bank Statement Mar-May.pdf", kind: "PDF" } },
   { type: "borrower", time: "10:15 AM", text: "That is just how our month starts. Sysco bills us right after the big events, so the food is paid for before the schools pay us, and the district is net 30 so their money does not land until the first week. It gets tight for about five days and then it fills back up. Happens every month, I am used to it." },
 ];
 
@@ -71,7 +71,7 @@ export const WEAKNESSES = [
   { text: "Customer concentration: corporate/institutional catering is 69.5% of YTD revenue.", mitigant: "Relationships through 2027 with renewal options." },
   { text: "Interim earnings thin against distributions: $32,400 net income on $386,200 revenue.", mitigant: "Compensation is discretionary." },
   { text: "Operating-account coverage on closed BofA account for March.", mitigant: "Old account, not complete coverage." },
-  { text: "Certificate entity name mismatch (\"Catering, LLC\" vs. application).", mitigant: "Business operated in predecessor form since 2017." },
+  { text: "Certificate entity name mismatch (\"Catering, Co.\" vs. application).", mitigant: "Business operated in predecessor form since 2017." },
 ];
 
 export const BUREAU_DATA = [
@@ -96,7 +96,7 @@ export const SCORECARD = [
 
 export const COMPETITIVE = [
   { label: "Customer concentration", text: "Oakland USD and Kaiser: 69.5% of YTD revenue. Confirm contract terms." },
-  { label: "Local operations", text: "Verify Casa Verde and second-kitchen permits." },
+  { label: "Local operations", text: "Verify Brightleaf and second-kitchen permits." },
   { label: "Market inputs", text: "Review local wage and food-service employment trends." },
 ];
 

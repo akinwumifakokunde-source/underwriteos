@@ -5,7 +5,7 @@ import ApplicationsPipeline from "@/components/lender/ApplicationsPipeline";
 import ApplicationDetail from "@/components/lender/ApplicationDetail";
 import PortfolioInsights from "@/components/lender/PortfolioInsights";
 import BookingModal from "@/components/booking/BookingModal";
-import { PIPELINE_ROWS, GREEN } from "@/components/lender/data";
+import { PIPELINE_ROWS, GREEN, BORROWER } from "@/components/lender/data";
 
 const STEPS = [
   {
@@ -161,7 +161,7 @@ export default function LenderSimulator({ onBack }) {
             </div>
             <div className="px-5 pb-5">
               <h2 className="text-xl font-semibold text-slate-900 leading-snug">Watch one loan file go from documents to decision-ready.</h2>
-              <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">Maria Delgado wants $175,000 for Casa Verde Catering LLC. CreditDecide reads her file, chases what is missing, and drafts the memo. Your team makes the call.</p>
+              <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">{BORROWER.applicant} wants {BORROWER.amount} for {BORROWER.name}. CreditDecide reads her file, chases what is missing, and drafts the memo. Your team makes the call.</p>
               <div className="mt-5 flex items-center justify-between">
                 <button className="text-[13px] text-slate-500 hover:text-slate-700">▶ or autoplay it</button>
                 <button onClick={() => setStep(1)} className="text-sm font-medium text-white px-5 py-2.5 rounded-full" style={{ backgroundColor: GREEN }}>Start demo</button>

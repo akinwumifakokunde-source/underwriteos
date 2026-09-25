@@ -1,13 +1,13 @@
 import React from "react";
 import { FileText, ExternalLink, Send } from "lucide-react";
-import { GREEN, CONVERSATION } from "../data";
+import { GREEN, BORROWER, CONVERSATION } from "../data";
 
 export default function ConversationTab({ revealed = 6 }) {
   const msgs = CONVERSATION.slice(0, revealed);
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden flex flex-col" style={{ height: "560px" }}>
       <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
-        <div className="text-sm font-semibold text-slate-900">Maria Delgado</div>
+        <div className="text-sm font-semibold text-slate-900">{BORROWER.applicant}</div>
         <span className="text-[12px] text-slate-400">4</span>
       </div>
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 bg-[#fafafa]">

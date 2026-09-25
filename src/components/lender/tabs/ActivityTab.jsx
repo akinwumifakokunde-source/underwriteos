@@ -1,12 +1,12 @@
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
-import { GREEN } from "../data";
+import { GREEN, BORROWER } from "../data";
 
 const EVENTS = [
   { t: "just now", text: "Credit memo drafted — 9 sections" },
   { t: "8d ago", text: "All required documents accepted" },
   { t: "8d ago", text: "Application moved to For Review" },
-  { t: "9d ago", text: "Maria Delgado submitted the application" },
+  { t: "9d ago", text: `${BORROWER.applicant} submitted the application` },
 ];
 
 export default function ActivityTab() {

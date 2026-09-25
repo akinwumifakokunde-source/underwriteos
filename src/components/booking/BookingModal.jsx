@@ -189,16 +189,16 @@ export default function BookingModal({ open, onClose }) {
             {/* Left — event details */}
             <div className="p-6 border-r border-[#f0f0f0]">
               <div className="flex -space-x-2 mb-3">
-                {["#0B3D21", "#2E7D32", "#4b7be0"].map((c, i) => (
+                {["#0B3D21", "#2E7D32"].map((c, i) => (
                   <span key={i} className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-white text-[11px] font-semibold" style={{ backgroundColor: c }}>
-                    {["A", "K", "T"][i]}
+                    {["C", "D"][i]}
                   </span>
                 ))}
               </div>
               <div className="text-sm font-semibold text-[#111]">CreditDecide</div>
-              <h3 className="mt-1 text-lg font-semibold text-[#111]">Intro Chat</h3>
+              <h3 className="mt-1 text-lg font-semibold text-[#111]">Product Demo</h3>
               <p className="mt-2 text-[13px] text-[#666] leading-relaxed">
-                Choose a time to meet the CreditDecide team. We look forward to learning more about how your team works today.
+                Book a 30-minute walkthrough. We'll run CreditDecide on one of your files and walk you through the memo, evidence and decision.
               </p>
               <ul className="mt-4 space-y-2.5 text-[13px] text-[#444]">
                 <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#999]" /> 30m</li>

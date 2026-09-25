@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircle2, Circle } from "lucide-react";
 import {
-  GREEN, MEMO_SECTIONS, STRENGTHS, WEAKNESSES,
+  GREEN, BORROWER, MEMO_SECTIONS, STRENGTHS, WEAKNESSES,
   BUREAU_DATA, POLICY_RESULTS, SCORECARD, COMPETITIVE,
 } from "../data";
 
@@ -50,7 +50,7 @@ export default function CreditMemoTab({ step = 5 }) {
         <div className="rounded-xl border border-slate-200 bg-white p-5">
           <div className="flex items-center justify-between mb-3">
             <h4 className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Sections</h4>
-            <span className="text-[12px] text-slate-400">Casa Verde Catering LLC</span>
+            <span className="text-[12px] text-slate-400">{BORROWER.name}</span>
           </div>
           <ul className="space-y-1.5">
             {MEMO_SECTIONS.map((s, i) => {
@@ -165,7 +165,7 @@ export default function CreditMemoTab({ step = 5 }) {
         <h3 className="text-sm font-semibold text-slate-900 mb-3">9 Recommendation</h3>
         <div className="rounded-lg p-4 mb-4" style={{ backgroundColor: "#FFFBE6", border: "1px solid #f5e9b8" }}>
           <p className="text-[13px] text-slate-800 font-medium">Recommended disposition: advance with pre-funding conditions.</p>
-          <p className="text-[12px] text-slate-600 mt-1.5 leading-relaxed">Casa Verde's 2.32x coverage and $32,400 interim earnings support the request once the Bank of America retention condition and entity-name reconciliation are cleared. Pre-funding conditions apply.</p>
+          <p className="text-[12px] text-slate-600 mt-1.5 leading-relaxed">Brightleaf's 2.32x coverage and $32,400 interim earnings support the request once the Bank of America retention condition and entity-name reconciliation are cleared. Pre-funding conditions apply.</p>
           <div className="flex items-center gap-2 mt-2.5 flex-wrap">
             <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">Lender review</span>
             <span className="text-[11px] text-slate-500">Scores 94 of 100 against the Small Business Term Loan scorecard.</span>
