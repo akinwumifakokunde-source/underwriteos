@@ -1,29 +1,40 @@
 import React, { useState } from "react";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
 
 const FOREST = "#0B3D21";
 const VOLUMES = ["< $1M / month", "$1M – $5M / month", "$5M – $25M / month", "$25M+ / month"];
 
 const inputCls = "w-full text-sm rounded-lg border border-[#d1d1d1] bg-white px-3.5 py-2.5 text-[#111] placeholder-[#a0a0a0] focus:outline-none focus:border-[#0B3D21] focus:ring-2 focus:ring-[#0B3D21]/15 transition";
 
-const TRUSTED = ["trustingsocial", "cashalo", "TRBank", "N90"];
-
 export default function BookDemo() {
   const [form, setForm] = useState({ name: "", email: "", company: "", volume: "", use_case: "", referrer: "" });
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState(null);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    setError(null);
+    try {
+      const message = [
+        `Company: ${form.company}`,
+        `Estimated loan volume: ${form.volume}`,
+        `Use case: ${form.use_case}`,
+        form.referrer ? `How they heard about us: ${form.referrer}` : "",
+      ].filter(Boolean).join("\n");
+      await base44.functions.invoke("apiContact", { name: form.name, email: form.email, message });
       setDone(true);
-    }, 700);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message || err.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -59,13 +70,6 @@ export default function BookDemo() {
 
               <hr className="my-8 border-[#eceef1] dark:border-slate-800" />
 
-              <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#9ca3af] mb-4">Trusted by lenders like</p>
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-10">
-                {TRUSTED.map((t) => (
-                  <span key={t} className="text-sm font-semibold text-[#9ca3af] dark:text-slate-500 lowercase tracking-tight">{t}</span>
-                ))}
-              </div>
-
               <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#9ca3af]">Prefer email?</p>
               <a href="mailto:hello@creditdecide.com" className="text-sm text-[#666] dark:text-slate-400 hover:text-[#0B3D21] transition-colors">hello@creditdecide.com</a>
             </div>
@@ -73,6 +77,11 @@ export default function BookDemo() {
             {/* Right column — form */}
             <div className="rounded-2xl border border-[#eceef1] dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-sm">
               <form onSubmit={submit} className="space-y-4">
+                {error && (
+                  <div className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" /> {error}
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-[#111] dark:text-slate-100 mb-1.5">Name <span className="text-rose-500">*</span></label>
                   <input className={inputCls} required value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Jane Doe" />

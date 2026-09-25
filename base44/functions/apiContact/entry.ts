@@ -1,6 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 
-const TO = "akinfaks@yahoo.com";
+const TO = "akinwumi.fakokunde@gmail.com";
 
 export default async function(req) {
   try {
