@@ -8,20 +8,45 @@ const R = 150;
 const CX = 200;
 const CY = 200;
 
-// Rough continent blobs so land dots read as a world map as the globe rolls.
-const BLOBS = [
-  { lat: 45, lon: -100, r: 42 }, // North America
-  { lat: -15, lon: -60, r: 36 }, // South America
-  { lat: 50, lon: 12, r: 20 },   // Europe
-  { lat: 5, lon: 20, r: 40 },    // Africa
-  { lat: 35, lon: 95, r: 55 },   // Asia
-  { lat: -25, lon: 135, r: 22 }, // Oceania
+// Simplified continent outlines (lat, lon) so the dot grid resolves into a
+// recognizable world map as the globe rolls. Point-in-polygon land test.
+const CONTINENTS = [
+  // North America — Alaska across Canada, down the east coast, around the Gulf
+  // and Central America, back up the west coast.
+  [[66,-165],[70,-140],[72,-100],[68,-85],[60,-72],[50,-58],[44,-60],[40,-72],[34,-78],[30,-80],[26,-80],[25,-82],[28,-90],[29,-95],[26,-98],[20,-97],[15,-93],[11,-85],[9,-78],[14,-90],[18,-100],[24,-110],[30,-116],[38,-122],[48,-128],[58,-135],[64,-155],[66,-165]],
+  // Greenland
+  [[80,-30],[80,-18],[74,-16],[68,-24],[64,-40],[70,-50],[76,-55],[80,-45],[80,-30]],
+  // South America — top of Colombia down to Tierra del Fuego and back up the west.
+  [[10,-72],[6,-60],[2,-50],[-3,-42],[-8,-35],[-15,-39],[-24,-43],[-34,-52],[-44,-63],[-52,-68],[-55,-70],[-50,-74],[-40,-72],[-30,-71],[-20,-70],[-12,-77],[-5,-81],[2,-79],[8,-77],[10,-72]],
+  // Europe
+  [[60,-6],[62,18],[60,30],[56,36],[50,40],[45,28],[40,26],[38,20],[40,14],[43,8],[44,0],[48,-6],[55,-8],[60,-6]],
+  // Africa — Mediterranean coast across to the Horn, down the east to the Cape,
+  // back up the west coast.
+  [[36,-7],[34,12],[32,22],[30,33],[24,36],[18,38],[12,43],[10,51],[0,43],[-6,41],[-12,40],[-22,35],[-30,32],[-34,20],[-34,17],[-30,15],[-22,14],[-12,12],[-2,9],[5,0],[8,-4],[9,-8],[12,-14],[18,-17],[24,-12],[30,-10],[34,-9],[36,-7]],
+  // Asia — Siberia across to the Pacific, down through China and SE Asia to the
+  // Indian subcontinent and back across the Middle East.
+  [[70,28],[74,55],[76,90],[72,130],[66,165],[60,162],[55,148],[50,140],[45,135],[40,128],[35,122],[30,120],[24,118],[20,110],[14,106],[8,100],[6,103],[10,98],[16,94],[20,88],[24,80],[22,70],[26,62],[30,56],[36,50],[42,46],[48,42],[54,36],[58,32],[64,28],[70,28]],
+  // Oceania — Australia + New Guinea arc
+  [[-8,115],[-10,125],[-14,135],[-22,142],[-34,150],[-38,146],[-36,138],[-34,130],[-30,122],[-26,116],[-20,114],[-12,113],[-8,115]],
+  // New Zealand
+  [[-34,173],[-38,176],[-43,170],[-46,167],[-44,170],[-40,174],[-35,174],[-34,173]],
 ];
-const isLand = (lat, lon) => BLOBS.some((b) => Math.hypot(lat - b.lat, lon - b.lon) < b.r);
+
+const pointInPoly = (lat, lon, poly) => {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [yi, xi] = poly[i]; // [lat, lon]
+    const [yj, xj] = poly[j];
+    const intersect = (lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi);
+    if ((yi > lat) !== (yj > lat) && intersect) inside = !inside;
+  }
+  return inside;
+};
+const isLand = (lat, lon) => CONTINENTS.some((p) => pointInPoly(lat, lon, p));
 
 const DOTS = [];
-for (let lat = -80; lat <= 80; lat += 7) {
-  for (let lon = -180; lon <= 180; lon += 7) {
+for (let lat = -78; lat <= 80; lat += 5) {
+  for (let lon = -180; lon <= 180; lon += 5) {
     DOTS.push({ latR: (lat * Math.PI) / 180, lon, land: isLand(lat, lon) });
   }
 }
