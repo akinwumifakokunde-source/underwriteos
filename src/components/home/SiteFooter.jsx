@@ -32,6 +32,7 @@ const COLS = [
     title: "Company",
     links: [
       { to: "/about", label: "About" },
+      { to: "/partners", label: "Partners" },
       { to: "/insights", label: "Insights" },
       { to: "/connect", label: "Connect AI" },
       { to: "/contact", label: "Contact" },
