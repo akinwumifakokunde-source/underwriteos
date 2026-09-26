@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
+import LenderSimulator from "@/components/try/LenderSimulator";
 import { getJurisdiction, getCurrency, getPolicies } from "@/lib/jurisdictions";
 import { Loader2, ArrowLeft } from "lucide-react";
 
@@ -19,6 +20,8 @@ export default function ApplicationCreate() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState([]);
   const [market, setMarket] = useState("GB");
+  // view: "guided" (default — same walkthrough as the public demo) | "create" (real EntryChoice flow)
+  const [view, setView] = useState("guided");
 
   const addProgress = (msg) => setProgress((p) => [...p, { id: Date.now() + Math.random(), msg }]);
 
@@ -41,15 +44,32 @@ export default function ApplicationCreate() {
     }
   };
 
-  // Auto-start when navigated with ?choice= (from the workspace home cards)
+  // ?choice=… auto-creates a real application (existing deep links).
+  // ?create=1 opens the real EntryChoice form without auto-starting.
+  // No param → guided demo walkthrough (same as the public demo page).
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const choice = urlParams.get("choice");
+    const create = urlParams.get("create");
     const marketParam = urlParams.get("market");
     if (marketParam) setMarket(marketParam);
-    if (choice) handleChoose(choice, marketParam);
+    if (choice) {
+      setView("create");
+      handleChoose(choice, marketParam);
+    } else if (create) {
+      setView("create");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (view === "guided") {
+    return (
+      <LenderSimulator
+        onBack={() => navigate("/workspace")}
+        onCreateOwn={() => navigate("/applications/new?create=1")}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">

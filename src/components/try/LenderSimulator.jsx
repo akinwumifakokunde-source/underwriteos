@@ -69,7 +69,7 @@ const STEPS = [
   },
 ];
 
-export default function LenderSimulator({ onBack }) {
+export default function LenderSimulator({ onBack, onCreateOwn }) {
   const [view, setView] = useState("pipeline");
   const [tab, setTab] = useState("details");
   const [step, setStep] = useState(0);
@@ -169,6 +169,9 @@ export default function LenderSimulator({ onBack }) {
             <button className="hidden md:inline-flex items-center gap-1.5 text-[12px] text-slate-500"><Globe className="w-4 h-4" /> United States English · USD</button>
             <button className="hidden sm:inline-flex text-[12px] text-slate-500 hover:text-slate-700">FAQs</button>
             <button className="hidden sm:inline-flex items-center gap-1.5 text-[12px] font-medium px-3 py-1.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50"><Phone className="w-3.5 h-3.5" /> Book a call</button>
+            {onCreateOwn && (
+              <button onClick={onCreateOwn} className="text-[12px] font-medium px-3.5 py-1.5 rounded-full border transition-colors hover:bg-slate-50" style={{ borderColor: GREEN, color: GREEN }}>New application</button>
+            )}
             <button onClick={resumeGuided} className="text-[12px] font-medium text-white px-3.5 py-1.5 rounded-full" style={{ backgroundColor: GREEN }}>Start demo</button>
           </div>
         </div>

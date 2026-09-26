@@ -8,7 +8,7 @@ export default function WorkspaceHome() {
   const navigate = useNavigate();
 
   const startLender = useCallback(() => {
-    navigate("/applications/new?choice=sample&market=GB");
+    navigate("/applications/new");
   }, [navigate]);
 
   const startBorrower = useCallback(() => {
