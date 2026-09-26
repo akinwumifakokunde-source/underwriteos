@@ -14,12 +14,12 @@ const STATS = [
 // smoothly). GB sits at index 4 — the cycle starts there, the brand's home
 // market, then rolls through the US and back across Africa.
 const MARKETS = [
-  { code: "KE", flag: "🇰🇪", name: "Kenya", lat: -1, lon: 38, timer: "1m 47s", files: 8, formats: 4, desc: "M-Pesa statements, payslips, KRA PIN, proof of address", decision: "APPROVE", amount: "KES 18M", dscr: "1.38x", status: "PASS" },
-  { code: "ZA", flag: "🇿🇦", name: "South Africa", lat: -29, lon: 24, timer: "2m 12s", files: 11, formats: 5, desc: "Bank statements, payslips, SARS IT3, proof of address", decision: "APPROVE", amount: "ZAR 6.5M", dscr: "1.30x", status: "PASS" },
-  { code: "NG", flag: "🇳🇬", name: "Nigeria", lat: 9, lon: 7, timer: "1m 58s", files: 9, formats: 4, desc: "Bank statements, BVN, payslips, proof of address", decision: "APPROVE", amount: "NGN 320M", dscr: "1.42x", status: "PASS" },
-  { code: "GH", flag: "🇬🇭", name: "Ghana", lat: 7, lon: -1, timer: "2m 04s", files: 10, formats: 5, desc: "Bank statements, payslips, Ghana Card, proof of address", decision: "REVIEW", amount: "GHS 1.1M", dscr: "1.12x", status: "WATCH" },
-  { code: "GB", flag: "🇬🇧", name: "United Kingdom", lat: 54, lon: -2, timer: "2m 31s", files: 12, formats: 5, desc: "Bank statements, payslips, credit report, proof of address", decision: "APPROVE", amount: "GBP 1.2M", dscr: "1.35x", status: "PASS" },
-  { code: "US", flag: "🇺🇸", name: "United States", lat: 40, lon: -98, timer: "3m 41s", files: 16, formats: 6, desc: "Form 1120, Schedule C, K-1, 1065, commercial bank statements", decision: "APPROVE", amount: "USD 750K", dscr: "1.27x", status: "PASS" },
+  { code: "KE", flag: "🇰🇪", name: "Kenya", lat: -1, lon: 38, timer: "1m 47s", files: 8, formats: 4, desc: "M-Pesa statements, payslips, KRA PIN, proof of address", decision: "APPROVE", amount: "KES 850K", dscr: "1.38x", status: "PASS" },
+  { code: "ZA", flag: "🇿🇦", name: "South Africa", lat: -29, lon: 24, timer: "2m 12s", files: 11, formats: 5, desc: "Bank statements, payslips, SARS IT3, proof of address", decision: "APPROVE", amount: "ZAR 180K", dscr: "1.30x", status: "PASS" },
+  { code: "NG", flag: "🇳🇬", name: "Nigeria", lat: 9, lon: 7, timer: "1m 58s", files: 9, formats: 4, desc: "Bank statements, BVN, payslips, proof of address", decision: "APPROVE", amount: "NGN 3.5M", dscr: "1.42x", status: "PASS" },
+  { code: "GH", flag: "🇬🇭", name: "Ghana", lat: 7, lon: -1, timer: "2m 04s", files: 10, formats: 5, desc: "Bank statements, payslips, Ghana Card, proof of address", decision: "REVIEW", amount: "GHS 45K", dscr: "1.12x", status: "WATCH" },
+  { code: "GB", flag: "🇬🇧", name: "United Kingdom", lat: 54, lon: -2, timer: "2m 31s", files: 12, formats: 5, desc: "Bank statements, payslips, credit report, proof of address", decision: "APPROVE", amount: "GBP 12K", dscr: "1.35x", status: "PASS" },
+  { code: "US", flag: "🇺🇸", name: "United States", lat: 40, lon: -98, timer: "3m 41s", files: 16, formats: 6, desc: "Bank statements, payslips, W-2, proof of address", decision: "APPROVE", amount: "USD 18K", dscr: "1.27x", status: "PASS" },
 ];
 const START = 4; // GB
 
