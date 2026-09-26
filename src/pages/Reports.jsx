@@ -4,11 +4,13 @@ import Nav from "@/components/layout/Nav.jsx";
 import { Loader2, AlertTriangle, Download, TrendingUp, CheckCircle2, XCircle, Clock, FileText } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LineChart, Line } from "recharts";
 import MarketBreakdown from "@/components/reports/MarketBreakdown";
+import GuidedPortfolio from "@/components/reports/GuidedPortfolio";
 
 export default function Reports() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [guided, setGuided] = useState(new URLSearchParams(window.location.search).get("guided") === "1");
 
   const load = async () => {
     setLoading(true);
@@ -139,6 +141,7 @@ export default function Reports() {
             </div>
 
             <MarketBreakdown />
+            {guided && <GuidedPortfolio onSkip={() => setGuided(false)} />}
 
             {/* Application status breakdown */}
             <div className="rounded-xl border border-slate-200 bg-white p-5">

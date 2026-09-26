@@ -3,7 +3,7 @@ import React from "react";
 // Renders a real <table> on desktop (md+) and simple stacked cards on mobile.
 // columns: [{ key, header, render(row), mobileTitle?, mobileHide?, mobileLabel? }]
 // data, rowKey(row), onRowClick(row) optional.
-export default function ResponsiveTable({ columns, data, rowKey, onRowClick }) {
+export default function ResponsiveTable({ columns, data, rowKey, onRowClick, rowClassName }) {
   const mobileColumns = columns.filter((c) => !c.mobileHide);
 
   return (
@@ -24,7 +24,7 @@ export default function ResponsiveTable({ columns, data, rowKey, onRowClick }) {
             {data.map((row) => (
               <tr
                 key={rowKey(row)}
-                className={`hover:bg-slate-50 transition-colors ${onRowClick ? "cursor-pointer" : ""}`}
+                className={`hover:bg-slate-50 transition-colors ${onRowClick ? "cursor-pointer" : ""} ${rowClassName ? rowClassName(row) : ""}`}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
               >
                 {columns.map((c) => (
@@ -41,7 +41,7 @@ export default function ResponsiveTable({ columns, data, rowKey, onRowClick }) {
         {data.map((row) => (
           <div
             key={rowKey(row)}
-            className={`rounded-xl border border-slate-200 bg-white p-4 ${onRowClick ? "cursor-pointer active:bg-slate-50" : ""}`}
+            className={`rounded-xl border border-slate-200 bg-white p-4 ${onRowClick ? "cursor-pointer active:bg-slate-50" : ""} ${rowClassName ? rowClassName(row) : ""}`}
             onClick={onRowClick ? () => onRowClick(row) : undefined}
           >
             {mobileColumns.map((c) =>

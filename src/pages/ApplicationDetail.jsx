@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import MobilePageHeader from "@/components/layout/MobilePageHeader";
@@ -51,6 +51,7 @@ const TABS = ["Application Details", "Documents", "Credit Memo", "Activity", "Fi
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
+  const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
 
   const [app, setApp] = useState(null);
@@ -486,9 +487,7 @@ export default function ApplicationDetail() {
       {guided && (
         <GuidedReviewOverlay
           setTab={setTab}
-          onFinish={() => setGuided(false)}
-          borrowerName={borrower ? `${borrower.first_name || ""} ${borrower.last_name || ""}`.trim() : null}
-          loanAmount={app ? fmtMoney(app.loan_amount, app.loan_currency) : null}
+          onFinish={() => { setGuided(false); navigate("/reports?guided=1"); }}
         />
       )}
       <ChatAssistant applicationId={applicationId} />

@@ -10,6 +10,7 @@ import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
 import PullToRefresh from "@/components/PullToRefresh";
 import ResponsiveTable from "@/components/shared/ResponsiveTable";
+import GuidedPipeline from "@/components/applications/GuidedPipeline";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -23,6 +24,9 @@ export default function Applications() {
   const [filter, setFilter] = useState("All");
   const [market, setMarket] = useState("All");
   const [refreshing, setRefreshing] = useState(false);
+  const urlParams = new URLSearchParams(window.location.search);
+  const guidedApp = urlParams.get("guided") === "1" ? urlParams.get("app") : null;
+  const [guided, setGuided] = useState(!!guidedApp);
 
   const load = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -83,6 +87,11 @@ export default function Applications() {
   }, [apps, filter, market, search, borrowers]);
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
+
+  const guidedAppRecord = guidedApp ? apps.find((a) => a.id === guidedApp) : null;
+  const guidedBorrower = guidedAppRecord ? borrowers[guidedAppRecord.borrower_id] : null;
+  const guidedBorrowerName = guidedBorrower ? `${guidedBorrower.first_name} ${guidedBorrower.last_name}`.trim() : null;
+  const guidedLoanAmount = guidedAppRecord ? fmtMoney(guidedAppRecord.loan_amount, guidedAppRecord.loan_currency) : null;
 
   const exportCsv = () => {
     const headers = ["Application number", "Applicant", "Email", "Market", "Product", "Loan amount", "Currency", "Risk score", "Probability of default", "Policy", "Status", "Decision", "Updated"];
@@ -230,11 +239,20 @@ export default function Applications() {
             columns={columns}
             data={filtered}
             rowKey={(a) => a.id}
-            onRowClick={(a) => navigate(`/applications/${a.id}`)}
+            rowClassName={(a) => (a.id === guidedApp ? "ring-2 ring-teal-400 ring-inset" : "")}
+            onRowClick={(a) => navigate(`/applications/${a.id}${a.id === guidedApp && guided ? "?guided=1" : ""}`)}
           />
         )}
       </div>
       </PullToRefresh>
+      {guided && guidedApp && (
+        <GuidedPipeline
+          borrowerName={guidedBorrowerName}
+          loanAmount={guidedLoanAmount}
+          onOpen={() => navigate(`/applications/${guidedApp}?guided=1`)}
+          onSkip={() => setGuided(false)}
+        />
+      )}
     </div>
   );
 }

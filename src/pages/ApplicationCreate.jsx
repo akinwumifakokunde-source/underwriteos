@@ -223,5 +223,5 @@ async function createSampleApplication(navigate, addProgress, market, guided) {
   addProgress("✓ Decision ready");
 
   addProgress("Opening workspace…");
-  setTimeout(() => navigate(`/applications/${appId}${guided ? "?guided=1" : ""}`), 600);
+  setTimeout(() => navigate(guided ? `/applications?guided=1&app=${appId}` : `/applications/${appId}`), 600);
 }

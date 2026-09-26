@@ -209,7 +209,7 @@ export default function BorrowerApply() {
           )}
           <div className="mt-6 flex flex-col gap-2">
             {submitted.application_id && (
-              <Link to={`/applications/${submitted.application_id}?guided=1`} className="text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-2.5 rounded-lg hover:shadow-md transition-all">
+              <Link to={`/applications?guided=1&app=${submitted.application_id}`} className="text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-2.5 rounded-lg hover:shadow-md transition-all">
                 Open in lender workspace →
               </Link>
             )}
