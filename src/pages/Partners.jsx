@@ -9,10 +9,26 @@ import { base44 } from "@/api/base44Client";
 const PARTNER_TYPES = ["Reseller", "Implementation partner", "Referral partner", "Technology partner"];
 
 const BENEFITS = [
-  { icon: Percent, title: "Recurring commission", body: "Earn commission on every CreditDecide subscription you bring live and keep earning while it stays active." },
-  { icon: Globe2, title: "Own your region", body: "Deploy CreditDecide to lenders in your market — with local credit bureaus, open banking and KYC already configured." },
-  { icon: Rocket, title: "Deploy, not just refer", body: "Like Microsoft's partner model or OpenAI's Deploy Co — you run the implementation and own the customer relationship." },
-  { icon: ShieldCheck, title: "Co-branded, governed", body: "White-label the experience for your customers while CreditDecide keeps policy, security and compliance enforced end-to-end." },
+  {
+    icon: Percent,
+    title: "Recurring commission",
+    body: "Earn a share of every CreditDecide subscription you bring live — and keep earning for as long as it stays active. The more lenders you deploy, the more durable your revenue becomes.",
+  },
+  {
+    icon: Globe2,
+    title: "Own your region",
+    body: "Bring CreditDecide to the consumer lenders in your market. Local credit bureaus, open banking providers, KYC and regulatory profiles are already configured — so you can deploy faster, in the language and currency your customers expect.",
+  },
+  {
+    icon: Rocket,
+    title: "Deploy, not just refer",
+    body: "This is a true deployment partnership. You run the implementation, configure your customers' markets and policies, and own the relationship end-to-end — not a one-off referral that ends at the handshake.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Co-branded, governed",
+    body: "White-label the borrower experience for your customers while CreditDecide keeps policy enforcement, security and compliance running underneath. Your brand leads; the platform stays governed and audit-ready.",
+  },
 ];
 
 const STEPS = [
@@ -85,16 +101,24 @@ export default function Partners() {
 
       {/* Benefits */}
       <section className="max-w-5xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
-        <h2 className="text-2xl font-semibold text-[#0a0c12] mb-8">Why partner with us</h2>
+        <div className="mb-8 max-w-2xl">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-[#0a0c12] tracking-tight">Why partner with us</h2>
+          <p className="mt-2 text-sm text-[#525965] leading-relaxed">
+            A partner program built for teams who deploy, not just refer — with the economics, tooling and governance to match.
+          </p>
+        </div>
         <div className="grid sm:grid-cols-2 gap-4">
           {BENEFITS.map((b) => {
             const Icon = b.icon;
             return (
-              <div key={b.title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-[#0d9488]/10 mb-3">
+              <div
+                key={b.title}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md hover:border-[#0d9488]/30 transition-all duration-200"
+              >
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#0d9488]/15 to-[#0d9488]/5 mb-4 group-hover:scale-105 transition-transform">
                   <Icon className="w-5 h-5 text-[#0d9488]" />
                 </div>
-                <h3 className="text-base font-semibold text-slate-900 mb-1.5">{b.title}</h3>
+                <h3 className="text-base font-semibold text-slate-900 mb-2">{b.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{b.body}</p>
               </div>
             );
