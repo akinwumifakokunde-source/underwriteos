@@ -1,9 +1,10 @@
 import React from "react";
-import { ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch, ClipboardCheck } from "lucide-react";
+import { ShieldCheck, Lock, KeyRound, FileSearch, Boxes, GitBranch } from "lucide-react";
 import CtaPair from "@/components/home/CtaPair.jsx";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import SiteFooter from "@/components/home/SiteFooter.jsx";
 import ResponsibleAIGovernance from "@/components/security/ResponsibleAIGovernance.jsx";
+import SecurityAssurance from "@/components/security/SecurityAssurance.jsx";
 
 const PILLARS = [
   { icon: Boxes, title: "Tenant isolation", desc: "Every record is scoped to an organization. Row-Level Security enforces isolation at the data layer — one tenant can never read or mutate another's data." },
@@ -12,21 +13,6 @@ const PILLARS = [
   { icon: FileSearch, title: "Audit trail", desc: "Every request carries a request_id and is logged with actor, endpoint, and outcome — giving lenders a defensible record of who decided what, and why." },
   { icon: GitBranch, title: "Environment isolation", desc: "Sandbox and production data never mix. Test with synthetic data, then promote to live with a production key and your own provider credentials." },
   { icon: ShieldCheck, title: "Explainable decisions", desc: "Each recommendation is backed by an evidence graph — every risk signal traces to its source document and confidence score. No black-box overrides." },
-];
-
-const ROADMAP = [
-  { label: "Encryption at rest & in transit", status: "Implemented" },
-  { label: "RBAC & organization-level access controls", status: "Shipped" },
-  { label: "API key hashing & credential protection", status: "Shipped" },
-  { label: "Audit trail & immutable decision history", status: "Shipped" },
-  { label: "Tenant isolation & RLS", status: "Shipped" },
-  { label: "Sandbox / production isolation", status: "Shipped" },
-  { label: "Data retention & deletion controls", status: "Implemented" },
-  { label: "GDPR controls & DPA", status: "Implemented" },
-  { label: "Data residency / cross-border data controls", status: "Roadmap" },
-  { label: "SOC 2 Type I", status: "In progress" },
-  { label: "SOC 2 Type II", status: "Roadmap" },
-  { label: "ISO/IEC 27001:2022", status: "In progress" },
 ];
 
 export default function Security() {
@@ -67,30 +53,7 @@ export default function Security() {
 
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="rounded-2xl border border-[#eceef1] bg-white p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <ClipboardCheck className="w-4 h-4 text-[#0d9488]" />
-              <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Security &amp; compliance roadmap</h2>
-            </div>
-            <div className="divide-y divide-[#eceef1]">
-              {ROADMAP.map((r) => (
-                <div key={r.label} className="flex items-center justify-between py-2.5">
-                  <span className="text-sm text-[#3a3f4a]">{r.label}</span>
-                  <span
-                    className={`text-[11px] font-medium px-2 py-0.5 rounded ${
-                      r.status === "Shipped" || r.status === "Implemented"
-                        ? "text-[#0d9488] bg-[#e6f7f3]"
-                        : r.status === "In progress"
-                        ? "text-amber-700 bg-amber-50"
-                        : "text-[#8a909c] bg-[#f2f3f5]"
-                    }`}
-                  >
-                    {r.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <SecurityAssurance />
           <div className="rounded-2xl border border-[#eceef1] bg-white p-6 flex flex-col">
             <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965] mb-4">Need a security review?</h2>
             <p className="text-sm text-[#525965] leading-relaxed">
