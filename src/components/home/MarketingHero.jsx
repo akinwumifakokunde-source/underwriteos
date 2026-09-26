@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
 import DecisionCard from "@/components/home/DecisionCard.jsx";
 import HeroLeadCapture from "@/components/home/HeroLeadCapture.jsx";
-
-const STATS = [
-  { value: "Any", label: "market, no limits" },
-  { value: "< 3 min", label: "avg. decision" },
-  { value: "100%", label: "explainable" },
-];
+import HeroStats from "@/components/home/HeroStats.jsx";
 
 // Markets in rolling order (longitude descending so the globe rolls forward
 // smoothly). GB sits at index 4 — the cycle starts there, the brand's home
@@ -68,13 +63,7 @@ export default function MarketingHero() {
 
             <HeroLeadCapture />
 
-            <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#8f9f97]">
-              <span className="text-white font-medium">Any market</span>
-              <span className="text-white/20">·</span>
-              <span className="text-white font-medium">&lt; 3 min</span> decision
-              <span className="text-white/20">·</span>
-              <span className="text-white font-medium">100%</span> explainable
-            </div>
+            <HeroStats />
 
             <Link
               to="/start/borrower"
