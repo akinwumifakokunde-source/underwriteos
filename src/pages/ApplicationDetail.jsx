@@ -483,7 +483,14 @@ export default function ApplicationDetail() {
           )}
         </div>
       </div>
-      {guided && <GuidedReviewOverlay setTab={setTab} onFinish={() => setGuided(false)} />}
+      {guided && (
+        <GuidedReviewOverlay
+          setTab={setTab}
+          onFinish={() => setGuided(false)}
+          borrowerName={borrower ? `${borrower.first_name || ""} ${borrower.last_name || ""}`.trim() : null}
+          loanAmount={app ? fmtMoney(app.loan_amount, app.loan_currency) : null}
+        />
+      )}
       <ChatAssistant applicationId={applicationId} />
     </div>
   );

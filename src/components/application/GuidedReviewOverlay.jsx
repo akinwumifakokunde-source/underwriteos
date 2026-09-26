@@ -55,8 +55,9 @@ const STEPS = [
   },
 ];
 
-export default function GuidedReviewOverlay({ setTab, onFinish }) {
+export default function GuidedReviewOverlay({ setTab, onFinish, borrowerName, loanAmount }) {
   const [step, setStep] = useState(1);
+  const [started, setStarted] = useState(false);
   const cur = STEPS[step - 1];
 
   // Start on the first step's tab.
@@ -77,6 +78,30 @@ export default function GuidedReviewOverlay({ setTab, onFinish }) {
     if (prev?.tab) setTab(prev.tab);
     setStep((s) => s - 1);
   };
+
+  if (!started) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-5">
+        <div className="w-full max-w-md rounded-2xl bg-white shadow-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-5 pt-4">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Guided Review</span>
+            <button onClick={onFinish} className="text-slate-400 hover:text-slate-700 text-lg leading-none">✕</button>
+          </div>
+          <div className="px-5 pb-5">
+            <h2 className="text-xl font-semibold text-slate-900 leading-snug">Walk through this loan file from documents to decision.</h2>
+            <p className="mt-2 text-[14px] text-slate-600 leading-relaxed">
+              {borrowerName ? `${borrowerName} wants ${loanAmount || "a loan"}. ` : ""}
+              CreditDecide reads the file, drafts the credit memo, and recommends. Your team makes the call.
+            </p>
+            <div className="mt-5 flex items-center justify-between">
+              <button onClick={onFinish} className="text-[13px] text-slate-500 hover:text-slate-700">Skip walkthrough</button>
+              <button onClick={() => setStarted(true)} className="text-sm font-medium text-white px-5 py-2.5 rounded-full" style={{ backgroundColor: "#0B3D21" }}>Start review</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <GuidedOverlay
