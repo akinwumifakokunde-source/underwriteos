@@ -6,6 +6,7 @@ import Hero from "@/components/home/Hero.jsx";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
 import LenderSimulator from "@/components/try/LenderSimulator.jsx";
+import BorrowerAssistant from "@/components/borrower/BorrowerAssistant.jsx";
 import {
   Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2,
   ArrowRight, ArrowLeft, Sparkles, FileText, Wallet, Briefcase, ClipboardList, Send,
@@ -243,7 +244,7 @@ export default function BorrowerApply() {
       <BorrowerExperience />
 
       <div ref={formRef} className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
-        <div className="grid md:grid-cols-[220px_1fr] gap-8">
+        <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[220px_1fr_340px] gap-8">
           {/* Stepper */}
           <aside className="md:sticky md:top-8 self-start">
             <p className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Application</p>
@@ -431,6 +432,10 @@ export default function BorrowerApply() {
                 </button>
               )}
             </div>
+          </div>
+          {/* AI assistant — mirrors kita.ai's borrower apply 3-panel layout */}
+          <div className="hidden lg:block lg:sticky lg:top-8 self-start h-[calc(100vh-8rem)]">
+            <BorrowerAssistant values={values} setValues={setValues} />
           </div>
         </div>
 
