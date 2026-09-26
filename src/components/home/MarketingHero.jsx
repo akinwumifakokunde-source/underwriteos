@@ -5,7 +5,7 @@ import DecisionCard from "@/components/home/DecisionCard.jsx";
 import HeroLeadCapture from "@/components/home/HeroLeadCapture.jsx";
 
 const STATS = [
-  { value: "6", label: "markets live" },
+  { value: "Any", label: "market, no limits" },
   { value: "< 3 min", label: "avg. decision" },
   { value: "100%", label: "explainable" },
 ];
