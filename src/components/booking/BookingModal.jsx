@@ -103,7 +103,11 @@ export default function BookingModal({
     const dd = String(d).padStart(2, "0");
     return `${viewYear.getFullYear()}-${mm}-${dd}`;
   };
-  const isSelectable = (d) => dateStr(d) >= tStr;
+  const isSelectable = (d) => {
+    if (dateStr(d) < tStr) return false;
+    const dow = new Date(viewYear.getFullYear(), viewYear.getMonth(), d).getDay();
+    return dow !== 0 && dow !== 6; // exclude Sunday (0) and Saturday (6)
+  };
 
   const prevMonth = () => {
     const t = new Date(viewYear);

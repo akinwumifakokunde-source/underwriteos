@@ -59,6 +59,11 @@ export default async function(req) {
         return Response.json({ error: "Invalid date" }, { status: 400 });
       }
       const [y, m, d] = date.split("-").map(Number);
+      // Mon–Fri only: 0 = Sunday, 6 = Saturday
+      const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+      if (dow === 0 || dow === 6) {
+        return Response.json({ slots: [], tz: TZ });
+      }
       const offset = londonOffsetHours(y, m - 1, d);
       const dayStart = Date.UTC(y, m - 1, d, START_HOUR - offset, 0, 0);
       const dayEnd = Date.UTC(y, m - 1, d, END_HOUR - offset, 0, 0);
