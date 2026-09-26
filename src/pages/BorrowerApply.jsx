@@ -21,12 +21,7 @@ const STEPS = [
   { key: "submit", label: "Submit", icon: Send },
 ];
 
-const SAMPLE = {
-  first_name: "Maria", last_name: "Delgado", email: "maria@example.com", phone: "(510) 555-0139",
-  loan_amount: "25000", loan_purpose: "Debt consolidation", loan_term_months: "36",
-  employment_status: "employed", employer_name: "Casa Verde Catering", annual_income: "68000",
-  product_type: "personal_loan", market: "US", borrower_type: "salaried",
-};
+
 
 const DOC_REQS = [
   { type: "bank_statement", label: "Bank statement", detail: "Last 3 months of your main account" },
@@ -77,7 +72,7 @@ export default function BorrowerApply() {
   const deepBorrower = new URLSearchParams(window.location.search).get("mode") === "borrower";
   const [mode, setMode] = useState(deepBorrower ? "borrower" : "landing");
   const [step, setStep] = useState(0);
-  const [values, setValues] = useState(deepBorrower ? SAMPLE : {});
+  const [values, setValues] = useState({});
   const [documents, setDocuments] = useState([]);
   const [uploading, setUploading] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -93,11 +88,9 @@ export default function BorrowerApply() {
 
   const set = (k, v) => setValues((prev) => ({ ...prev, [k]: v }));
 
-  const loadSample = () => { setValues(SAMPLE); setError(null); };
-
   const startLender = () => setMode("lender");
   const startBorrower = () => {
-    setValues(SAMPLE);
+    setValues({});
     setDocuments([]);
     setStep(0);
     setSubmitted(null);
@@ -240,9 +233,6 @@ export default function BorrowerApply() {
         </div>
       </div>
 
-      <Hero />
-      <BorrowerExperience />
-
       <div ref={formRef} className="max-w-5xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
         <div className="grid md:grid-cols-[220px_1fr] lg:grid-cols-[220px_1fr_340px] gap-8">
           {/* Stepper */}
@@ -282,13 +272,6 @@ export default function BorrowerApply() {
               <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-50">{stepHeadlines[step].title}</h1>
             </div>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">{stepHeadlines[step].sub}</p>
-
-            {step === 0 && (
-              <div className="rounded-lg border border-teal-200 dark:border-teal-500/30 bg-teal-50/50 dark:bg-teal-500/5 px-4 py-3 mb-5 flex items-center justify-between gap-3">
-                <span className="text-[13px] text-slate-600 dark:text-slate-300">Start blank, or load this demo's sample application.</span>
-                <button onClick={loadSample} className="shrink-0 text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-3.5 py-2 rounded-lg hover:shadow-md transition-all">Use sample application</button>
-              </div>
-            )}
 
             {error && (
               <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 flex items-start gap-2">
@@ -441,7 +424,7 @@ export default function BorrowerApply() {
 
         <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Secured by CreditDecide · {slug ? "Your data is sent to the lender" : "Demo mode"}</span>
+          <span>Secured by CreditDecide · Your data is sent to the lender</span>
         </div>
       </div>
     </div>

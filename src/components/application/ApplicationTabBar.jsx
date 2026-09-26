@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import {
   LayoutDashboard, FileText, Wallet, Scale, GitCompare,
   ShieldAlert, Brain, ScrollText, Gavel, Network, Activity as ActivityIcon,
-  ChevronRight, MousePointerClick,
+  MessageSquare, ChevronRight, MousePointerClick,
 } from "lucide-react";
 
 const TAB_ICONS = {
@@ -14,6 +14,7 @@ const TAB_ICONS = {
   Risk: ShieldAlert,
   "AI Underwriter": Brain,
   "Credit Memo": FileText,
+  Conversation: MessageSquare,
   Policy: ScrollText,
   Decision: Gavel,
   Evidence: Network,

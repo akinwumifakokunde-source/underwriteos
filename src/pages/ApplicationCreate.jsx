@@ -52,11 +52,8 @@ export default function ApplicationCreate() {
     const create = urlParams.get("create");
     const marketParam = urlParams.get("market");
     if (marketParam) setMarket(marketParam);
-    if (create) {
-      setShowChooser(true);
-      return;
-    }
-    handleChoose(choice || "sample", marketParam);
+    if (choice) { handleChoose(choice, marketParam); return; }
+    setShowChooser(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,33 +1,19 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import MobilePageHeader from "@/components/layout/MobilePageHeader";
 import { Loader2, AlertTriangle, ArrowLeft, FileText } from "lucide-react";
-import StatusIndicator from "@/components/application/StatusIndicator";
 import OverviewTab from "@/components/application/OverviewTab";
 import DocumentsSection from "@/components/application/DocumentsSection";
-import FinancialProfileTab from "@/components/application/FinancialProfileTab";
-import RiskSignalsTab from "@/components/application/RiskSignalsTab";
-import AnalysisSection from "@/components/application/AnalysisSection";
-import PolicySection from "@/components/application/PolicySection";
-import DecisionSection from "@/components/application/DecisionSection";
-import EvidenceTab from "@/components/application/EvidenceTab";
 import ActivityTab from "@/components/application/ActivityTab";
-import ApplicationHeader from "@/components/application/ApplicationHeader";
-import AffordabilityTab from "@/components/application/AffordabilityTab";
-import ReconciliationPanel from "@/components/application/ReconciliationPanel";
-import ChatAssistant from "@/components/application/ChatAssistant";
 import CreditMemoTab from "@/components/application/CreditMemoTab";
-import GuidedReviewOverlay from "@/components/application/GuidedReviewOverlay";
+import ConversationTab from "@/components/application/ConversationTab";
+import KitaSummaryHeader from "@/components/application/KitaSummaryHeader";
 import ApplicationTabBar from "@/components/application/ApplicationTabBar";
 import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
-import ExportControls from "@/components/underwrite/ExportControls";
-import RegulatoryOutputs from "@/components/application/RegulatoryOutputs";
-import RecordOutcome from "@/components/application/RecordOutcome";
-import { getJurisdiction, getPolicyLabel, getCurrency } from "@/lib/jurisdictions";
-import { computeRiskDimensions } from "@/lib/riskDimensions";
+import { getJurisdiction } from "@/lib/jurisdictions";
 
 const STATUS_STYLES = {
   draft: "bg-slate-50 text-slate-600 border-slate-200",
@@ -47,11 +33,10 @@ const STATUS_LABELS = {
   failed: "FAILED",
 };
 
-const TABS = ["Application Details", "Documents", "Credit Memo", "Activity", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence"];
+const TABS = ["Application Details", "Documents", "Credit Memo", "Conversation", "Activity"];
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
-  const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
 
   const [app, setApp] = useState(null);
@@ -70,7 +55,6 @@ export default function ApplicationDetail() {
   const [autoRan, setAutoRan] = useState(false);
   const [pulling, setPulling] = useState(null);
   const [postUpload, setPostUpload] = useState(null);
-  const [guided, setGuided] = useState(urlParams.get("guided") === "1");
 
   const load = useCallback(async () => {
     try {
@@ -287,8 +271,11 @@ export default function ApplicationDetail() {
     : "needs_info";
 
   const lastUpdated = decision?.decision_timestamp ? timeAgo(new Date(decision.decision_timestamp)) : null;
-  const onViewEvidence = () => setTab("Evidence");
-  const dimensions = computeRiskDimensions({ fp, cp, riskSignals, documents, decision });
+  const navigateTab = (t) => {
+    const map = { "Risk": "Credit Memo", "AI Underwriter": "Credit Memo", "Financial Profile": "Application Details", "Affordability": "Application Details", "Reconciliation": "Application Details", "Evidence": "Credit Memo", "Policy": "Application Details", "Decision": "Credit Memo" };
+    setTab(map[t] || (TABS.includes(t) ? t : "Application Details"));
+  };
+  const onViewEvidence = () => navigateTab("Evidence");
 
   if (loading) {
     return (
@@ -328,12 +315,7 @@ export default function ApplicationDetail() {
           <ArrowLeft className="w-4 h-4" /> Applications
         </Link>
 
-        <div className="flex items-start justify-between mb-5 gap-4">
-          <div className="flex-1">
-            <ApplicationHeader app={app} borrower={borrower} documents={documents} decision={decision} fmtMoney={fmtMoney} onRequestInfo={() => setTab("Documents")} onReassess={() => runPipeline()} />
-          </div>
-          <StatusIndicator status={status} lastUpdated={lastUpdated} onRerun={() => runPipeline()} />
-        </div>
+        <KitaSummaryHeader app={app} borrower={borrower} decision={decision} fmtMoney={fmtMoney} />
 
         {error && (
           <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 flex items-start gap-2">
@@ -350,7 +332,7 @@ export default function ApplicationDetail() {
               fileName={postUpload.fileName}
               extractedCount={(documents.find((d) => d.file_name === postUpload.fileName)?.extracted_data?.fields || []).length}
               form={form}
-              onAdjustPolicy={() => { setPostUpload(null); setTab("Policy"); }}
+              onAdjustPolicy={() => { setPostUpload(null); navigateTab("Policy"); }}
               onReviewDetails={() => { setPostUpload(null); setTab("Application Details"); }}
               onDismiss={() => setPostUpload(null)}
             />
@@ -367,7 +349,7 @@ export default function ApplicationDetail() {
               fmtMoney={fmtMoney}
               form={form} setForm={setForm}
               allExtracted={allExtracted} onSave={saveForm} saving={saving}
-              onNavigate={setTab}
+              onNavigate={navigateTab}
               autoIngested={documents.length === 0 && !!(fp || cp)}
             />
           )}
@@ -407,39 +389,6 @@ export default function ApplicationDetail() {
             </>
           )}
 
-          {tab === "Financial Profile" && (
-            <FinancialProfileTab fp={fp} cp={cp} evidence={evidence} riskSignals={riskSignals} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
-          )}
-
-          {tab === "Affordability" && (
-            <AffordabilityTab fp={fp} app={app} fmtMoney={fmtMoney} />
-          )}
-
-          {tab === "Reconciliation" && (
-            <ReconciliationPanel documents={documents} borrower={borrower} fp={fp} fmtMoney={fmtMoney} onViewEvidence={onViewEvidence} />
-          )}
-
-          {tab === "Risk" && (
-            <RiskSignalsTab signals={riskSignals} evidence={evidence} onViewEvidence={onViewEvidence} />
-          )}
-
-          {tab === "AI Underwriter" && (
-            <>
-              <ExportControls
-                results={{ decision, recommendation, riskSignals, evidence, financialProfile: fp, creditProfile: cp }}
-                ids={{ application_id: applicationId }}
-              />
-              <AnalysisSection
-                recommendation={recommendation}
-                running={analyzing}
-                lastUpdated={recommendation?.generated_at ? timeAgo(new Date(recommendation.generated_at)) : null}
-                onRerun={() => runPipeline()}
-                borrower={borrower} app={app} fp={fp} cp={cp}
-                evidence={evidence} fmtMoney={fmtMoney}
-              />
-            </>
-          )}
-
           {tab === "Credit Memo" && (
             <CreditMemoTab
               recommendation={recommendation} decision={decision}
@@ -450,33 +399,8 @@ export default function ApplicationDetail() {
             />
           )}
 
-          {tab === "Policy" && (
-            <PolicySection decision={decision} policyInfo={{ name: getPolicyLabel(app?.policy_id, app?.market) }} />
-          )}
-
-          {tab === "Decision" && (
-            <>
-              <ExportControls
-                results={{ decision, recommendation, riskSignals, evidence, financialProfile: fp, creditProfile: cp }}
-                ids={{ application_id: applicationId }}
-              />
-              <RegulatoryOutputs
-                decision={decision} recommendation={recommendation}
-                borrower={borrower} app={app}
-                riskSignals={riskSignals} evidence={evidence}
-                creditProfile={cp} financialProfile={fp}
-              />
-              <RecordOutcome applicationId={applicationId} decision={decision} />
-              <DecisionSection
-                decision={decision} recommendation={recommendation}
-                evidence={evidence} onOverride={overrideDecision} overriding={overriding}
-                dimensions={dimensions}
-              />
-            </>
-          )}
-
-          {tab === "Evidence" && (
-            <EvidenceTab evidence={evidence} />
+          {tab === "Conversation" && (
+            <ConversationTab applicationId={applicationId} />
           )}
 
           {tab === "Activity" && (
@@ -484,13 +408,6 @@ export default function ApplicationDetail() {
           )}
         </div>
       </div>
-      {guided && (
-        <GuidedReviewOverlay
-          setTab={setTab}
-          onFinish={() => { setGuided(false); navigate("/reports?guided=1"); }}
-        />
-      )}
-      <ChatAssistant applicationId={applicationId} />
     </div>
   );
 }
