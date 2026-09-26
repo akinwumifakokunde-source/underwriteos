@@ -46,7 +46,7 @@ const STATUS_LABELS = {
   failed: "FAILED",
 };
 
-const TABS = ["Overview", "Documents", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Credit Memo", "Policy", "Decision", "Evidence", "Activity"];
+const TABS = ["Application Details", "Documents", "Credit Memo", "Activity", "Financial Profile", "Affordability", "Reconciliation", "Risk", "AI Underwriter", "Policy", "Decision", "Evidence"];
 
 export default function ApplicationDetail() {
   const { applicationId } = useParams();
@@ -58,7 +58,7 @@ export default function ApplicationDetail() {
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [tab, setTab] = useState(TABS.includes(urlParams.get("tab")) ? urlParams.get("tab") : "Overview");
+  const [tab, setTab] = useState(TABS.includes(urlParams.get("tab")) ? urlParams.get("tab") : "Application Details");
   const [form, setForm] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [processingDocId, setProcessingDocId] = useState(null);
@@ -163,7 +163,7 @@ export default function ApplicationDetail() {
       await base44.functions.invoke("apiDocuments", { action: "process", document_id: doc.id });
       await load();
       await runPipeline();
-      setTab("Overview");
+      setTab("Application Details");
       setPostUpload({ fileName: file.name });
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Document processing failed.");
@@ -179,7 +179,7 @@ export default function ApplicationDetail() {
       await base44.functions.invoke("apiCreditReport", { application_id: applicationId, mode: "auto", provider });
       await load();
       await runPipeline();
-      setTab("Overview");
+      setTab("Application Details");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Credit report pull failed.");
     } finally {
@@ -193,7 +193,7 @@ export default function ApplicationDetail() {
       await base44.functions.invoke("apiBankStatement", { application_id: applicationId, mode: "auto", provider });
       await load();
       await runPipeline();
-      setTab("Overview");
+      setTab("Application Details");
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Bank statement pull failed.");
     } finally {
@@ -348,7 +348,7 @@ export default function ApplicationDetail() {
               extractedCount={(documents.find((d) => d.file_name === postUpload.fileName)?.extracted_data?.fields || []).length}
               form={form}
               onAdjustPolicy={() => { setPostUpload(null); setTab("Policy"); }}
-              onReviewDetails={() => { setPostUpload(null); setTab("Overview"); }}
+              onReviewDetails={() => { setPostUpload(null); setTab("Application Details"); }}
               onDismiss={() => setPostUpload(null)}
             />
           </div>
@@ -356,7 +356,7 @@ export default function ApplicationDetail() {
 
         {/* Tab content */}
         <div className="space-y-4">
-          {tab === "Overview" && (
+          {tab === "Application Details" && (
             <OverviewTab
               borrower={borrower} app={app} fp={fp} cp={cp}
               decision={decision} recommendation={recommendation}

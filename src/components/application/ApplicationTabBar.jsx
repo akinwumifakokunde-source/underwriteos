@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 
 const TAB_ICONS = {
-  Overview: LayoutDashboard,
+  "Application Details": LayoutDashboard,
   Documents: FileText,
   "Financial Profile": Wallet,
   Affordability: Scale,
