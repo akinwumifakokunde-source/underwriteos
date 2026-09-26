@@ -20,8 +20,11 @@ export default function ApplicationCreate() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState([]);
   const [market, setMarket] = useState("GB");
-  // view: "guided" (default — same walkthrough as the public demo) | "create" (real EntryChoice flow)
-  const [view, setView] = useState("guided");
+  // view: "guided" (same walkthrough as the public demo) | "create" (real application flow)
+  const [view, setView] = useState(() => {
+    const p = new URLSearchParams(window.location.search);
+    return p.get("choice") || p.get("create") ? "create" : "guided";
+  });
 
   const addProgress = (msg) => setProgress((p) => [...p, { id: Date.now() + Math.random(), msg }]);
 
@@ -66,7 +69,7 @@ export default function ApplicationCreate() {
     return (
       <LenderSimulator
         onBack={() => navigate("/workspace")}
-        onCreateOwn={() => navigate("/applications/new?create=1")}
+        onCreateOwn={() => { setView("create"); handleChoose("sample", market); }}
       />
     );
   }

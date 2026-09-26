@@ -167,7 +167,7 @@ export default function Applications() {
               <Download className="w-4 h-4" /> Export CSV
             </button>
             <Link
-              to="/applications/new"
+              to="/applications/new?choice=sample"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
             >
               <Plus className="w-4 h-4" /> New Application
@@ -224,7 +224,7 @@ export default function Applications() {
             <span className="text-sm text-slate-500">Loading applications…</span>
           </div>
         ) : filtered.length === 0 ? (
-          <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionTo="/applications/new" actionIcon={Plus} />
+          <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionTo="/applications/new?choice=sample" actionIcon={Plus} />
         ) : (
           <ResponsiveTable
             columns={columns}
