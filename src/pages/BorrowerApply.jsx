@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Hero from "@/components/home/Hero.jsx";
+import HomeNav from "@/components/home/HomeNav.jsx";
 import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
 import LenderSimulator from "@/components/try/LenderSimulator.jsx";
 import {
@@ -146,15 +147,7 @@ export default function BorrowerApply() {
   if (mode === "landing") {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-        <div className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur">
-          <div className="max-w-5xl mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-50">
-              <span className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">C</span>
-              CreditDecide
-            </Link>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">Try CreditDecide · no sign-up</span>
-          </div>
-        </div>
+        <HomeNav />
         <Hero onStart={startLender} />
         <BorrowerExperience onStart={startBorrower} />
       </div>
