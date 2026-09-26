@@ -60,8 +60,10 @@ export default function MarketingHero() {
               Decide any borrower in minutes, across every market you lend in.
             </h1>
 
-            <p className="mt-6 max-w-lg text-base sm:text-lg text-[#a0b2a9] leading-relaxed">
-              Reads your documents, scores the risk, writes an explainable memo — every signal cited to its source.
+            <p className="mt-7 max-w-xl text-base sm:text-lg text-[#a0b2a9] leading-relaxed">
+              CreditDecide reads messy documents, normalizes the data, scores the
+              risk, and writes an explainable credit memo — every signal traced to
+              its source. Your policies set the rules. Your team makes the call.
             </p>
 
             <HeroLeadCapture />
@@ -79,7 +81,7 @@ export default function MarketingHero() {
               to="/start/borrower"
               className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
             >
-              Or try it free, no sign-up →
+              Or try CreditDecide with no sign-up →
             </Link>
           </div>
 
