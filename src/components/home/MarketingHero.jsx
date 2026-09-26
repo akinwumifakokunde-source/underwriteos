@@ -68,20 +68,19 @@ export default function MarketingHero() {
 
             <HeroLeadCapture />
 
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              {STATS.map((s) => (
-                <div key={s.label} className="flex items-baseline gap-2">
-                  <span className="text-xl font-semibold text-white">{s.value}</span>
-                  <span className="text-[12px] text-[#8f9f97]">{s.label}</span>
-                </div>
-              ))}
+            <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[#8f9f97]">
+              <span className="text-white font-medium">Any market</span>
+              <span className="text-white/20">·</span>
+              <span className="text-white font-medium">&lt; 3 min</span> decision
+              <span className="text-white/20">·</span>
+              <span className="text-white font-medium">100%</span> explainable
             </div>
 
             <Link
               to="/start/borrower"
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
             >
-              Or try CreditDecide with no sign-up →
+              Try it now →
             </Link>
           </div>
 
