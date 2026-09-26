@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
 import DecisionCard from "@/components/home/DecisionCard.jsx";
+import HeroLeadCapture from "@/components/home/HeroLeadCapture.jsx";
+
+const STATS = [
+  { value: "6", label: "markets live" },
+  { value: "< 3 min", label: "avg. decision" },
+  { value: "100%", label: "explainable" },
+];
 
 // Markets in rolling order (longitude descending so the globe rolls forward
 // smoothly). GB sits at index 4 — the cycle starts there, the brand's home
@@ -59,27 +66,23 @@ export default function MarketingHero() {
               its source. Your policies set the rules. Your team makes the call.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              <Link
-                to="/demo"
-                className="group inline-flex items-center gap-2 text-sm font-medium text-black bg-white pl-4 pr-5 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
-              >
-                <span className="w-2 h-2 rounded-full bg-[#2E7D32] group-hover:scale-110 transition-transform" />
-                Book a demo
-              </Link>
-              <Link
-                to="/start/borrower"
-                className="text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
-              >
-                Try CreditDecide →
-              </Link>
+            <HeroLeadCapture />
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+              {STATS.map((s) => (
+                <div key={s.label} className="flex items-baseline gap-2">
+                  <span className="text-xl font-semibold text-white">{s.value}</span>
+                  <span className="text-[12px] text-[#8f9f97]">{s.label}</span>
+                </div>
+              ))}
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8f9f97]">
-              <span>Underwriting OS</span>
-              <span className="text-white/20">·</span>
-              <span>Live in UK · US · Africa</span>
-            </div>
+            <Link
+              to="/start/borrower"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
+            >
+              Or try CreditDecide with no sign-up →
+            </Link>
           </div>
 
           {/* Right — rolling globe + cycling underwriting slip */}

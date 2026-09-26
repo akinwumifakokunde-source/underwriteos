@@ -22,6 +22,7 @@ export default function BookingModal({
   eventTitle = "Product Demo",
   eventDescription = "Book a 30-minute walkthrough. We'll run CreditDecide on one of your files and walk you through the memo, evidence and decision.",
   meetingType = "demo",
+  defaultEmail = "",
 }) {
   const [viewYear, setViewYear] = useState(() => {
     const t = new Date();
@@ -46,6 +47,7 @@ export default function BookingModal({
     setStage("slots");
     setBooked(null);
     setBookError(null);
+    if (defaultEmail) setForm((f) => ({ ...f, email: defaultEmail }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
