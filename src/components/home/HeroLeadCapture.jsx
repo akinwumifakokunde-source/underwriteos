@@ -34,7 +34,7 @@ export default function HeroLeadCapture() {
           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </form>
-      <p className="mt-3 text-[12px] text-[#8f9f97]">No sign-up required · 30-minute walkthrough · We'll run it on your file</p>
+      <p className="mt-3 text-[12px] text-[#8f9f97]">No sign-up · 30-min walkthrough · On your file</p>
 
       <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} defaultEmail={email} />
     </>
