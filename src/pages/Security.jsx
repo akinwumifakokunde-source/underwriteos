@@ -26,7 +26,7 @@ const ROADMAP = [
   { label: "Data residency / cross-border data controls", status: "Roadmap" },
   { label: "SOC 2 Type I", status: "In progress" },
   { label: "SOC 2 Type II", status: "Roadmap" },
-  { label: "ISO 27001", status: "Future roadmap" },
+  { label: "ISO/IEC 27001:2022", status: "In progress" },
 ];
 
 export default function Security() {
