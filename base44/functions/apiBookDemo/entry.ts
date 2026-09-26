@@ -4,7 +4,7 @@ const ORGANIZER = "akinwumi.fakokunde@gmail.com";
 const TZ = "Europe/London";
 const SLOT_MINUTES = 30;
 const START_HOUR = 9;
-const END_HOUR = 18;
+const END_HOUR = 20;
 // Ignore events longer than this — they're placeholders/junk (e.g. a 5-year "intake"),
 // not real meetings a demo would conflict with.
 const MAX_MEETING_HOURS = 24;
