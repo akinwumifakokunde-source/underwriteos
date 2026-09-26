@@ -144,6 +144,34 @@ export default async function(req) {
         return Response.json({ error: err?.error?.message || "Failed to create the booking." }, { status: 502 });
       }
       const ev = await evRes.json();
+
+      // Notify the admin that a new booking was made
+      try {
+        const when = new Intl.DateTimeFormat("en-GB", {
+          dateStyle: "full", timeStyle: "short", timeZone: TZ,
+        }).format(new Date(startMs));
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: ORGANIZER,
+          subject: isPartner
+            ? `New partner intro booked — ${name}${company ? ` (${company})` : ""}`
+            : `New demo booked — ${name}${company ? ` (${company})` : ""}`,
+          body: [
+            `A new ${isPartner ? "partner intro" : "product demo"} has been booked.`,
+            "",
+            `Name: ${name}`,
+            `Email: ${email}`,
+            `Company: ${company || "—"}`,
+            `Use case: ${use_case || "—"}`,
+            `When: ${when} (${TZ})`,
+            `Duration: 30 minutes`,
+            ev.hangoutLink ? `Google Meet: ${ev.hangoutLink}` : "",
+            ev.htmlLink ? `Calendar event: ${ev.htmlLink}` : "",
+          ].filter(Boolean).join("\n"),
+        });
+      } catch (e) {
+        // non-fatal — the booking itself still succeeded
+      }
+
       return Response.json({
         id: ev.id,
         hangoutLink: ev.hangoutLink,
