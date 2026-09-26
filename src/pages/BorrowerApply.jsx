@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { getJurisdiction } from "@/lib/jurisdictions";
 import Hero from "@/components/home/Hero.jsx";
 import HomeNav from "@/components/home/HomeNav.jsx";
 import BorrowerExperience from "@/components/home/BorrowerExperience.jsx";
@@ -109,7 +110,7 @@ export default function BorrowerApply() {
     setError(null);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setDocuments((prev) => [...prev.filter((d) => d.type !== type), { type, file_url, file_name: file.name }]);
+      setDocuments((prev) => [...prev.filter((d) => d.type !== type), { type, file_url, file_name: file.name, mime_type: file.type }]);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || `Failed to upload ${file.name}.`);
     } finally {
@@ -133,9 +134,45 @@ export default function BorrowerApply() {
         const res = await base44.functions.invoke("apiForms", { action: "public_submit", slug, values: { ...values, documents } });
         setSubmitted(res.data || { application_number: "—", thank_you_message: "Your application has been received." });
       } else {
-        // Demo mode (no published form) — simulate a reference
-        await new Promise((r) => setTimeout(r, 700));
-        setSubmitted({ application_number: `DEMO-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, thank_you_message: "Thanks — your demo application is ready. A lender will review your file and be in touch." });
+        // Real submission — create a Borrower + Application (data_collection) and attach uploads.
+        const jur = getJurisdiction(values.market || "GB");
+        const b = await base44.functions.invoke("apiBorrowers", {
+          action: "create",
+          first_name: values.first_name, last_name: values.last_name,
+          email: values.email, phone: values.phone,
+          employment_status: values.employment_status || "employed",
+          employer_name: values.employer_name,
+          annual_income: values.annual_income ? Number(values.annual_income) : null,
+          income_currency: jur.currency,
+        });
+        const borrowerId = b.data.borrower_id;
+        const a = await base44.functions.invoke("apiApplications", {
+          action: "create",
+          borrower_id: borrowerId,
+          loan_amount: Number(values.loan_amount),
+          loan_currency: jur.currency,
+          loan_purpose: values.loan_purpose || "general",
+          loan_term_months: Number(values.loan_term_months),
+          product_type: values.product_type || "personal_loan",
+          policy_id: jur.policies[0]?.id || "consumer-v1",
+          market: values.market || "GB",
+          borrower_type: values.borrower_type || "salaried",
+        });
+        const appId = a.data?.application_id;
+        for (const d of documents) {
+          try {
+            await base44.functions.invoke("apiDocuments", {
+              action: "upload", application_id: appId,
+              file_url: d.file_url, file_name: d.file_name,
+              mime_type: d.mime_type, document_type: d.type,
+            });
+          } catch (_) { /* non-fatal */ }
+        }
+        setSubmitted({
+          application_number: a.data?.application?.application_number || appId || "—",
+          application_id: appId,
+          thank_you_message: "Thanks — your application has been received. A lender will review your file and be in touch.",
+        });
       }
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Submission failed. Please try again.");
@@ -171,9 +208,13 @@ export default function BorrowerApply() {
             <p className="mt-4 text-xs text-slate-400">Reference: <span className="font-mono text-slate-600 dark:text-slate-300">{submitted.application_number}</span></p>
           )}
           <div className="mt-6 flex flex-col gap-2">
+            {submitted.application_id && (
+              <Link to={`/applications/${submitted.application_id}?guided=1`} className="text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-2.5 rounded-lg hover:shadow-md transition-all">
+                Open in lender workspace →
+              </Link>
+            )}
             <button onClick={() => { setSubmitted(null); setMode("landing"); }} className="text-sm font-medium text-teal-700 dark:text-teal-400 hover:underline">Try another flow</button>
             <Link to="/" className="text-sm font-medium text-slate-400 hover:underline">Back to home</Link>
-            {!slug && <p className="text-[11px] text-slate-400">Demo mode — no data was saved. Publish a form to collect real applications.</p>}
           </div>
         </div>
       </div>

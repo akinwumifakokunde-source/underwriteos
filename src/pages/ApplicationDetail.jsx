@@ -19,6 +19,7 @@ import AffordabilityTab from "@/components/application/AffordabilityTab";
 import ReconciliationPanel from "@/components/application/ReconciliationPanel";
 import ChatAssistant from "@/components/application/ChatAssistant";
 import CreditMemoTab from "@/components/application/CreditMemoTab";
+import GuidedReviewOverlay from "@/components/application/GuidedReviewOverlay";
 import ApplicationTabBar from "@/components/application/ApplicationTabBar";
 import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
@@ -68,6 +69,7 @@ export default function ApplicationDetail() {
   const [autoRan, setAutoRan] = useState(false);
   const [pulling, setPulling] = useState(null);
   const [postUpload, setPostUpload] = useState(null);
+  const [guided, setGuided] = useState(urlParams.get("guided") === "1");
 
   const load = useCallback(async () => {
     try {
@@ -481,6 +483,7 @@ export default function ApplicationDetail() {
           )}
         </div>
       </div>
+      {guided && <GuidedReviewOverlay setTab={setTab} onFinish={() => setGuided(false)} />}
       <ChatAssistant applicationId={applicationId} />
     </div>
   );

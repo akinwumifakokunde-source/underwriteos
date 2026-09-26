@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
 import EntryChoice from "@/components/application/EntryChoice";
-import LenderSimulator from "@/components/try/LenderSimulator";
-import { getJurisdiction, getCurrency, getPolicies } from "@/lib/jurisdictions";
+import { getJurisdiction } from "@/lib/jurisdictions";
 import { Loader2, ArrowLeft } from "lucide-react";
 
 const SAMPLE = {
   borrower: { first_name: "Maria", last_name: "Smith", email: "maria@example.com", phone: "+44 7700 900000", employment_status: "employed", employer_name: "Acme Corp", annual_income: 52000 },
   application: { loan_amount: 12000, loan_term_months: 24, loan_purpose: "debt_consolidation", product_type: "personal_loan", policy_id: "consumer-v1" },
   credit: { credit_score: 680, active_accounts: 4, closed_accounts: 1, delinquent_accounts: 0, defaults: 0, credit_utilisation: 0.25, recent_enquiries: 1, repayment_history: 95, outstanding_balance: 3000 },
-  financial: { monthly_income: 4333, monthly_expenses: 1800, existing_debt: 3000 }
+  financial: { monthly_income: 4333, monthly_expenses: 1800, existing_debt: 3000 },
 };
 
 export default function ApplicationCreate() {
@@ -20,11 +19,7 @@ export default function ApplicationCreate() {
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState([]);
   const [market, setMarket] = useState("GB");
-  // view: "guided" (same walkthrough as the public demo) | "create" (real application flow)
-  const [view, setView] = useState(() => {
-    const p = new URLSearchParams(window.location.search);
-    return p.get("choice") || p.get("create") ? "create" : "guided";
-  });
+  const [showChooser, setShowChooser] = useState(false);
 
   const addProgress = (msg) => setProgress((p) => [...p, { id: Date.now() + Math.random(), msg }]);
 
@@ -35,7 +30,7 @@ export default function ApplicationCreate() {
     setProgress([]);
     try {
       if (choice === "sample") {
-        await createSampleApplication(navigate, addProgress, effectiveMarket);
+        await createSampleApplication(navigate, addProgress, effectiveMarket, true);
       } else {
         await createDraftApplication(choice, navigate, addProgress, effectiveMarket);
       }
@@ -47,40 +42,53 @@ export default function ApplicationCreate() {
     }
   };
 
-  // ?choice=… auto-creates a real application (existing deep links).
   // ?create=1 opens the real EntryChoice form without auto-starting.
-  // No param → guided demo walkthrough (same as the public demo page).
+  // ?choice=… auto-creates a real application (existing deep links).
+  // No param → auto-create a real sample application and open the guided review
+  // (same walkthrough as the public demo, but on real data).
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const choice = urlParams.get("choice");
     const create = urlParams.get("create");
     const marketParam = urlParams.get("market");
     if (marketParam) setMarket(marketParam);
-    if (choice) {
-      setView("create");
-      handleChoose(choice, marketParam);
-    } else if (create) {
-      setView("create");
+    if (create) {
+      setShowChooser(true);
+      return;
     }
+    handleChoose(choice || "sample", marketParam);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (view === "guided") {
+  if (showChooser && !creating) {
     return (
-      <LenderSimulator
-        onBack={() => navigate("/workspace")}
-        onCreateOwn={() => { setView("create"); handleChoose("sample", market); }}
-      />
+      <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
+        <Nav />
+        <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />
+        {error && (
+          <div className="max-w-2xl mx-auto px-5 sm:px-8 pb-10">
+            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 mb-4">{error}</div>
+            <button onClick={() => { setError(null); setProgress([]); }} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900">
+              <ArrowLeft className="w-4 h-4" /> Back to choices
+            </button>
+          </div>
+        )}
+      </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
-      {!creating && !error && <EntryChoice onChoose={handleChoose} market={market} onMarketChange={setMarket} />}
-
-      {creating && (
-        <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10">
+      <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10">
+        {error ? (
+          <>
+            <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 mb-4">{error}</div>
+            <button onClick={() => { setError(null); setProgress([]); setShowChooser(true); }} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900">
+              <ArrowLeft className="w-4 h-4" /> Back to choices
+            </button>
+          </>
+        ) : (
           <div className="rounded-xl border border-slate-200 bg-white p-6">
             <div className="flex items-center gap-3 mb-4">
               <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
@@ -94,17 +102,8 @@ export default function ApplicationCreate() {
               ))}
             </div>
           </div>
-        </div>
-      )}
-
-      {error && !creating && (
-        <div className="max-w-2xl mx-auto px-5 sm:px-8 py-10">
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700 mb-4">{error}</div>
-          <button onClick={() => { setError(null); setProgress([]); }} className="inline-flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-900">
-            <ArrowLeft className="w-4 h-4" /> Back to choices
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -114,13 +113,12 @@ async function createDraftApplication(choice, navigate, addProgress, market) {
   const currency = jur.currency;
   const policyId = jur.policies[0]?.id || "consumer-v1";
   const productType = jur.products[0]?.value || "personal_loan";
+  const isUpload = choice === "upload";
 
   addProgress("Creating borrower…");
-  const isUpload = choice === "upload";
   const b = await base44.functions.invoke("apiBorrowers", {
     action: "create",
-    first_name: "New",
-    last_name: "Applicant",
+    first_name: "New", last_name: "Applicant",
     email: "", phone: "",
     employment_status: "employed",
     income_currency: currency,
@@ -148,7 +146,7 @@ async function createDraftApplication(choice, navigate, addProgress, market) {
   setTimeout(() => navigate(`/applications/${appId}${isUpload ? "?tab=Documents" : ""}`), 400);
 }
 
-async function createSampleApplication(navigate, addProgress, market) {
+async function createSampleApplication(navigate, addProgress, market, guided) {
   const s = SAMPLE;
   const jur = getJurisdiction(market);
   const currency = jur.currency;
@@ -225,5 +223,5 @@ async function createSampleApplication(navigate, addProgress, market) {
   addProgress("✓ Decision ready");
 
   addProgress("Opening workspace…");
-  setTimeout(() => navigate(`/applications/${appId}`), 600);
+  setTimeout(() => navigate(`/applications/${appId}${guided ? "?guided=1" : ""}`), 600);
 }
