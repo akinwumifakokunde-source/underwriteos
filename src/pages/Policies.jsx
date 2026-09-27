@@ -2,9 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare, Globe } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Trash2, GripVertical, Save, Copy, ArrowLeft, Shield, Check, X, GitCompare, Globe, FlaskConical, History, ChevronDown } from "lucide-react";
 import PolicySimulator from "@/components/policies/PolicySimulator";
 import ComparePolicies from "@/components/policies/ComparePolicies";
+import PolicyBacktest from "@/components/policies/PolicyBacktest";
 import { JURISDICTIONS, getJurisdiction } from "@/lib/jurisdictions";
 import { getPolicyTemplate, TEMPLATE_TYPES } from "@/lib/policyTemplates";
 
@@ -50,6 +51,8 @@ export default function Policies() {
   const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [backtestPolicy, setBacktestPolicy] = useState(null);
+  const [expandedGroup, setExpandedGroup] = useState(null);
   const [market, setMarket] = useState("GB");
 
   const load = useCallback(async () => {
@@ -174,6 +177,13 @@ export default function Policies() {
     [rules[idx], rules[target]] = [rules[target], rules[idx]];
     return { ...e, rules };
   });
+
+  // Group policies by policy_id for version history view
+  const grouped = policies.reduce((acc, p) => {
+    if (!acc[p.policy_id]) acc[p.policy_id] = [];
+    acc[p.policy_id].push(p);
+    return acc;
+  }, {});
 
   if (loading) {
     return (
@@ -394,41 +404,83 @@ export default function Policies() {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {policies.map((p) => (
-                  <div key={p.id} className="rounded-xl border border-slate-200 bg-white p-5">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-900">{p.name}</h3>
-                        <div className="text-[11px] text-slate-400 font-mono">{p.policy_id} · v{p.version}</div>
+              <div className="space-y-3">
+                {Object.entries(grouped).map(([pid, versions]) => {
+                  const active = versions.find((v) => v.status === "active");
+                  const drafts = versions.filter((v) => v.status === "draft");
+                  const isExpanded = expandedGroup === pid;
+                  const sorted = [...versions].sort((a, b) => Number(b.version) - Number(a.version));
+                  return (
+                    <div key={pid} className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+                      <div className="p-5">
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <h3 className="text-sm font-semibold text-slate-900">{active?.name || sorted[0]?.name || pid}</h3>
+                            <div className="text-[11px] text-slate-400 font-mono">{pid} · {versions.length} version{versions.length !== 1 ? "s" : ""}</div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {active && <span className="text-[10px] font-medium border rounded px-2 py-0.5 text-emerald-700 bg-emerald-50 border-emerald-200">ACTIVE v{active.version}</span>}
+                            {drafts.length > 0 && <span className="text-[10px] font-medium border rounded px-2 py-0.5 text-slate-600 bg-slate-50 border-slate-200">{drafts.length} DRAFT</span>}
+                          </div>
+                        </div>
+                        {active?.description && <p className="text-[13px] text-slate-500 mb-3">{active.description}</p>}
+                        <div className="text-[11px] text-slate-400 mb-3">{active?.rules?.length || sorted[0]?.rules?.length || 0} rules in active version</div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {active && (
+                            <button onClick={() => setEditing({ ...active, rules: [...(active.rules || [])] })} className="text-xs font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg hover:bg-slate-50">
+                              Edit active
+                            </button>
+                          )}
+                          <button onClick={() => setExpandedGroup(isExpanded ? null : pid)} className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg hover:bg-slate-50">
+                            <History className="w-3.5 h-3.5" /> Version history
+                            <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                          </button>
+                          {drafts.length > 0 && (
+                            <button onClick={() => setBacktestPolicy(drafts[0])} className="inline-flex items-center gap-1 text-xs font-medium text-teal-700 bg-teal-50 border border-teal-200 px-2.5 py-1.5 rounded-lg hover:bg-teal-100">
+                              <FlaskConical className="w-3.5 h-3.5" /> Backtest draft
+                            </button>
+                          )}
+                          <button onClick={() => duplicatePolicy(active || sorted[0])} className="text-xs font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg hover:bg-slate-50">
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                      <span className={`text-[10px] font-medium border rounded px-2 py-0.5 ${p.status === "active" ? "text-emerald-700 bg-emerald-50 border-emerald-200" : p.status === "draft" ? "text-slate-600 bg-slate-50 border-slate-200" : "text-slate-400 bg-slate-50 border-slate-200"}`}>
-                        {p.status?.toUpperCase()}
-                      </span>
-                    </div>
-                    {p.description && <p className="text-[13px] text-slate-500 mb-3">{p.description}</p>}
-                    <div className="text-[11px] text-slate-400 mb-3">{p.rules?.length || 0} rules</div>
-                    <div className="flex items-center gap-2">
-                      {p.status !== "active" && (
-                        <button onClick={() => activatePolicy(p)} className="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-lg hover:bg-emerald-100">
-                          Activate
-                        </button>
+
+                      {isExpanded && (
+                        <div className="border-t border-slate-100 bg-slate-50/50">
+                          <div className="px-5 py-3 space-y-1.5">
+                            {sorted.map((v) => (
+                              <div key={v.id} className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                                <span className={`text-[10px] font-mono font-medium rounded px-1.5 py-0.5 border ${v.status === "active" ? "text-emerald-700 bg-emerald-50 border-emerald-200" : v.status === "draft" ? "text-slate-600 bg-slate-50 border-slate-200" : "text-slate-400 bg-slate-50 border-slate-200"}`}>
+                                  v{v.version}
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-mono">{v.status?.toUpperCase()}</span>
+                                <span className="text-[11px] text-slate-400">{v.rules?.length || 0} rules</span>
+                                <span className="text-[10px] text-slate-300 ml-auto">{new Date(v.created_date).toLocaleDateString()}</span>
+                                <div className="flex items-center gap-1">
+                                  {v.status !== "active" && (
+                                    <button onClick={() => activatePolicy(v)} className="text-[10px] font-medium text-emerald-700 hover:underline">Activate</button>
+                                  )}
+                                  <button onClick={() => setEditing({ ...v, rules: [...(v.rules || [])] })} className="text-[10px] font-medium text-slate-500 hover:text-slate-900">Edit</button>
+                                  {v.status === "draft" && (
+                                    <button onClick={() => setBacktestPolicy(v)} className="text-[10px] font-medium text-teal-700 hover:underline">Backtest</button>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       )}
-                      <button onClick={() => setEditing({ ...p, rules: [...(p.rules || [])] })} className="text-xs font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg hover:bg-slate-50">
-                        Edit
-                      </button>
-                      <button onClick={() => duplicatePolicy(p)} className="text-xs font-medium text-slate-600 bg-white border border-slate-200 px-2.5 py-1.5 rounded-lg hover:bg-slate-50">
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
         )}
       </div>
       {compareOpen && <ComparePolicies policies={policies} onClose={() => setCompareOpen(false)} />}
+      {backtestPolicy && <PolicyBacktest policy={backtestPolicy} onClose={() => setBacktestPolicy(null)} />}
     </div>
   );
 }

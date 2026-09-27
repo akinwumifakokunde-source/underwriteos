@@ -66,7 +66,10 @@ export default function ComparePolicies({ policies, onClose }) {
             <div className="rounded-lg border border-slate-200 divide-y divide-slate-100">
               {added.map((r) => <DiffRow key={"a" + r.rule_id} tag="Added" r={r} cls="text-emerald-700" />)}
               {removed.map((r) => <DiffRow key={"r" + r.rule_id} tag="Removed" r={r} cls="text-rose-700" />)}
-              {modified.map((r) => <DiffRow key={"m" + r.rule_id} tag="Modified" r={r} cls="text-amber-700" />)}
+              {modified.map((r) => {
+                const old = rulesA.find((x) => x.rule_id === r.rule_id);
+                return <ModifiedDiffRow key={"m" + r.rule_id} r={r} old={old} />;
+              })}
             </div>
           )}
 
@@ -109,6 +112,32 @@ function DiffRow({ tag, r, cls }) {
       <span className="font-mono text-slate-500">{r.rule_id}</span>
       <span className="text-slate-700 capitalize flex-1">{r.field.replace(/_/g, " ")} {r.operator} {r.threshold}</span>
       <span className={`font-medium ${cls}`}>{r.decision}</span>
+    </div>
+  );
+}
+
+function ModifiedDiffRow({ r, old }) {
+  const changes = [];
+  if (old.operator !== r.operator) changes.push({ field: "op", from: old.operator, to: r.operator });
+  if (String(old.threshold) !== String(r.threshold)) changes.push({ field: "threshold", from: old.threshold, to: r.threshold });
+  if (old.decision !== r.decision) changes.push({ field: "decision", from: old.decision, to: r.decision });
+  return (
+    <div className="px-3 py-2.5 text-[12px]">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="text-[10px] font-medium text-amber-700">Modified</span>
+        <span className="font-mono text-slate-500">{r.rule_id}</span>
+        <span className="text-slate-700 capitalize flex-1">{r.field.replace(/_/g, " ")}</span>
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 pl-16">
+        {changes.map((c, i) => (
+          <div key={i} className="flex items-center gap-1.5">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">{c.field}</span>
+            <span className="font-mono text-rose-500 line-through decoration-rose-300">{String(c.from)}</span>
+            <ArrowRight className="w-3 h-3 text-slate-300" />
+            <span className="font-mono text-emerald-600 font-medium">{String(c.to)}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
