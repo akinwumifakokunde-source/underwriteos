@@ -62,6 +62,7 @@ const Partners = lazy(() => import("@/pages/Partners"));
 const Onboarding = lazy(() => import("@/pages/Onboarding"));
 const PublicNotice = lazy(() => import("@/pages/PublicNotice"));
 const PortfolioRisk = lazy(() => import("@/pages/PortfolioRisk"));
+const AuditLog = lazy(() => import("@/pages/AuditLog"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -132,6 +133,7 @@ const AnimatedRoutes = () => {
               <Route path="/portfolio-risk" element={<PortfolioRisk />} />
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/collections" element={<Collections />} />
+              <Route path="/audit" element={<AuditLog />} />
               <Route path="/playground" element={<Playground />} />
               <Route path="/api-keys" element={<ApiKeys />} />
               <Route path="/providers" element={<Providers />} />

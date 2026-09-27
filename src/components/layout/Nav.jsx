@@ -25,6 +25,7 @@ const NAV_ITEMS = [
 const SECONDARY_ITEMS = [
   { to: "/batch", label: "Batch" },
   { to: "/collections", label: "Collections" },
+  { to: "/audit", label: "Audit Log" },
   { to: "/monitoring", label: "Calibration" },
   { to: "/members", label: "Members" },
   { to: "/pricing", label: "Pricing" },
