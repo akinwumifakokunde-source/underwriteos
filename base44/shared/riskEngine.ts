@@ -319,29 +319,30 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
   if (idDocs.length > 0 && input.borrower) {
     const extracted = extractIdentityFields(idDocs);
 
-    // Name match
-    if (extracted.fullName) {
-      const declaredName = normalizeName(`${input.borrower.first_name || ""} ${input.borrower.last_name || ""}`);
+    // Name match — only when both declared and document names are present
+    if (extracted.fullName && input.borrower.first_name && input.borrower.last_name) {
+      const declaredName = normalizeName(`${input.borrower.first_name} ${input.borrower.last_name}`);
       const docName = normalizeName(extracted.fullName);
-      const nameMatch = declaredName === docName || (declaredName && docName && (declaredName.includes(docName) || docName.includes(declaredName)));
+      const nameMatch = Boolean(declaredName && docName && (declaredName === docName || declaredName.includes(docName) || docName.includes(declaredName)));
       push({ category: "fraud", signal: "identity_name_match", value: nameMatch, value_type: "boolean", confidence: 0.85, source: "document", flag: nameMatch ? "positive" : "critical", source_reference: extracted.nameDocId },
         { calculation_method: "borrower_name_against_document_name", field: "borrower.first_name_last_name_vs_document", source_id: extracted.nameDocId, document_id: extracted.nameDocId });
     }
 
-    // DOB match
-    if (extracted.dob) {
+    // DOB match — only when both declared and document DOBs are present
+    if (extracted.dob && input.borrower.date_of_birth) {
       const declaredDob = normalizeDate(input.borrower.date_of_birth);
       const docDob = normalizeDate(extracted.dob);
-      const dobMatch = declaredDob && docDob && declaredDob === docDob;
+      const dobMatch = Boolean(declaredDob && docDob && declaredDob === docDob);
       push({ category: "fraud", signal: "identity_dob_match", value: dobMatch, value_type: "boolean", confidence: 0.88, source: "document", flag: dobMatch ? "positive" : "critical", source_reference: extracted.dobDocId },
         { calculation_method: "borrower_dob_against_document_dob", field: "borrower.date_of_birth_vs_document", source_id: extracted.dobDocId, document_id: extracted.dobDocId });
     }
 
-    // Address match
-    if (extracted.addressLine1 || extracted.postalCode) {
+    // Address match — only when both declared and document addresses are present
+    if ((extracted.addressLine1 || extracted.postalCode) && input.borrower.address && (input.borrower.address.line1 || input.borrower.address.postal_code)) {
       const declaredAddr = normalizeAddr(input.borrower.address);
       const docAddr = normalizeAddr({ line1: extracted.addressLine1, city: extracted.addressCity, postal_code: extracted.postalCode });
-      const addressMatch = (declaredAddr && docAddr && (declaredAddr === docAddr || (extracted.postalCode && input.borrower.address?.postal_code && normalizeStr(input.borrower.address.postal_code) === normalizeStr(extracted.postalCode))));
+      const postalMatch = extracted.postalCode && input.borrower.address.postal_code && normalizeStr(input.borrower.address.postal_code) === normalizeStr(extracted.postalCode);
+      const addressMatch = Boolean(declaredAddr && docAddr && (declaredAddr === docAddr || postalMatch));
       push({ category: "fraud", signal: "identity_address_match", value: addressMatch, value_type: "boolean", confidence: 0.82, source: "document", flag: addressMatch ? "positive" : "negative", source_reference: extracted.addrDocId },
         { calculation_method: "borrower_address_against_document_address", field: "borrower.address_vs_document", source_id: extracted.addrDocId, document_id: extracted.addrDocId });
     }
