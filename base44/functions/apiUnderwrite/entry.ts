@@ -5,6 +5,7 @@ import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
 import { calculateRate } from "../../shared/pricingEngine.ts";
 import { generateAdverseActionNotice } from "../../shared/adverseActionNotice.ts";
+import { deliverDecisionWebhooks } from "../../shared/webhookDelivery.ts";
 
 // POST /v1/applications/{id}/underwrite — runs the full underwriting evaluation.
 // Pipeline: AI Analysis -> Risk Signals -> Evidence -> Policy Engine -> Recommendation -> Final Decision.
@@ -155,9 +156,18 @@ export default async function(req: Request): Promise<Response> {
       interest_rate: interestRate
     });
 
-    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score, interest_rate: interestRate } });
+    // 8. Fire HMAC-signed decision webhooks to subscribed endpoints.
+    let webhookResult: any = null;
+    try {
+      webhookResult = await deliverDecisionWebhooks(base44, organization_id, decisionRecord, app, interestRate);
+    } catch (e) {
+      // Webhook delivery failures must never block the decision response.
+      webhookResult = { delivered: 0, error: e.message };
+    }
 
-    return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord, interest_rate: interestRate }, 200);
+    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score, interest_rate: interestRate, webhooks_delivered: webhookResult?.delivered || 0 } });
+
+    return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord, interest_rate: interestRate, webhooks: webhookResult }, 200);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
