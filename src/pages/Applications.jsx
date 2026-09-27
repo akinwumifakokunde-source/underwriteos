@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
 import DrawerSelect from "@/components/ui/drawer-select";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Search, Filter, FileText, Download } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Search, FileText, Download, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
-import ApplicationsStats from "@/components/applications/ApplicationsStats";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
 import PullToRefresh from "@/components/PullToRefresh";
@@ -13,7 +12,17 @@ import ResponsiveTable from "@/components/shared/ResponsiveTable";
 import GuidedPipeline from "@/components/applications/GuidedPipeline";
 import NewApplicationModal from "@/components/applications/NewApplicationModal";
 
-const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
+// Priority order: actionable states (New, Pending) first, then in-flight, then done.
+const STATUS_PRIORITY = {
+  draft: 0,
+  data_collection: 1,
+  analyzing: 2,
+  underwriting: 3,
+  completed: 4,
+  failed: 5,
+};
+
+const FILTERS = ["All", "New", "Pending", "Analyzing", "Review", "Approved", "Declined"];
 
 export default function Applications() {
   const navigate = useNavigate();
@@ -37,7 +46,6 @@ export default function Applications() {
       const res = await base44.functions.invoke("apiApplications", { action: "list", limit: 100 });
       const list = res.data?.applications || [];
       setApps(list);
-      // Load borrowers in a single batch request
       const borrowerIds = [...new Set(list.map((a) => a.borrower_id).filter(Boolean))];
       const borrowerMap = {};
       if (borrowerIds.length > 0) {
@@ -61,18 +69,34 @@ export default function Applications() {
 
   useEffect(() => { load(); }, []);
 
+  // Counts per filter — drives the badges on the filter pills.
+  const counts = useMemo(() => {
+    const c = { All: apps.length, New: 0, Pending: 0, Analyzing: 0, Review: 0, Approved: 0, Declined: 0 };
+    apps.forEach((a) => {
+      if (a.status === "draft") c.New++;
+      if (a.status === "data_collection") c.Pending++;
+      if (a.status === "analyzing") c.Analyzing++;
+      if (a.status === "underwriting" || a.decision === "REVIEW") c.Review++;
+      if (a.decision === "APPROVE") c.Approved++;
+      if (a.decision === "DECLINE") c.Declined++;
+    });
+    return c;
+  }, [apps]);
+
   const filtered = useMemo(() => {
     let result = apps;
     if (filter !== "All") {
-      const filterMap = {
-        "New": "draft",
-        "Analyzing": "analyzing",
-        "Review": "underwriting",
-        "Approved": "APPROVE",
-        "Declined": "DECLINE",
-      };
-      const target = filterMap[filter];
-      result = result.filter((a) => a.status === target || a.decision === target);
+      result = result.filter((a) => {
+        switch (filter) {
+          case "New": return a.status === "draft";
+          case "Pending": return a.status === "data_collection";
+          case "Analyzing": return a.status === "analyzing";
+          case "Review": return a.status === "underwriting" || a.decision === "REVIEW";
+          case "Approved": return a.decision === "APPROVE";
+          case "Declined": return a.decision === "DECLINE";
+          default: return true;
+        }
+      });
     }
     if (market !== "All") {
       result = result.filter((a) => (a.market || "GB") === market);
@@ -85,7 +109,13 @@ export default function Applications() {
         return (a.application_number || "").toLowerCase().includes(q) || name.includes(q);
       });
     }
-    return result;
+    // Priority sort: actionable first, then most recently updated.
+    return [...result].sort((a, b) => {
+      const pa = STATUS_PRIORITY[a.status] ?? 99;
+      const pb = STATUS_PRIORITY[b.status] ?? 99;
+      if (pa !== pb) return pa - pb;
+      return new Date(b.updated_date || b.created_date || 0) - new Date(a.updated_date || a.created_date || 0);
+    });
   }, [apps, filter, market, search, borrowers]);
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
@@ -133,30 +163,30 @@ export default function Applications() {
         return (
           <>
             <div className="text-sm font-medium text-slate-900">{b ? `${b.first_name} ${b.last_name}` : "—"}</div>
-            <div className="text-[11px] text-slate-400">{a.application_number || a.id.slice(-8)}</div>
+            <div className="text-[11px] text-slate-400 font-mono">{a.application_number || a.id.slice(-8)}</div>
           </>
         );
       },
     },
     { key: "loan", header: "Loan", render: (a) => <span className="text-sm text-slate-600 capitalize">{(a.product_type || "personal_loan").replace(/_/g, " ")}</span> },
-    { key: "amount", header: "Amount", render: (a) => <span className="text-sm font-medium text-slate-900">{fmtMoney(a.loan_amount, a.loan_currency)}</span> },
+    { key: "amount", header: "Amount", render: (a) => <span className="text-sm font-medium text-slate-900 tabular-nums">{fmtMoney(a.loan_amount, a.loan_currency)}</span> },
     {
       key: "risk", header: "Risk",
       render: (a) => a.risk_score != null ? (
         <span className={`text-xs font-medium tabular-nums ${a.risk_score < 30 ? "text-emerald-600" : a.risk_score < 60 ? "text-amber-600" : "text-rose-600"}`}>{a.risk_score.toFixed(1)}</span>
-      ) : "—",
+      ) : <span className="text-sm text-slate-300">—</span>,
     },
     { key: "policy", header: "Policy", render: (a) => <span className="text-[11px] font-mono text-slate-500">{a.policy_id || "—"}</span> },
     {
       key: "status", header: "Status",
       render: (a) => (
-        <span className="inline-flex items-center gap-1.5">
+        <span className="inline-flex flex-col items-start gap-1">
           <AppStatusBadge status={a.status} />
           <DecisionBadge decision={a.decision} />
         </span>
       ),
     },
-    { key: "updated", header: "Updated", render: (a) => <span className="text-[11px] text-slate-400">{a.updated_date ? new Date(a.updated_date).toLocaleDateString() : a.created_date ? new Date(a.created_date).toLocaleDateString() : ""}</span> },
+    { key: "updated", header: "Updated", render: (a) => <span className="text-[11px] text-slate-400 tabular-nums">{a.updated_date ? new Date(a.updated_date).toLocaleDateString("en-GB") : a.created_date ? new Date(a.created_date).toLocaleDateString("en-GB") : ""}</span> },
   ];
 
   return (
@@ -164,9 +194,9 @@ export default function Applications() {
       <Nav />
       <PullToRefresh onRefresh={handleRefresh} isRefreshing={refreshing}>
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Applications</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Applications</h1>
             <p className="text-sm text-slate-500 mt-1">Manage and review all underwriting applications.</p>
           </div>
           <div className="flex items-center gap-2">
@@ -179,7 +209,7 @@ export default function Applications() {
             </button>
             <button
               onClick={() => setNewModalOpen(true)}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" /> New Application
             </button>
@@ -188,22 +218,27 @@ export default function Applications() {
 
         {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
 
-        {!loading && !error && <ApplicationsStats apps={apps} />}
+        {!loading && !error && <StatsBand counts={counts} />}
 
         {/* Filters + Search */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="flex flex-col lg:flex-row gap-3 mb-4">
           <div className="flex items-center gap-1.5 flex-wrap">
-            {FILTERS.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${filter === f ? "bg-[#0a0c12] text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"}`}
-              >
-                {f}
-              </button>
-            ))}
+            {FILTERS.map((f) => {
+              const active = filter === f;
+              const count = counts[f] ?? 0;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${active ? "bg-[#0a0c12] text-white" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"}`}
+                >
+                  {f}
+                  <span className={`text-[10px] font-semibold tabular-nums px-1.5 py-0.5 rounded ${active ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"}`}>{count}</span>
+                </button>
+              );
+            })}
           </div>
-          <div className="flex items-center gap-2 sm:ml-auto">
+          <div className="flex items-center gap-2 lg:ml-auto">
             <DrawerSelect
               value={market}
               onChange={(e) => setMarket(e.target.value)}
@@ -261,6 +296,31 @@ export default function Applications() {
         apps={apps}
         borrowers={borrowers}
       />
+    </div>
+  );
+}
+
+function StatsBand({ counts }) {
+  const stats = [
+    { label: "Total", value: counts.All, icon: FileText, color: "text-slate-700", bg: "bg-slate-100", ring: "ring-slate-100" },
+    { label: "Approved", value: counts.Approved, icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", ring: "ring-emerald-100" },
+    { label: "In review", value: counts.Review, icon: AlertTriangle, color: "text-amber-600", bg: "bg-amber-50", ring: "ring-amber-100" },
+    { label: "Declined", value: counts.Declined, icon: XCircle, color: "text-rose-600", bg: "bg-rose-50", ring: "ring-rose-100" },
+    { label: "Pending", value: counts.New + counts.Pending, icon: Clock, color: "text-sky-600", bg: "bg-sky-50", ring: "ring-sky-100" },
+  ];
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
+      {stats.map((s) => (
+        <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-4 hover:shadow-sm transition-shadow">
+          <div className="flex items-center justify-between mb-2">
+            <div className={`w-8 h-8 rounded-lg ${s.bg} flex items-center justify-center ring-1 ${s.ring}`}>
+              <s.icon className={`w-4 h-4 ${s.color}`} />
+            </div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">{s.label}</span>
+          </div>
+          <div className="text-2xl font-semibold tabular-nums text-slate-900">{s.value}</div>
+        </div>
+      ))}
     </div>
   );
 }
