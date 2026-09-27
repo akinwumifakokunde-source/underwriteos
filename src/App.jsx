@@ -64,6 +64,7 @@ const PublicNotice = lazy(() => import("@/pages/PublicNotice"));
 const PortfolioRisk = lazy(() => import("@/pages/PortfolioRisk"));
 const AuditLog = lazy(() => import("@/pages/AuditLog"));
 const BorrowerStatus = lazy(() => import("@/pages/BorrowerStatus"));
+const LenderDemo = lazy(() => import("@/pages/LenderDemo"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -106,6 +107,7 @@ const AnimatedRoutes = () => {
             <Route path="/apply/:slug" element={<Apply />} />
             <Route path="/start/borrower" element={<BorrowerApply />} />
             <Route path="/start/borrower/:slug" element={<BorrowerApply />} />
+            <Route path="/start/lender" element={<LenderDemo />} />
             <Route path="/oauth/consent" element={<OAuthConsent />} />
             <Route path="/connect" element={<Connect />} />
             <Route path="/demo" element={<BookDemo />} />
