@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy, History, ChevronDown } from "lucide-react";
+import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy, History, ChevronDown, RefreshCw } from "lucide-react";
 
 const EVENT_OPTIONS = [
   "decision.created", "decision.approved", "decision.declined", "decision.review",
@@ -75,6 +75,21 @@ export default function Webhooks() {
       await load();
     } catch (e) {
       setTestResult((t) => ({ ...t, [id]: { status: "failed", error: e?.message } }));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const rotate = async (id) => {
+    if (!confirm("Rotate the signing secret? The old secret will stop working immediately. The new secret is shown only once.")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await base44.functions.invoke("apiWebhooks", { action: "rotate", id });
+      setNewSecret(res.data?.webhook?.secret);
+      await load();
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Failed to rotate secret.");
     } finally {
       setBusy(false);
     }
@@ -198,6 +213,10 @@ export default function Webhooks() {
                     <button onClick={() => loadDeliveries(h.id)} disabled={busy} title="Delivery log"
                       className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border ${expandedHook === h.id ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-500 hover:bg-slate-50"} disabled:opacity-40`}>
                       <History className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={() => rotate(h.id)} disabled={busy} title="Rotate signing secret"
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-amber-200 text-amber-600 hover:bg-amber-50 disabled:opacity-40">
+                      <RefreshCw className="w-3.5 h-3.5" />
                     </button>
                     <button onClick={() => test(h.id)} disabled={busy} title="Send test"
                       className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40">

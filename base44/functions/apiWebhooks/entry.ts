@@ -45,6 +45,18 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ updated: true, id }, 200);
     }
 
+    if (action === "rotate") {
+      requireScope(ctx, "webhooks:write");
+      const { id } = body;
+      if (!id) return apiError("VALIDATION_ERROR", "id is required.", 400);
+      const hooks = await base44.asServiceRole.entities.Webhook.filter({ id, organization_id }, "-created_date", 1);
+      if (hooks.length === 0) return apiError("NOT_FOUND", "Webhook not found.", 404);
+      const newSecret = "whsec_" + genId("k", 28).slice(2);
+      await base44.asServiceRole.entities.Webhook.update(id, { secret: newSecret });
+      await audit(base44, organization_id, "webhook.secret_rotated", { actor, actor_type, endpoint: "POST /v1/webhooks", details: { webhook_id: id } });
+      return apiSuccess({ webhook: { id, secret: newSecret } }, 200);
+    }
+
     if (action === "delete") {
       requireScope(ctx, "webhooks:write");
       const { id } = body;
