@@ -78,8 +78,6 @@ export default function MarketingHero() {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
-            <p className="mt-3 text-[12px] text-white/50">Live, interactive flow · ~4 minutes</p>
-
             <HeroLeadCapture />
 
             <HeroStats />
