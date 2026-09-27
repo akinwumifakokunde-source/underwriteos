@@ -171,10 +171,14 @@ export default function BorrowerApply() {
             <p className="mt-4 text-xs text-slate-400">Reference: <span className="font-mono text-slate-600 dark:text-slate-300">{submitted.application_number}</span></p>
           )}
           <div className="mt-6 flex flex-col gap-2">
-            {submitted.application_id && (
+            {submitted.application_id ? (
               <Link to={`/applications?guided=1&app=${submitted.application_id}`} className="text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-2.5 rounded-lg hover:shadow-md transition-all">
                 Open in lender workspace →
               </Link>
+            ) : (
+              <button onClick={() => { setSubmitted(null); setMode("lender"); }} className="text-sm font-medium text-white bg-gradient-to-br from-teal-500 to-emerald-600 px-4 py-2.5 rounded-lg hover:shadow-md transition-all">
+                See the lender decision →
+              </button>
             )}
             <button onClick={() => { setSubmitted(null); setMode("landing"); }} className="text-sm font-medium text-teal-700 dark:text-teal-400 hover:underline">Try another flow</button>
             <Link to="/" className="text-sm font-medium text-slate-400 hover:underline">Back to home</Link>
