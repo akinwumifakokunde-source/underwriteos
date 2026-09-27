@@ -1,0 +1,47 @@
+{
+  "name": "Portfolio Alerts",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * 1-5",
+      "one_time_date": null,
+      "timezone": "Europe/London",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Daily 9am (UK, weekdays) portfolio health check \u2014 computes drift, default-rate spikes, and concentration breaches, then emails a summary to the configured alerts recipient.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "portfolio_alerts",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_alerts": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "apiPortfolioAlerts",
+            "args": {
+              "action": "run"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run portfolio alerts",
+            "description": "Drift, default spike, concentration"
+          }
+        }
+      }
+    ]
+  }
+}

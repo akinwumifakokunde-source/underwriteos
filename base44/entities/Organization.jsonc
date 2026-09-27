@@ -39,6 +39,11 @@
         "default_currency": {
           "type": "string",
           "default": "GBP"
+        },
+        "alerts_email": {
+          "type": "string",
+          "format": "email",
+          "description": "Recipient email for automated portfolio alert summaries."
         }
       }
     }
