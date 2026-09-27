@@ -60,6 +60,7 @@ const Connect = lazy(() => import("@/pages/Connect"));
 const BookDemo = lazy(() => import("@/pages/BookDemo"));
 const Partners = lazy(() => import("@/pages/Partners"));
 const Onboarding = lazy(() => import("@/pages/Onboarding"));
+const PublicNotice = lazy(() => import("@/pages/PublicNotice"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -107,6 +108,7 @@ const AnimatedRoutes = () => {
             <Route path="/demo" element={<BookDemo />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/notice/:token" element={<PublicNotice />} />
             <Route path="/api-reference" element={<ApiReference />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/workspace" element={<Navigate to="/applications" replace />} />

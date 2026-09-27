@@ -128,6 +128,42 @@
         }
       }
     },
+    "adverse_action_delivery": {
+      "type": "object",
+      "description": "Tracks delivery of the adverse-action notice to the borrower. Contains email delivery status and a shareable public-link token.",
+      "properties": {
+        "email_status": {
+          "type": "string",
+          "enum": [
+            "sent",
+            "failed",
+            "pending"
+          ]
+        },
+        "email_sent_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "email_error": {
+          "type": "string"
+        },
+        "email_sent_to": {
+          "type": "string"
+        },
+        "share_token": {
+          "type": "string",
+          "description": "Random token for the public notice link at /notice/:token"
+        },
+        "share_token_created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "share_token_viewed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "idempotency_key": {
       "type": "string"
     }

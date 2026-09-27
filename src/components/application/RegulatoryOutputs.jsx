@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ScrollText, ShieldCheck, FileJson, FileSpreadsheet, Loader2, ChevronDown, ChevronUp, CheckCircle2, Info } from "lucide-react";
+import { ScrollText, ShieldCheck, FileJson, FileSpreadsheet, Loader2, ChevronDown, ChevronUp, CheckCircle2, Info, Mail, Link2, Copy, Check, AlertTriangle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import {
   buildReasonCodes,
@@ -14,6 +14,11 @@ export default function RegulatoryOutputs({ decision, recommendation, borrower, 
   const [lenderName, setLenderName] = useState(null);
   const [showLetter, setShowLetter] = useState(false);
   const [busy, setBusy] = useState(null);
+  const [delivery, setDelivery] = useState(null);
+  const [emailSending, setEmailSending] = useState(false);
+  const [shareUrl, setShareUrl] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const [deliveryError, setDeliveryError] = useState(null);
 
   useEffect(() => {
     base44.functions.invoke("apiSettings", { action: "get" })
@@ -49,6 +54,46 @@ export default function RegulatoryOutputs({ decision, recommendation, borrower, 
   const run = (key, fn) => {
     setBusy(key);
     try { fn(); } finally { setBusy(null); }
+  };
+
+  const deliveryState = decision?.adverse_action_delivery || delivery || {};
+
+  const sendEmail = async () => {
+    setEmailSending(true);
+    setDeliveryError(null);
+    try {
+      const res = await base44.functions.invoke("apiAdverseActionDeliver", {
+        action: "send_email",
+        decision_id: decision.id
+      });
+      setDelivery({ email_status: res.data.email_status, email_sent_to: res.data.email_sent_to, email_sent_at: res.data.email_sent_at });
+    } catch (e) {
+      setDeliveryError(e?.response?.data?.error?.message || e.message || "Failed to send email.");
+    } finally {
+      setEmailSending(false);
+    }
+  };
+
+  const createShareLink = async () => {
+    setBusy("share");
+    setDeliveryError(null);
+    try {
+      const res = await base44.functions.invoke("apiAdverseActionDeliver", {
+        action: "create_share_link",
+        decision_id: decision.id
+      });
+      const url = `${window.location.origin}${res.data.share_url}`;
+      setShareUrl(url);
+      setDelivery((d) => ({ ...d, share_token: res.data.share_token }));
+    } catch (e) {
+      setDeliveryError(e?.response?.data?.error?.message || e.message || "Failed to create link.");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const copyLink = async () => {
+    try { await navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch {}
   };
 
   return (
@@ -138,6 +183,65 @@ export default function RegulatoryOutputs({ decision, recommendation, borrower, 
           {busy === "audit" ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileJson className="w-4 h-4" />} Audit export (JSON)
         </button>
       </div>
+
+      {/* Borrower delivery */}
+      {isAdverse && (
+        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50/50 p-4">
+          <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2.5">Deliver to borrower</div>
+          {deliveryError && (
+            <div className="mb-2.5 flex items-start gap-1.5 text-[12px] text-rose-600">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <span>{deliveryError}</span>
+            </div>
+          )}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={sendEmail}
+              disabled={emailSending}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-teal-700 px-3.5 py-2 rounded-lg hover:bg-teal-800 disabled:opacity-60"
+            >
+              {emailSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+              {deliveryState.email_status === "sent" ? "Resend email" : "Email to borrower"}
+            </button>
+            {!shareUrl && deliveryState.share_token && (
+              <button
+                onClick={() => setShareUrl(`${window.location.origin}/notice/${deliveryState.share_token}`)}
+                className="inline-flex items-center gap-1.5 text-sm text-slate-700 px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50"
+              >
+                <Link2 className="w-4 h-4" /> Copy share link
+              </button>
+            )}
+            {!shareUrl && !deliveryState.share_token && (
+              <button
+                onClick={createShareLink}
+                disabled={busy === "share"}
+                className="inline-flex items-center gap-1.5 text-sm text-slate-700 px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 disabled:opacity-60"
+              >
+                {busy === "share" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />} Create share link
+              </button>
+            )}
+          </div>
+
+          {/* Delivery status */}
+          {deliveryState.email_status === "sent" && (
+            <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-emerald-700">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Email sent to {deliveryState.email_sent_to || borrower?.email} on {new Date(deliveryState.email_sent_at).toLocaleString()}</span>
+            </div>
+          )}
+
+          {/* Share link display */}
+          {shareUrl && (
+            <div className="mt-2.5 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
+              <Link2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <code className="flex-1 text-[11px] font-mono text-slate-600 truncate">{shareUrl}</code>
+              <button onClick={copyLink} className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-md border shrink-0 ${copied ? "text-emerald-600 border-emerald-200 bg-emerald-50" : "text-slate-600 border-slate-200 bg-white hover:bg-slate-50"}`}>
+                {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />} {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-3 flex items-start gap-1.5 text-[11px] text-slate-400">
         <Info className="w-3 h-3 shrink-0 mt-0.5" />
