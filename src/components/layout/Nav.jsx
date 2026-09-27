@@ -18,6 +18,7 @@ const NAV_ITEMS = [
   { to: "/forms", label: "Intake Forms" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
+  { to: "/portfolio-risk", label: "Portfolio Risk" },
   { to: "/reports", label: "Reports" },
 ];
 

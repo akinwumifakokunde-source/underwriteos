@@ -61,6 +61,7 @@ const BookDemo = lazy(() => import("@/pages/BookDemo"));
 const Partners = lazy(() => import("@/pages/Partners"));
 const Onboarding = lazy(() => import("@/pages/Onboarding"));
 const PublicNotice = lazy(() => import("@/pages/PublicNotice"));
+const PortfolioRisk = lazy(() => import("@/pages/PortfolioRisk"));
 // Add page imports here
 
 const PageLoader = () => (
@@ -128,6 +129,7 @@ const AnimatedRoutes = () => {
               <Route path="/evidence" element={<EvidenceGraph />} />
               <Route path="/evidence/:applicationId" element={<EvidenceGraph />} />
               <Route path="/reports" element={<Reports />} />
+              <Route path="/portfolio-risk" element={<PortfolioRisk />} />
               <Route path="/monitoring" element={<Monitoring />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/playground" element={<Playground />} />
