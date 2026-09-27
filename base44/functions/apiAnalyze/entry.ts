@@ -34,13 +34,16 @@ export default async function(req: Request): Promise<Response> {
     const creditProfiles = await base44.asServiceRole.entities.CreditProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const financialProfiles = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const bankStatements = await base44.asServiceRole.entities.BankStatement.filter({ application_id, organization_id }, "-created_date", 1);
+    const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
     const credit = creditProfiles[0] || defaultCredit(app.loan_currency);
     const financial = financialProfiles[0] || defaultFinancial(app.loan_currency);
+    const borrower = borrowers[0] || null;
 
     const { items } = generateRiskSignals({
       credit,
       financial,
       application: app,
+      borrower,
       credit_report_id: credit.credit_report_id || (creditProfiles[0]?.id),
       bank_statement_id: bankStatements[0]?.id
     });

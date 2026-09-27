@@ -8,6 +8,7 @@ export interface SignalInput {
   credit: any;       // NormalizedCreditProfile
   financial: any;    // CanonicalFinancialProfile
   application: any;  // loan amount, term, etc.
+  borrower?: any;   // Borrower entity (declared income, identity)
   credit_report_id?: string;
   bank_statement_id?: string;
 }
@@ -63,7 +64,8 @@ const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
   repayment_history: 80,
   suspicious_transactions: true,
   stressed_repayment_capacity: 0,
-  stressed_debt_to_income: 0.5
+  stressed_debt_to_income: 0.5,
+  income_consistency_ratio: 0.5
 };
 
 // Human-readable explanations per signal name.
@@ -91,6 +93,7 @@ const SIGNAL_EXPLANATIONS: Record<string, string> = {
   affordability_ratio: "Disposable income relative to expenses.",
   stressed_repayment_capacity: "Repayment capacity under a -10% income-shock stress scenario.",
   stressed_debt_to_income: "Debt-to-income ratio under a -10% income-shock stress scenario.",
+  income_consistency_ratio: "Ratio of bank-statement-derived income to borrower-declared income. Below 0.5 suggests income inflation.",
   suspicious_transactions: "Flag for suspicious cashflow patterns.",
   document_inconsistencies: "Cross-source document consistency check.",
   identity_inconsistencies: "Identity verification cross-check.",
@@ -253,6 +256,19 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
   const unusual = fin.incomeStability < 0.3 || fin.expenseVolatility > 0.6;
   push({ category: "fraud", signal: "unusual_financial_behaviour", value: unusual, value_type: "boolean", confidence: 0.65, source: "derived", flag: unusual ? "negative" : "positive" },
     { calculation_method: "behavioural_threshold_check", field: "financial_behaviour" });
+
+  // ---- Income consistency (declared vs bank-statement-derived) ----
+  // Compares borrower-declared annual income against the bank-statement-derived
+  // annual income. A ratio below 0.5 indicates the declared income is not
+  // supported by bank-statement evidence — a classic income-inflation / fraud
+  // indicator. Only generated when both values are present and positive.
+  const declaredAnnual = input.borrower?.annual_income;
+  if (declaredAnnual && declaredAnnual > 0 && fin.monthlyIncome > 0) {
+    const derivedAnnual = fin.monthlyIncome * 12;
+    const incomeConsistencyRatio = Math.round((derivedAnnual / declaredAnnual) * 100) / 100;
+    push({ category: "fraud", signal: "income_consistency_ratio", value: incomeConsistencyRatio, value_type: "number", confidence: 0.75, source: "derived", flag: incomeConsistencyRatio < 0.5 ? "negative" : incomeConsistencyRatio > 2 ? "neutral" : "positive" },
+      { calculation_method: "derived_annual_income_divided_by_declared_income", field: "borrower.annual_income_vs_financial_profile.income" });
+  }
 
   return { items };
 }
