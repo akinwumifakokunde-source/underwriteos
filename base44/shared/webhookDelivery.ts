@@ -122,6 +122,8 @@ async function deliverOne(
   } catch {}
 
   // Persist a WebhookDelivery audit record
+  const retryable = !ok && isRetryable(httpStatus, errorMsg);
+  const nextRetry = retryable ? computeNextRetry(1) : null;
   try {
     await base44.asServiceRole.entities.WebhookDelivery.create({
       organization_id: ctx.organization_id,
@@ -137,10 +139,135 @@ async function deliverOne(
       latency_ms: latencyMs,
       attempt: 1,
       signature: `sha256=${signature}`,
+      next_retry_at: nextRetry,
     });
   } catch {}
 
   return { ok, http_status: httpStatus ?? undefined, error: errorMsg ?? undefined };
+}
+
+// Retry a single failed delivery. Creates a NEW WebhookDelivery record for the
+// retry attempt (preserving the per-attempt audit trail), and clears the
+// original record's next_retry_at so it isn't retried again.
+// Returns { ok, http_status, error, exhausted }.
+export async function retryDelivery(
+  base44: any,
+  original: any,
+  webhook: any
+): Promise<{ ok: boolean; http_status?: number; error?: string; exhausted: boolean }> {
+  const payload = original.payload;
+  const body = JSON.stringify(payload);
+  let signature = "";
+  try {
+    signature = await hmacSha256(webhook.secret, body);
+  } catch {
+    signature = "";
+  }
+
+  const start = Date.now();
+  let httpStatus: number | null = null;
+  let ok = false;
+  let errorMsg: string | null = null;
+
+  try {
+    const res = await fetch(webhook.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CreditDecide-Signature": `sha256=${signature}`,
+        "X-CreditDecide-Event": original.event,
+      },
+      body,
+      signal: AbortSignal.timeout(10000),
+    });
+    httpStatus = res.status;
+    ok = res.ok;
+  } catch (e: any) {
+    errorMsg = e.name === "TimeoutError" ? "Request timed out" : e.message;
+  }
+
+  const latencyMs = Date.now() - start;
+  const attempt = (original.attempt || 1) + 1;
+  const retryable = !ok && isRetryable(httpStatus, errorMsg);
+  const exhausted = attempt >= MAX_ATTEMPTS;
+  const nextRetry = retryable && !exhausted ? computeNextRetry(attempt) : null;
+
+  // Create a new WebhookDelivery record for this retry attempt
+  try {
+    await base44.asServiceRole.entities.WebhookDelivery.create({
+      organization_id: original.organization_id,
+      webhook_id: original.webhook_id,
+      event: original.event,
+      application_id: original.application_id,
+      decision_id: original.decision_id,
+      url: original.url,
+      payload,
+      http_status: httpStatus,
+      status: ok ? "delivered" : "failed",
+      error: errorMsg,
+      latency_ms: latencyMs,
+      attempt,
+      signature: `sha256=${signature}`,
+      next_retry_at: nextRetry,
+    });
+  } catch {}
+
+  // Update the webhook's last_delivery_status
+  const statusLabel = ok ? `ok:${httpStatus}` : `failed:${errorMsg ? "error" : httpStatus}`;
+  try {
+    await base44.asServiceRole.entities.Webhook.update(webhook.id, { last_delivery_status: statusLabel });
+  } catch {}
+
+  // Clear the original record's next_retry_at — the new record takes over
+  try {
+    await base44.asServiceRole.entities.WebhookDelivery.update(original.id, { next_retry_at: null });
+  } catch {}
+
+  return { ok, http_status: httpStatus ?? undefined, error: errorMsg ?? undefined, exhausted };
+}
+
+// Find all failed deliveries due for retry (next_retry_at <= now) and retry them.
+// Called by the scheduled workflow. Returns { retried, delivered, exhausted }.
+export async function retryFailedDeliveries(base44: any): Promise<{ retried: number; delivered: number; exhausted: number }> {
+  const now = new Date().toISOString();
+  // Find deliveries with next_retry_at set and due
+  const due = await base44.asServiceRole.entities.WebhookDelivery.filter(
+    { status: "failed", next_retry_at: { $lte: now } },
+    "-created_date",
+    100
+  );
+
+  if (due.length === 0) return { retried: 0, delivered: 0, exhausted: 0 };
+
+  // Group by webhook_id to batch-load webhook secrets
+  const webhookIds = [...new Set(due.map((d: any) => d.webhook_id))];
+  const webhooks = await base44.asServiceRole.entities.Webhook.filter(
+    { id: { $in: webhookIds } },
+    "-created_date",
+    50
+  );
+  const webhookMap: Record<string, any> = {};
+  for (const w of webhooks) webhookMap[w.id] = w;
+
+  let delivered = 0;
+  let exhausted = 0;
+
+  for (const delivery of due) {
+    const webhook = webhookMap[delivery.webhook_id];
+    if (!webhook || webhook.status !== "active") {
+      // Webhook deleted or disabled — clear retry to stop the cycle
+      try {
+        await base44.asServiceRole.entities.WebhookDelivery.update(delivery.id, { next_retry_at: null });
+      } catch {}
+      continue;
+    }
+
+    const result = await retryDelivery(base44, delivery, webhook);
+    if (result.ok) delivered++;
+    if (result.exhausted && !result.ok) exhausted++;
+  }
+
+  return { retried: due.length, delivered, exhausted };
 }
 
 // Fire decision webhooks to all active endpoints subscribed to the relevant
