@@ -10,6 +10,7 @@ export interface SignalInput {
   application: any;  // loan amount, term, etc.
   borrower?: any;   // Borrower entity (declared income, identity)
   application_velocity?: number; // Count of other borrower records with same email
+  identity_documents?: any[]; // Uploaded identity documents with extracted_data
   credit_report_id?: string;
   bank_statement_id?: string;
 }
@@ -73,7 +74,10 @@ const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
   stressed_debt_to_income: 0.5,
   income_consistency_ratio: 0.5,
   application_velocity: 2,
-  sanctions_jurisdiction: true
+  sanctions_jurisdiction: true,
+  identity_name_match: true,
+  identity_dob_match: true,
+  identity_address_match: true
 };
 
 // Human-readable explanations per signal name.
@@ -104,6 +108,9 @@ const SIGNAL_EXPLANATIONS: Record<string, string> = {
   income_consistency_ratio: "Ratio of bank-statement-derived income to borrower-declared income. Below 0.5 suggests income inflation.",
   application_velocity: "Count of other borrower records with the same email. High values indicate possible loan stacking.",
   sanctions_jurisdiction: "AML / sanctions screening — borrower's address country checked against OFAC comprehensively sanctioned jurisdictions.",
+  identity_name_match: "Cross-check of borrower-declared name against the name extracted from identity documents (passport, driver's licence, national ID).",
+  identity_dob_match: "Cross-check of borrower-declared date of birth against the DOB extracted from identity documents.",
+  identity_address_match: "Cross-check of borrower-declared address against the address extracted from identity documents / proof of address.",
   suspicious_transactions: "Flag for suspicious cashflow patterns.",
   document_inconsistencies: "Cross-source document consistency check.",
   identity_inconsistencies: "Identity verification cross-check.",
@@ -301,12 +308,120 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
       { calculation_method: "borrower_address_country_against_ofac_sanctions_list", field: "borrower.address.country" });
   }
 
+  // ---- Identity verification (cross-document consistency) ----
+  // Cross-checks the borrower-declared name, date of birth, and address
+  // against the values extracted from uploaded identity documents (passport,
+  // driver's licence, national ID, proof of address). A mismatch indicates
+  // the declared identity is not supported by the supporting documents — a
+  // classic identity-fraud / synthetic-identity indicator. Only generated
+  // when identity documents with extracted data are available.
+  const idDocs = (input.identity_documents || []).filter((d: any) => d.extracted_data);
+  if (idDocs.length > 0 && input.borrower) {
+    const extracted = extractIdentityFields(idDocs);
+
+    // Name match
+    if (extracted.fullName) {
+      const declaredName = normalizeName(`${input.borrower.first_name || ""} ${input.borrower.last_name || ""}`);
+      const docName = normalizeName(extracted.fullName);
+      const nameMatch = declaredName === docName || (declaredName && docName && (declaredName.includes(docName) || docName.includes(declaredName)));
+      push({ category: "fraud", signal: "identity_name_match", value: nameMatch, value_type: "boolean", confidence: 0.85, source: "document", flag: nameMatch ? "positive" : "critical", source_reference: extracted.nameDocId },
+        { calculation_method: "borrower_name_against_document_name", field: "borrower.first_name_last_name_vs_document", source_id: extracted.nameDocId, document_id: extracted.nameDocId });
+    }
+
+    // DOB match
+    if (extracted.dob) {
+      const declaredDob = normalizeDate(input.borrower.date_of_birth);
+      const docDob = normalizeDate(extracted.dob);
+      const dobMatch = declaredDob && docDob && declaredDob === docDob;
+      push({ category: "fraud", signal: "identity_dob_match", value: dobMatch, value_type: "boolean", confidence: 0.88, source: "document", flag: dobMatch ? "positive" : "critical", source_reference: extracted.dobDocId },
+        { calculation_method: "borrower_dob_against_document_dob", field: "borrower.date_of_birth_vs_document", source_id: extracted.dobDocId, document_id: extracted.dobDocId });
+    }
+
+    // Address match
+    if (extracted.addressLine1 || extracted.postalCode) {
+      const declaredAddr = normalizeAddr(input.borrower.address);
+      const docAddr = normalizeAddr({ line1: extracted.addressLine1, city: extracted.addressCity, postal_code: extracted.postalCode });
+      const addressMatch = (declaredAddr && docAddr && (declaredAddr === docAddr || (extracted.postalCode && input.borrower.address?.postal_code && normalizeStr(input.borrower.address.postal_code) === normalizeStr(extracted.postalCode))));
+      push({ category: "fraud", signal: "identity_address_match", value: addressMatch, value_type: "boolean", confidence: 0.82, source: "document", flag: addressMatch ? "positive" : "negative", source_reference: extracted.addrDocId },
+        { calculation_method: "borrower_address_against_document_address", field: "borrower.address_vs_document", source_id: extracted.addrDocId, document_id: extracted.addrDocId });
+    }
+  }
+
   return { items };
 }
 
 function detectSuspicious(input: SignalInput): boolean {
   const fin = f(input.financial);
   return fin.disposableIncome < 0 && fin.monthlyIncome > 0;
+}
+
+// ---- Identity verification helpers ----
+
+// Extract identity-relevant fields (name, DOB, address) from uploaded
+// identity documents' extracted_data. Returns the first non-empty value
+// found across all documents, plus the document id it came from.
+function extractIdentityFields(docs: any[]): {
+  fullName?: string; nameDocId?: string;
+  dob?: string; dobDocId?: string;
+  addressLine1?: string; addressCity?: string; postalCode?: string; addrDocId?: string;
+} {
+  const result: any = {};
+  for (const doc of docs) {
+    const fields = doc.extracted_data?.fields || doc.extracted_data?.Fields || [];
+    if (!Array.isArray(fields)) continue;
+    for (const fld of fields) {
+      const name = String(fld.name || fld.Name || "").toLowerCase();
+      const value = String(fld.value ?? fld.Value ?? "").trim();
+      if (!value) continue;
+      if (!result.fullName && (name.includes("full_name") || name === "name" || name.includes("full name"))) {
+        result.fullName = value; result.nameDocId = doc.id;
+      }
+      if (!result.fullName && (name.includes("first_name") || name.includes("first name"))) {
+        // Combine first + last if both present on same doc
+        const last = fields.find((f: any) => String(f.name || "").toLowerCase().includes("last_name") || String(f.name || "").toLowerCase().includes("surname"));
+        result.fullName = last ? `${value} ${last.value ?? last.Value ?? ""}`.trim() : value;
+        result.nameDocId = doc.id;
+      }
+      if (!result.dob && (name.includes("date_of_birth") || name.includes("dob") || name.includes("birth"))) {
+        result.dob = value; result.dobDocId = doc.id;
+      }
+      if (!result.addressLine1 && (name.includes("address_line1") || name.includes("address_line") || name === "address" || name.includes("address1"))) {
+        result.addressLine1 = value; result.addrDocId = doc.id;
+      }
+      if (!result.addressCity && (name.includes("city") || name.includes("town"))) {
+        result.addressCity = value; if (!result.addrDocId) result.addrDocId = doc.id;
+      }
+      if (!result.postalCode && (name.includes("postal_code") || name.includes("postcode") || name.includes("zip") || name.includes("postal"))) {
+        result.postalCode = value; if (!result.addrDocId) result.addrDocId = doc.id;
+      }
+    }
+  }
+  return result;
+}
+
+function normalizeStr(s: any): string {
+  return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+}
+
+function normalizeName(s: string): string {
+  return normalizeStr(s);
+}
+
+function normalizeDate(s: any): string {
+  if (!s) return "";
+  // Normalize to YYYY-MM-DD, stripping non-digit chars and reassembling
+  const digits = String(s).replace(/\D/g, "");
+  if (digits.length === 8) {
+    // Ambiguous DDMMYYYY vs MMDDYYYY vs YYYYMMDD — assume ISO if starts with 19/20
+    if (digits.startsWith("19") || digits.startsWith("20")) return `${digits.slice(0,4)}-${digits.slice(4,6)}-${digits.slice(6,8)}`;
+    return `${digits.slice(4,8)}-${digits.slice(2,4)}-${digits.slice(0,2)}`;
+  }
+  return normalizeStr(s);
+}
+
+function normalizeAddr(addr: any): string {
+  if (!addr) return "";
+  return [addr.line1, addr.city, addr.postal_code].map(normalizeStr).filter(Boolean).join("|");
 }
 
 // Aggregate a 0..1 risk score from the generated signals.

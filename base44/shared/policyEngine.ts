@@ -48,6 +48,9 @@ export const ADVERSE_ACTION_CODES: Record<string, { code: string; label: string 
   "FR-INCOME": { code: "INCOME_MISMATCH", label: "Declared income not supported by bank statement evidence" },
   "FR-VELOCITY": { code: "MULTIPLE_APPLICATIONS", label: "Multiple recent applications detected from the same identity" },
   "FR-SANCTIONS": { code: "SANCTIONED_JURISDICTION", label: "Borrower resides in an OFAC-sanctioned jurisdiction" },
+  "FR-ID-NAME": { code: "IDENTITY_NAME_MISMATCH", label: "Name on identity document does not match application" },
+  "FR-ID-DOB": { code: "IDENTITY_DOB_MISMATCH", label: "Date of birth on identity document does not match application" },
+  "FR-ID-ADDR": { code: "IDENTITY_ADDRESS_MISMATCH", label: "Address on identity document does not match application" },
 };
 
 export function adverseActionForRule(ruleId: string): { code: string; label: string } | null {
@@ -95,7 +98,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Credit utilisation above review threshold (50%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 4, decision: "REVIEW", reason: "High recent credit enquiries (>4)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "ng-consumer-v1": {
@@ -110,7 +116,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "za-consumer-v1": {
@@ -125,7 +134,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Credit utilisation above review threshold (50%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 4, decision: "REVIEW", reason: "High recent credit enquiries (>4)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "ke-consumer-v1": {
@@ -140,7 +152,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "gh-consumer-v1": {
@@ -155,7 +170,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "mortgage-v1": {
@@ -173,7 +191,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Repayment capacity negative under -10% income-shock stress scenario (mortgage)" },
       { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "DECLINE", reason: "Declared income not supported by bank statement evidence (mortgage)" },
       { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "DECLINE", reason: "Multiple recent applications from the same identity (mortgage)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   },
   "business-v1": {
@@ -187,7 +208,10 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "INC-STAB", field: "income_stability", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Income stability below threshold" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
-      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+      { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+      { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+      { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
   }
 };

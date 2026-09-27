@@ -35,6 +35,7 @@ export default async function(req: Request): Promise<Response> {
     const financialProfiles = await base44.asServiceRole.entities.FinancialProfile.filter({ application_id, organization_id }, "-created_date", 1);
     const bankStatements = await base44.asServiceRole.entities.BankStatement.filter({ application_id, organization_id }, "-created_date", 1);
     const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
+    const identityDocs = await base44.asServiceRole.entities.Document.filter({ application_id, organization_id, document_type: "identity" }, "-created_date", 20);
     const credit = creditProfiles[0] || defaultCredit(app.loan_currency);
     const financial = financialProfiles[0] || defaultFinancial(app.loan_currency);
     const borrower = borrowers[0] || null;
@@ -53,6 +54,7 @@ export default async function(req: Request): Promise<Response> {
       application: app,
       borrower,
       application_velocity: applicationVelocity,
+      identity_documents: identityDocs,
       credit_report_id: credit.credit_report_id || (creditProfiles[0]?.id),
       bank_statement_id: bankStatements[0]?.id
     });
