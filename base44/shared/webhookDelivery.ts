@@ -34,6 +34,27 @@ export interface DecisionWebhookPayload {
   };
 }
 
+// Exponential backoff schedule (seconds): 1m, 5m, 30m between attempts.
+// Max 4 attempts total (1 initial + 3 retries). After attempt 4, give up.
+const BACKOFF_SECONDS = [60, 300, 1800];
+const MAX_ATTEMPTS = 4;
+
+// A failure is retryable if the endpoint was unreachable (network/timeout) or
+// returned a 5xx (server error). 4xx errors are NOT retried — the endpoint is
+// rejecting the payload, and retrying the same payload won't help.
+function isRetryable(httpStatus: number | null, errorMsg: string | null): boolean {
+  if (httpStatus === null) return true; // network error / timeout
+  return httpStatus >= 500 && httpStatus < 600;
+}
+
+// Compute the next retry timestamp for a given attempt number, or null if
+// the delivery has exhausted retries.
+function computeNextRetry(attempt: number): string | null {
+  const idx = attempt - 1; // attempt 1 → BACKOFF_SECONDS[0]
+  if (idx >= BACKOFF_SECONDS.length) return null; // exhausted
+  return new Date(Date.now() + BACKOFF_SECONDS[idx] * 1000).toISOString();
+}
+
 // Compute HMAC-SHA256 hex digest using the Web Crypto API.
 async function hmacSha256(secret: string, payload: string): Promise<string> {
   const encoder = new TextEncoder();

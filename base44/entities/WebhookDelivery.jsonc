@@ -65,6 +65,11 @@
     "signature": {
       "type": "string",
       "description": "The HMAC-SHA256 signature sent in the X-CreditDecide-Signature header, for verification debugging."
+    },
+    "next_retry_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the next retry attempt should fire. Null when the delivery succeeded or exhausted retries (4 attempts max)."
     }
   },
   "required": [
