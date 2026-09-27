@@ -70,13 +70,6 @@ export default function MarketingHero() {
                 Start as the lender
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
-              <Link
-                to="/start/borrower"
-                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-white border border-white/20 bg-white/5 pl-5 pr-4 py-3 rounded-full hover:bg-white/10 transition-all"
-              >
-                Start as the borrower
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
             </div>
             <HeroLeadCapture />
 
