@@ -1,0 +1,130 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
+import { apiError, apiSuccess, readBody } from "../../shared/utils.ts";
+
+// Public borrower self-service portal. No auth — the borrower proves ownership
+// by providing their application number AND the email they applied with. Only
+// borrower-facing fields are returned; internal risk scores, PD, evidence and
+// lender-only reasons are never exposed. Declined applications link to the
+// regulator-compliant adverse-action notice (if one was delivered).
+//
+// lookup — verify application_number + email, return status, decision, timeline,
+//          open information requests and document checklist.
+export default async function(req: Request): Promise<Response> {
+  try {
+    const base44 = createClientFromRequest(req);
+    const body = await readBody(req);
+    const action = body.action || "lookup";
+
+    if (action !== "lookup") return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use lookup.`, 400);
+
+    const applicationNumber = (body.application_number || "").trim();
+    const email = (body.email || "").trim().toLowerCase();
+    if (!applicationNumber) return apiError("VALIDATION_ERROR", "Application number is required.", 400);
+    if (!email) return apiError("VALIDATION_ERROR", "Email is required.", 400);
+
+    const apps = await base44.asServiceRole.entities.Application.filter({ application_number: applicationNumber }, "-created_date", 5);
+    if (apps.length === 0) return apiError("NOT_FOUND", "We couldn't find an application with that number. Please check and try again.", 404);
+    const app = apps[0];
+
+    const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id }, "-created_date", 1);
+    const borrower = borrowers[0];
+    if (!borrower || !borrower.email || borrower.email.toLowerCase() !== email) {
+      return apiError("NOT_FOUND", "We couldn't find an application matching those details. Please check and try again.", 404);
+    }
+
+    // Parallel loads for the portal view
+    const [decisions, infoRequests, documents] = await Promise.all([
+      base44.asServiceRole.entities.UnderwritingDecision.filter({ application_id: app.id }, "-decision_timestamp", 1),
+      base44.asServiceRole.entities.InformationRequest.filter({ application_id: app.id }, "-created_date", 50),
+      base44.asServiceRole.entities.Document.filter({ application_id: app.id }, "-created_date", 50),
+    ]);
+    const decision = decisions[0] || null;
+
+    const DOC_LABELS: Record<string, string> = {
+      credit_report: "Credit report",
+      bank_statement: "Bank statement",
+      payslip: "Payslip",
+      identity: "Identity document",
+      employment: "Employment proof",
+      tax: "Tax document",
+      financial_statement: "Financial statement",
+      proof_of_address: "Proof of address",
+      other_financial: "Financial document",
+      other: "Document",
+    };
+    const DOC_STATUS: Record<string, string> = {
+      uploaded: "Received",
+      processing: "Processing",
+      processed: "Verified",
+      verified: "Verified",
+      needs_review: "Needs review",
+      failed: "Issue",
+    };
+    const INFO_STATUS: Record<string, string> = {
+      requested: "Requested",
+      sent: "Sent",
+      viewed: "Awaiting your response",
+      received: "Received",
+      verified: "Verified",
+      resolved: "Resolved",
+    };
+
+    const STATUS_LABEL: Record<string, string> = {
+      draft: "Started",
+      data_collection: "Information & documents",
+      analyzing: "Under review",
+      underwriting: "Under review",
+      completed: "Completed",
+      failed: "Action needed",
+    };
+
+    const openInfoRequests = infoRequests
+      .filter((r) => r.status !== "resolved" && r.status !== "verified")
+      .map((r) => ({ item: r.item, note: r.note || null, status: INFO_STATUS[r.status] || r.status, requested_at: r.created_date }));
+
+    const docChecklist = documents.map((d) => ({
+      type: d.document_type,
+      label: DOC_LABELS[d.document_type] || d.document_type,
+      status: DOC_STATUS[d.status] || d.status,
+      file_name: d.file_name || null,
+      uploaded_at: d.created_date,
+    }));
+
+    // Timeline
+    const timeline = [
+      { step: "Application submitted", at: app.created_date, done: true },
+      { step: "Information & documents", at: null, done: ["data_collection", "analyzing", "underwriting", "completed"].includes(app.status) },
+      { step: "Under review", at: null, done: ["analyzing", "underwriting", "completed"].includes(app.status) },
+      { step: "Decision", at: decision?.decision_timestamp || null, done: !!decision },
+    ];
+
+    const noticeToken = decision?.adverse_action_delivery?.share_token || null;
+
+    return apiSuccess({
+      application: {
+        application_number: app.application_number,
+        status: app.status,
+        status_label: STATUS_LABEL[app.status] || app.status,
+        loan_amount: app.loan_amount,
+        loan_currency: app.loan_currency,
+        loan_purpose: app.loan_purpose,
+        loan_term_months: app.loan_term_months,
+        market: app.market,
+        created_at: app.created_date,
+      },
+      borrower: { first_name: borrower.first_name, last_name: borrower.last_name },
+      decision: decision ? {
+        decision: decision.decision,
+        decided_at: decision.decision_timestamp,
+        human_review_required: decision.human_review_required,
+      } : null,
+      notice_token: noticeToken,
+      open_information_requests: openInfoRequests,
+      documents: docChecklist,
+      timeline,
+    }, 200);
+  } catch (e) {
+    if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
+    return apiError("INTERNAL_ERROR", e.message, 500);
+  }
+}
