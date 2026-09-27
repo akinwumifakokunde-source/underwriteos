@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, ArrowLeft, Inbox, FileText, ExternalLink } from "lucide-react";
+import { Loader2, AlertTriangle, ArrowLeft, Inbox, FileText, ExternalLink, Play } from "lucide-react";
 import { formatCurrency } from "@/lib/jurisdictions";
 
 const STATUS_STYLES = {
@@ -35,10 +35,25 @@ function labelStatus(s) {
 
 export default function FormSubmissions() {
   const { formId } = useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState(null);
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [runningId, setRunningId] = useState(null);
+
+  const runUnderwriting = async (s) => {
+    setRunningId(s.application_id);
+    setError(null);
+    try {
+      await base44.functions.invoke("apiAnalyze", { application_id: s.application_id });
+      await base44.functions.invoke("apiUnderwrite", { application_id: s.application_id, policy_id: s.policy_id || "consumer-v1" });
+      navigate(`/applications/${s.application_id}`);
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Underwriting failed.");
+      setRunningId(null);
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -118,7 +133,7 @@ export default function FormSubmissions() {
                   <th className="text-right font-medium text-slate-500 px-4 py-3">Loan</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-3">Status</th>
                   <th className="text-left font-medium text-slate-500 px-4 py-3 hidden sm:table-cell">Submitted</th>
-                  <th className="px-4 py-3 w-10"></th>
+                  <th className="text-right font-medium text-slate-500 px-4 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -149,9 +164,20 @@ export default function FormSubmissions() {
                     </td>
                     <td className="px-4 py-3 text-[12px] text-slate-500 hidden sm:table-cell">{formatDate(s.created_date)}</td>
                     <td className="px-4 py-3 text-right">
-                      <Link to={`/applications/${s.application_id}`} title="Open application" className="inline-flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">
-                        <ExternalLink className="w-4 h-4" />
-                      </Link>
+                      <div className="inline-flex items-center gap-1.5">
+                        <button
+                          onClick={() => runUnderwriting(s)}
+                          disabled={runningId === s.application_id}
+                          title="Run underwriting"
+                          className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white bg-slate-900 px-2.5 py-1.5 rounded-md hover:bg-slate-800 disabled:opacity-60 transition-colors"
+                        >
+                          {runningId === s.application_id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
+                          Run
+                        </button>
+                        <Link to={`/applications/${s.application_id}`} title="View details" className="inline-flex items-center justify-center w-8 h-8 rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors">
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

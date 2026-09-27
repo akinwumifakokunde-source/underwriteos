@@ -173,6 +173,7 @@ export default async function(req: Request): Promise<Response> {
         loan_currency: a.loan_currency,
         market: a.market,
         product_type: a.product_type,
+        policy_id: a.policy_id,
         created_date: a.created_date,
         borrower: borrowerMap[a.borrower_id] ? {
           first_name: borrowerMap[a.borrower_id].first_name,
