@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import Logo from "@/components/Logo";
 import PortalUploader from "@/components/borrower/PortalUploader";
 import PortalAssistant from "@/components/borrower/PortalAssistant";
+import PortalEndToEndExplainer from "@/components/borrower/PortalEndToEndExplainer";
 import {
   Loader2, Search, ShieldCheck, FileText, AlertCircle, CheckCircle2, Clock,
   ArrowRight, Lock, UploadCloud, X, MessageSquare,
@@ -540,10 +541,21 @@ export default function BorrowerPortal() {
             </div>
           </div>
         </div>
+
+        {isAdmin && (
+          <div className="mt-6">
+            <PortalEndToEndExplainer />
+          </div>
+        )}
       </main>
 
-      <footer className="max-w-5xl mx-auto px-5 sm:px-6 py-8 text-center">
-        <p className="text-[11px] text-slate-400">Powered by CreditDecide</p>
+      <footer className="max-w-5xl mx-auto px-5 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p className="text-[11px] text-slate-400">Powered by CreditDecide — the borrower-facing mirror of your underwriting workspace.</p>
+        {isAdmin ? (
+          <Link to="/applications" className="text-[11px] font-medium text-teal-700 hover:text-teal-900">Open lender workspace →</Link>
+        ) : (
+          <Link to="/" className="text-[11px] text-slate-400 hover:text-slate-600">Back to home</Link>
+        )}
       </footer>
     </div>
   );
