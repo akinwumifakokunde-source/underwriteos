@@ -39,11 +39,20 @@ export default async function(req: Request): Promise<Response> {
     const financial = financialProfiles[0] || defaultFinancial(app.loan_currency);
     const borrower = borrowers[0] || null;
 
+    // Application velocity: count other borrower records with the same email
+    // (loan-stacking / duplicate-application detection).
+    let applicationVelocity = 0;
+    if (borrower?.email) {
+      const sameEmailBorrowers = await base44.asServiceRole.entities.Borrower.filter({ email: borrower.email, organization_id }, "-created_date", 20);
+      applicationVelocity = Math.max(0, sameEmailBorrowers.length - 1);
+    }
+
     const { items } = generateRiskSignals({
       credit,
       financial,
       application: app,
       borrower,
+      application_velocity: applicationVelocity,
       credit_report_id: credit.credit_report_id || (creditProfiles[0]?.id),
       bank_statement_id: bankStatements[0]?.id
     });

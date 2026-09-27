@@ -46,6 +46,7 @@ export const ADVERSE_ACTION_CODES: Record<string, { code: string; label: string 
   "FR-FLAG": { code: "FRAUD_INDICATOR", label: "Potential fraud signal detected" },
   "AF-STRESS": { code: "STRESSED_AFFORDABILITY_FAIL", label: "Insufficient repayment capacity under stressed income scenario" },
   "FR-INCOME": { code: "INCOME_MISMATCH", label: "Declared income not supported by bank statement evidence" },
+  "FR-VELOCITY": { code: "MULTIPLE_APPLICATIONS", label: "Multiple recent applications detected from the same identity" },
 };
 
 export function adverseActionForRule(ruleId: string): { code: string; label: string } | null {
@@ -71,7 +72,8 @@ export const DEFAULT_POLICY = {
     { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
     { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below review threshold (80)" },
     { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "REVIEW", reason: "Repayment capacity negative under -10% income-shock stress scenario" },
-    { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Declared income not supported by bank statement evidence" }
+    { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Declared income not supported by bank statement evidence" },
+    { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "REVIEW", reason: "Multiple recent applications from the same identity (loan stacking)" }
     ]
     };
 
@@ -162,7 +164,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" },
       { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Repayment capacity negative under -10% income-shock stress scenario (mortgage)" },
-      { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "DECLINE", reason: "Declared income not supported by bank statement evidence (mortgage)" }
+      { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "DECLINE", reason: "Declared income not supported by bank statement evidence (mortgage)" },
+      { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "DECLINE", reason: "Multiple recent applications from the same identity (mortgage)" }
     ]
   },
   "business-v1": {
