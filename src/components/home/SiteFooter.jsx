@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Linkedin } from "lucide-react";
+import { Linkedin, ArrowUpRight } from "lucide-react";
 import Logo from "@/components/Logo";
 
 const COLS = [
@@ -80,14 +80,15 @@ export default function SiteFooter() {
               <h4 className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#808080] mb-4">
                 {c.title}
               </h4>
-              <ul className="space-y-2.5">
+              <ul className="space-y-3">
                 {c.links.map((l) => (
                   <li key={l.label + l.to}>
                     <Link
                       to={l.to}
-                      className="text-sm text-white/90 hover:text-[#34d399] transition-colors"
+                      className="group inline-flex items-center gap-1.5 text-[13px] text-white/85 hover:text-white transition-colors"
                     >
-                      {l.label}
+                      <span className="transition-transform group-hover:translate-x-0.5">{l.label}</span>
+                      <ArrowUpRight className="w-3 h-3 text-[#34d399] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                     </Link>
                   </li>
                 ))}
