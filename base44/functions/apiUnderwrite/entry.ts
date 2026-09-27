@@ -3,6 +3,7 @@ import { apiError, apiSuccess, readBody, resolveOrganization, requireScope, audi
 import { getPolicy, evaluatePolicy } from "../../shared/policyEngine.ts";
 import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
+import { calculateRate } from "../../shared/pricingEngine.ts";
 
 // POST /v1/applications/{id}/underwrite — runs the full underwriting evaluation.
 // Pipeline: AI Analysis -> Risk Signals -> Evidence -> Policy Engine -> Recommendation -> Final Decision.
@@ -116,6 +117,9 @@ export default async function(req: Request): Promise<Response> {
       idempotency_key: idempotencyKey || null
     });
 
+    // 7. Risk-based pricing: calculate the interest rate (APR) for approved loans.
+    const interestRate = calculateRate(policy.policy_id, decision.risk_score, decision.decision);
+
     await base44.asServiceRole.entities.Application.update(app.id, {
       status: "completed",
       decision: decision.decision,
@@ -123,12 +127,13 @@ export default async function(req: Request): Promise<Response> {
       probability_of_default: decision.probability_of_default,
       confidence: decision.confidence,
       human_review_required: decision.human_review_required,
-      reasons: decision.reasons
+      reasons: decision.reasons,
+      interest_rate: interestRate
     });
 
-    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score } });
+    await audit(base44, organization_id, "decision.created", { application_id, actor, actor_type, endpoint: "POST /v1/applications/{id}/underwrite", credits: 20, details: { decision: decision.decision, decision_source: decision.decision_source, recommendation: recommendation.recommendation, risk_score: decision.risk_score, interest_rate: interestRate } });
 
-    return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord }, 200);
+    return apiSuccess({ recommendation: recommendationRecord, decision: decisionRecord, interest_rate: interestRate }, 200);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);

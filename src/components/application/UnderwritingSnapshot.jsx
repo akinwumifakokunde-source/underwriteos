@@ -18,6 +18,7 @@ export default function UnderwritingSnapshot({ borrower, app, fp, cp, decision, 
   const metrics = [
     { label: "Borrower", value: borrower ? `${borrower.first_name} ${borrower.last_name}` : null, empty: "Not provided" },
     { label: "Loan", value: app?.loan_amount ? fmtMoney(app.loan_amount, currency) : null, empty: "Not specified" },
+    { label: "Interest rate", value: app?.interest_rate != null ? `${app.interest_rate.toFixed(1)}% APR` : null, empty: "Awaiting decision" },
     { label: "Verified income", value: fp?.income?.monthly ? fmtMoney(fp.income.monthly, currency) : null, empty: "Awaiting bank data" },
     { label: "Proposed payment", value: payment > 0 ? fmtMoney(payment, currency) : null, empty: "Awaiting terms" },
     { label: "Disposable income", value: fp?.cashflow?.disposable_income != null ? fmtMoney(disposableAfter, currency) : null, empty: "Awaiting bank data" },
@@ -43,7 +44,7 @@ export default function UnderwritingSnapshot({ borrower, app, fp, cp, decision, 
     <div className="rounded-xl border border-slate-200 bg-white p-5">
       <h3 className="text-sm font-semibold text-slate-900 mb-3">Underwriting snapshot</h3>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-4">
         {metrics.map((m, i) => (
           <div key={i} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
             <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">{m.label}</div>
