@@ -4,7 +4,8 @@ import Nav from "@/components/layout/Nav.jsx";
 import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy } from "lucide-react";
 
 const EVENT_OPTIONS = [
-  "application.created", "application.completed", "application.decision",
+  "decision.created", "decision.approved", "decision.declined", "decision.review",
+  "application.created", "application.completed",
   "credit_report.ingested", "bank_statement.ingested", "recommendation.generated"
 ];
 
@@ -14,7 +15,7 @@ export default function Webhooks() {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [url, setUrl] = useState("");
-  const [events, setEvents] = useState(["application.created", "application.decision"]);
+  const [events, setEvents] = useState(["decision.created", "decision.declined", "decision.review"]);
   const [newSecret, setNewSecret] = useState(null);
   const [copied, setCopied] = useState(false);
   const [testResult, setTestResult] = useState({});
@@ -89,6 +90,16 @@ export default function Webhooks() {
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Webhooks</h1>
           <p className="text-sm text-slate-500 mt-1">Receive event notifications at your endpoint. The signing secret is shown only once.</p>
+        </div>
+
+        <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4">
+          <p className="text-xs font-semibold text-slate-700 mb-1.5">Verifying signatures</p>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Each delivery includes an <code className="font-mono text-slate-700">X-CreditDecide-Signature</code> header
+            in the format <code className="font-mono text-slate-700">sha256=&lt;hex&gt;</code>, computed as
+            HMAC-SHA256 over the raw request body using your webhook secret. Verify by recomputing the HMAC
+            and comparing — never trust an unsigned payload.
+          </p>
         </div>
 
         {error && (
