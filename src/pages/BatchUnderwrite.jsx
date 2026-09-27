@@ -6,12 +6,12 @@ import Nav from "@/components/layout/Nav";
 import { UploadCloud, FileSpreadsheet, Loader2, CheckCircle2, XCircle, Download, ArrowRight } from "lucide-react";
 
 const MARKETS = [
-  { code: "GB", label: "United Kingdom", policy: "consumer-v1" },
-  { code: "US", label: "United States", policy: "us-consumer-v2" },
-  { code: "NG", label: "Nigeria", policy: "ng-consumer-v1" },
-  { code: "ZA", label: "South Africa", policy: "za-consumer-v1" },
-  { code: "KE", label: "Kenya", policy: "ke-consumer-v1" },
-  { code: "GH", label: "Ghana", policy: "gh-consumer-v1" },
+  { code: "GB", label: "United Kingdom", policy: "consumer-v1", currency: "GBP" },
+  { code: "US", label: "United States", policy: "us-consumer-v2", currency: "USD" },
+  { code: "NG", label: "Nigeria", policy: "ng-consumer-v1", currency: "NGN" },
+  { code: "ZA", label: "South Africa", policy: "za-consumer-v1", currency: "ZAR" },
+  { code: "KE", label: "Kenya", policy: "ke-consumer-v1", currency: "KES" },
+  { code: "GH", label: "Ghana", policy: "gh-consumer-v1", currency: "GHS" },
 ];
 
 const BORROWER_TYPES = [
@@ -167,6 +167,11 @@ export default function BatchUnderwrite() {
           [idx]: {
             status: "done", application_id: appId,
             decision: dec.decision, risk_score: dec.risk_score, pd: dec.probability_of_default,
+            interest_rate: uwRes.data.interest_rate,
+            reasons: dec.reasons || [],
+            market: rowMarket,
+            loan_amount: Number(r.loan_amount),
+            loan_currency: rowMarketCfg.currency,
             borrower_name: `${r.first_name} ${r.last_name}`,
           },
         }));
@@ -191,13 +196,18 @@ export default function BatchUnderwrite() {
   };
 
   const exportResults = () => {
-    const header = "first_name,last_name,application_id,decision,risk_score,probability_of_default,error\n";
+    const header = "first_name,last_name,application_id,market,loan_amount,loan_currency,decision,risk_score,probability_of_default,interest_rate,reasons,error\n";
     const lines = rows.map((r, i) => {
       const res = results[i] || {};
       const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
       return [
         esc(r.first_name), esc(r.last_name), esc(res.application_id || ""),
+        esc(res.market || r.market || market),
+        esc(res.loan_amount ?? r.loan_amount),
+        esc(res.loan_currency || marketCfg.currency),
         esc(res.decision || ""), esc(res.risk_score ?? ""), esc(res.pd ?? ""),
+        esc(res.interest_rate ?? ""),
+        esc((res.reasons || []).join("; ")),
         esc(res.error || ""),
       ].join(",");
     }).join("\n");
@@ -282,6 +292,19 @@ export default function BatchUnderwrite() {
           )}
         </div>
 
+        {/* Progress bar */}
+        {running && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between text-[12px] text-slate-500 mb-1.5">
+              <span>Processing batch…</span>
+              <span className="font-mono">{done.length + failed.length} / {rows.length}</span>
+            </div>
+            <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-teal-400 to-emerald-500 transition-all duration-300" style={{ width: `${rows.length > 0 ? ((done.length + failed.length) / rows.length) * 100 : 0}%` }} />
+            </div>
+          </div>
+        )}
+
         {/* Summary */}
         {overall && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
@@ -323,6 +346,7 @@ export default function BatchUnderwrite() {
                     <th className="font-medium py-2.5 px-3">Decision</th>
                     <th className="font-medium py-2.5 px-3">Risk score</th>
                     <th className="font-medium py-2.5 px-3">PD</th>
+                    <th className="font-medium py-2.5 px-3">APR</th>
                     <th className="font-medium py-2.5 px-5"></th>
                   </tr>
                 </thead>
@@ -349,6 +373,7 @@ export default function BatchUnderwrite() {
                         </td>
                         <td className="py-2.5 px-3 font-mono text-slate-600">{res.risk_score != null ? res.risk_score.toFixed(2) : "—"}</td>
                         <td className="py-2.5 px-3 font-mono text-slate-600">{res.pd != null ? `${(res.pd * 100).toFixed(1)}%` : "—"}</td>
+                        <td className="py-2.5 px-3 font-mono text-slate-600">{res.interest_rate != null ? `${(res.interest_rate * 100).toFixed(1)}%` : "—"}</td>
                         <td className="py-2.5 px-5 text-right">
                           {res.application_id ? (
                             <Link to={`/applications/${res.application_id}`} className="text-teal-600 hover:text-teal-700 text-[11px] font-medium">Open →</Link>
