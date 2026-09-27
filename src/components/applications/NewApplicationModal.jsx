@@ -58,10 +58,33 @@ export default function NewApplicationModal({ open, onClose, apps, borrowers }) 
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
+  // Readiness gate: documents must be received, classified and extracted
+  // (or a financial/credit profile must already exist from a data-source pull)
+  // before the end-to-end underwriting pipeline is allowed to run. Incomplete
+  // applications open on the Documents tab so the underwriter can see pending
+  // files and chase the borrower for follow-up.
   const runUnderwriting = async (a) => {
     setRunningId(a.id);
     setError(null);
     try {
+      const [docRes, sumRes] = await Promise.all([
+        base44.functions.invoke("apiDocuments", { action: "list", application_id: a.id }),
+        base44.functions.invoke("apiRetrieve", { action: "summary", application_id: a.id }),
+      ]);
+      const docs = docRes.data?.documents || [];
+      const s = sumRes.data || {};
+      const hasDocs = docs.length > 0;
+      const allProcessed = hasDocs && docs.every((d) => ["processed", "verified"].includes(d.status));
+      const allExtracted = hasDocs && docs.every((d) => d.extracted_data?.fields?.length > 0);
+      const hasProfiles = !!(s.financial_profile || s.credit_profile);
+      const ready = (hasDocs && allProcessed && allExtracted) || hasProfiles;
+
+      if (!ready) {
+        onClose();
+        navigate(`/applications/${a.id}?tab=Documents`);
+        return;
+      }
+
       await base44.functions.invoke("apiAnalyze", { application_id: a.id });
       await base44.functions.invoke("apiUnderwrite", { application_id: a.id, policy_id: a.policy_id || "consumer-v1" });
       onClose();
