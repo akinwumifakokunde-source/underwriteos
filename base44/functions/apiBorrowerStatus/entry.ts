@@ -90,31 +90,41 @@ export default async function(req: Request): Promise<Response> {
         // non-fatal — the document is still recorded for the lender
       }
 
-      // Notify the lender that the borrower responded.
+      // Notify the lender that the borrower responded. On by default: when no
+      // alerts email is configured on the organization, fall back to the org's
+      // admin users so borrower responses never go unnoticed.
       let lenderNotified = false;
       try {
         const orgs = await base44.asServiceRole.entities.Organization.filter({ id: app.organization_id }, "-created_date", 1);
         const alertsEmail = orgs[0]?.settings?.alerts_email;
+        let recipients: string[] = [];
         if (alertsEmail) {
+          recipients = [alertsEmail];
+        } else {
+          const admins = await base44.asServiceRole.entities.User.filter({ organization_id: app.organization_id, role: "admin" }, "-created_date", 20);
+          recipients = admins.map((u: any) => u.email).filter((e: any) => !!e);
+        }
+        if (recipients.length > 0) {
           const proto = req.headers.get("x-forwarded-proto") || "https";
           const host = req.headers.get("host");
           const origin = host ? `${proto}://${host}` : "https://oldme.base44.app";
           const appLink = `${origin}/applications/${app.id}`;
-          await base44.asServiceRole.integrations.Core.SendEmail({
-            to: alertsEmail,
-            subject: `Borrower responded — ${app.application_number}`,
-            text: [
-              `A borrower has uploaded a document for application ${app.application_number}.`,
-              ``,
-              `Document: ${fileName || documentType}`,
-              infoRequest ? `In response to request: ${infoRequest.item}` : null,
-              ``,
-              processed ? "The document has been processed and the decision re-evaluated." : "The document was received and will be processed shortly.",
-              decisionRerun ? "Log in to review the updated decision." : null,
-              ``,
-              `Open application: ${appLink}`,
-            ].filter((x: any) => x !== null).join("\n"),
-          });
+          const text = [
+            `A borrower has uploaded a document for application ${app.application_number}.`,
+            ``,
+            `Document: ${fileName || documentType}`,
+            infoRequest ? `In response to request: ${infoRequest.item}` : null,
+            ``,
+            processed ? "The document has been processed and the decision re-evaluated." : "The document was received and will be processed shortly.",
+            decisionRerun ? "Log in to review the updated decision." : null,
+            ``,
+            `Open application: ${appLink}`,
+          ].filter((x: any) => x !== null).join("\n");
+          for (const to of recipients) {
+            try {
+              await base44.asServiceRole.integrations.Core.SendEmail({ to, subject: `Borrower responded — ${app.application_number}`, text });
+            } catch {}
+          }
           lenderNotified = true;
         }
       } catch (e) {
