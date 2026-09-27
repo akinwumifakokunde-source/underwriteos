@@ -53,6 +53,20 @@ export default async function(req: Request): Promise<Response> {
       const kycValues = kyc.map((f) => String(v[f.key] || "")).filter(Boolean).join("|");
       const national_id_hash = kycValues ? await hashId(`${v.first_name}${v.last_name}${kycValues}`) : (v.date_of_birth ? await hashId(`${v.first_name}${v.last_name}${v.date_of_birth}`) : null);
 
+      // Duplicate-submission prevention: reject if the same email already has
+      // an application for this form (prevents accidental double-submits and spam).
+      if (v.email) {
+        const existingBorrowers = await base44.asServiceRole.entities.Borrower.filter({ email: v.email, organization_id }, "-created_date", 5);
+        let isDuplicate = false;
+        for (const eb of existingBorrowers) {
+          const existingApps = await base44.asServiceRole.entities.Application.filter({ borrower_id: eb.id, form_id: form.id, organization_id }, "-created_date", 1);
+          if (existingApps.length > 0) { isDuplicate = true; break; }
+        }
+        if (isDuplicate) {
+          return apiError("DUPLICATE_APPLICATION", "You have already submitted an application for this form. We'll be in touch soon.", 409);
+        }
+      }
+
       const borrower = await base44.asServiceRole.entities.Borrower.create({
         organization_id,
         borrower_reference: genId("BRW"),
