@@ -7,13 +7,13 @@ const COLS = [
   {
     title: "Platform",
     links: [
-      { to: "/features/ai-underwriting", label: "AI Underwriting" },
-      { to: "/features/credit-decisioning", label: "Credit Decisioning" },
-      { to: "/features/document-intelligence", label: "Document Intelligence" },
-      { to: "/features/risk-assessment", label: "Risk Assessment" },
-      { to: "/features/lending-policies", label: "Lending Policies" },
-      { to: "/features/explainable-decisions", label: "Explainable Decisions" },
-      { to: "/features/borrower-portal", label: "Borrower Portal" },
+      { to: "/features/ai-underwriting", label: "AI Underwriter" },
+      { to: "/features/ai-credit-officer", label: "AI Credit Officer" },
+      { to: "/features/risk-assessment", label: "Risk Score" },
+      { to: "/features/document-intelligence", label: "Document Capture" },
+      { to: "/features/intelligent-los", label: "Intelligent LOS" },
+      { to: "/features/ai-loan-application", label: "AI Loan Application" },
+      { to: "/features/borrower-portal", label: "AI Borrower Portal" },
     ],
   },
   {

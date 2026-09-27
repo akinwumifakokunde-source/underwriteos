@@ -2,7 +2,7 @@ export const FEATURES = [
   {
     slug: "ai-underwriting",
     title: "AI Underwriting",
-    tagline: "An AI-native underwriting engine",
+    tagline: "Your best credit officer's judgment, on every file",
     h1: "AI underwriting for consumer lenders",
     intro:
       "CreditDecide's AI underwriting engine reads borrower documents, normalizes financial and credit data, evaluates your lending policy, and produces a recommendation with a probability of default and confidence score — in minutes, not days.",
@@ -60,7 +60,7 @@ export const FEATURES = [
   {
     slug: "document-intelligence",
     title: "Document Intelligence",
-    tagline: "Classify, extract, and verify borrower documents",
+    tagline: "Reads the documents other tools reject",
     h1: "Document intelligence for underwriting",
     intro:
       "CreditDecide automatically classifies uploaded borrower documents — bank statements, payslips, credit reports, identity, and financial statements — extracts the fields that matter, and links every extracted value back to its source for full provenance.",
@@ -89,7 +89,7 @@ export const FEATURES = [
   {
     slug: "risk-assessment",
     title: "Risk Assessment",
-    tagline: "Five dimensions of borrower risk",
+    tagline: "A credit signal where the bureau has none",
     h1: "Structured risk assessment across five dimensions",
     intro:
       "CreditDecide evaluates every application across five risk dimensions — credit, affordability, fraud, data quality, and policy — producing structured risk signals that each carry a severity, direction, and human-readable explanation.",
@@ -176,7 +176,7 @@ export const FEATURES = [
   {
     slug: "borrower-portal",
     title: "Borrower Portal",
-    tagline: "A white-label portal your borrowers actually use",
+    tagline: "Every borrower, always in the loop",
     h1: "A borrower portal that closes the loop",
     intro:
       "CreditDecide gives every borrower a single, branded link where they check their application status, see exactly what's left to do, upload missing documents, and message your team 24/7 — all without a phone call. Every upload re-runs underwriting and notifies your team automatically.",
@@ -209,6 +209,93 @@ export const FEATURES = [
       "White-label forms with your branding end-to-end",
     ],
     related: ["ai-underwriting", "document-intelligence", "explainable-decisions"],
+  },
+  {
+    slug: "ai-credit-officer",
+    title: "AI Credit Officer",
+    tagline: "Chases the paperwork so your team doesn't",
+    h1: "An AI credit officer that chases the paperwork",
+    intro:
+      "CreditDecide's AI credit officer runs the information-request loop for you — spotting what's missing, asking the borrower through the portal, and re-running underwriting the moment a document lands. Your team stops chasing files and starts reviewing complete cases.",
+    sections: [
+      {
+        heading: "What the AI credit officer does",
+        body: "It watches every application for gaps — a missing payslip, an expired identity document, an unanswered affordability question — and opens a structured information request in the borrower's portal. When the borrower responds, it processes the upload and re-evaluates the case automatically, so a file never stalls waiting on a single document.",
+      },
+      {
+        heading: "From manual chase to closed loop",
+        body: "Instead of your underwriters emailing back and forth, the AI credit officer keeps the file moving. It nudges, tracks, and resolves requests — turning days of back-and-forth into a single automated loop the borrower can complete in minutes.",
+      },
+      {
+        heading: "Your team reviews, the AI handles the rest",
+        body: "The AI credit officer never decides for you. It assembles a complete, verified file and hands it to your underwriters with the evidence lined up — so they spend their time on judgement, not on chasing paperwork.",
+      },
+    ],
+    benefits: [
+      "Identifies missing information automatically",
+      "Opens and tracks requests in the borrower portal",
+      "Re-runs underwriting on every upload",
+      "Frees your team for judgement, not admin",
+    ],
+    related: ["ai-underwriting", "borrower-portal", "document-intelligence"],
+  },
+  {
+    slug: "intelligent-los",
+    title: "Intelligent LOS",
+    tagline: "Every product in one system",
+    h1: "One intelligent loan operating system",
+    intro:
+      "CreditDecide brings every consumer-lending product — personal loans, instalment, point-of-sale, and auto — into a single system. One application model, one policy engine, one evidence graph, and one audit trail across everything you lend.",
+    sections: [
+      {
+        heading: "Every product, one system",
+        body: "Personal loans, instalment plans, point-of-sale finance, and auto loans all run on the same underwriting operating system. Configure a product, attach a policy, and start originating — without a new integration for each line of business.",
+      },
+      {
+        heading: "One pipeline, full visibility",
+        body: "Every application flows through the same pipeline: intake, data collection, AI analysis, policy evaluation, and decision. Your portfolio, risk, and collections teams see one consistent view across products and markets.",
+      },
+      {
+        heading: "Built to scale across markets",
+        body: "One system, six primary markets and beyond. Currency, regulatory profile, and document requirements adapt per market — so you expand into a new country without re-platforming.",
+      },
+    ],
+    benefits: [
+      "Personal, instalment, POS, and auto in one system",
+      "One policy engine across every product",
+      "Single audit trail and portfolio view",
+      "Scale across markets without re-platforming",
+    ],
+    related: ["ai-underwriting", "lending-policies", "credit-decisioning"],
+  },
+  {
+    slug: "ai-loan-application",
+    title: "AI Loan Application",
+    tagline: "Catches missing documents as they are uploaded",
+    h1: "AI-native loan applications that catch what's missing",
+    intro:
+      "CreditDecide's AI-native application forms check every upload as it happens — classifying the document, extracting its fields, and flagging what's still missing before the borrower ever hits submit. Incomplete applications rarely reach your team.",
+    sections: [
+      {
+        heading: "Catches missing documents as they're uploaded",
+        body: "The moment a borrower uploads a file, CreditDecide classifies it and checks it against the requirements for their market and product. If a required document is missing or unreadable, the borrower is told immediately — not after a days-long review.",
+      },
+      {
+        heading: "AI-native onboarding",
+        body: "The application form is conversational and guided. A borrower-side assistant helps applicants answer questions, understand what's needed, and upload the right file the first time — raising completion rates and cutting rework.",
+      },
+      {
+        heading: "Clean files from the start",
+        body: "Because intake is validated in real time, the applications that reach underwriting are complete, classified, and extraction-ready. Your team starts from a clean file, not a cleanup job.",
+      },
+    ],
+    benefits: [
+      "Real-time document classification at intake",
+      "Flags missing or unreadable uploads instantly",
+      "Conversational, guided borrower onboarding",
+      "Complete files reach your underwriters",
+    ],
+    related: ["document-intelligence", "borrower-portal", "ai-credit-officer"],
   },
   {
     slug: "connect-ai",
