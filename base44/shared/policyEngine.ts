@@ -78,7 +78,10 @@ export const DEFAULT_POLICY = {
     { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "REVIEW", reason: "Repayment capacity negative under -10% income-shock stress scenario" },
     { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Declared income not supported by bank statement evidence" },
     { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "REVIEW", reason: "Multiple recent applications from the same identity (loan stacking)" },
-    { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
+    { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" },
+    { rule_id: "FR-ID-NAME", field: "identity_name_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Name on identity document does not match the application" },
+    { rule_id: "FR-ID-DOB", field: "identity_dob_match", operator: "==", threshold: false, decision: "DECLINE", reason: "Date of birth on identity document does not match the application" },
+    { rule_id: "FR-ID-ADDR", field: "identity_address_match", operator: "==", threshold: false, decision: "REVIEW", reason: "Address on identity document does not match the application" }
     ]
     };
 
