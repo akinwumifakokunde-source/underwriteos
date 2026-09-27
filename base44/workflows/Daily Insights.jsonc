@@ -1,5 +1,5 @@
 {
-  "description": "Generates and publishes one borderless, consumer-lending-focused Insights article per weekday (9am, Mon-Fri), rotating across feature/innovation/strategy topics, then shares the new article \u2014 with an AI-generated cover image \u2014 to the CreditDecide LinkedIn company page.",
+  "description": "Generates and publishes one Insights article per weekday (9am, Mon-Fri) across five content pillars: Mon=A (AI Underwriting), Tue=B (Credit Decisioning), Wed=C (Document Intelligence), Thu=D (Lending Operations), Fri=E (AI + Responsible Lending, flagship). Friday's pillar positions CreditDecide as the infrastructure layer for responsible AI underwriting, anchored to the FCA's 2026 AI agenda. Then shares the new article \u2014 with an AI-generated cover image \u2014 to the CreditDecide LinkedIn company page.",
   "name": "Daily Insights",
   "trigger": {
     "condition": null,
@@ -22,7 +22,7 @@
     "document": {
       "dsl": "1.0.0",
       "name": "daily_insights",
-      "version": "1.1",
+      "version": "1.2",
       "namespace": "base44"
     },
     "do": [
@@ -38,7 +38,7 @@
           "then": "post_linkedin",
           "x-base44": {
             "title": "Generate insight article",
-            "description": "AI-generate and publish one borderless consumer-lending article"
+            "description": "AI-generate and publish today's pillar article (A-E by weekday)"
           }
         }
       },

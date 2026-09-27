@@ -1,7 +1,7 @@
 {
   "name": "Insight",
   "type": "object",
-  "description": "Editorial article in the public Insights section. Market-specific articles are auto-generated and published by the Daily Insights workflow; foundational articles are seeded manually. Public read; admin-only writes (the workflow's backend function uses the service role, which bypasses RLS).",
+  "description": "Editorial article in the public Insights section. Articles are auto-generated and published by the Daily Insights workflow, one per weekday, rotating across five content pillars (A-E). Public read; admin-only writes (the workflow's backend function uses the service role, which bypasses RLS).",
   "properties": {
     "slug": {
       "type": "string",
@@ -86,10 +86,26 @@
       ],
       "default": "published"
     },
+    "pillar": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "description": "Content pillar this article belongs to: A=AI Underwriting (Mon), B=Credit Decisioning (Tue), C=Document Intelligence (Wed), D=Lending Operations (Thu), E=AI + Responsible Lending (Fri)."
+    },
+    "pillar_index": {
+      "type": "number",
+      "default": 0,
+      "description": "Per-pillar rotation counter the generator uses to pick the next article within this pillar."
+    },
     "rotation_index": {
       "type": "number",
       "default": 0,
-      "description": "Rotation counter the generator uses to pick the next market/topic pair."
+      "description": "Legacy rotation counter; kept for backward compatibility."
     },
     "featured": {
       "type": "boolean",
