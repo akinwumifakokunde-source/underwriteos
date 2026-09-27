@@ -16,8 +16,10 @@ export default function BorrowerExperience({ onStart }) {
                 The borrower experience
               </h2>
               <p className="mt-3 text-sm text-[#6B7280] dark:text-slate-400 max-w-xl leading-relaxed">
-                Guided intake that keeps applicants moving and gathers credit context while they apply. Automated
-                follow-ups pull more information and keep borrowers informed — so fewer drop off.
+                Guided intake that keeps applicants moving and gathers credit context while they apply. When the
+                lender needs more, the borrower gets an email and uploads through a secure portal — CreditDecide
+                auto-extracts, re-runs the decision, and notifies the team. Documents stay private, with signed
+                access only.
               </p>
             </div>
             {onStart ? (
@@ -86,7 +88,8 @@ export default function BorrowerExperience({ onStart }) {
                 <h3 className="text-sm font-semibold text-black dark:text-slate-50">Borrower portal</h3>
               </div>
               <p className="text-[13px] text-[#6B7280] dark:text-slate-400 leading-relaxed mb-4">
-                Shows what's still outstanding and keeps nudging. Applicants know where they stand.
+                Shows what's outstanding, lets applicants upload securely, and confirms the moment their lender is
+                notified. Documents stay private — signed access only.
               </p>
               <div className="rounded-lg border border-slate-200 bg-white p-4 space-y-3">
                 {[
@@ -108,6 +111,13 @@ export default function BorrowerExperience({ onStart }) {
                     </div>
                   </div>
                 ))}
+                <div className="mt-1 rounded-lg flex items-center gap-2 px-3 py-2" style={{ backgroundColor: "#e6f4ea" }}>
+                  <Check className="w-3.5 h-3.5 shrink-0" style={{ color: FOREST }} />
+                  <span className="text-[11px] font-medium" style={{ color: FOREST }}>Uploaded — your lender has been notified</span>
+                </div>
+                <p className="text-[10px] text-[#9aa3af] flex items-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3" /> Documents stored privately · signed access only
+                </p>
               </div>
             </div>
           </div>

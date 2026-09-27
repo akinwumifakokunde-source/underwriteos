@@ -4,6 +4,7 @@ import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
 import DecisionCard from "@/components/home/DecisionCard.jsx";
 import HeroLeadCapture from "@/components/home/HeroLeadCapture.jsx";
 import HeroStats from "@/components/home/HeroStats.jsx";
+import { ArrowRight } from "lucide-react";
 
 // Markets in rolling order (longitude descending so the globe rolls forward
 // smoothly). GB sits at index 4 — the cycle starts there, the brand's home
@@ -61,16 +62,27 @@ export default function MarketingHero() {
               its source. Your policies set the rules. Your team makes the call.
             </p>
 
+            <div className="mt-8 flex flex-col sm:flex-row items-stretch gap-3 w-full max-w-md">
+              <Link
+                to="/applications"
+                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-black bg-white pl-5 pr-4 py-3 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
+              >
+                Start as the lender
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <Link
+                to="/start/borrower"
+                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-white border border-white/20 bg-white/5 pl-5 pr-4 py-3 rounded-full hover:bg-white/10 transition-all"
+              >
+                Start as the borrower
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            <p className="mt-3 text-[12px] text-white/50">Live, interactive flow · ~4 minutes</p>
+
             <HeroLeadCapture />
 
             <HeroStats />
-
-            <Link
-              to="/start/borrower"
-              className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-emerald-300 transition-colors"
-            >
-              Try it now →
-            </Link>
           </div>
 
           {/* Right — rolling globe + cycling underwriting slip */}

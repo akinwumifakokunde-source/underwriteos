@@ -26,7 +26,7 @@ const MODULES = [
     num: "02",
     name: "AI Credit Officer",
     tag: "Chases the paperwork so your team doesn't.",
-    desc: "Messages each borrower the minute they apply — on WhatsApp, SMS or email, in their own language. Asks for the exact documents the loan needs and keeps following up until the file is complete.",
+    desc: "Messages each borrower the minute they apply — on WhatsApp, SMS or email, in their own language. Asks for the exact documents the loan needs and keeps following up until the file is complete. When a borrower replies, it auto-extracts the document, re-runs the decision, and pings your team in-app — so the loop closes without anyone chasing.",
     stat: "24/7",
     statLabel: "borrower follow-up",
     cta: "See AI Credit Officer",

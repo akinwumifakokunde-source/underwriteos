@@ -1,5 +1,5 @@
 import React from "react";
-import { FileText, MessageSquare } from "lucide-react";
+import { FileText, MessageSquare, Bell } from "lucide-react";
 
 // Live product mockups for the four AI modules. Dark forest-green cards so they
 // read as "product UI" against the light section behind them.
@@ -50,12 +50,22 @@ export function CreditOfficerMock() {
     <div className="rounded-2xl bg-[#0e261a] border border-emerald-400/15 p-4 shadow-xl">
       <div className="flex items-center justify-between mb-3">
         <span className="inline-flex items-center gap-1.5 text-[10px] text-emerald-300"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live · SMS</span>
-        <span className="text-[10px] text-emerald-100/50">3m 12s</span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="relative inline-flex">
+            <Bell className="w-3.5 h-3.5 text-emerald-200/70" />
+            <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 text-[8px] font-bold text-emerald-950 flex items-center justify-center">1</span>
+          </span>
+          <span className="text-[10px] text-emerald-100/50">3m 12s</span>
+        </span>
       </div>
       <div className="space-y-2 mb-3">
         <div className="flex gap-2"><div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0"><MessageSquare className="w-3 h-3 text-emerald-300" /></div><div className="rounded-lg rounded-tl-sm bg-emerald-900/40 px-2.5 py-1.5 text-[11px] text-emerald-50">Hi Maria, please send your last three bank statements for your £85,000 loan.</div></div>
         <div className="flex gap-2 justify-end"><div className="rounded-lg rounded-tr-sm bg-emerald-500/15 border border-emerald-400/20 px-2.5 py-1.5 text-[11px] text-emerald-50">Can I send screenshots from my banking app?</div><div className="w-6 h-6 rounded-full bg-emerald-500/30 flex items-center justify-center shrink-0 text-[10px] text-white">M</div></div>
         <div className="flex gap-2"><div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0"><MessageSquare className="w-3 h-3 text-emerald-300" /></div><div className="rounded-lg rounded-tl-sm bg-emerald-900/40 px-2.5 py-1.5 text-[11px] text-emerald-50">Of course — screenshots work perfectly ✓</div></div>
+      </div>
+      <div className="rounded-lg bg-emerald-500/10 border border-emerald-400/20 px-2.5 py-2 flex items-center gap-2 mb-3">
+        <Bell className="w-3 h-3 text-emerald-300 shrink-0" />
+        <span className="text-[10px] text-emerald-100">Borrower responded · bank statements received — file re-evaluated</span>
       </div>
       <div className="rounded-lg bg-emerald-950/50 p-2.5">
         <div className="flex items-center justify-between text-[10px] mb-1"><span className="text-emerald-100/60">File completeness</span><span className="font-bold text-emerald-300">78%</span></div>
