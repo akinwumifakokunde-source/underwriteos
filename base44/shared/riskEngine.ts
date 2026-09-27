@@ -54,6 +54,11 @@ export interface SignalEvidencePair {
   evidence: GeneratedEvidence;
 }
 
+// OFAC comprehensively sanctioned jurisdictions. No lender may extend credit
+// to a borrower resident in these jurisdictions (US Treasury OFAC, UK OFSI,
+// UN Security Council sanctions). A match is a hard regulatory block.
+const SANCTIONED_JURISDICTIONS = new Set(["IR", "KP", "SY", "CU"]);
+
 // Policy thresholds per signal name (where a signal maps to a policy rule).
 const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
   credit_score: 500,
@@ -67,7 +72,8 @@ const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
   stressed_repayment_capacity: 0,
   stressed_debt_to_income: 0.5,
   income_consistency_ratio: 0.5,
-  application_velocity: 2
+  application_velocity: 2,
+  sanctions_jurisdiction: true
 };
 
 // Human-readable explanations per signal name.
@@ -97,6 +103,7 @@ const SIGNAL_EXPLANATIONS: Record<string, string> = {
   stressed_debt_to_income: "Debt-to-income ratio under a -10% income-shock stress scenario.",
   income_consistency_ratio: "Ratio of bank-statement-derived income to borrower-declared income. Below 0.5 suggests income inflation.",
   application_velocity: "Count of other borrower records with the same email. High values indicate possible loan stacking.",
+  sanctions_jurisdiction: "AML / sanctions screening — borrower's address country checked against OFAC comprehensively sanctioned jurisdictions.",
   suspicious_transactions: "Flag for suspicious cashflow patterns.",
   document_inconsistencies: "Cross-source document consistency check.",
   identity_inconsistencies: "Identity verification cross-check.",
@@ -280,6 +287,18 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
   if (input.application_velocity != null && input.application_velocity > 0) {
     push({ category: "fraud", signal: "application_velocity", value: input.application_velocity, value_type: "number", confidence: 0.7, source: "derived", flag: input.application_velocity > 2 ? "negative" : "neutral" },
       { calculation_method: "count_of_borrower_records_with_same_email", field: "borrower.email" });
+  }
+
+  // ---- AML / Sanctions screening (jurisdiction check) ----
+  // Screens the borrower's address country against OFAC comprehensively
+  // sanctioned jurisdictions. A match is a hard regulatory block — no lender
+  // may extend credit to a borrower resident in a sanctioned jurisdiction.
+  // Only generated when the borrower's address country is available.
+  const borrowerCountry = input.borrower?.address?.country;
+  if (borrowerCountry) {
+    const sanctionsMatch = SANCTIONED_JURISDICTIONS.has(borrowerCountry.toUpperCase());
+    push({ category: "fraud", signal: "sanctions_jurisdiction", value: sanctionsMatch, value_type: "boolean", confidence: 0.99, source: "borrower_declaration", flag: sanctionsMatch ? "critical" : "positive" },
+      { calculation_method: "borrower_address_country_against_ofac_sanctions_list", field: "borrower.address.country" });
   }
 
   return { items };

@@ -47,6 +47,7 @@ export const ADVERSE_ACTION_CODES: Record<string, { code: string; label: string 
   "AF-STRESS": { code: "STRESSED_AFFORDABILITY_FAIL", label: "Insufficient repayment capacity under stressed income scenario" },
   "FR-INCOME": { code: "INCOME_MISMATCH", label: "Declared income not supported by bank statement evidence" },
   "FR-VELOCITY": { code: "MULTIPLE_APPLICATIONS", label: "Multiple recent applications detected from the same identity" },
+  "FR-SANCTIONS": { code: "SANCTIONED_JURISDICTION", label: "Borrower resides in an OFAC-sanctioned jurisdiction" },
 };
 
 export function adverseActionForRule(ruleId: string): { code: string; label: string } | null {
@@ -73,7 +74,8 @@ export const DEFAULT_POLICY = {
     { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below review threshold (80)" },
     { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "REVIEW", reason: "Repayment capacity negative under -10% income-shock stress scenario" },
     { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Declared income not supported by bank statement evidence" },
-    { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "REVIEW", reason: "Multiple recent applications from the same identity (loan stacking)" }
+    { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "REVIEW", reason: "Multiple recent applications from the same identity (loan stacking)" },
+    { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
     };
 
@@ -92,7 +94,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Credit utilisation above review threshold (50%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 4, decision: "REVIEW", reason: "High recent credit enquiries (>4)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "ng-consumer-v1": {
@@ -106,7 +109,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "za-consumer-v1": {
@@ -120,7 +124,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.5, decision: "REVIEW", reason: "Credit utilisation above review threshold (50%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 4, decision: "REVIEW", reason: "High recent credit enquiries (>4)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 75, decision: "REVIEW", reason: "Repayment history below review threshold (75)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "ke-consumer-v1": {
@@ -134,7 +139,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "gh-consumer-v1": {
@@ -148,7 +154,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 5, decision: "REVIEW", reason: "High recent credit enquiries (>5)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 70, decision: "REVIEW", reason: "Repayment history below review threshold (70)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "mortgage-v1": {
@@ -165,7 +172,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" },
       { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Repayment capacity negative under -10% income-shock stress scenario (mortgage)" },
       { rule_id: "FR-INCOME", field: "income_consistency_ratio", operator: "<", threshold: 0.5, decision: "DECLINE", reason: "Declared income not supported by bank statement evidence (mortgage)" },
-      { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "DECLINE", reason: "Multiple recent applications from the same identity (mortgage)" }
+      { rule_id: "FR-VELOCITY", field: "application_velocity", operator: ">", threshold: 2, decision: "DECLINE", reason: "Multiple recent applications from the same identity (mortgage)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   },
   "business-v1": {
@@ -178,7 +186,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "CR-DEF", field: "defaults", operator: ">", threshold: 0, decision: "DECLINE", reason: "Active defaults on credit file" },
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "INC-STAB", field: "income_stability", operator: "<", threshold: 0.5, decision: "REVIEW", reason: "Income stability below threshold" },
-      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" }
+      { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.6, decision: "REVIEW", reason: "Credit utilisation above review threshold (60%)" },
+      { rule_id: "FR-SANCTIONS", field: "sanctions_jurisdiction", operator: "==", threshold: true, decision: "DECLINE", reason: "Borrower resides in an OFAC-sanctioned jurisdiction (AML block)" }
     ]
   }
 };
