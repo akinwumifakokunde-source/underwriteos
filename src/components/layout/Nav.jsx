@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { LogOut, ChevronDown, Terminal } from "lucide-react";
 import Logo from "@/components/Logo";
 import MobileTabBar from "@/components/layout/MobileTabBar.jsx";
+import NotificationsBell from "@/components/layout/NotificationsBell.jsx";
 import { base44 } from "@/api/base44Client";
 import {
   DropdownMenu,
@@ -99,6 +100,7 @@ export default function Nav() {
         </nav>
 
         <div className="shrink-0 flex items-center gap-3">
+          <NotificationsBell />
           <Link
             to="/start/borrower"
             className="hidden sm:inline-block text-[13px] font-medium text-white hover:text-teal-300 transition-colors"

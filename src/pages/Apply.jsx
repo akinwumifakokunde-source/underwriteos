@@ -37,8 +37,8 @@ export default function Apply() {
     setUploading((u) => ({ ...u, [type]: true }));
     setError(null);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      setDocuments((prev) => [...prev.filter((d) => d.type !== type), { type, file_url, file_name: file.name }]);
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+      setDocuments((prev) => [...prev.filter((d) => d.type !== type), { type, file_url: file_uri, file_name: file.name }]);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || `Failed to upload ${file.name}.`);
     } finally {

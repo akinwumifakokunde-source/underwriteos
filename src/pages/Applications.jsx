@@ -31,7 +31,10 @@ export default function Applications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
+  const [filter, setFilter] = useState(() => {
+    const f = new URLSearchParams(window.location.search).get("filter");
+    return FILTERS.includes(f) ? f : "All";
+  });
   const [market, setMarket] = useState("All");
   const [refreshing, setRefreshing] = useState(false);
   const urlParams = new URLSearchParams(window.location.search);

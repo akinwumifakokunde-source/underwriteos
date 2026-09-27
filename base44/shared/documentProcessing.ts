@@ -112,9 +112,18 @@ export async function processDocument(base44: any, doc: any, organization_id: st
   let extractedData: any = {};
   let extractionError: string | null = null;
 
+  // Documents are stored as private file URIs (UploadPrivateFile). Create a
+  // short-lived signed URL so the extraction service can fetch the bytes.
+  // Legacy public URLs (http...) pass through unchanged.
+  let extractionUrl = doc.file_url;
+  if (doc.file_url && !/^https?:\/\//i.test(doc.file_url)) {
+    const signed = await base44.asServiceRole.integrations.Core.CreateFileSignedUrl({ file_uri: doc.file_url });
+    extractionUrl = signed.signed_url;
+  }
+
   try {
     const result = await base44.asServiceRole.integrations.Core.ExtractDataFromUploadedFile({
-      file_url: doc.file_url,
+      file_url: extractionUrl,
       json_schema: schema
     });
     if (result.status === "success" && result.output) {

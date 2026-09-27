@@ -15,6 +15,7 @@ import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
 import BorrowerResponseBanner from "@/components/application/BorrowerResponseBanner";
 import { getJurisdiction } from "@/lib/jurisdictions";
+import { accessibleFileUrl } from "@/lib/fileAccess";
 
 const STATUS_STYLES = {
   draft: "bg-slate-50 text-slate-600 border-slate-200",
@@ -140,10 +141,10 @@ export default function ApplicationDetail() {
   const uploadDocument = async (file) => {
     setUploading(true);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
       const res = await base44.functions.invoke("apiDocuments", {
         action: "upload", application_id: applicationId,
-        file_url, file_name: file.name, mime_type: file.type,
+        file_url: file_uri, file_name: file.name, mime_type: file.type,
       });
       const doc = res.data.document;
       setDocuments((prev) => [doc, ...prev]);
@@ -253,6 +254,15 @@ export default function ApplicationDetail() {
       setError(e?.response?.data?.error?.message || e.message);
     } finally {
       setOverriding(false);
+    }
+  };
+
+  const viewDoc = async (doc) => {
+    try {
+      const url = await accessibleFileUrl(doc.file_url);
+      if (url) window.open(url, "_blank");
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Could not open document.");
     }
   };
 
@@ -384,7 +394,7 @@ export default function ApplicationDetail() {
                 documents={documents} policyId={app?.policy_id || "consumer-v1"}
                 onUpload={uploadDocument} uploading={uploading}
                 onReprocess={reprocessDoc} onDelete={deleteDoc}
-                onView={(doc) => window.open(doc.file_url, "_blank")}
+                onView={viewDoc}
                 processingDocId={processingDocId}
                 market={app?.market} borrowerType={app?.borrower_type}
                 autoIngested={documents.length === 0 && !!(fp || cp)}

@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Logo from "@/components/Logo";
 import PortalUploader from "@/components/borrower/PortalUploader";
-import { Loader2, Search, ShieldCheck, FileText, AlertCircle, CheckCircle2, Clock, ArrowRight, Lock, UploadCloud } from "lucide-react";
+import { Loader2, Search, ShieldCheck, FileText, AlertCircle, CheckCircle2, Clock, ArrowRight, Lock, UploadCloud, X } from "lucide-react";
 
 const DECISION_STYLES = {
   APPROVE: { label: "Approved", icon: CheckCircle2, tint: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
@@ -63,6 +63,7 @@ export default function BorrowerStatus() {
   const [uploadingKey, setUploadingKey] = useState(null);
   const [uploadError, setUploadError] = useState(null);
   const [generalType, setGeneralType] = useState("bank_statement");
+  const [uploadNotice, setUploadNotice] = useState(null);
 
   const lookup = async (e) => {
     e?.preventDefault();
@@ -98,17 +99,24 @@ export default function BorrowerStatus() {
   const handleUpload = async (file, documentType, informationRequestId, key) => {
     setUploadingKey(key);
     setUploadError(null);
+    setUploadNotice(null);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      await base44.functions.invoke("apiBorrowerStatus", {
+      const { file_uri } = await base44.integrations.Core.UploadPrivateFile({ file });
+      const res = await base44.functions.invoke("apiBorrowerStatus", {
         action: "submit_document",
         application_number: appNo.trim(),
         email: email.trim(),
         document_type: documentType,
-        file_url,
+        file_url: file_uri,
         file_name: file.name,
         information_request_id: informationRequestId || null,
       });
+      const d = res.data || {};
+      let msg = "Your document has been received";
+      if (d.decision_rerun) msg += " — we've re-evaluated your application";
+      else if (d.processed) msg += " and processed";
+      msg += d.lender_notified ? ", and your lender has been notified." : ".";
+      setUploadNotice(msg);
       await refresh();
     } catch (e) {
       setUploadError(e?.response?.data?.error?.message || e.message || "Upload failed. Please try again.");
@@ -238,6 +246,14 @@ export default function BorrowerStatus() {
                 </div>
               </div>
             </div>
+
+            {uploadNotice && (
+              <div className="rounded-2xl border border-teal-200 bg-teal-50 p-5 flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
+                <p className="text-sm font-medium text-teal-900 flex-1">{uploadNotice}</p>
+                <button onClick={() => setUploadNotice(null)} className="text-teal-600 hover:text-teal-800 shrink-0"><X className="w-4 h-4" /></button>
+              </div>
+            )}
 
             {/* Adverse action notice link for declines */}
             {data.decision?.decision === "DECLINE" && data.notice_token && (
