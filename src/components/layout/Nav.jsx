@@ -32,6 +32,7 @@ const SECONDARY_ITEMS = [
   { to: "/pricing", label: "Pricing" },
   { to: "/settings", label: "Settings" },
   { to: "/connect", label: "Connect AI" },
+  { to: "/portal", label: "Borrower Portal" },
 ];
 
 const DEVELOPER_ITEMS = [

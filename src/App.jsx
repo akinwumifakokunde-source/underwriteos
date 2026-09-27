@@ -117,6 +117,7 @@ const AnimatedRoutes = () => {
             <Route path="/notice/:token" element={<PublicNotice />} />
             <Route path="/status" element={<BorrowerStatus />} />
             <Route path="/status/:applicationNumber" element={<BorrowerStatus />} />
+            <Route path="/portal" element={<BorrowerPortal />} />
             <Route path="/portal/:applicationNumber" element={<BorrowerPortal />} />
             <Route path="/api-reference" element={<ApiReference />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
