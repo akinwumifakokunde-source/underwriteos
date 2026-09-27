@@ -13,6 +13,7 @@ import KitaSummaryHeader from "@/components/application/KitaSummaryHeader";
 import ApplicationTabBar from "@/components/application/ApplicationTabBar";
 import PostUploadPrompt from "@/components/application/PostUploadPrompt";
 import DataSourcePuller from "@/components/application/DataSourcePuller";
+import BorrowerResponseBanner from "@/components/application/BorrowerResponseBanner";
 import { getJurisdiction } from "@/lib/jurisdictions";
 
 const STATUS_STYLES = {
@@ -316,6 +317,8 @@ export default function ApplicationDetail() {
         </Link>
 
         <KitaSummaryHeader app={app} borrower={borrower} decision={decision} fmtMoney={fmtMoney} />
+
+        <BorrowerResponseBanner applicationId={applicationId} onReview={() => setTab("Documents")} onResolved={load} />
 
         {error && (
           <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 flex items-start gap-2">
