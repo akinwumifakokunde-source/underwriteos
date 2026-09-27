@@ -3,7 +3,7 @@ import DrawerSelect from "@/components/ui/drawer-select";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Loader2, AlertTriangle, Plus, Search, FileText, Download, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Loader2, AlertTriangle, Plus, Search, FileText, Download, CheckCircle2, XCircle, Clock, Bell } from "lucide-react";
 import { AppStatusBadge, DecisionBadge } from "@/components/application/StatusBadge";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
@@ -22,7 +22,7 @@ const STATUS_PRIORITY = {
   failed: 5,
 };
 
-const FILTERS = ["All", "New", "Pending", "Analyzing", "Review", "Approved", "Declined"];
+const FILTERS = ["All", "New", "Pending", "Analyzing", "Review", "Approved", "Declined", "Responded"];
 
 export default function Applications() {
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ export default function Applications() {
   const guidedApp = urlParams.get("guided") === "1" ? urlParams.get("app") : null;
   const [guided, setGuided] = useState(!!guidedApp);
   const [newModalOpen, setNewModalOpen] = useState(false);
+  const [respondedAppIds, setRespondedAppIds] = useState(new Set());
 
   const load = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -55,6 +56,17 @@ export default function Applications() {
         } catch {}
       }
       setBorrowers(borrowerMap);
+      // Borrower-response indicators: information requests the borrower has
+      // fulfilled via the portal but the lender hasn't resolved yet.
+      const oid = list[0]?.organization_id;
+      const responded = new Set();
+      if (oid) {
+        try {
+          const reqs = await base44.entities.InformationRequest.filter({ organization_id: oid, status: "received" }, "-created_date", 200);
+          reqs.forEach((r) => responded.add(r.application_id));
+        } catch {}
+      }
+      setRespondedAppIds(responded);
     } catch (e) {
       setError(e?.response?.data?.error?.message || e.message || "Failed to load applications.");
     } finally {
@@ -71,7 +83,7 @@ export default function Applications() {
 
   // Counts per filter — drives the badges on the filter pills.
   const counts = useMemo(() => {
-    const c = { All: apps.length, New: 0, Pending: 0, Analyzing: 0, Review: 0, Approved: 0, Declined: 0 };
+    const c = { All: apps.length, New: 0, Pending: 0, Analyzing: 0, Review: 0, Approved: 0, Declined: 0, Responded: 0 };
     apps.forEach((a) => {
       if (a.status === "draft") c.New++;
       if (a.status === "data_collection") c.Pending++;
@@ -79,9 +91,10 @@ export default function Applications() {
       if (a.status === "underwriting" || a.decision === "REVIEW") c.Review++;
       if (a.decision === "APPROVE") c.Approved++;
       if (a.decision === "DECLINE") c.Declined++;
+      if (respondedAppIds.has(a.id)) c.Responded++;
     });
     return c;
-  }, [apps]);
+  }, [apps, respondedAppIds]);
 
   const filtered = useMemo(() => {
     let result = apps;
@@ -94,6 +107,7 @@ export default function Applications() {
           case "Review": return a.status === "underwriting" || a.decision === "REVIEW";
           case "Approved": return a.decision === "APPROVE";
           case "Declined": return a.decision === "DECLINE";
+          case "Responded": return respondedAppIds.has(a.id);
           default: return true;
         }
       });
@@ -109,14 +123,17 @@ export default function Applications() {
         return (a.application_number || "").toLowerCase().includes(q) || name.includes(q);
       });
     }
-    // Priority sort: actionable first, then most recently updated.
+    // Priority sort: borrower responses first, then actionable states, then recency.
     return [...result].sort((a, b) => {
+      const ra = respondedAppIds.has(a.id) ? 0 : 1;
+      const rb = respondedAppIds.has(b.id) ? 0 : 1;
+      if (ra !== rb) return ra - rb;
       const pa = STATUS_PRIORITY[a.status] ?? 99;
       const pb = STATUS_PRIORITY[b.status] ?? 99;
       if (pa !== pb) return pa - pb;
       return new Date(b.updated_date || b.created_date || 0) - new Date(a.updated_date || a.created_date || 0);
     });
-  }, [apps, filter, market, search, borrowers]);
+  }, [apps, filter, market, search, borrowers, respondedAppIds]);
 
   const fmtMoney = (n, c) => new Intl.NumberFormat("en-US", { style: "currency", currency: (c || "GBP").toUpperCase(), maximumFractionDigits: 0 }).format(n || 0);
 
@@ -164,6 +181,11 @@ export default function Applications() {
           <>
             <div className="text-sm font-medium text-slate-900">{b ? `${b.first_name} ${b.last_name}` : "—"}</div>
             <div className="text-[11px] text-slate-400 font-mono">{a.application_number || a.id.slice(-8)}</div>
+            {respondedAppIds.has(a.id) && (
+              <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-medium text-teal-700 bg-teal-50 border border-teal-200 rounded px-1.5 py-0.5">
+                <Bell className="w-3 h-3" /> Borrower responded
+              </span>
+            )}
           </>
         );
       },

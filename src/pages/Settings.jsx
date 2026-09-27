@@ -3,12 +3,14 @@ import DrawerSelect from "@/components/ui/drawer-select";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Settings as SettingsIcon, Loader2, AlertTriangle, Save, CheckCircle2, Building2, Users, Database, Brain, Shield, FileText, ArrowRight, CreditCard } from "lucide-react";
+import { Settings as SettingsIcon, Loader2, AlertTriangle, Save, CheckCircle2, Building2, Users, Database, Brain, Shield, FileText, ArrowRight, CreditCard, Bell } from "lucide-react";
 import BillingSection from "@/components/settings/BillingSection.jsx";
 import DeleteAccountSection from "@/components/settings/DeleteAccountSection.jsx";
+import NotificationsSection from "@/components/settings/NotificationsSection.jsx";
 
 const SECTIONS = [
   { id: "organization", label: "Organization", icon: Building2 },
+  { id: "notifications", label: "Notifications", icon: Bell },
   { id: "billing", label: "Billing & Subscription", icon: CreditCard },
   { id: "users", label: "Users & Roles", icon: Users },
   { id: "data-sources", label: "Data Sources", icon: Database },
@@ -28,7 +30,6 @@ export default function Settings() {
   const [name, setName] = useState("");
   const [defaultPolicy, setDefaultPolicy] = useState("consumer-v1");
   const [currency, setCurrency] = useState("GBP");
-  const [alertsEmail, setAlertsEmail] = useState("");
   const [auditEvents, setAuditEvents] = useState([]);
 
   const load = async () => {
@@ -41,7 +42,6 @@ export default function Settings() {
       setName(o?.name || "");
       setDefaultPolicy(o?.settings?.default_policy_id || "consumer-v1");
       setCurrency(o?.settings?.default_currency || "GBP");
-      setAlertsEmail(o?.settings?.alerts_email || "");
       // Load audit events
       try {
         const me = await base44.auth.me();
@@ -63,7 +63,7 @@ export default function Settings() {
     setError(null);
     setSaved(false);
     try {
-      await base44.functions.invoke("apiSettings", { action: "update", name, settings: { default_policy_id: defaultPolicy, default_currency: currency, alerts_email: alertsEmail || null } });
+      await base44.functions.invoke("apiSettings", { action: "update", name, settings: { default_policy_id: defaultPolicy, default_currency: currency } });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       await load();
@@ -153,11 +153,6 @@ export default function Settings() {
                             {["GBP", "USD", "EUR"].map((c) => <option key={c} value={c}>{c}</option>)}
                           </DrawerSelect>
                         </div>
-                        <div>
-                          <label className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Portfolio alerts recipient</label>
-                          <input type="email" value={alertsEmail} onChange={(e) => setAlertsEmail(e.target.value)} placeholder="alerts@yourlender.com" className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10" />
-                          <p className="mt-1 text-[11px] text-slate-400">Daily automated summary of drift, default-rate spikes, and concentration breaches.</p>
-                        </div>
                       </div>
                       <button onClick={save} disabled={saving} className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-white bg-slate-900 px-4 py-2 rounded-lg hover:bg-slate-800 disabled:opacity-50">
                         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4" />} {saved ? "Saved" : "Save changes"}
@@ -165,6 +160,8 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
+
+                {section === "notifications" && <NotificationsSection />}
 
                 {section === "billing" && <BillingSection />}
 
