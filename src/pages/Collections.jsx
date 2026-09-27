@@ -6,7 +6,9 @@ import PullToRefresh from "@/components/PullToRefresh";
 import ResponsiveTable from "@/components/shared/ResponsiveTable";
 import EmptyState from "@/components/shared/EmptyState";
 import ErrorState from "@/components/shared/ErrorState";
-import { Loader2, Search, Download, Wallet, AlertTriangle, XCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Search, Download, Wallet, AlertTriangle, XCircle, CheckCircle2, TrendingDown, Activity } from "lucide-react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
+import CollectionsActionPanel from "@/components/collections/CollectionsActionPanel";
 
 // Link IV of the credit supply chain — everything after disbursement.
 // This is where portfolio P&L is actually decided. We surface the post-
@@ -44,14 +46,21 @@ export default function Collections() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [refreshing, setRefreshing] = useState(false);
+  const [overview, setOverview] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const load = async (silent = false) => {
     if (!silent) setLoading(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("apiOutcomes", { action: "list" });
-      const list = res.data?.outcomes || [];
+      const [outRes, ovRes] = await Promise.all([
+        base44.functions.invoke("apiOutcomes", { action: "list" }),
+        base44.functions.invoke("apiCollections", { action: "overview" }),
+      ]);
+      const list = outRes.data?.outcomes || [];
       setOutcomes(list);
+      setOverview(ovRes.data || null);
       const borrowerIds = [...new Set(list.map((o) => o.borrower_id).filter(Boolean))];
       const map = {};
       if (borrowerIds.length > 0) {
@@ -66,6 +75,11 @@ export default function Collections() {
     } finally {
       if (!silent) setLoading(false);
     }
+  };
+
+  const openLoan = (o) => {
+    setSelected(o);
+    setDrawerOpen(true);
   };
 
   const handleRefresh = async () => {
@@ -204,6 +218,41 @@ export default function Collections() {
             </div>
           )}
 
+          {/* Segmentation + recovery */}
+          {!loading && !error && overview && (
+            <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-4">
+                <h3 className="text-[13px] font-semibold text-slate-900 mb-3 flex items-center gap-1.5"><TrendingDown className="w-4 h-4 text-amber-600" /> Delinquency segmentation</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {(overview.segments || []).map((seg) => (
+                    <div key={seg.stage} className="rounded-lg border border-slate-100 bg-slate-50/50 p-3">
+                      <div className="text-[11px] text-slate-500">{seg.label}</div>
+                      <div className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{seg.count}</div>
+                      <div className="text-[11px] text-slate-400 mt-0.5">{fmtMoney(seg.exposure, overview.summary?.currency)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4">
+                <h3 className="text-[13px] font-semibold text-slate-900 mb-3 flex items-center gap-1.5"><Activity className="w-4 h-4 text-[#0d9488]" /> Recovery</h3>
+                <div className="space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[11px] text-slate-500">Recovered</span>
+                    <span className="text-sm font-semibold text-emerald-600">{fmtMoney(overview.summary?.total_recovered, overview.summary?.currency)}</span>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[11px] text-slate-500">Recovery rate</span>
+                    <span className="text-sm font-semibold text-slate-900">{pct(overview.summary?.recovery_rate)}</span>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-[11px] text-slate-500">Actions logged</span>
+                    <span className="text-sm font-semibold text-slate-900">{overview.summary?.total_actions ?? 0}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {error && <div className="mb-4"><ErrorState message={error} onRetry={load} /></div>}
 
           {/* Stats */}
@@ -268,11 +317,29 @@ export default function Collections() {
               columns={columns}
               data={filtered}
               rowKey={(o) => o.id}
-              onRowClick={(o) => navigate(`/applications/${o.application_id}`)}
+              onRowClick={(o) => openLoan(o)}
             />
           )}
         </div>
       </PullToRefresh>
+
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Collection actions</DrawerTitle>
+            <DrawerDescription>Log outreach, send reminders, and track recovery for this loan.</DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-6 max-h-[70vh] overflow-y-auto">
+            {selected && (
+              <CollectionsActionPanel
+                outcome={selected}
+                borrower={borrowers[selected.borrower_id]}
+                onClose={() => setDrawerOpen(false)}
+              />
+            )}
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

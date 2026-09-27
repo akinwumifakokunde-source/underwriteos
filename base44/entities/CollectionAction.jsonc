@@ -1,0 +1,120 @@
+{
+  "name": "CollectionAction",
+  "type": "object",
+  "description": "An outreach or recovery action taken on a delinquent loan. Tracks the collections workflow from first reminder through resolution, feeding recovery stats and the audit trail.",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this collection action."
+    },
+    "organization_id": {
+      "type": "string"
+    },
+    "application_id": {
+      "type": "string"
+    },
+    "borrower_id": {
+      "type": "string"
+    },
+    "outcome_id": {
+      "type": "string",
+      "description": "The LoanOutcome this action relates to."
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "reminder_email",
+        "sms",
+        "phone_call",
+        "letter",
+        "settlement_offer",
+        "payment_plan",
+        "write_off",
+        "manual_note"
+      ],
+      "description": "Type of outreach or recovery action."
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "pre_delinquent",
+        "early",
+        "late",
+        "critical"
+      ],
+      "description": "DPD stage at the time of action: pre_delinquent (1-29), early (30-59), late (60-89), critical (90+)."
+    },
+    "channel": {
+      "type": "string",
+      "enum": [
+        "email",
+        "sms",
+        "phone",
+        "letter",
+        "internal"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "sent",
+        "delivered",
+        "acknowledged",
+        "failed",
+        "completed"
+      ],
+      "default": "completed"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "amount_recovered": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount recovered as a result of this action, in the loan currency."
+    },
+    "performed_by": {
+      "type": "string"
+    },
+    "performed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "promised",
+        "partial",
+        "recovered",
+        "refused",
+        "none"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "organization_id",
+    "application_id",
+    "action_type"
+  ],
+  "rls": {
+    "read": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "create": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    }
+  }
+}
