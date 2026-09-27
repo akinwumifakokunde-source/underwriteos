@@ -11,6 +11,7 @@ import ErrorState from "@/components/shared/ErrorState";
 import PullToRefresh from "@/components/PullToRefresh";
 import ResponsiveTable from "@/components/shared/ResponsiveTable";
 import GuidedPipeline from "@/components/applications/GuidedPipeline";
+import NewApplicationModal from "@/components/applications/NewApplicationModal";
 
 const FILTERS = ["All", "New", "Analyzing", "Review", "Approved", "Declined"];
 
@@ -27,6 +28,7 @@ export default function Applications() {
   const urlParams = new URLSearchParams(window.location.search);
   const guidedApp = urlParams.get("guided") === "1" ? urlParams.get("app") : null;
   const [guided, setGuided] = useState(!!guidedApp);
+  const [newModalOpen, setNewModalOpen] = useState(false);
 
   const load = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -175,12 +177,12 @@ export default function Applications() {
             >
               <Download className="w-4 h-4" /> Export CSV
             </button>
-            <Link
-              to="/applications/new?choice=sample"
+            <button
+              onClick={() => setNewModalOpen(true)}
               className="inline-flex items-center gap-1.5 text-sm font-medium text-white bg-[#0a0c12] px-4 py-2.5 rounded-lg hover:bg-[#1c1f26] transition-colors"
             >
               <Plus className="w-4 h-4" /> New Application
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -233,7 +235,7 @@ export default function Applications() {
             <span className="text-sm text-slate-500">Loading applications…</span>
           </div>
         ) : filtered.length === 0 ? (
-          <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionTo="/applications/new?choice=sample" actionIcon={Plus} />
+          <EmptyState icon={FileText} title="No applications found" description="Try adjusting your filters, or create a new application to get started." actionLabel="New Application" actionIcon={Plus} onAction={() => setNewModalOpen(true)} />
         ) : (
           <ResponsiveTable
             columns={columns}
@@ -253,6 +255,12 @@ export default function Applications() {
           onSkip={() => setGuided(false)}
         />
       )}
+      <NewApplicationModal
+        open={newModalOpen}
+        onClose={() => setNewModalOpen(false)}
+        apps={apps}
+        borrowers={borrowers}
+      />
     </div>
   );
 }
