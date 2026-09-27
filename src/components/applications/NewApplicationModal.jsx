@@ -2,7 +2,8 @@ import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { getJurisdiction } from "@/lib/jurisdictions";
-import { Loader2, AlertTriangle, X, Play, UserPlus, Inbox } from "lucide-react";
+import { Loader2, AlertTriangle, X, Play, UserPlus, Inbox, FileText } from "lucide-react";
+import FormCreatePanel from "@/components/applications/FormCreatePanel";
 
 const MARKETS = [
   { value: "GB", label: "United Kingdom" },
@@ -144,7 +145,7 @@ export default function NewApplicationModal({ open, onClose, apps, borrowers }) 
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div>
             <h2 className="text-base font-semibold text-slate-900">New application</h2>
-            <p className="text-[12px] text-slate-500 mt-0.5">Pick a pending application to underwrite, or create a new borrower.</p>
+            <p className="text-[12px] text-slate-500 mt-0.5">Underwrite a pending application, create a borrower, or create an intake form that feeds pending applications.</p>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors flex items-center justify-center">
             <X className="w-4 h-4" />
@@ -164,6 +165,12 @@ export default function NewApplicationModal({ open, onClose, apps, borrowers }) 
             className={`inline-flex items-center gap-1.5 text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors ${tab === "new" ? "bg-[#0a0c12] text-white" : "text-slate-600 hover:bg-slate-100"}`}
           >
             <UserPlus className="w-3.5 h-3.5" /> New borrower
+          </button>
+          <button
+            onClick={() => { setTab("form"); setError(null); }}
+            className={`inline-flex items-center gap-1.5 text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors ${tab === "form" ? "bg-[#0a0c12] text-white" : "text-slate-600 hover:bg-slate-100"}`}
+          >
+            <FileText className="w-3.5 h-3.5" /> Create form
           </button>
         </div>
 
@@ -278,6 +285,9 @@ export default function NewApplicationModal({ open, onClose, apps, borrowers }) 
             </div>
           </form>
         )}
+
+        {/* Create intake form — submissions become pending applications */}
+        {tab === "form" && <FormCreatePanel onClose={onClose} />}
       </div>
     </div>
   );
