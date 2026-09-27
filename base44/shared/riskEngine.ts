@@ -61,7 +61,9 @@ const SIGNAL_THRESHOLDS: Record<string, number | string | boolean> = {
   repayment_capacity: 0,
   recent_enquiries: 3,
   repayment_history: 80,
-  suspicious_transactions: true
+  suspicious_transactions: true,
+  stressed_repayment_capacity: 0,
+  stressed_debt_to_income: 0.5
 };
 
 // Human-readable explanations per signal name.
@@ -87,6 +89,8 @@ const SIGNAL_EXPLANATIONS: Record<string, string> = {
   income_to_loan: "Annual income divided by loan amount.",
   repayment_capacity: "Disposable income available to service the loan.",
   affordability_ratio: "Disposable income relative to expenses.",
+  stressed_repayment_capacity: "Repayment capacity under a -10% income-shock stress scenario.",
+  stressed_debt_to_income: "Debt-to-income ratio under a -10% income-shock stress scenario.",
   suspicious_transactions: "Flag for suspicious cashflow patterns.",
   document_inconsistencies: "Cross-source document consistency check.",
   identity_inconsistencies: "Identity verification cross-check.",
@@ -222,6 +226,19 @@ export function generateRiskSignals(input: SignalInput): { items: SignalEvidence
     { calculation_method: "disposable_income_times_0.6", field: "affordability.repayment_capacity" });
   push({ category: "affordability", signal: "affordability_ratio", value: fin.affordabilityRatio, value_type: "number", confidence: 0.82, source: "derived", flag: fin.affordabilityRatio > 0.2 ? "positive" : "negative" },
     { calculation_method: "disposable_income_divided_by_expenses", field: "affordability.affordability_ratio" });
+
+  // ---- Stressed affordability (responsible lending: income-shock scenario) ----
+  // Income shock of -10% (proxy for reduced hours / job loss). Expenses held
+  // constant. Stressed repayment capacity must remain positive for the loan
+  // to be affordable under stress (UK FCA responsible lending, US CFPB ATR).
+  const stressedIncome = fin.monthlyIncome * 0.9;
+  const stressedDisposable = stressedIncome - fin.monthlyExpenses - fin.debtPayments;
+  const stressedRepaymentCapacity = Math.round(stressedDisposable * 0.6 * 100) / 100;
+  const stressedDti = stressedIncome > 0 ? Math.round((fin.debtPayments / stressedIncome) * 100) / 100 : 0;
+  push({ category: "affordability", signal: "stressed_repayment_capacity", value: stressedRepaymentCapacity, value_type: "number", currency, confidence: 0.8, source: "derived", flag: stressedRepaymentCapacity > 0 ? "positive" : "negative" },
+    { calculation_method: "stressed_disposable_income_times_0.6", field: "affordability.stressed_repayment_capacity" });
+  push({ category: "affordability", signal: "stressed_debt_to_income", value: stressedDti, value_type: "number", confidence: 0.8, source: "derived", flag: stressedDti > 0.5 ? "negative" : stressedDti > 0.36 ? "neutral" : "positive" },
+    { calculation_method: "debt_payments_divided_by_stressed_income", field: "affordability.stressed_debt_to_income" });
 
   // ---- Fraud / anomaly signals (source: derived) ----
   const suspiciousTx = detectSuspicious(input);

@@ -44,6 +44,7 @@ export const ADVERSE_ACTION_CODES: Record<string, { code: string; label: string 
   "AF-INC": { code: "INSUFFICIENT_INCOME", label: "Income below minimum for requested loan" },
   "INC-STAB": { code: "INCOME_INSTABILITY", label: "Income stability below threshold" },
   "FR-FLAG": { code: "FRAUD_INDICATOR", label: "Potential fraud signal detected" },
+  "AF-STRESS": { code: "STRESSED_AFFORDABILITY_FAIL", label: "Insufficient repayment capacity under stressed income scenario" },
 };
 
 export function adverseActionForRule(ruleId: string): { code: string; label: string } | null {
@@ -67,9 +68,10 @@ export const DEFAULT_POLICY = {
     { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
     { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.4, decision: "REVIEW", reason: "Credit utilisation above review threshold (40%)" },
     { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
-    { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below review threshold (80)" }
-  ]
-};
+    { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 80, decision: "REVIEW", reason: "Repayment history below review threshold (80)" },
+    { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "REVIEW", reason: "Repayment capacity negative under -10% income-shock stress scenario" }
+    ]
+    };
 
 // Built-in baseline policies for every supported market. Keyed by policy_id so
 // the engine resolves the correct jurisdictional baseline without an org override.
@@ -156,7 +158,8 @@ export const BUILTIN_POLICIES: Record<string, any> = {
       { rule_id: "AF-CAP", field: "repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Insufficient repayment capacity" },
       { rule_id: "CR-UTIL", field: "credit_utilisation", operator: ">", threshold: 0.3, decision: "REVIEW", reason: "Credit utilisation above mortgage threshold (30%)" },
       { rule_id: "CR-ENQ", field: "recent_enquiries", operator: ">", threshold: 3, decision: "REVIEW", reason: "High recent credit enquiries (>3)" },
-      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" }
+      { rule_id: "RP-HIST", field: "repayment_history", operator: "<", threshold: 90, decision: "REVIEW", reason: "Repayment history below mortgage threshold (90%)" },
+      { rule_id: "AF-STRESS", field: "stressed_repayment_capacity", operator: "<", threshold: 0, decision: "DECLINE", reason: "Repayment capacity negative under -10% income-shock stress scenario (mortgage)" }
     ]
   },
   "business-v1": {
