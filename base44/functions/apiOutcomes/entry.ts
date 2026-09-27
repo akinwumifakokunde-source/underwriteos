@@ -80,6 +80,9 @@ export default async function(req: Request): Promise<Response> {
         base44.asServiceRole.entities.Application.filter({ organization_id }, "-created_date", 500),
       ]);
 
+      const appById = new Map(apps.map((a: any) => [a.id, a]));
+
+      // --- Calibration: predicted-PD buckets vs actual default rate ---
       const BUCKETS = [
         { id: "0–10%", lo: 0, hi: 0.1 },
         { id: "10–20%", lo: 0.1, hi: 0.2 },
@@ -108,11 +111,111 @@ export default async function(req: Request): Promise<Response> {
         observed_outcomes: observed,
         observed_bad: badCount,
         observed_default_rate: observed > 0 ? badCount / observed : 0,
-        // Mean predicted PD across observed outcomes vs actual default rate — a single calibration headline.
         mean_predicted_pd: observed > 0 ? outcomes.reduce((s: number, o: any) => s + (o.predicted_pd || 0), 0) / observed : 0,
       };
 
-      return apiSuccess({ summary, calibration }, 200);
+      // --- Segment performance: actual vs predicted by market / borrower type / risk band ---
+      const segmentBy = (getKey: (o: any) => string) => {
+        const groups: Record<string, { segment: string; count: number; bad: number; sum_pd: number }> = {};
+        for (const o of outcomes) {
+          const k = getKey(o) || "unknown";
+          if (!groups[k]) groups[k] = { segment: k, count: 0, bad: 0, sum_pd: 0 };
+          groups[k].count++;
+          if (o.bad) groups[k].bad++;
+          groups[k].sum_pd += o.predicted_pd || 0;
+        }
+        return Object.values(groups).map((g) => ({
+          segment: g.segment,
+          count: g.count,
+          actual_default_rate: g.count > 0 ? g.bad / g.count : 0,
+          avg_predicted_pd: g.count > 0 ? g.sum_pd / g.count : 0,
+          gap: g.count > 0 ? g.bad / g.count - g.sum_pd / g.count : 0,
+        })).sort((a, b) => b.count - a.count);
+      };
+      const segment_performance = {
+        market: segmentBy((o) => appById.get(o.application_id)?.market),
+        borrower_type: segmentBy((o) => appById.get(o.application_id)?.borrower_type),
+        risk_band: segmentBy((o) => {
+          const rs = o.predicted_risk_score ?? 0;
+          if (rs < 0.2) return "Low (0–20%)";
+          if (rs < 0.4) return "Med-Low (20–40%)";
+          if (rs < 0.6) return "Med (40–60%)";
+          if (rs < 0.8) return "Med-High (60–80%)";
+          return "High (80–100%)";
+        }),
+      };
+
+      // --- Drift: Population Stability Index on risk-score distribution (recent 90d vs prior) ---
+      const now = new Date();
+      const cutoff = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+      const recentDecisions = apps.filter((a: any) => a.decision && a.decision !== "null" && new Date(a.created_date) >= cutoff);
+      const baselineDecisions = apps.filter((a: any) => a.decision && a.decision !== "null" && new Date(a.created_date) < cutoff);
+      const DRIFT_EDGES = [0, 0.2, 0.4, 0.6, 0.8, 1.01];
+      const drift = DRIFT_EDGES.slice(0, -1).map((lo, i) => {
+        const hi = DRIFT_EDGES[i + 1];
+        const recentPct = recentDecisions.length > 0 ? recentDecisions.filter((a: any) => (a.risk_score || 0) >= lo && (a.risk_score || 0) < hi).length / recentDecisions.length : 0;
+        const baselinePct = baselineDecisions.length > 0 ? baselineDecisions.filter((a: any) => (a.risk_score || 0) >= lo && (a.risk_score || 0) < hi).length / baselineDecisions.length : 0;
+        const eps = 1e-6;
+        const psi = recentPct > 0 && baselinePct > 0 ? (recentPct - baselinePct) * Math.log((recentPct + eps) / (baselinePct + eps)) : 0;
+        return { bucket: `${Math.round(lo * 100)}–${Math.round(hi * 100)}%`, recent_pct: recentPct, baseline_pct: baselinePct, psi };
+      });
+      const total_psi = drift.reduce((s: number, d: any) => s + (d.psi || 0), 0);
+
+      // --- Discrimination: AUC (Mann–Whitney U) + Gini + decile bad rate ---
+      const scored = outcomes.filter((o: any) => o.predicted_pd != null);
+      let auc: number | null = null;
+      let gini: number | null = null;
+      const goods = scored.filter((o: any) => !o.bad);
+      const bads = scored.filter((o: any) => o.bad);
+      if (goods.length > 0 && bads.length > 0) {
+        let concordant = 0, ties = 0;
+        for (const b of bads) {
+          for (const g of goods) {
+            if (b.predicted_pd > g.predicted_pd) concordant++;
+            else if (b.predicted_pd === g.predicted_pd) ties++;
+          }
+        }
+        auc = (concordant + 0.5 * ties) / (goods.length * bads.length);
+        gini = 2 * auc - 1;
+      }
+      const sorted = [...scored].sort((a, b) => (a.predicted_pd || 0) - (b.predicted_pd || 0));
+      const decileSize = Math.max(1, Math.ceil(sorted.length / 10));
+      const deciles = [];
+      for (let i = 0; i < 10; i++) {
+        const slice = sorted.slice(i * decileSize, (i + 1) * decileSize);
+        if (slice.length === 0) continue;
+        const bad = slice.filter((o: any) => o.bad).length;
+        deciles.push({
+          decile: i + 1,
+          count: slice.length,
+          bad_rate: bad / slice.length,
+          avg_pd: slice.reduce((s: number, o: any) => s + (o.predicted_pd || 0), 0) / slice.length,
+        });
+      }
+
+      // --- Time trend: monthly observed default rate ---
+      const monthMap: Record<string, { key: string; label: string; count: number; bad: number }> = {};
+      for (const o of outcomes) {
+        const d = new Date(o.observed_at || o.created_date);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        const label = d.toLocaleString("en-GB", { month: "short", year: "2-digit" });
+        if (!monthMap[key]) monthMap[key] = { key, label, count: 0, bad: 0 };
+        monthMap[key].count++;
+        if (o.bad) monthMap[key].bad++;
+      }
+      const time_trend = Object.values(monthMap).sort((a, b) => a.key.localeCompare(b.key)).map((m) => ({
+        ...m,
+        default_rate: m.count > 0 ? m.bad / m.count : 0,
+      }));
+
+      return apiSuccess({
+        summary,
+        calibration,
+        segment_performance,
+        drift: { buckets: drift, total_psi, recent_count: recentDecisions.length, baseline_count: baselineDecisions.length },
+        discrimination: { auc, gini, deciles, goods: goods.length, bads: bads.length },
+        time_trend,
+      }, 200);
     }
 
     return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use record|monitor|list.`, 400);

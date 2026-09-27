@@ -3,7 +3,11 @@ import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav";
 import CalibrationChart from "@/components/monitoring/CalibrationChart";
-import { Activity, Target, TrendingUp, CheckCircle2, AlertTriangle } from "lucide-react";
+import SegmentPerformance from "@/components/monitoring/SegmentPerformance";
+import DriftDetection from "@/components/monitoring/DriftDetection";
+import DiscriminationPanel from "@/components/monitoring/DiscriminationPanel";
+import DefaultTrend from "@/components/monitoring/DefaultTrend";
+import { Activity, Target, TrendingUp, CheckCircle2, AlertTriangle, Gauge, GitCompare, BarChart3 } from "lucide-react";
 
 const STATUS_OPTIONS = [
   { value: "repaid", label: "Repaid" },
@@ -133,6 +137,44 @@ export default function Monitoring() {
           ) : (
             <CalibrationChart data={data?.calibration} />
           )}
+        </div>
+
+        {/* Discrimination */}
+        <div className="rounded-xl border border-[#eceef1] p-5 mb-8">
+          <div className="flex items-baseline justify-between mb-1">
+            <h2 className="text-[15px] font-semibold text-[#0a0c12] flex items-center gap-1.5"><Gauge className="w-4 h-4 text-[#0d9488]" /> Discrimination — does the model rank risk correctly?</h2>
+            <span className="text-[11px] font-mono text-[#8a909c]">AUC · Gini · decile bad rate</span>
+          </div>
+          <p className="text-[12px] text-[#525965] mb-4">
+            A calibrated model also needs to separate good from bad loans. AUC &gt; 0.7 and a rising decile curve mean the model ranks borrowers by risk.
+          </p>
+          {loading ? <div className="h-56 flex items-center justify-center text-[13px] text-[#8a909c]">Loading…</div> : <DiscriminationPanel data={data?.discrimination} />}
+        </div>
+
+        {/* Segment performance */}
+        <div className="mb-8">
+          <div className="flex items-baseline justify-between mb-1">
+            <h2 className="text-[15px] font-semibold text-[#0a0c12] flex items-center gap-1.5"><BarChart3 className="w-4 h-4 text-[#0d9488]" /> Segment performance</h2>
+            <span className="text-[11px] font-mono text-[#8a909c]">predicted vs actual by segment</span>
+          </div>
+          <p className="text-[12px] text-[#525965] mb-4">
+            Where is the model over- or under-predicting? A positive gap means actual defaults exceeded predictions for that segment.
+          </p>
+          {loading ? <div className="h-40 flex items-center justify-center text-[13px] text-[#8a909c]">Loading…</div> : <SegmentPerformance data={data?.segment_performance} />}
+        </div>
+
+        {/* Drift + trend */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="rounded-xl border border-[#eceef1] p-5">
+            <h2 className="text-[15px] font-semibold text-[#0a0c12] flex items-center gap-1.5 mb-1"><GitCompare className="w-4 h-4 text-[#0d9488]" /> Drift detection</h2>
+            <p className="text-[12px] text-[#525965] mb-4">Has the applicant population shifted from the baseline?</p>
+            {loading ? <div className="h-56 flex items-center justify-center text-[13px] text-[#8a909c]">Loading…</div> : <DriftDetection data={data?.drift} />}
+          </div>
+          <div className="rounded-xl border border-[#eceef1] p-5">
+            <h2 className="text-[15px] font-semibold text-[#0a0c12] flex items-center gap-1.5 mb-1"><TrendingUp className="w-4 h-4 text-[#0d9488]" /> Default-rate trend</h2>
+            <p className="text-[12px] text-[#525965] mb-4">Observed default rate over time.</p>
+            {loading ? <div className="h-56 flex items-center justify-center text-[13px] text-[#8a909c]">Loading…</div> : <DefaultTrend data={data?.time_trend} />}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
