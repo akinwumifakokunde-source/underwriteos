@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://creditdecide.com/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/features</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/insights</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/connect</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/security</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-  <url>
-    <loc>https://creditdecide.com/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
+  <url><loc>https://creditdecide.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://creditdecide.com/features</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+
+  <!-- Solutions: Four ways in -->
+  <url><loc>https://creditdecide.com/features/ai-underwriting</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creditdecide.com/features/ai-credit-officer</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creditdecide.com/features/risk-assessment</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creditdecide.com/features/document-intelligence</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- The whole platform -->
+  <url><loc>https://creditdecide.com/features/intelligent-los</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creditdecide.com/features/ai-loan-application</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://creditdecide.com/features/borrower-portal</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Platform controls -->
+  <url><loc>https://creditdecide.com/features/credit-decisioning</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://creditdecide.com/features/lending-policies</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://creditdecide.com/features/explainable-decisions</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <!-- Markets -->
+  <url><loc>https://creditdecide.com/markets/GB</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/markets/US</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/markets/NG</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/markets/ZA</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/markets/KE</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/markets/GH</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Company & resources -->
+  <url><loc>https://creditdecide.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://creditdecide.com/partners</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://creditdecide.com/insights</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://creditdecide.com/security</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://creditdecide.com/pricing</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://creditdecide.com/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://creditdecide.com/demo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

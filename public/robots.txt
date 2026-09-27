@@ -1,20 +1,4 @@
 User-agent: *
 Allow: /
 
-# AI / GEO crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Amazonbot
-Allow: /
-
 Sitemap: https://creditdecide.com/sitemap.xml

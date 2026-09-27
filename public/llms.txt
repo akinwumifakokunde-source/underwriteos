@@ -1,36 +1,48 @@
 # CreditDecide
 
-> CreditDecide is the AI-native underwriting and credit decisioning platform for consumer lenders — personal loans, instalment lending and point-of-sale finance. From application to collections, no code required.
+> CreditDecide is the AI-native underwriting operating system for consumer lenders — personal loans, instalment lending and point-of-sale finance. Seven solutions in one platform, covering borrower intake through explainable decision, with full evidence lineage and governed AI-assistant access. No code. Any country, any currency.
 
-CreditDecide helps consumer lending teams automate borrower intake and KYC, assess income and affordability, apply their own versioned lending policies, and return evidence-backed APPROVE / REVIEW / DECLINE decisions — then close the loop with collections and outcome calibration. Every decision is explainable: each risk signal traces back to its source field through an evidence graph. The AI underwriter advises; lender policy decides. CreditDecide also speaks the Model Context Protocol (MCP), so compatible AI assistants can retrieve authorized lending data and explore evidence within lender controls. Any country, any currency, with configurable policies and data sources per market.
+CreditDecide helps consumer lending teams automate application intake, analyze borrower documents, assess affordability, apply configurable underwriting policies, assess credit risk, and produce explainable lending decisions — without writing code. Connect AI exposes the platform to compatible AI assistants over the Model Context Protocol, so lenders can retrieve authorized data and explore evidence within governed controls.
 
-## Core capabilities
+## Solutions — Four ways in
 
-- No-code visual policy builder with rule thresholds and APPROVE / REVIEW / DECLINE outcomes
-- White-label borrower application forms with market-specific KYC
-- Live credit bureau and open banking data sources per market, or document upload
-- Five risk dimensions: credit, affordability, fraud, data quality, policy
-- Structured risk signals with full evidence lineage to source fields
-- AI underwriter with advisory recommendations and in-context assistant
-- Decision exports as PDF, CSV, and Word; adverse-action notices and reason codes
-- Batch and portfolio underwriting from a CSV of applicants
-- Collections management to extend the credit lifecycle past the decision
-- Post-decision monitoring and outcome calibration feedback loop
-- Model Context Protocol (MCP) server for AI-assisted, auditable access
-- Sandbox and production environment isolation
+- [AI Underwriter](https://creditdecide.com/features/ai-underwriting): Your best credit officer's judgment, on every file. Reads borrower documents, normalizes financial and credit data, evaluates your lending policy, and produces a recommendation with a probability of default and confidence score — in minutes.
+- [AI Credit Officer](https://creditdecide.com/features/ai-credit-officer): Chases the paperwork so your team doesn't. Spots what's missing, opens structured information requests in the borrower's portal, and re-runs underwriting the moment a document lands.
+- [Risk Score](https://creditdecide.com/features/risk-assessment): A credit signal where the bureau has none. Five risk dimensions — credit, affordability, fraud, data quality, policy — each with severity, direction, and a human-readable explanation.
+- [Document Capture](https://creditdecide.com/features/document-intelligence): Reads the documents other tools reject. Classifies uploaded documents, extracts fields with confidence scores, and links every value back to its source for full provenance.
 
-## Who it's for
+## Solutions — The whole platform
 
-Consumer lenders — personal loan providers, instalment lenders, point-of-sale lenders, buy-now-pay-later, digital banks, credit unions, microfinance, retail credit, auto finance, neobanks, savings & loans, and community lenders — in any market worldwide.
+- [Intelligent LOS](https://creditdecide.com/features/intelligent-los): Every product in one system. Personal loans, instalment, point-of-sale, and auto on a single application model, policy engine, evidence graph, and audit trail.
+- [AI Loan Application](https://creditdecide.com/features/ai-loan-application): Catches missing documents as they are uploaded. AI-native forms classify and validate every upload in real time, so incomplete applications rarely reach your team.
+- [AI Borrower Portal](https://creditdecide.com/features/borrower-portal): Every borrower, always in the loop. A single branded link for status, to-dos, document uploads, and a 24/7 assistant with human handoff.
+
+## Platform controls
+
+- [Credit Decisioning](https://creditdecide.com/features/credit-decisioning): Explainable APPROVE / REVIEW / DECLINE outcomes backed by the policy rules that fired and the evidence that supported them.
+- [Lending Policies](https://creditdecide.com/features/lending-policies): A visual, no-code policy builder with versioned, never-overwrite policies and simulation before activation.
+- [Explainable Decisions](https://creditdecide.com/features/explainable-decisions): Every risk signal traces through an evidence graph to its source field — auditable by construction.
+- [Connect AI (MCP)](https://creditdecide.com/connect): Bring underwriting into Claude, ChatGPT, Gemini, Cursor and more, scoped to your organization's data and policies.
+
+## Markets
+
+CreditDecide is built for consumer lenders in any market worldwide. Primary markets: United Kingdom, United States, Nigeria, South Africa, Kenya, Ghana, and Others — with configurable policies, KYC, currencies, and data sources per market.
+
+## Key facts
+
+- No-code: visual policy builder, white-label intake forms, no integration required.
+- Explainable: evidence graph from every signal to its source field; decisions exportable as PDF, CSV, and Word.
+- Governed AI: the AI underwriter advises; your versioned policy engine decides. Connect AI runs org-scoped, audited, with confirmation on decision-changing actions.
+- End-to-end: intake → document intelligence → normalization → risk assessment → policy evaluation → decision → monitoring → collections.
+- Multi-environment: sandbox and production isolation.
 
 ## Links
 
-- [CreditDecide home](https://creditdecide.com/): Explainable credit decisions, from application to collections
-- [Features](https://creditdecide.com/features): Product capabilities and the end-to-end underwriting flow
-- [About](https://creditdecide.com/about): What CreditDecide is and who it's for
-- [Connect AI](https://creditdecide.com/connect): Connect compatible AI assistants via the MCP server
-- [Security](https://creditdecide.com/security): How financial data is secured and isolated
-- [Insights](https://creditdecide.com/insights): Articles on consumer credit underwriting
-- [Contact](https://creditdecide.com/contact): Talk to the team
-- [Privacy](https://creditdecide.com/privacy): Privacy policy
-- [Terms](https://creditdecide.com/terms): Terms of service
+- [Home](https://creditdecide.com/)
+- [All solutions](https://creditdecide.com/features)
+- [Pricing](https://creditdecide.com/pricing)
+- [Security](https://creditdecide.com/security)
+- [Book a demo](https://creditdecide.com/demo)
+- [Contact](https://creditdecide.com/contact)
+- [Try the borrower flow](https://creditdecide.com/start/borrower)
+- [LinkedIn](https://www.linkedin.com/company/creditdecide/)
