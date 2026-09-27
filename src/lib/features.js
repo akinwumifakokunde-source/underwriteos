@@ -174,6 +174,43 @@ export const FEATURES = [
     related: ["ai-underwriting", "risk-assessment", "credit-decisioning"],
   },
   {
+    slug: "borrower-portal",
+    title: "Borrower Portal",
+    tagline: "A white-label portal your borrowers actually use",
+    h1: "A borrower portal that closes the loop",
+    intro:
+      "CreditDecide gives every borrower a single, branded link where they check their application status, see exactly what's left to do, upload missing documents, and message your team 24/7 — all without a phone call. Every upload re-runs underwriting and notifies your team automatically.",
+    sections: [
+      {
+        heading: "One link, the whole journey",
+        body: "Each application gets a portal at /portal/:applicationNumber. The borrower verifies with their application number and email, then lands on a single screen: a status header, a progress timeline, any outstanding to-dos, their documents, and a chat assistant. No logins to forget, no portals to navigate — just a link they can bookmark.",
+      },
+      {
+        heading: "To-dos that turn into decisions",
+        body: "When your team requests more information, it appears instantly as a to-do in the borrower's portal. The borrower uploads the file against that exact request. CreditDecide creates the document, marks the request received, processes the document, and re-runs the full analyze and underwrite pipeline — so the decision reflects the new information without anyone re-keying it.",
+      },
+      {
+        heading: "A 24/7 assistant, with human handoff",
+        body: "An AI assistant answers the borrower's status questions from live application context — where things stand, what's left, what a decision means — any time of day. When a question needs your judgement (changing a loan amount, negotiating terms, explaining a decline in detail), it tells the borrower their loan officer will reach out and flags it for your team.",
+      },
+      {
+        heading: "White-label intake, branded throughout",
+        body: "Borrowers arrive through white-label application forms you control — your title, your intro, your accent colour, your logo. The portal carries that same identity forward, so the borrower experiences one continuous, branded journey from first click to final decision.",
+      },
+      {
+        heading: "You see everything they do",
+        body: "The portal is the borrower-facing mirror of your workspace — the same Application, Document, and InformationRequest records. Every upload, every to-do resolved, every chat handoff lands in your lender workspace with a full audit trail, so you're never out of the loop.",
+      },
+    ],
+    benefits: [
+      "One branded link replaces phone calls and chase emails",
+      "Uploads auto re-run underwriting and notify your team",
+      "24/7 AI assistant with human handoff for judgement calls",
+      "White-label forms with your branding end-to-end",
+    ],
+    related: ["ai-underwriting", "document-intelligence", "explainable-decisions"],
+  },
+  {
     slug: "connect-ai",
     title: "Connect AI (MCP)",
     tagline: "Bring underwriting into your AI assistant",

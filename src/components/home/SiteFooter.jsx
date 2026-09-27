@@ -13,7 +13,7 @@ const COLS = [
       { to: "/features/risk-assessment", label: "Risk Assessment" },
       { to: "/features/lending-policies", label: "Lending Policies" },
       { to: "/features/explainable-decisions", label: "Explainable Decisions" },
-      { to: "/start/borrower", label: "Borrower Portal" },
+      { to: "/features/borrower-portal", label: "Borrower Portal" },
     ],
   },
   {
