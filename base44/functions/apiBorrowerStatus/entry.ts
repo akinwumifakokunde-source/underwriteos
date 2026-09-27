@@ -1,5 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { apiError, apiSuccess, readBody, audit } from "../../shared/utils.ts";
+import { processDocument } from "../../shared/documentProcessing.ts";
+import { runAnalyze } from "../../shared/analyzePipeline.ts";
+import { runUnderwrite } from "../../shared/underwritePipeline.ts";
 
 // Public borrower self-service portal. No auth — the borrower proves ownership
 // by providing their application number AND the email they applied with. Only
@@ -60,7 +63,7 @@ export default async function(req: Request): Promise<Response> {
       });
 
       if (infoRequest) {
-        await base44.asServiceRole.entities.InformationRequest.update(informationRequestId, { status: "received", resolved_at: new Date().toISOString() });
+        await base44.asServiceRole.entities.InformationRequest.update(informationRequestId, { status: "received" });
       }
 
       await audit(base44, app.organization_id, "borrower.document_uploaded", {
@@ -71,7 +74,54 @@ export default async function(req: Request): Promise<Response> {
         details: { document_id: doc.id, document_type: documentType, information_request_id: informationRequestId }
       });
 
-      return apiSuccess({ document_id: doc.id, information_request_updated: !!infoRequest }, 201);
+      // Process the uploaded document (extraction + profiles + evidence), then
+      // re-run the analysis + underwriting pipeline so the decision reflects the
+      // new information. Best-effort: the upload succeeds regardless; failures
+      // here just mean the lender can reprocess from the workspace.
+      let processed = false;
+      let decisionRerun = false;
+      try {
+        await processDocument(base44, doc, app.organization_id, "borrower", "user");
+        processed = true;
+        await runAnalyze(base44, app.id, app.organization_id, "borrower", "user");
+        await runUnderwrite(base44, app.id, app.organization_id, "borrower", "user", { policy_id: app.policy_id });
+        decisionRerun = true;
+      } catch (e) {
+        // non-fatal — the document is still recorded for the lender
+      }
+
+      // Notify the lender that the borrower responded.
+      let lenderNotified = false;
+      try {
+        const orgs = await base44.asServiceRole.entities.Organization.filter({ id: app.organization_id }, "-created_date", 1);
+        const alertsEmail = orgs[0]?.settings?.alerts_email;
+        if (alertsEmail) {
+          const proto = req.headers.get("x-forwarded-proto") || "https";
+          const host = req.headers.get("host");
+          const origin = host ? `${proto}://${host}` : "https://oldme.base44.app";
+          const appLink = `${origin}/applications/${app.id}`;
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: alertsEmail,
+            subject: `Borrower responded — ${app.application_number}`,
+            text: [
+              `A borrower has uploaded a document for application ${app.application_number}.`,
+              ``,
+              `Document: ${fileName || documentType}`,
+              infoRequest ? `In response to request: ${infoRequest.item}` : null,
+              ``,
+              processed ? "The document has been processed and the decision re-evaluated." : "The document was received and will be processed shortly.",
+              decisionRerun ? "Log in to review the updated decision." : null,
+              ``,
+              `Open application: ${appLink}`,
+            ].filter((x: any) => x !== null).join("\n"),
+          });
+          lenderNotified = true;
+        }
+      } catch (e) {
+        // non-fatal
+      }
+
+      return apiSuccess({ document_id: doc.id, information_request_updated: !!infoRequest, processed, decision_rerun: decisionRerun, lender_notified: lenderNotified }, 201);
     }
 
     if (action !== "lookup") return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use lookup or submit_document.`, 400);
