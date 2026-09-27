@@ -49,7 +49,10 @@ const ENDPOINTS = [
     { method: "GET", path: "/jobs/{id}", desc: "Retrieve job status", req: null, res: { job_id: "job_001", status: "completed", type: "analyze" } },
   ]},
   { group: "Webhooks", items: [
-    { method: "POST", path: "/webhooks", desc: "Register a webhook endpoint", req: { url: "https://example.com/hooks", events: ["underwriting.completed", "decision.created"] }, res: { webhook_id: "wh_001", status: "active" } },
+    { method: "POST", path: "/webhooks", desc: "Register a webhook endpoint. Returns a signing secret (shown once) used to verify delivered payloads.", req: { url: "https://example.com/hooks", events: ["decision.created", "decision.declined"] }, res: { webhook_id: "wh_001", status: "active", signing_secret: "whsec_…" } },
+    { method: "POST", path: "/webhooks/test", desc: "Send a test event to a registered endpoint. Returns the delivery result (HTTP status, latency).", req: { webhook_id: "wh_001", event: "decision.created" }, res: { delivered: true, http_status: 200, latency_ms: 142 } },
+    { method: "POST", path: "/webhooks/deliveries", desc: "List delivery attempts for a webhook endpoint, including retries. Filter by event or status.", req: { webhook_id: "wh_001" }, res: { deliveries: [{ id: "dlv_001", event: "decision.created", status: "delivered", http_status: 200, attempt: 1, latency_ms: 142, created_date: "2026-09-27T10:30:00Z" }] } },
+    { method: "WEBHOOK", path: " → payload", desc: "Outbound signed payload delivered to your endpoint on decision events. Signed with HMAC-SHA256 via the X-CreditDecide-Signature header. Verify by recomputing the HMAC over the raw request body using your webhook signing secret.", req: null, res: { event: "decision.created", created_at: "2026-09-27T10:30:00Z", data: { application_id: "app_001", application_number: "APP-001", decision_id: "dec_001", decision: "DECLINE", decision_source: "policy_engine", risk_score: 0.38, probability_of_default: 0.12, confidence: 0.91, policy_id: "consumer-v1", policy_version: "1", interest_rate: null, human_review_required: false, reasons: ["Credit score below minimum (500)", "Active defaults on credit file"], adverse_action_codes: [{ code: "CREDIT_SCORE_LOW", label: "Credit score below minimum", rule_id: "CR-SCORE", reason: "Credit score below minimum (500)" }], borrower_id: "brw_001", loan_amount: 12000, loan_currency: "GBP", loan_term_months: 24, market: "GB" } } },
   ]},
   { group: "Forms", items: [
     { method: "POST", path: "/forms", desc: "Create a white-label borrower application form. Generates a unique public slug for the share link /apply/:slug.", req: { action: "create", _api_key: "uw_live_...", name: "UK Personal Loan Form", title: "Apply with Acme Lending", market: "GB", borrower_type: "salaried", product_type: "personal_loan", policy_id: "consumer-v1", fields: [{ key: "first_name", label: "First name", enabled: true, required: true }], document_requirements: [{ type: "bank_statement", label: "Bank statement", required: true, enabled: true }] }, res: { form_id: "frm_abc123", slug: "frmabc123", status: "active", submissions_count: 0 } },
@@ -85,7 +88,7 @@ const ENDPOINTS = [
   ]},
 ];
 
-const methodColor = { POST: "text-emerald-700 bg-emerald-50 border-emerald-200", GET: "text-sky-700 bg-sky-50 border-sky-200" };
+const methodColor = { POST: "text-emerald-700 bg-emerald-50 border-emerald-200", GET: "text-sky-700 bg-sky-50 border-sky-200", WEBHOOK: "text-violet-700 bg-violet-50 border-violet-200" };
 
 export default function ApiReference() {
   const [query, setQuery] = useState("");
@@ -188,14 +191,16 @@ export default function ApiReference() {
                       {isOpen && (
                         <div className="px-4 pb-4 space-y-4">
                           <p className="text-sm text-slate-600">{e.desc}</p>
-                          <div className="flex justify-end">
-                            <Link
-                              to={`/playground?endpoint=${encodeURIComponent(e.path)}&method=${e.method}`}
-                              className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800"
-                            >
-                              <Play className="w-3 h-3" /> Try it
-                            </Link>
-                          </div>
+                          {e.method !== "WEBHOOK" && (
+                            <div className="flex justify-end">
+                              <Link
+                                to={`/playground?endpoint=${encodeURIComponent(e.path)}&method=${e.method}`}
+                                className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-800"
+                              >
+                                <Play className="w-3 h-3" /> Try it
+                              </Link>
+                            </div>
+                          )}
                           <div>
                             <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2">Example request</div>
                             <CodeBlock request={{ method: e.method, path: e.path, body: e.req, headers: { "Idempotency-Key": "demo-request-001" } }} />
