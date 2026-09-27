@@ -95,6 +95,39 @@
         }
       }
     },
+    "adverse_action_notice": {
+      "type": "object",
+      "description": "Regulator-compliant adverse-action notice generated from the adverse_action_codes. Null for approve decisions. Contains: framework, statute, text, lines, generated_at.",
+      "properties": {
+        "framework": {
+          "type": "string"
+        },
+        "statute": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "lines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "idempotency_key": {
       "type": "string"
     }

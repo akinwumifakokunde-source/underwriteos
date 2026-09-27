@@ -4,6 +4,7 @@ import { getPolicy, evaluatePolicy } from "../../shared/policyEngine.ts";
 import { generateUnderwritingMemo } from "../../shared/aiUnderwriter.ts";
 import { buildRecommendation, finalizeDecision } from "../../shared/decisionEngine.ts";
 import { calculateRate } from "../../shared/pricingEngine.ts";
+import { generateAdverseActionNotice } from "../../shared/adverseActionNotice.ts";
 
 // POST /v1/applications/{id}/underwrite — runs the full underwriting evaluation.
 // Pipeline: AI Analysis -> Risk Signals -> Evidence -> Policy Engine -> Recommendation -> Final Decision.
@@ -96,6 +97,28 @@ export default async function(req: Request): Promise<Response> {
       overrideDecision
     });
 
+    // 6b. Generate regulator-compliant adverse-action notice (for adverse decisions).
+    let adverseActionNotice: any = null;
+    if (decision.decision !== "APPROVE" && decision.adverse_action_codes?.length) {
+      const bureauEv = evidence.find((e: any) => e.source_type === "credit_report" && e.source_provider);
+      const creditBureau = bureauEv?.source_provider || creditProfiles[0]?.provider || null;
+      let lenderName = "the Lender";
+      try {
+        const orgs = await base44.asServiceRole.entities.Organization.filter({ id: organization_id }, "-created_date", 1);
+        if (orgs[0]?.name) lenderName = orgs[0].name;
+      } catch {}
+      adverseActionNotice = generateAdverseActionNotice({
+        decision: decision.decision,
+        adverse_action_codes: decision.adverse_action_codes,
+        market: app.market || "GB",
+        borrower: borrowers[0] || null,
+        application: app,
+        lenderName,
+        creditBureau,
+        decisionTimestamp: new Date().toISOString()
+      });
+    }
+
     const decisionRecord = await base44.asServiceRole.entities.UnderwritingDecision.create({
       organization_id,
       application_id,
@@ -114,6 +137,7 @@ export default async function(req: Request): Promise<Response> {
       policy_outcome: policyOutcome,
       reasons: decision.reasons,
       adverse_action_codes: decision.adverse_action_codes || [],
+      adverse_action_notice: adverseActionNotice,
       idempotency_key: idempotencyKey || null
     });
 
