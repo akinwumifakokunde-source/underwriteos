@@ -109,7 +109,7 @@ const AnimatedRoutes = () => {
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/api-reference" element={<ApiReference />} />
             <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-              <Route path="/workspace" element={<WorkspaceHome />} />
+              <Route path="/workspace" element={<Navigate to="/applications" replace />} />
               <Route path="/applications" element={<Applications />} />
               <Route path="/applications/new" element={<ApplicationCreate />} />
               <Route path="/batch" element={<BatchUnderwrite />} />

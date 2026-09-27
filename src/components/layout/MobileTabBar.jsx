@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Home, FileText, SlidersHorizontal, Settings as SettingsIcon } from "lucide-react";
+import { FileText, SlidersHorizontal, Settings as SettingsIcon } from "lucide-react";
 
 const TABS = [
-  { to: "/workspace", label: "Home", icon: Home },
   { to: "/applications", label: "Applications", icon: FileText },
   { to: "/policies", label: "Policies", icon: SlidersHorizontal },
   { to: "/settings", label: "Settings", icon: SettingsIcon },

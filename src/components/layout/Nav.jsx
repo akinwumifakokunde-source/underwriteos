@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NAV_ITEMS = [
-  { to: "/workspace", label: "Home" },
   { to: "/applications", label: "Applications" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
@@ -54,7 +53,7 @@ export default function Nav() {
     <>
     <header className="sticky top-0 z-40 bg-[#0a0c12] border-b border-white/5 hidden md:block">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-        <Link to="/workspace" className="flex items-center gap-2.5 shrink-0">
+        <Link to="/applications" className="flex items-center gap-2.5 shrink-0">
           <Logo size={28} tone="dark" textClassName="hidden sm:inline" />
         </Link>
 
