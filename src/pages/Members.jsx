@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DrawerSelect from "@/components/ui/drawer-select";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import { Users, Loader2, AlertTriangle, UserPlus, ShieldCheck, Trash2, CheckCircle2 } from "lucide-react";
 
 export default function Members() {
@@ -72,6 +73,7 @@ export default function Members() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
+      <MobilePageHeader title="Members" backTo="/settings" />
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Members</h1>

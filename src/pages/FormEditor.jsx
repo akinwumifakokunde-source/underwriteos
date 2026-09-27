@@ -3,6 +3,7 @@ import DrawerSelect from "@/components/ui/drawer-select";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import { Loader2, AlertTriangle, ArrowLeft, Save, Copy, Check, ExternalLink, Upload } from "lucide-react";
 import { JURISDICTIONS, getJurisdiction, getPolicies, getProducts, getKycConfig, getDocumentRequirements } from "@/lib/jurisdictions";
 import { FIELD_SECTIONS, DEFAULT_FIELDS } from "@/lib/formFields";
@@ -164,6 +165,7 @@ export default function FormEditor() {
     return (
       <div className="min-h-screen bg-[#f7f8fa]">
         <Nav />
+        <MobilePageHeader title="Form editor" backTo="/forms" />
         <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10 flex items-center justify-center gap-3">
           <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
           <span className="text-sm text-slate-500">Loading form…</span>
@@ -175,6 +177,7 @@ export default function FormEditor() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
+      <MobilePageHeader title="Form editor" backTo="/forms" />
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-8">
         <Link to="/forms" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 mb-4">
           <ArrowLeft className="w-4 h-4" /> Forms

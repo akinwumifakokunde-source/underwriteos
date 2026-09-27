@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Send, Loader2 } from "lucide-react";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import CodeBlock from "@/components/sandbox/CodeBlock.jsx";
 import JsonView from "@/components/sandbox/JsonView.jsx";
 import { API_BASE_URL, PRODUCTION_DEPLOYED, PRODUCTION_API_BASE_URL } from "@/lib/apiConfig";
@@ -88,6 +89,7 @@ export default function Playground() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
+      <MobilePageHeader title="API Playground" backTo="/settings" />
       <div className="border-b border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-6">
           <h1 className="text-2xl font-semibold tracking-tight">API Playground</h1>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { getApiKey, setApiKey } from "@/lib/apiKey";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import { KeyRound, Plus, Loader2, AlertTriangle, RotateCcw, Trash2, CheckCircle2, Copy, Check } from "lucide-react";
 
 export default function ApiKeys() {
@@ -105,6 +106,7 @@ export default function ApiKeys() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
+      <MobilePageHeader title="API Keys" backTo="/settings" />
       <div className="max-w-4xl mx-auto px-5 sm:px-8 py-10">
         <div className="flex items-end justify-between mb-6">
           <div>

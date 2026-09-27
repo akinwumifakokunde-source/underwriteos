@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import { Loader2, AlertTriangle, ArrowLeft, Inbox, FileText, ExternalLink, Play } from "lucide-react";
 import { formatCurrency } from "@/lib/jurisdictions";
 
@@ -72,6 +73,7 @@ export default function FormSubmissions() {
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
       <Nav />
+      <MobilePageHeader title="Submissions" backTo="/forms" />
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-8">
         <Link to="/forms" className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-800 mb-4">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to forms

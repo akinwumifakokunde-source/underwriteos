@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy, History, ChevronDown, RefreshCw } from "lucide-react";
 
 const EVENT_OPTIONS = [
@@ -118,6 +119,7 @@ export default function Webhooks() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
+      <MobilePageHeader title="Webhooks" backTo="/settings" />
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Webhooks</h1>

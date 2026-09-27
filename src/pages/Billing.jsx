@@ -1,11 +1,13 @@
 import React from "react";
 import Nav from "@/components/layout/Nav.jsx";
+import MobilePageHeader from "@/components/layout/MobilePageHeader.jsx";
 import BillingSection from "@/components/settings/BillingSection.jsx";
 
 export default function Billing() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <Nav />
+      <MobilePageHeader title="Billing" backTo="/settings" />
       <div className="max-w-4xl mx-auto px-5 sm:px-8 py-10">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold tracking-tight">Billing &amp; Subscription</h1>
