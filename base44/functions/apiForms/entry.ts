@@ -138,10 +138,47 @@ export default async function(req: Request): Promise<Response> {
         details: { form_id: form.id, borrower_id: borrower.id, application_number: application.application_number }
       });
 
+      // Email the borrower a link to track their application status. The link is
+      // built from the incoming request host so it works on any connected custom
+      // domain. Failures never block submission.
+      let emailSent = false;
+      let statusLink: string | null = null;
+      if (borrower.email) {
+        try {
+          const proto = req.headers.get("x-forwarded-proto") || "https";
+          const host = req.headers.get("host");
+          const origin = host ? `${proto}://${host}` : "https://oldme.base44.app";
+          statusLink = `${origin}/status/${application.application_number}`;
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: borrower.email,
+            subject: `Your application has been received (${application.application_number})`,
+            text: [
+              `Hi ${borrower.first_name},`,
+              ``,
+              `Thanks for applying with ${form.title || "us"}. Your application has been received and is now being reviewed.`,
+              ``,
+              `Application reference: ${application.application_number}`,
+              ``,
+              `You can track your application status and see any documents we may need from you here:`,
+              statusLink,
+              ``,
+              `We'll be in touch if we need anything else.`,
+              ``,
+              `— The ${form.title || "lending"} team`,
+            ].join("\n"),
+          });
+          emailSent = true;
+        } catch (e) {
+          // Email delivery failure is non-fatal; the application is still created.
+        }
+      }
+
       return apiSuccess({
         application_id: application.id,
         application_number: application.application_number,
-        thank_you_message: form.thank_you_message || "Thank you. Your application has been received."
+        thank_you_message: form.thank_you_message || "Thank you. Your application has been received.",
+        status_link: statusLink,
+        email_sent: emailSent,
       }, 201);
     }
 

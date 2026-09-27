@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import DrawerSelect from "@/components/ui/drawer-select";
 import { useParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Loader2, AlertTriangle, CheckCircle2, ShieldCheck, Upload, FileCheck2, MailCheck, ArrowRight } from "lucide-react";
 import { FIELD_SECTIONS, FIELD_META } from "@/lib/formFields";
 
 export default function Apply() {
@@ -96,6 +97,21 @@ export default function Apply() {
           <p className="mt-2 text-sm text-slate-600 leading-relaxed">{submitted.thank_you_message || form.thank_you_message}</p>
           {submitted.application_number && (
             <p className="mt-4 text-xs text-slate-400">Reference: <span className="font-mono text-slate-600">{submitted.application_number}</span></p>
+          )}
+          {submitted.email_sent && (
+            <div className="mt-4 flex items-start gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-left">
+              <MailCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="text-[12px] text-emerald-800">We've emailed you a link to track your application status. Check your inbox.</p>
+            </div>
+          )}
+          {submitted.application_number && (
+            <Link
+              to={`/status/${submitted.application_number}`}
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-white px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: accent }}
+            >
+              Track your application <ArrowRight className="w-4 h-4" />
+            </Link>
           )}
         </div>
       </div>
