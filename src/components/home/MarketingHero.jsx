@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import GlobeGraphic from "@/components/home/GlobeGraphic.jsx";
 import DecisionCard from "@/components/home/DecisionCard.jsx";
 import HeroLeadCapture from "@/components/home/HeroLeadCapture.jsx";
 import HeroStats from "@/components/home/HeroStats.jsx";
-import { ArrowRight } from "lucide-react";
 
 // Markets in rolling order (longitude descending so the globe rolls forward
 // smoothly). GB sits at index 4 — the cycle starts there, the brand's home
@@ -63,15 +61,6 @@ export default function MarketingHero() {
             </p>
 
             <HeroLeadCapture />
-            <div className="mt-3 w-full max-w-md">
-              <Link
-                to="/start/lender"
-                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0d1a12] bg-white pl-5 pr-4 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
-              >
-                Try CreditDecide
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
 
             <HeroStats />
           </div>
