@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FileText, Check, AlertTriangle, ShieldCheck, Loader2, ChevronDown, ChevronUp, Quote, Gavel, Sparkles } from "lucide-react";
+import WebhookDeliveryStatus from "@/components/application/WebhookDeliveryStatus";
 
 // Map evidence records to numbered citation chips [1], [2]…
 function useCitations(evidence) {
@@ -255,6 +256,11 @@ export default function CreditMemoTab({ recommendation, decision, evidence, risk
           </div>
         )}
       </Section>
+
+      {/* Webhook delivery status */}
+      {decision?.id && (
+        <WebhookDeliveryStatus decisionId={decision.id} applicationId={app?.id} />
+      )}
 
       {/* Evidence legend (citation targets) */}
       {list.length > 0 && (
