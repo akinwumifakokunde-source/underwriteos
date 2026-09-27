@@ -135,6 +135,128 @@ export default function BorrowerPortal() {
     }
   }, [applicationNumber]);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminApps, setAdminApps] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const authed = await base44.auth.isAuthenticated();
+        if (authed) {
+          const me = await base44.auth.me();
+          if (me?.role === "admin") {
+            setIsAdmin(true);
+            setAdminLoading(true);
+            const apps = await base44.entities.Application.list("-created_date", 50);
+            setAdminApps(apps);
+            setAdminLoading(false);
+            if (applicationNumber) {
+              setLoading(true);
+              try {
+                const res = await base44.functions.invoke("apiBorrowerStatus", { action: "admin_lookup", application_number: applicationNumber });
+                setData(res.data);
+              } catch (e) {
+                setError(e?.response?.data?.error?.message || e.message);
+              } finally {
+                setLoading(false);
+              }
+            }
+          }
+        }
+      } catch {
+        // not authenticated — borrower flow
+      } finally {
+        setAuthChecked(true);
+      }
+    })();
+  }, [applicationNumber]);
+
+  const openAsAdmin = async (appId, number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await base44.functions.invoke("apiBorrowerStatus", { action: "admin_lookup", application_id: appId });
+      setData(res.data);
+      setAppNo(number);
+    } catch (e) {
+      setError(e?.response?.data?.error?.message || e.message || "Couldn't open this application.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const backToAdminList = () => {
+    setData(null);
+    setError(null);
+    setUploadError(null);
+    setUploadNotice(null);
+  };
+
+  // ----- Auth check -----
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-6 h-6 text-slate-300 animate-spin" />
+      </div>
+    );
+  }
+
+  // ----- Admin list -----
+  if (isAdmin && !data) {
+    return (
+      <div className="min-h-screen bg-slate-50">
+        <header className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b border-slate-100">
+          <div className="max-w-3xl mx-auto px-5 sm:px-6 h-14 flex items-center justify-between">
+            <Link to="/"><Logo size={26} /></Link>
+            <Link to="/applications" className="text-[13px] text-slate-500 hover:text-slate-900 transition-colors">Back to workspace</Link>
+          </div>
+        </header>
+        <main className="max-w-3xl mx-auto px-5 sm:px-6 py-8">
+          <div className="mb-6">
+            <h1 className="text-xl font-semibold tracking-tight text-slate-900">Borrower portals</h1>
+            <p className="mt-1 text-sm text-slate-500">Open any application to see exactly what your borrower sees.</p>
+          </div>
+          {adminLoading ? (
+            <div className="flex items-center justify-center py-16"><Loader2 className="w-6 h-6 text-slate-300 animate-spin" /></div>
+          ) : adminApps.length === 0 ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center">
+              <p className="text-sm text-slate-500">No applications yet. Once borrowers apply, their portals appear here.</p>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {adminApps.map((a) => (
+                <li key={a.id}>
+                  <button
+                    onClick={() => openAsAdmin(a.id, a.application_number)}
+                    className="w-full text-left rounded-xl border border-slate-200 bg-white px-4 py-3.5 hover:border-teal-300 hover:shadow-sm transition-all flex items-center justify-between gap-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-mono text-[13px] text-slate-900">{a.application_number || "—"}</p>
+                      <p className="text-[12px] text-slate-400 mt-0.5">
+                        {a.loan_currency ? fmtMoney(a.loan_amount, a.loan_currency) : "—"} · {a.status}
+                      </p>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 text-[13px] font-medium text-teal-700">
+                      Open portal <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {error && (
+            <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <p className="text-[13px] text-rose-700">{error}</p>
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
   // ----- Lookup gate -----
   if (!data) {
     return (
@@ -217,10 +339,10 @@ export default function BorrowerPortal() {
         <div className="max-w-5xl mx-auto px-5 sm:px-6 h-14 flex items-center justify-between">
           <Link to="/"><Logo size={26} /></Link>
           <button
-            onClick={() => { setData(null); setError(null); setUploadError(null); }}
+            onClick={isAdmin ? backToAdminList : () => { setData(null); setError(null); setUploadError(null); }}
             className="text-[13px] text-slate-500 hover:text-slate-900 transition-colors"
           >
-            Check another application
+            {isAdmin ? "Back to list" : "Check another application"}
           </button>
         </div>
       </header>
@@ -324,12 +446,14 @@ export default function BorrowerPortal() {
                         </div>
                         <span className="shrink-0 text-[11px] text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">{r.status}</span>
                       </div>
-                      <div className="mt-2.5">
-                        <PortalUploader
-                          uploading={uploadingKey === `ir-${r.id || i}`}
-                          onUpload={(f) => handleUpload(f, inferDocType(r.item), r.id, `ir-${r.id || i}`)}
-                        />
-                      </div>
+                      {!isAdmin && (
+                        <div className="mt-2.5">
+                          <PortalUploader
+                            uploading={uploadingKey === `ir-${r.id || i}`}
+                            onUpload={(f) => handleUpload(f, inferDocType(r.item), r.id, `ir-${r.id || i}`)}
+                          />
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -363,7 +487,7 @@ export default function BorrowerPortal() {
             )}
 
             {/* General upload */}
-            {data.application.status !== "completed" && (
+            {data.application.status !== "completed" && !isAdmin && (
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h2 className="text-sm font-semibold text-slate-900 mb-1 flex items-center gap-1.5">
                   <UploadCloud className="w-4 h-4 text-teal-600" /> Upload a document
@@ -401,7 +525,17 @@ export default function BorrowerPortal() {
                 <MessageSquare className="w-3.5 h-3.5" /> Message your team
               </div>
               <div className="h-[560px]">
-                <PortalAssistant applicationNumber={appNo.trim()} email={email.trim()} />
+                {isAdmin ? (
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 h-full flex flex-col items-center justify-center text-center">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mb-3">
+                      <MessageSquare className="w-5 h-5 text-slate-400" />
+                    </div>
+                    <p className="text-sm font-medium text-slate-700">Borrower chat preview</p>
+                    <p className="text-[12px] text-slate-500 mt-1 max-w-[220px]">Your borrower sees a 24/7 assistant here that answers status questions and flags anything that needs you.</p>
+                  </div>
+                ) : (
+                  <PortalAssistant applicationNumber={appNo.trim()} email={email.trim()} />
+                )}
               </div>
             </div>
           </div>

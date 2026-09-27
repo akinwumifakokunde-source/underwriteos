@@ -12,11 +12,40 @@ import { runUnderwrite } from "../../shared/underwritePipeline.ts";
 //
 // lookup — verify application_number + email, return status, decision, timeline,
 //          open information requests and document checklist.
+// admin_lookup — authenticated admins open any of their org's borrower portals
+//          without the email gate.
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
     const body = await readBody(req);
     const action = body.action || "lookup";
+
+    // Admin lookup — authenticated admins open any of their org's borrower
+    // portals without the email gate.
+    if (action === "admin_lookup") {
+      let user;
+      try {
+        user = await base44.auth.me();
+      } catch {
+        return apiError("UNAUTHORIZED", "Sign in required.", 401);
+      }
+      if (!user || user.role !== "admin") return apiError("FORBIDDEN", "Admin access required.", 403);
+      const applicationId = (body.application_id || "").trim();
+      const adminAppNumber = (body.application_number || "").trim();
+      if (!applicationId && !adminAppNumber) return apiError("VALIDATION_ERROR", "Application id or number is required.", 400);
+      let app;
+      if (applicationId) {
+        app = await base44.asServiceRole.entities.Application.get(applicationId);
+      } else {
+        const found = await base44.asServiceRole.entities.Application.filter({ application_number: adminAppNumber }, "-created_date", 1);
+        app = found[0];
+      }
+      if (!app) return apiError("NOT_FOUND", "Application not found.", 404);
+      const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id }, "-created_date", 1);
+      const borrower = borrowers[0];
+      if (!borrower) return apiError("NOT_FOUND", "Borrower not found.", 404);
+      return shapePortalPayload(base44, app, borrower);
+    }
 
     const applicationNumber = (body.application_number || "").trim();
     const email = (body.email || "").trim().toLowerCase();
@@ -34,7 +63,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     // Borrower uploads a document from the portal. The file is uploaded client-side
-    // (UploadPublicFile) and only the resulting URL is sent here; we create the
+    // (UploadPrivateFile) and only the resulting URI is sent here; we create the
     // Document record and, when tied to an information request, mark it received.
     if (action === "submit_document") {
       const documentType = (body.document_type || "").trim();
@@ -136,101 +165,104 @@ export default async function(req: Request): Promise<Response> {
 
     if (action !== "lookup") return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use lookup or submit_document.`, 400);
 
-    // Parallel loads for the portal view
-    const [decisions, infoRequests, documents] = await Promise.all([
-      base44.asServiceRole.entities.UnderwritingDecision.filter({ application_id: app.id }, "-decision_timestamp", 1),
-      base44.asServiceRole.entities.InformationRequest.filter({ application_id: app.id }, "-created_date", 50),
-      base44.asServiceRole.entities.Document.filter({ application_id: app.id }, "-created_date", 50),
-    ]);
-    const decision = decisions[0] || null;
-
-    const DOC_LABELS: Record<string, string> = {
-      credit_report: "Credit report",
-      bank_statement: "Bank statement",
-      payslip: "Payslip",
-      identity: "Identity document",
-      employment: "Employment proof",
-      tax: "Tax document",
-      financial_statement: "Financial statement",
-      proof_of_address: "Proof of address",
-      other_financial: "Financial document",
-      other: "Document",
-    };
-    const DOC_STATUS: Record<string, string> = {
-      uploaded: "Received",
-      processing: "Processing",
-      processed: "Verified",
-      verified: "Verified",
-      needs_review: "Needs review",
-      failed: "Issue",
-    };
-    const INFO_STATUS: Record<string, string> = {
-      requested: "Requested",
-      sent: "Sent",
-      viewed: "Awaiting your response",
-      received: "Received",
-      verified: "Verified",
-      resolved: "Resolved",
-    };
-
-    const STATUS_LABEL: Record<string, string> = {
-      draft: "Started",
-      data_collection: "Information & documents",
-      analyzing: "Under review",
-      underwriting: "Under review",
-      completed: "Completed",
-      failed: "Action needed",
-    };
-
-    const openInfoRequests = infoRequests
-      .filter((r) => r.status !== "resolved" && r.status !== "verified")
-      .map((r) => ({ id: r.id, item: r.item, note: r.note || null, status: INFO_STATUS[r.status] || r.status, requested_at: r.created_date }));
-
-    const docChecklist = documents.map((d) => ({
-      type: d.document_type,
-      label: DOC_LABELS[d.document_type] || d.document_type,
-      status: DOC_STATUS[d.status] || d.status,
-      file_name: d.file_name || null,
-      uploaded_at: d.created_date,
-    }));
-
-    // Timeline
-    const timeline = [
-      { step: "Application submitted", at: app.created_date, done: true },
-      { step: "Information & documents", at: null, done: ["data_collection", "analyzing", "underwriting", "completed"].includes(app.status) },
-      { step: "Under review", at: null, done: ["analyzing", "underwriting", "completed"].includes(app.status) },
-      { step: "Decision", at: decision?.decision_timestamp || null, done: !!decision },
-    ];
-
-    const noticeToken = decision?.adverse_action_delivery?.share_token || null;
-
-    return apiSuccess({
-      application: {
-        application_number: app.application_number,
-        status: app.status,
-        status_label: STATUS_LABEL[app.status] || app.status,
-        loan_amount: app.loan_amount,
-        loan_currency: app.loan_currency,
-        loan_purpose: app.loan_purpose,
-        loan_term_months: app.loan_term_months,
-        market: app.market,
-        created_at: app.created_date,
-      },
-      borrower: { first_name: borrower.first_name, last_name: borrower.last_name },
-      decision: decision ? {
-        decision: decision.decision,
-        decided_at: decision.decision_timestamp,
-        human_review_required: decision.human_review_required,
-      } : null,
-      notice_token: noticeToken,
-      open_information_requests: openInfoRequests,
-      documents: docChecklist,
-      timeline,
-    }, 200);
+    return shapePortalPayload(base44, app, borrower);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
   }
+}
+
+// Shared borrower-facing payload for both the public lookup and admin_lookup
+// actions. Only borrower-safe fields are returned.
+async function shapePortalPayload(base44: any, app: any, borrower: any): Promise<Response> {
+  const [decisions, infoRequests, documents] = await Promise.all([
+    base44.asServiceRole.entities.UnderwritingDecision.filter({ application_id: app.id }, "-decision_timestamp", 1),
+    base44.asServiceRole.entities.InformationRequest.filter({ application_id: app.id }, "-created_date", 50),
+    base44.asServiceRole.entities.Document.filter({ application_id: app.id }, "-created_date", 50),
+  ]);
+  const decision = decisions[0] || null;
+
+  const DOC_LABELS: Record<string, string> = {
+    credit_report: "Credit report",
+    bank_statement: "Bank statement",
+    payslip: "Payslip",
+    identity: "Identity document",
+    employment: "Employment proof",
+    tax: "Tax document",
+    financial_statement: "Financial statement",
+    proof_of_address: "Proof of address",
+    other_financial: "Financial document",
+    other: "Document",
+  };
+  const DOC_STATUS: Record<string, string> = {
+    uploaded: "Received",
+    processing: "Processing",
+    processed: "Verified",
+    verified: "Verified",
+    needs_review: "Needs review",
+    failed: "Issue",
+  };
+  const INFO_STATUS: Record<string, string> = {
+    requested: "Requested",
+    sent: "Sent",
+    viewed: "Awaiting your response",
+    received: "Received",
+    verified: "Verified",
+    resolved: "Resolved",
+  };
+  const STATUS_LABEL: Record<string, string> = {
+    draft: "Started",
+    data_collection: "Information & documents",
+    analyzing: "Under review",
+    underwriting: "Under review",
+    completed: "Completed",
+    failed: "Action needed",
+  };
+
+  const openInfoRequests = infoRequests
+    .filter((r) => r.status !== "resolved" && r.status !== "verified")
+    .map((r) => ({ id: r.id, item: r.item, note: r.note || null, status: INFO_STATUS[r.status] || r.status, requested_at: r.created_date }));
+
+  const docChecklist = documents.map((d) => ({
+    type: d.document_type,
+    label: DOC_LABELS[d.document_type] || d.document_type,
+    status: DOC_STATUS[d.status] || d.status,
+    file_name: d.file_name || null,
+    uploaded_at: d.created_date,
+  }));
+
+  const timeline = [
+    { step: "Application submitted", at: app.created_date, done: true },
+    { step: "Information & documents", at: null, done: ["data_collection", "analyzing", "underwriting", "completed"].includes(app.status) },
+    { step: "Under review", at: null, done: ["analyzing", "underwriting", "completed"].includes(app.status) },
+    { step: "Decision", at: decision?.decision_timestamp || null, done: !!decision },
+  ];
+
+  const noticeToken = decision?.adverse_action_delivery?.share_token || null;
+
+  return apiSuccess({
+    application: {
+      application_number: app.application_number,
+      status: app.status,
+      status_label: STATUS_LABEL[app.status] || app.status,
+      loan_amount: app.loan_amount,
+      loan_currency: app.loan_currency,
+      loan_purpose: app.loan_purpose,
+      loan_term_months: app.loan_term_months,
+      market: app.market,
+      created_at: app.created_date,
+    },
+    borrower: { first_name: borrower.first_name, last_name: borrower.last_name },
+    decision: decision ? {
+      decision: decision.decision,
+      decided_at: decision.decision_timestamp,
+      human_review_required: decision.human_review_required,
+    } : null,
+    notice_token: noticeToken,
+    open_information_requests: openInfoRequests,
+    documents: docChecklist,
+    timeline,
+  }, 200);
 }
 
 function inferFormat(name: string): string {
