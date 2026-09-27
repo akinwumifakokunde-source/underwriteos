@@ -4,6 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import SectionBackdrop from "@/components/home/SectionBackdrop";
 
 const ITEMS = [
+  "Private document storage with signed access",
   "Multi-jurisdiction policies (6 markets + Others)",
   "Organization-scoped access",
   "Live data source connections",
