@@ -1,5 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
-import { apiError, apiSuccess, readBody } from "../../shared/utils.ts";
+import { apiError, apiSuccess, readBody, audit } from "../../shared/utils.ts";
 
 // Public borrower self-service portal. No auth — the borrower proves ownership
 // by providing their application number AND the email they applied with. Only
@@ -15,8 +15,6 @@ export default async function(req: Request): Promise<Response> {
     const body = await readBody(req);
     const action = body.action || "lookup";
 
-    if (action !== "lookup") return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use lookup.`, 400);
-
     const applicationNumber = (body.application_number || "").trim();
     const email = (body.email || "").trim().toLowerCase();
     if (!applicationNumber) return apiError("VALIDATION_ERROR", "Application number is required.", 400);
@@ -31,6 +29,52 @@ export default async function(req: Request): Promise<Response> {
     if (!borrower || !borrower.email || borrower.email.toLowerCase() !== email) {
       return apiError("NOT_FOUND", "We couldn't find an application matching those details. Please check and try again.", 404);
     }
+
+    // Borrower uploads a document from the portal. The file is uploaded client-side
+    // (UploadPublicFile) and only the resulting URL is sent here; we create the
+    // Document record and, when tied to an information request, mark it received.
+    if (action === "submit_document") {
+      const documentType = (body.document_type || "").trim();
+      const fileUrl = (body.file_url || "").trim();
+      const fileName = (body.file_name || "").trim();
+      const informationRequestId = body.information_request_id || null;
+      const ALLOWED_TYPES = ["credit_report","bank_statement","payslip","identity","employment","tax","financial_statement","proof_of_address","other_financial","other"];
+      if (!documentType || !ALLOWED_TYPES.includes(documentType)) return apiError("VALIDATION_ERROR", "Unsupported document type.", 400);
+      if (!fileUrl) return apiError("VALIDATION_ERROR", "File is required.", 400);
+
+      let infoRequest = null;
+      if (informationRequestId) {
+        const reqs = await base44.asServiceRole.entities.InformationRequest.filter({ id: informationRequestId, application_id: app.id }, "-created_date", 1);
+        infoRequest = reqs[0] || null;
+        if (!infoRequest) return apiError("NOT_FOUND", "Information request not found for this application.", 404);
+      }
+
+      const doc = await base44.asServiceRole.entities.Document.create({
+        organization_id: app.organization_id,
+        application_id: app.id,
+        document_type: documentType,
+        file_url: fileUrl,
+        file_name: fileName || null,
+        file_format: inferFormat(fileName || fileUrl),
+        status: "uploaded",
+      });
+
+      if (infoRequest) {
+        await base44.asServiceRole.entities.InformationRequest.update(informationRequestId, { status: "received", resolved_at: new Date().toISOString() });
+      }
+
+      await audit(base44, app.organization_id, "borrower.document_uploaded", {
+        application_id: app.id,
+        actor: "borrower",
+        actor_type: "user",
+        endpoint: "POST /status",
+        details: { document_id: doc.id, document_type: documentType, information_request_id: informationRequestId }
+      });
+
+      return apiSuccess({ document_id: doc.id, information_request_updated: !!infoRequest }, 201);
+    }
+
+    if (action !== "lookup") return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use lookup or submit_document.`, 400);
 
     // Parallel loads for the portal view
     const [decisions, infoRequests, documents] = await Promise.all([
@@ -80,7 +124,7 @@ export default async function(req: Request): Promise<Response> {
 
     const openInfoRequests = infoRequests
       .filter((r) => r.status !== "resolved" && r.status !== "verified")
-      .map((r) => ({ item: r.item, note: r.note || null, status: INFO_STATUS[r.status] || r.status, requested_at: r.created_date }));
+      .map((r) => ({ id: r.id, item: r.item, note: r.note || null, status: INFO_STATUS[r.status] || r.status, requested_at: r.created_date }));
 
     const docChecklist = documents.map((d) => ({
       type: d.document_type,
@@ -127,4 +171,13 @@ export default async function(req: Request): Promise<Response> {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
   }
+}
+
+function inferFormat(name: string): string {
+  const n = (name || "").toLowerCase();
+  if (n.endsWith(".pdf")) return "pdf";
+  if (n.endsWith(".csv")) return "csv";
+  if (n.endsWith(".json")) return "json";
+  if (/\.(png|jpe?g|webp|gif|bmp|tiff?)$/.test(n)) return "image";
+  return "other";
 }

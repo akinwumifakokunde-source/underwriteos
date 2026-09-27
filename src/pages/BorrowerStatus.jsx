@@ -1,14 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import Logo from "@/components/Logo";
-import { Loader2, Search, ShieldCheck, FileText, AlertCircle, CheckCircle2, Clock, ArrowRight, Lock } from "lucide-react";
+import PortalUploader from "@/components/borrower/PortalUploader";
+import { Loader2, Search, ShieldCheck, FileText, AlertCircle, CheckCircle2, Clock, ArrowRight, Lock, UploadCloud } from "lucide-react";
 
 const DECISION_STYLES = {
   APPROVE: { label: "Approved", icon: CheckCircle2, tint: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
   REVIEW: { label: "In review", icon: Clock, tint: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
   DECLINE: { label: "Declined", icon: AlertCircle, tint: "text-rose-600", bg: "bg-rose-50", border: "border-rose-200" },
 };
+
+const DOC_TYPE_OPTIONS = [
+  { value: "bank_statement", label: "Bank statement" },
+  { value: "payslip", label: "Payslip" },
+  { value: "identity", label: "Identity document" },
+  { value: "proof_of_address", label: "Proof of address" },
+  { value: "credit_report", label: "Credit report" },
+  { value: "tax", label: "Tax document" },
+  { value: "employment", label: "Employment proof" },
+  { value: "other", label: "Other document" },
+];
+
+function inferDocType(item) {
+  const s = (item || "").toLowerCase();
+  if (s.includes("credit")) return "credit_report";
+  if (s.includes("bank")) return "bank_statement";
+  if (s.includes("payslip") || s.includes("pay slip") || s.includes("salary")) return "payslip";
+  if (s.includes("identity") || s.includes("passport") || s.includes("licence") || s.includes("license") || s.includes(" id")) return "identity";
+  if (s.includes("address")) return "proof_of_address";
+  if (s.includes("tax")) return "tax";
+  if (s.includes("employ")) return "employment";
+  if (s.includes("financial")) return "financial_statement";
+  return "other";
+}
 
 function fmtMoney(n, c) {
   try {
@@ -35,6 +60,9 @@ export default function BorrowerStatus() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const [uploadingKey, setUploadingKey] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [generalType, setGeneralType] = useState("bank_statement");
 
   const lookup = async (e) => {
     e?.preventDefault();
@@ -53,6 +81,39 @@ export default function BorrowerStatus() {
       setError(err?.response?.data?.error?.message || err.message || "We couldn't find your application. Please check your details.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refresh = async () => {
+    try {
+      const res = await base44.functions.invoke("apiBorrowerStatus", {
+        action: "lookup",
+        application_number: appNo.trim(),
+        email: email.trim(),
+      });
+      setData(res.data);
+    } catch {}
+  };
+
+  const handleUpload = async (file, documentType, informationRequestId, key) => {
+    setUploadingKey(key);
+    setUploadError(null);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.functions.invoke("apiBorrowerStatus", {
+        action: "submit_document",
+        application_number: appNo.trim(),
+        email: email.trim(),
+        document_type: documentType,
+        file_url,
+        file_name: file.name,
+        information_request_id: informationRequestId || null,
+      });
+      await refresh();
+    } catch (e) {
+      setUploadError(e?.response?.data?.error?.message || e.message || "Upload failed. Please try again.");
+    } finally {
+      setUploadingKey(null);
     }
   };
 
@@ -219,15 +280,23 @@ export default function BorrowerStatus() {
                 <h2 className="text-sm font-semibold text-slate-900 mb-1 flex items-center gap-1.5">
                   <AlertCircle className="w-4 h-4 text-amber-600" /> We need a little more from you
                 </h2>
-                <p className="text-[13px] text-slate-500 mb-4">Your lender has requested the following to continue your application.</p>
-                <ul className="space-y-2">
+                <p className="text-[13px] text-slate-500 mb-4">Your lender has requested the following to continue your application. Upload a file against each item to satisfy the request.</p>
+                <ul className="space-y-3">
                   {data.open_information_requests.map((r, i) => (
-                    <li key={i} className="flex items-start justify-between gap-3 rounded-lg bg-white border border-amber-100 px-3.5 py-2.5">
-                      <div>
-                        <p className="text-sm font-medium text-slate-900">{r.item}</p>
-                        {r.note && <p className="text-[12px] text-slate-500 mt-0.5">{r.note}</p>}
+                    <li key={r.id || i} className="rounded-lg bg-white border border-amber-100 px-3.5 py-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900">{r.item}</p>
+                          {r.note && <p className="text-[12px] text-slate-500 mt-0.5">{r.note}</p>}
+                        </div>
+                        <span className="shrink-0 text-[11px] text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">{r.status}</span>
                       </div>
-                      <span className="shrink-0 text-[11px] text-amber-700 bg-amber-100 rounded-full px-2 py-0.5">{r.status}</span>
+                      <div className="mt-2.5">
+                        <PortalUploader
+                          uploading={uploadingKey === `ir-${r.id || i}`}
+                          onUpload={(f) => handleUpload(f, inferDocType(r.item), r.id, `ir-${r.id || i}`)}
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -260,9 +329,40 @@ export default function BorrowerStatus() {
               </div>
             )}
 
+            {/* General document upload (while the application is still open) */}
+            {data.application.status !== "completed" && (
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-sm font-semibold text-slate-900 mb-1 flex items-center gap-1.5">
+                  <UploadCloud className="w-4 h-4 text-teal-600" /> Upload a document
+                </h2>
+                <p className="text-[13px] text-slate-500 mb-4">Add any supporting document for your application.</p>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <select
+                    value={generalType}
+                    onChange={(e) => setGeneralType(e.target.value)}
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 sm:w-auto"
+                  >
+                    {DOC_TYPE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                  </select>
+                  <PortalUploader
+                    uploading={uploadingKey === "general"}
+                    onUpload={(f) => handleUpload(f, generalType, null, "general")}
+                    label="Choose file"
+                  />
+                </div>
+              </div>
+            )}
+
+            {uploadError && (
+              <div className="rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <p className="text-[13px] text-rose-700">{uploadError}</p>
+              </div>
+            )}
+
             <div className="text-center pt-2">
               <button
-                onClick={() => { setData(null); setError(null); }}
+                onClick={() => { setData(null); setError(null); setUploadError(null); }}
                 className="text-[13px] text-slate-500 hover:text-slate-900 transition-colors"
               >
                 Check another application
