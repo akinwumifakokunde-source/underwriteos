@@ -9,7 +9,7 @@ export default async function(req: Request): Promise<Response> {
     const ctx = await resolveOrganization(base44, body);
     const { organization_id, actor, actor_type } = ctx;
     const action = body.action || "create";
-    if (action === "create") requireScope(ctx, "applications:write");
+    if (action === "create" || action === "request_information") requireScope(ctx, "applications:write");
     if (action === "get" || action === "list") requireScope(ctx, "applications:read");
 
     if (action === "create") {
@@ -67,6 +67,64 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ applications: apps, count: apps.length }, 200);
     }
 
+    if (action === "request_information") {
+      const { application_id, item, note } = body;
+      if (!application_id) return apiError("VALIDATION_ERROR", "application_id is required.", 400);
+      if (!item || !String(item).trim()) return apiError("VALIDATION_ERROR", "item is required.", 400);
+      const apps = await base44.asServiceRole.entities.Application.filter({ id: application_id, organization_id }, "-created_date", 1);
+      if (apps.length === 0) return apiError("APPLICATION_NOT_FOUND", `Application ${application_id} was not found.`, 404);
+      const app = apps[0];
+      const borrowers = await base44.asServiceRole.entities.Borrower.filter({ id: app.borrower_id, organization_id }, "-created_date", 1);
+      const borrower = borrowers[0] || null;
+
+      const request = await base44.asServiceRole.entities.InformationRequest.create({
+        organization_id,
+        application_id,
+        item: String(item).trim(),
+        note: note ? String(note).trim() : null,
+        status: "sent",
+        requested_by: actor,
+      });
+
+      // Email the borrower a link to the portal where they can upload the
+      // requested document. Failures never block the request from being created.
+      let emailSent = false;
+      let statusLink: string | null = null;
+      if (borrower?.email) {
+        try {
+          const proto = req.headers.get("x-forwarded-proto") || "https";
+          const host = req.headers.get("host");
+          const origin = host ? `${proto}://${host}` : "https://oldme.base44.app";
+          statusLink = `${origin}/status/${app.application_number}`;
+          await base44.asServiceRole.integrations.Core.SendEmail({
+            to: borrower.email,
+            subject: `Document request for your application (${app.application_number})`,
+            text: [
+              `Hi ${borrower.first_name},`,
+              ``,
+              `We need a little more information to continue with your application.`,
+              ``,
+              `Request: ${String(item).trim()}`,
+              note ? `Details: ${String(note).trim()}` : null,
+              ``,
+              `Application reference: ${app.application_number}`,
+              ``,
+              `Please upload the requested document(s) here:`,
+              statusLink,
+              ``,
+              `— The lending team`,
+            ].filter((x) => x !== null).join("\n"),
+          });
+          emailSent = true;
+        } catch (e) {
+          // email delivery failure is non-fatal
+        }
+      }
+
+      await audit(base44, organization_id, "application.info_requested", { application_id, actor, actor_type, endpoint: "POST /v1/applications/request_information", details: { request_id: request.id, item, email_sent: emailSent } });
+      return apiSuccess({ request, email_sent: emailSent, borrower_email: borrower?.email || null, status_link: statusLink }, 201);
+    }
+
     if (action === "update") {
       requireScope(ctx, "applications:write");
       const { application_id, loan_amount, loan_currency, loan_purpose, loan_term_months, interest_rate, policy_id, product_type, market, regulatory_profile, state, borrower_type } = body;
@@ -91,7 +149,7 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ application: updated }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use create|get|list|update.`, 400);
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use create|get|list|update|request_information.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);

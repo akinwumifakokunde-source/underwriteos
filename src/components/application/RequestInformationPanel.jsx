@@ -22,6 +22,7 @@ export default function RequestInformationPanel({ applicationId }) {
   const [item, setItem] = useState("");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [emailStatus, setEmailStatus] = useState(null);
 
   const load = async () => {
     try {
@@ -41,20 +42,28 @@ export default function RequestInformationPanel({ applicationId }) {
   const create = async () => {
     if (!item.trim()) return;
     setSaving(true);
+    setEmailStatus(null);
     try {
-      const me = await base44.auth.me();
-      const oid = me.data?.organization_id || me.organization_id;
-      await base44.entities.InformationRequest.create({
-        organization_id: oid,
+      const res = await base44.functions.invoke("apiApplications", {
+        action: "request_information",
         application_id: applicationId,
         item: item.trim(),
         note: note.trim() || undefined,
-        status: "requested",
       });
+      const data = res.data || {};
+      if (data.email_sent) {
+        setEmailStatus({ ok: true, email: data.borrower_email });
+      } else if (data.borrower_email) {
+        setEmailStatus({ ok: false, email: data.borrower_email });
+      } else {
+        setEmailStatus({ ok: false, email: null });
+      }
       setItem("");
       setNote("");
       setAdding(false);
       await load();
+    } catch (e) {
+      setEmailStatus({ ok: false, error: e?.response?.data?.error?.message || e.message || "Failed to send request." });
     } finally {
       setSaving(false);
     }
@@ -117,6 +126,20 @@ export default function RequestInformationPanel({ applicationId }) {
               Send request
             </button>
           </div>
+        </div>
+      )}
+
+      {emailStatus && (
+        <div className={`mb-3 rounded-lg border px-3 py-2 text-[12px] flex items-center gap-1.5 ${
+          emailStatus.ok ? "border-emerald-200 bg-emerald-50 text-emerald-700" :
+          emailStatus.error ? "border-rose-200 bg-rose-50 text-rose-700" :
+          "border-amber-200 bg-amber-50 text-amber-700"
+        }`}>
+          {emailStatus.ok ? <CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> : <Send className="w-3.5 h-3.5 shrink-0" />}
+          <span>{emailStatus.ok ? `Request sent — borrower notified at ${emailStatus.email}.` :
+            emailStatus.error ? emailStatus.error :
+            emailStatus.email ? `Request created, but the email to ${emailStatus.email} could not be sent.` :
+            "Request created, but the borrower has no email on file — share the portal link manually."}</span>
         </div>
       )}
 
