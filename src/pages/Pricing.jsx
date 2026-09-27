@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, Zap, Wallet, RefreshCw, Building2, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Wallet, RefreshCw, Building2, Sparkles, Server, FileText, ShieldCheck, Gauge } from "lucide-react";
 import Nav from "@/components/layout/Nav.jsx";
 import AfricaPricing from "@/components/pricing/AfricaPricing.jsx";
 
@@ -89,6 +89,13 @@ const STEPS = [
   { icon: RefreshCw, title: "Top up anytime", desc: "Need more capacity? Buy one-time credit packs from your workspace — they never expire and stack on your subscription." },
 ];
 
+const ENTERPRISE = [
+  { icon: Server, title: "Custom deployment", desc: "Hybrid, inside your own cloud (VPC), or on-premise." },
+  { icon: FileText, title: "Custom contracts", desc: "Your paper, your DPA, your procurement process." },
+  { icon: ShieldCheck, title: "Custom SLA & integrations", desc: "Uptime and support commitments, wired into your LOS and core." },
+  { icon: Gauge, title: "High volume", desc: "Rates set for the volume you actually run." },
+];
+
 const FAQ = [
   { q: "Do I get free credits to try it out?", a: "Yes — every new account gets 1,000 free credits on signup, no card required. That's enough to run roughly six full underwriting decisions end-to-end (credit pull, bank pull, document processing, AI analysis, decision, and export). Use them to explore the platform before subscribing." },
   { q: "What's included in a subscription?", a: "Each plan includes a monthly credit allowance — Starter (20,000), Growth (100,000), Scale (300,000) — that refreshes every billing cycle. All plans include access to all markets worldwide — any country, any currency — with data sources, AI analysis, policy decisions, and exports." },
@@ -105,18 +112,19 @@ export default function Pricing() {
     <div className="min-h-screen bg-white text-[#0a0c12]">
       <Nav />
 
+      {/* Hero */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-12">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-[#525965] mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#0d9488]" /> Pricing
           </div>
           <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.05] text-[#0a0c12]">
-            Subscribe monthly. Top up anytime.
+            How CreditDecide is priced.
           </h1>
           <p className="mt-6 text-lg text-[#525965] leading-relaxed">
-            Every plan includes a monthly credit allowance that refreshes each billing cycle. Need more? Buy one-time
-            credit packs on demand. Credits cover CreditDecide orchestration — fetching, normalizing, and reconciling
-            your data so you can underwrite with confidence.
+            CreditDecide Capture and CreditDecide Underwriter are separate products, priced separately.
+            Capture is credit-based, month to month. Underwriter is a monthly license with credits per
+            application. Talk to us for a quote.
           </p>
           <div className="mt-6 inline-flex items-center gap-2.5 rounded-xl border border-[#0d9488]/30 bg-[#0d9488]/5 px-4 py-3">
             <Sparkles className="w-4 h-4 text-[#0d9488] shrink-0" />
@@ -128,8 +136,15 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Tiers */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+      {/* CreditDecide Underwriter */}
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-6">
+        <div className="max-w-2xl mb-8">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">CreditDecide Underwriter</h2>
+          <p className="mt-2 text-base text-[#525965] leading-relaxed">
+            Reads the file, fills the scorecard and writes the credit memo, on every application. A monthly
+            license, plus credits per application. Rates depend on your market and loan sizes.
+          </p>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {TIERS.map((t) => (
             <div
@@ -176,12 +191,13 @@ export default function Pricing() {
 
       <AfricaPricing />
 
-      {/* Credit packs */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
-        <div className="max-w-2xl mb-6">
-          <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">One-time credit packs</h2>
+      {/* CreditDecide Capture */}
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-6">
+        <div className="max-w-2xl mb-8">
+          <h2 className="text-2xl font-semibold tracking-tight text-[#0a0c12]">CreditDecide Capture</h2>
           <p className="mt-2 text-base text-[#525965] leading-relaxed">
-            Need extra capacity beyond your monthly allowance? Buy credit packs anytime — they never expire and stack on top of your subscription.
+            Document extraction and fraud checks, paid in credits. Month to month. Every account starts with
+            1,000 free credits — top up any time, never expire.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -197,6 +213,7 @@ export default function Pricing() {
               </div>
               <div className="mt-1 text-sm font-medium text-[#0a0c12]">{p.price}</div>
               <div className="text-xs text-[#8a909c]">{p.per} credits</div>
+              <div className="mt-4 text-xs text-[#8a909c]">Top up credits any time · never expire</div>
             </div>
           ))}
         </div>
@@ -206,7 +223,7 @@ export default function Pricing() {
       </section>
 
       {/* Per-transaction price list */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 pt-10 pb-16">
         <div className="max-w-2xl mb-6">
           <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965]">Per-transaction pricing</h2>
           <p className="mt-2 text-base text-[#525965] leading-relaxed">
@@ -242,8 +259,37 @@ export default function Pricing() {
         </p>
       </section>
 
+      {/* Enterprise */}
+      <section className="bg-[#0a0c12] text-white">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24">
+          <div className="max-w-2xl mb-10">
+            <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight">Need something built around you?</h2>
+            <p className="mt-3 text-base text-slate-400 leading-relaxed">
+              For lenders who need CreditDecide on their own terms. Priced against your book, not the card.
+            </p>
+            <Link
+              to="/contact"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-white bg-white/10 hover:bg-white/15 border border-white/15 pl-4 pr-5 py-2.5 rounded-full transition-colors"
+            >
+              Contact sales <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 rounded-2xl overflow-hidden border border-white/10">
+            {ENTERPRISE.map((e) => (
+              <div key={e.title} className="bg-[#0a0c12] p-6">
+                <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-3.5">
+                  <e.icon className="w-4 h-4 text-[#34d399]" />
+                </div>
+                <h3 className="font-medium text-white mb-1">{e.title}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">{e.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* How billing works */}
-      <section className="max-w-7xl mx-auto px-5 sm:px-8 pb-16">
+      <section className="max-w-7xl mx-auto px-5 sm:px-8 py-16">
         <h2 className="text-sm font-medium uppercase tracking-wider text-[#525965] mb-6">How billing works</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#eceef1] rounded-2xl overflow-hidden border border-[#e5e7eb]">
           {STEPS.map((s) => (
