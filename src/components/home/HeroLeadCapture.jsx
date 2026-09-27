@@ -37,7 +37,7 @@ export default function HeroLeadCapture() {
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>
           <Link
-            to="/start/lender"
+            to="/start/borrower"
             className="group inline-flex items-center justify-center gap-1.5 text-sm font-medium text-white/90 hover:text-white pl-1 pr-2 py-2.5 transition-colors"
           >
             Try CreditDecide
