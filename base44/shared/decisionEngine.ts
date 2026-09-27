@@ -21,6 +21,7 @@ export interface RecommendationResult {
   probability_of_default: number;
   reasons: string[];
   human_review_required: boolean;
+  adverse_action_codes: any[];
 }
 
 // Build the AI-informed recommendation. This is advisory only.
@@ -42,7 +43,7 @@ export function buildRecommendation(input: RecommendationInput): RecommendationR
   const reasons = [...(input.ai.positive_signals || []).slice(0, 2), ...(input.ai.risk_factors || []).slice(0, 3)];
   if (input.policyOutcome?.reasons?.length) reasons.push(...input.policyOutcome.reasons.slice(0, 2));
 
-  return { recommendation, confidence, risk_score: riskScore, probability_of_default: pd, reasons, human_review_required: humanReviewRequired };
+  return { recommendation, confidence, risk_score: riskScore, probability_of_default: pd, reasons, human_review_required: humanReviewRequired, adverse_action_codes: input.policyOutcome?.adverse_action_codes || [] };
 }
 
 export interface FinalDecisionInput {
@@ -66,6 +67,7 @@ export interface FinalDecisionResult {
   human_review_required: boolean;
   reasons: string[];
   override_reason?: string;
+  adverse_action_codes: any[];
 }
 
 // The final decision is authoritative and follows lender policy.
@@ -94,6 +96,7 @@ export function finalizeDecision(input: FinalDecisionInput): FinalDecisionResult
     confidence: input.recommendation.confidence,
     human_review_required: input.recommendation.human_review_required,
     reasons: [...(input.policyOutcome.reasons || []), ...(input.recommendation.reasons || [])],
-    override_reason: overrideReason
+    override_reason: overrideReason,
+    adverse_action_codes: input.policyOutcome?.adverse_action_codes || []
   };
 }

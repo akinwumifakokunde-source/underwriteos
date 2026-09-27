@@ -19,6 +19,35 @@ export interface PolicyOutcome {
   triggered_rules: any[];
   decision: "APPROVE" | "REVIEW" | "DECLINE";
   reasons: string[];
+  adverse_action_codes: AdverseActionCode[];
+}
+
+export interface AdverseActionCode {
+  code: string;
+  label: string;
+  rule_id: string;
+  reason: string;
+}
+
+// Standardized adverse-action reason codes. Mapped from policy rule_id so
+// declines/reviews carry regulator-compliant reason codes (US ECOA/Reg B,
+// UK Consumer Credit Act, and equivalent consumer-credit regimes) instead
+// of free-text. Lenders can use these directly on adverse-action notices.
+export const ADVERSE_ACTION_CODES: Record<string, { code: string; label: string }> = {
+  "CR-SCORE": { code: "CREDIT_SCORE_LOW", label: "Credit score below minimum" },
+  "CR-DEF": { code: "DEFAULTS_ON_FILE", label: "Active defaults on credit file" },
+  "CR-UTIL": { code: "CREDIT_UTILISATION_HIGH", label: "Credit utilisation above threshold" },
+  "CR-ENQ": { code: "EXCESSIVE_ENQUIRIES", label: "High number of recent credit enquiries" },
+  "RP-HIST": { code: "POOR_REPAYMENT_HISTORY", label: "Repayment history below threshold" },
+  "AF-DTI": { code: "DEBT_TO_INCOME_HIGH", label: "Debt obligations too high relative to income" },
+  "AF-CAP": { code: "INSUFFICIENT_REPAYMENT_CAPACITY", label: "Insufficient disposable income to service the loan" },
+  "AF-INC": { code: "INSUFFICIENT_INCOME", label: "Income below minimum for requested loan" },
+  "INC-STAB": { code: "INCOME_INSTABILITY", label: "Income stability below threshold" },
+  "FR-FLAG": { code: "FRAUD_INDICATOR", label: "Potential fraud signal detected" },
+};
+
+export function adverseActionForRule(ruleId: string): { code: string; label: string } | null {
+  return ADVERSE_ACTION_CODES[ruleId] || null;
 }
 
 // Built-in default policies per market. Organizations can override any of these
@@ -182,10 +211,20 @@ export function evaluatePolicy(policy: any, signals: any[]): PolicyOutcome {
       reason: rule.reason
     });
     if (isTriggered) {
-      triggered.push({ rule_id: rule.rule_id, field: rule.field, operator: rule.operator, actual, threshold: rule.threshold, decision: rule.decision, reason: rule.reason });
+      const aa = adverseActionForRule(rule.rule_id);
+      triggered.push({ rule_id: rule.rule_id, field: rule.field, operator: rule.operator, actual, threshold: rule.threshold, decision: rule.decision, reason: rule.reason, adverse_action_code: aa?.code || null, adverse_action_label: aa?.label || null });
       reasons.push(rule.reason);
       if (rank[rule.decision] > rank[decision]) decision = rule.decision;
     }
+  }
+
+  // Collect standardized adverse-action codes for non-approve outcomes.
+  const adverse_action_codes: AdverseActionCode[] = [];
+  const seen = new Set<string>();
+  for (const t of triggered) {
+    if (!t.adverse_action_code || seen.has(t.adverse_action_code)) continue;
+    seen.add(t.adverse_action_code);
+    adverse_action_codes.push({ code: t.adverse_action_code, label: t.adverse_action_label || t.reason, rule_id: t.rule_id, reason: t.reason });
   }
 
   return {
@@ -194,7 +233,8 @@ export function evaluatePolicy(policy: any, signals: any[]): PolicyOutcome {
     evaluated_rules: evaluated,
     triggered_rules: triggered,
     decision,
-    reasons
+    reasons,
+    adverse_action_codes
   };
 }
 

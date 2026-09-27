@@ -80,6 +80,7 @@ export default async function(req: Request): Promise<Response> {
       ai_summary: ai.summary,
       ai_memo: ai.memo,
       human_review_required: recommendation.human_review_required,
+      adverse_action_codes: recommendation.adverse_action_codes || [],
       generated_at: new Date().toISOString()
     });
 
@@ -111,6 +112,7 @@ export default async function(req: Request): Promise<Response> {
       human_review_required: decision.human_review_required,
       policy_outcome: policyOutcome,
       reasons: decision.reasons,
+      adverse_action_codes: decision.adverse_action_codes || [],
       idempotency_key: idempotencyKey || null
     });
 

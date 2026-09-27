@@ -76,6 +76,27 @@
       "type": "boolean",
       "default": false
     },
+    "adverse_action_codes": {
+      "type": "array",
+      "description": "Standardized adverse-action reason codes (regulator-compliant) for non-approve recommendations. Each item: { code, label, rule_id, reason }.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "rule_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "generated_at": {
       "type": "string",
       "format": "date-time"

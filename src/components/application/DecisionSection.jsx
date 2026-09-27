@@ -147,6 +147,25 @@ export default function DecisionSection({ decision, recommendation, evidence, on
         </div>
       )}
 
+      {/* Adverse-action reason codes — regulator-compliant, for decline/review */}
+      {decision.adverse_action_codes?.length > 0 && (decision.decision === "DECLINE" || decision.decision === "REVIEW") && (
+        <div className="rounded-xl border border-slate-200 bg-white p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <FileText className="w-4 h-4 text-slate-400" />
+            <h3 className="text-sm font-semibold text-slate-900">Adverse-action reason codes</h3>
+          </div>
+          <p className="text-[12px] text-slate-400 mb-3">Standardized reason codes for the adverse-action notice. Required for regulatory compliance (ECOA / Reg B, Consumer Credit Act).</p>
+          <div className="flex flex-wrap gap-2">
+            {decision.adverse_action_codes.map((c, i) => (
+              <div key={i} className="inline-flex flex-col rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5">
+                <span className="text-[11px] font-mono font-semibold text-slate-700">{c.code}</span>
+                <span className="text-[11px] text-slate-500">{c.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Evidence */}
       {evidence?.length > 0 && (
         <div className="rounded-xl border border-slate-200 bg-white p-5">
