@@ -62,16 +62,16 @@ export default function MarketingHero() {
               its source. Your policies set the rules. Your team makes the call.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-stretch gap-3 w-full max-w-md">
+            <HeroLeadCapture />
+            <div className="mt-3 w-full max-w-md">
               <Link
                 to="/start/lender"
-                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0d1a12] bg-white pl-5 pr-4 py-3 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
+                className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0d1a12] bg-white pl-5 pr-4 py-2.5 rounded-full hover:bg-emerald-50 transition-all shadow-lg"
               >
                 Try CreditDecide
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
-            <HeroLeadCapture />
 
             <HeroStats />
           </div>
