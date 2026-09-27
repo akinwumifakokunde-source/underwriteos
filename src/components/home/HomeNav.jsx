@@ -5,7 +5,7 @@ import Logo from "@/components/Logo";
 
 const NAV = [
   { to: "/features", label: "Platform" },
-  { to: "/pricing", label: "Pricing" },
+  { to: "/markets", label: "Markets" },
   { to: "/insights", label: "Insights" },
   { to: "/security", label: "Security" },
   { to: "/connect", label: "Connect AI" },

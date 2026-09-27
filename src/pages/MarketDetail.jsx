@@ -55,7 +55,7 @@ export default function MarketDetail() {
       <section className="relative overflow-hidden border-b border-[#eceef1]">
         <div className="absolute inset-0 bg-gradient-to-b from-[#f0f7f4] via-white to-white" />
         <div className="relative max-w-5xl mx-auto px-5 sm:px-8 py-16 sm:py-20">
-          <Link to="/features" className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 mb-6">
+          <Link to="/markets" className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 hover:text-slate-800 mb-6">
             ← All markets
           </Link>
           <div className="flex items-center gap-4 mb-5">
