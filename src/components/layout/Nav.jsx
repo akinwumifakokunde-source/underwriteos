@@ -15,13 +15,13 @@ import {
 
 const NAV_ITEMS = [
   { to: "/applications", label: "Applications" },
+  { to: "/forms", label: "Intake Forms" },
   { to: "/policies", label: "Policies" },
   { to: "/data-sources", label: "Data Sources" },
   { to: "/reports", label: "Reports" },
 ];
 
 const SECONDARY_ITEMS = [
-  { to: "/forms", label: "Forms" },
   { to: "/batch", label: "Batch" },
   { to: "/collections", label: "Collections" },
   { to: "/monitoring", label: "Calibration" },
