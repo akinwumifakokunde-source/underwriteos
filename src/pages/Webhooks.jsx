@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import Nav from "@/components/layout/Nav.jsx";
-import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy } from "lucide-react";
+import { Webhook as WebhookIcon, Loader2, AlertTriangle, Plus, Trash2, FlaskConical, Check, Copy, History, ChevronDown } from "lucide-react";
 
 const EVENT_OPTIONS = [
   "decision.created", "decision.approved", "decision.declined", "decision.review",
@@ -19,6 +19,9 @@ export default function Webhooks() {
   const [newSecret, setNewSecret] = useState(null);
   const [copied, setCopied] = useState(false);
   const [testResult, setTestResult] = useState({});
+  const [deliveries, setDeliveries] = useState({});
+  const [expandedHook, setExpandedHook] = useState(null);
+  const [loadingDeliveries, setLoadingDeliveries] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -78,6 +81,20 @@ export default function Webhooks() {
   };
 
   const toggleEvent = (ev) => setEvents((s) => s.includes(ev) ? s.filter((x) => x !== ev) : [...s, ev]);
+
+  const loadDeliveries = async (webhookId) => {
+    if (expandedHook === webhookId) { setExpandedHook(null); return; }
+    setExpandedHook(webhookId);
+    setLoadingDeliveries(true);
+    try {
+      const res = await base44.functions.invoke("apiWebhooks", { action: "deliveries", webhook_id: webhookId, limit: 20 });
+      setDeliveries((d) => ({ ...d, [webhookId]: res.data?.deliveries || [] }));
+    } catch (e) {
+      setDeliveries((d) => ({ ...d, [webhookId]: [] }));
+    } finally {
+      setLoadingDeliveries(false);
+    }
+  };
 
   const copySecret = async (text) => {
     try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch {}
@@ -178,6 +195,10 @@ export default function Webhooks() {
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
+                    <button onClick={() => loadDeliveries(h.id)} disabled={busy} title="Delivery log"
+                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg border ${expandedHook === h.id ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-500 hover:bg-slate-50"} disabled:opacity-40`}>
+                      <History className="w-3.5 h-3.5" />
+                    </button>
                     <button onClick={() => test(h.id)} disabled={busy} title="Send test"
                       className="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40">
                       <FlaskConical className="w-3.5 h-3.5" />
@@ -188,6 +209,36 @@ export default function Webhooks() {
                     </button>
                   </div>
                 </div>
+
+                {expandedHook === h.id && (
+                  <div className="mt-3 pt-3 border-t border-slate-100">
+                    <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-2 flex items-center gap-1">
+                      <ChevronDown className="w-3 h-3" /> Delivery log
+                    </div>
+                    {loadingDeliveries ? (
+                      <div className="flex items-center gap-2 py-3">
+                        <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                        <span className="text-xs text-slate-500">Loading deliveries…</span>
+                      </div>
+                    ) : (deliveries[h.id] || []).length === 0 ? (
+                      <p className="text-xs text-slate-400 py-3">No deliveries yet.</p>
+                    ) : (
+                      <div className="space-y-1.5 max-h-64 overflow-y-auto">
+                        {(deliveries[h.id] || []).map((d) => (
+                          <div key={d.id} className="flex items-center gap-2 rounded-lg bg-slate-50 border border-slate-100 px-2.5 py-1.5">
+                            <span className={`text-[10px] font-mono rounded px-1.5 py-0.5 shrink-0 ${d.status === "delivered" ? "text-emerald-600 bg-emerald-50 border border-emerald-100" : "text-rose-600 bg-rose-50 border border-rose-100"}`}>
+                              {d.status}
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-500 shrink-0">{d.event}</span>
+                            <span className="text-[10px] text-slate-400 shrink-0">{d.http_status ? `HTTP ${d.http_status}` : d.error || "error"}</span>
+                            <span className="text-[10px] text-slate-400 shrink-0">{d.latency_ms}ms</span>
+                            <span className="text-[10px] text-slate-300 ml-auto truncate">{new Date(d.created_at).toLocaleString()}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -52,11 +52,13 @@ async function hmacSha256(secret: string, payload: string): Promise<string> {
 
 // Deliver a signed decision webhook to a single endpoint.
 // Returns { ok, http_status, error } and updates last_delivery_status.
+// Persists a WebhookDelivery audit record for every attempt.
 async function deliverOne(
   base44: any,
   webhook: any,
   event: string,
-  payload: DecisionWebhookPayload
+  payload: DecisionWebhookPayload,
+  ctx: { organization_id: string; application_id: string; decision_id: string }
 ): Promise<{ ok: boolean; http_status?: number; error?: string }> {
   const body = JSON.stringify(payload);
   let signature = "";
@@ -65,6 +67,11 @@ async function deliverOne(
   } catch {
     signature = "";
   }
+
+  const start = Date.now();
+  let httpStatus: number | null = null;
+  let ok = false;
+  let errorMsg: string | null = null;
 
   try {
     const res = await fetch(webhook.url, {
@@ -79,19 +86,40 @@ async function deliverOne(
       signal: AbortSignal.timeout(10000),
     });
 
-    const ok = res.ok;
-    const status = `${ok ? "ok" : "failed"}:${res.status}`;
-    try {
-      await base44.asServiceRole.entities.Webhook.update(webhook.id, { last_delivery_status: status });
-    } catch {}
-    return { ok, http_status: res.status };
+    httpStatus = res.status;
+    ok = res.ok;
   } catch (e: any) {
-    const status = `failed:${e.name === "TimeoutError" ? "timeout" : "error"}`;
-    try {
-      await base44.asServiceRole.entities.Webhook.update(webhook.id, { last_delivery_status: status });
-    } catch {}
-    return { ok: false, error: e.message };
+    errorMsg = e.name === "TimeoutError" ? "Request timed out" : e.message;
   }
+
+  const latencyMs = Date.now() - start;
+  const statusLabel = ok ? `ok:${httpStatus}` : `failed:${errorMsg ? (errorMsg.includes("timed out") ? "timeout" : "error") : httpStatus}`;
+
+  // Update the webhook's last_delivery_status
+  try {
+    await base44.asServiceRole.entities.Webhook.update(webhook.id, { last_delivery_status: statusLabel });
+  } catch {}
+
+  // Persist a WebhookDelivery audit record
+  try {
+    await base44.asServiceRole.entities.WebhookDelivery.create({
+      organization_id: ctx.organization_id,
+      webhook_id: webhook.id,
+      event,
+      application_id: ctx.application_id,
+      decision_id: ctx.decision_id,
+      url: webhook.url,
+      payload,
+      http_status: httpStatus,
+      status: ok ? "delivered" : "failed",
+      error: errorMsg,
+      latency_ms: latencyMs,
+      attempt: 1,
+      signature: `sha256=${signature}`,
+    });
+  } catch {}
+
+  return { ok, http_status: httpStatus ?? undefined, error: errorMsg ?? undefined };
 }
 
 // Fire decision webhooks to all active endpoints subscribed to the relevant
@@ -160,7 +188,7 @@ export async function deliverDecisionWebhooks(
         },
       };
 
-      const result = await deliverOne(base44, hook, event, payload);
+      const result = await deliverOne(base44, hook, event, payload, { organization_id, application_id: application.id, decision_id: decision.id });
       results.push({ webhook_id: hook.id, event, ...result });
     }
   }

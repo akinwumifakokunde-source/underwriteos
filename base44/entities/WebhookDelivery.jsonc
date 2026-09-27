@@ -1,0 +1,90 @@
+{
+  "name": "WebhookDelivery",
+  "type": "object",
+  "description": "Auditable record of a single webhook delivery attempt. Created for every outbound webhook fire, capturing the event, endpoint, HTTP response, latency, and retry state so lenders can debug failed deliveries.",
+  "properties": {
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional free-form description of this webhook delivery."
+    },
+    "organization_id": {
+      "type": "string"
+    },
+    "webhook_id": {
+      "type": "string",
+      "description": "The Webhook endpoint this delivery was sent to."
+    },
+    "event": {
+      "type": "string",
+      "description": "Event name (e.g. decision.created, decision.declined)."
+    },
+    "application_id": {
+      "type": "string",
+      "description": "Application this delivery relates to, when applicable."
+    },
+    "decision_id": {
+      "type": "string",
+      "description": "UnderwritingDecision this delivery relates to, when applicable."
+    },
+    "url": {
+      "type": "string",
+      "description": "Endpoint URL the payload was POSTed to (denormalized for log readability)."
+    },
+    "payload": {
+      "type": "object",
+      "description": "The full JSON payload that was sent."
+    },
+    "http_status": {
+      "type": "number",
+      "description": "HTTP status code returned by the endpoint. Null when the request never reached the server (DNS, timeout, network)."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "delivered",
+        "failed",
+        "pending"
+      ],
+      "default": "delivered",
+      "description": "Delivery outcome. delivered = 2xx, failed = non-2xx or network error, pending = queued for retry."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message when the delivery failed (network error, timeout, etc.)."
+    },
+    "latency_ms": {
+      "type": "number",
+      "description": "Round-trip time from request to response, in milliseconds."
+    },
+    "attempt": {
+      "type": "number",
+      "default": 1,
+      "description": "Attempt number (1 = first try, 2+ = retries)."
+    },
+    "signature": {
+      "type": "string",
+      "description": "The HMAC-SHA256 signature sent in the X-CreditDecide-Signature header, for verification debugging."
+    }
+  },
+  "required": [
+    "organization_id",
+    "webhook_id",
+    "event",
+    "url"
+  ],
+  "rls": {
+    "read": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "create": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "update": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    },
+    "delete": {
+      "data.organization_id": "{{user.data.organization_id}}"
+    }
+  }
+}

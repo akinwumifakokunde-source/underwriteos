@@ -77,7 +77,22 @@ export default async function(req: Request): Promise<Response> {
       return apiSuccess({ test: result }, 200);
     }
 
-    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use list|create|update|delete|test.`, 400);
+    if (action === "deliveries") {
+      requireScope(ctx, "webhooks:read");
+      const { webhook_id, limit } = body;
+      const query: any = { organization_id };
+      if (webhook_id) query.webhook_id = webhook_id;
+      const deliveries = await base44.asServiceRole.entities.WebhookDelivery.filter(query, "-created_date", limit || 50);
+      return apiSuccess({ deliveries: deliveries.map((d: any) => ({
+        id: d.id, webhook_id: d.webhook_id, event: d.event,
+        application_id: d.application_id, decision_id: d.decision_id,
+        url: d.url, http_status: d.http_status, status: d.status,
+        error: d.error, latency_ms: d.latency_ms, attempt: d.attempt,
+        created_at: d.created_date
+      })) }, 200);
+    }
+
+    return apiError("UNKNOWN_ACTION", `Action '${action}' is not supported. Use list|create|update|delete|test|deliveries.`, 400);
   } catch (e) {
     if (e.status) return apiError(e.code || "ERROR", e.message, e.status);
     return apiError("INTERNAL_ERROR", e.message, 500);
