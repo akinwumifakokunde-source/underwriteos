@@ -64,8 +64,10 @@ export default async function(req: Request): Promise<Response> {
       documents_on_file: documents.map((d) => d.document_type).filter(Boolean),
     };
 
-    const convo = history.slice(-8)
-      .map((h) => `${h.role === "assistant" ? "Assistant" : "Borrower"}: ${h.content}`)
+    // Credit optimisation: keep the transcript short and clipped so each turn
+    // costs fewer prompt tokens.
+    const convo = history.slice(-6)
+      .map((h) => `${h.role === "assistant" ? "Assistant" : "Borrower"}: ${String(h.content || "").slice(0, 300)}`)
       .join("\n");
 
     const prompt = `You are the CreditDecide Assistant inside a borrower's loan portal. The borrower has already submitted their application and is checking on progress. Be warm, concise and honest. Answer only from the application context below — never invent status, decisions, dates or reasons. If the borrower asks something you cannot answer from context (changing the loan amount, negotiating terms, explaining a decline reason in detail, anything requiring the lender's judgement), say you will pass it to their loan officer and set handoff=true.

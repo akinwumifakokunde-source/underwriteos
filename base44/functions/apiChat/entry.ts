@@ -42,9 +42,11 @@ export default async function(req: Request): Promise<Response> {
 
     const context = buildContext(app, borrower, docs, fp, cp, signals, recommendation, decision);
 
-    const conversationHistory = (history || []).slice(-10).map((h) => ({
+    // Credit optimisation: send only the most recent turns, clipped, so the
+    // prompt (and therefore the integration-credit cost) stays bounded.
+    const conversationHistory = (history || []).slice(-6).map((h) => ({
       role: h.role === "assistant" ? "assistant" : "user",
-      content: h.content,
+      content: String(h.content || "").slice(0, 400),
     }));
 
     const prompt = `You are an AI underwriting assistant for CreditDecide. You help underwriters analyse loan applications by answering questions about the borrower's financial profile, risk signals, credit assessment, and policy outcomes.
@@ -56,7 +58,7 @@ ${conversationHistory.length > 0 ? "PREVIOUS CONVERSATION:\n" + conversationHist
 APPLICATION CONTEXT:
 ${context}
 
-The user asks: "${message}"
+The user asks: "${String(message).slice(0, 600)}"
 
 Answer based on the application context above:`;
 

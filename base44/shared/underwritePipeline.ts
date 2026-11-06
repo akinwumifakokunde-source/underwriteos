@@ -49,15 +49,46 @@ export async function runUnderwrite(
   const policy = getPolicy(policy_id || app.policy_id, orgPolicies, app.market);
   const policyOutcome = evaluatePolicy(policy, signals);
 
-  const ai = await generateUnderwritingMemo(base44, {
-    borrower: borrowers[0] || {},
-    application: app,
-    credit: creditProfiles[0] || {},
-    financial: financialProfiles[0] || {},
-    signals,
-    evidence,
-    policyOutcome
-  });
+  // Integration-credit optimisation: identical inputs always produce an
+  // identical memo, so when no new risk signal or evidence record has arrived
+  // since the previous recommendation was generated, reuse that memo instead of
+  // paying for another LLM call. A new document upload creates fresh evidence,
+  // which invalidates this automatically.
+  const previousRecs = await base44.asServiceRole.entities.UnderwritingRecommendation.filter(
+    { application_id, organization_id }, "-created_date", 1
+  );
+  const previous = previousRecs[0];
+  const newestInput = [signals[0]?.created_date, evidence[0]?.created_date]
+    .filter(Boolean)
+    .sort()
+    .pop();
+
+  let ai = null;
+  if (previous && previous.ai_memo && previous.ai_summary && newestInput && previous.created_date && previous.created_date >= newestInput) {
+    // Recover the original AI confidence from the stored blended confidence so
+    // repeated reuses converge instead of drifting.
+    const blend = 1 - Math.abs((typeof previous.risk_score === "number" ? previous.risk_score : 0.5) - 0.5);
+    const recovered = typeof previous.confidence === "number" ? 2 * previous.confidence - blend : 0.7;
+    ai = {
+      summary: previous.ai_summary,
+      memo: previous.ai_memo,
+      positive_signals: previous.positive_signals || [],
+      risk_factors: previous.risk_factors || [],
+      confidence: Math.max(0, Math.min(1, recovered))
+    };
+  }
+
+  if (!ai) {
+    ai = await generateUnderwritingMemo(base44, {
+      borrower: borrowers[0] || {},
+      application: app,
+      credit: creditProfiles[0] || {},
+      financial: financialProfiles[0] || {},
+      signals,
+      evidence,
+      policyOutcome
+    });
+  }
 
   const recommendation = buildRecommendation({ application: app, signals, policyOutcome, ai });
 

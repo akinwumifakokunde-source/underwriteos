@@ -26,6 +26,32 @@ export default async function(req) {
     const pillarKey = pillarForDay(new Date().getDay());
     const pillar = PILLARS[pillarKey];
 
+    // Credit optimisation: if this pillar has already published an article today
+    // (retry, overlapping trigger, or a manual run), reuse it rather than paying
+    // for a second LLM generation.
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const todays = await base44.asServiceRole.entities.Insight.filter(
+      { status: 'published', pillar: pillarKey, published_at: { $gte: startOfDay.toISOString() } },
+      '-published_at',
+      1
+    );
+    if (todays.length > 0) {
+      const existing = todays[0];
+      return Response.json({
+        ok: true,
+        skipped: true,
+        reason: 'already_published_today',
+        slug: existing.slug,
+        title: existing.title,
+        excerpt: existing.excerpt,
+        market: existing.market || 'GLOBAL',
+        pillar: pillarKey,
+        pillar_label: pillar.label,
+        rotation_index: existing.pillar_index ?? 0,
+      });
+    }
+
     // Per-pillar rotation: find the most recent published record for this pillar
     // and advance its pillar_index by one.
     const latestForPillar = await base44.asServiceRole.entities.Insight.filter(

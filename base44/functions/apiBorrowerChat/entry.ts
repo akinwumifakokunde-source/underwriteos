@@ -17,8 +17,10 @@ export default async function(req: Request): Promise<Response> {
       return apiError("VALIDATION_ERROR", "A message (max 1000 chars) is required.", 400);
     }
 
-    const convo = (Array.isArray(history) ? history : []).slice(-8)
-      .map((h) => `${h.role === "assistant" ? "Assistant" : "Borrower"}: ${h.content}`)
+    // Credit optimisation: keep the transcript short and clipped so each turn
+    // costs fewer prompt tokens.
+    const convo = (Array.isArray(history) ? history : []).slice(-6)
+      .map((h) => `${h.role === "assistant" ? "Assistant" : "Borrower"}: ${String(h.content || "").slice(0, 300)}`)
       .join("\n");
 
     const currentValues = JSON.stringify(values || {});
